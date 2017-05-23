@@ -81,8 +81,6 @@ function FFMpeg(options)
 
     if (ffmpegFile.exists) this.ffmpegPath = ffmpegFile.fsName;
 
-    alert(ffmpegFile.fsName);
-
     this.options = '-stats';
     this.queue = [];
 }
