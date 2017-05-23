@@ -155,14 +155,3 @@ function FFMpegQueueItem(input,outputs)
 
     this.outputs = outputs;
 }
-
-//Example
-var ffmpeg = new FFMpeg('-y -stats');
-var input = new FFMpegInputModule('C:/RAINBOX/Test video 1.mp4');
-var output = new FFMpegOutputModule('pcm_f32le','C:/RAINBOX/Test audio 1.wav','-ar 48000 -vn');
-var item = new FFMpegQueueItem(input,[output]);
-ffmpeg.queue.push(item);var input = new FFMpegInputModule('C:/RAINBOX/Test video 2.mp4');
-var output = new FFMpegOutputModule('pcm_f32le','C:/RAINBOX/Test audio 2.wav','-ar 48000 -vn');
-var item = new FFMpegQueueItem(input,[output]);
-ffmpeg.queue.push(item);
-ffmpeg.launch();
