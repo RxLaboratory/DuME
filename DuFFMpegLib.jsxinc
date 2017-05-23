@@ -116,7 +116,6 @@ FFMpeg.prototype.launch = function ()
     }
 
     //launch!
-    alert(cmd);
     system.callSystem(cmd);
 }
 
