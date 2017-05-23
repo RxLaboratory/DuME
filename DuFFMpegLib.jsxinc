@@ -29,8 +29,8 @@
 
 
 /**
- * Constructs a new FFMpeg encoder
- * The constructor will try to find the ffmpeg binary in the same folder as libDuik, or an (ffmpeg) subfolder, or in the scripts folder of After Effects
+ * Constructs a new FFMpeg encoder.
+ * The constructor will try to find the ffmpeg binary in the same folder as libDuik, or an (ffmpeg) subfolder, or in the scripts folder of After Effects.
  * If ffmpeg is not in one of those, the property ffmpegPath will be an empty string, and it has to be set by the user.
  * @class FFMpeg
  * @classdesc A class used to easily encode medias with ffmpeg
@@ -81,7 +81,7 @@ function FFMpeg(options)
 
     if (ffmpegFile.exists) this.ffmpegPath = ffmpegFile.fsName;
 
-    this.options = '-stats';
+    this.options = options;
     this.queue = [];
 }
 
@@ -136,7 +136,7 @@ function FFMpegInputModule(inputPath,options)
     this.inputPath = inputFile.fsName;
 
     if (!options) options = '';
-    this.options = '';
+    this.options = options;
 }
 
 /**
@@ -161,7 +161,7 @@ function FFMpegOutputModule(codec,outputPath,options)
     this.outputPath = outputFile.fsName;
 
     if (!options) options = '';
-    this.options = '';
+    this.options = options;
 }
 
 /**
