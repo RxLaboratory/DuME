@@ -13,12 +13,12 @@ Options and codecs are those used by the FFMpeg binary, which can be listed in a
 `ffmpeg -h` for general help
 `ffmpeg -encoders` to get a list of available encoders
 
-##Here are some usage examples:
+## Here are some usage examples:
 
-###To use the library, simply include it in the beginning of your scripts
+### To use the library, simply include it in the beginning of your scripts
 `#include DuFFMpegLib.jsxinc`
 
-###Very simple transcoding
+### Very simple transcoding
 ```javascript
 //create a new FFMpeg instance
 var ffmpeg = new FFMpeg();
@@ -34,7 +34,7 @@ ffmpeg.queue.push(item);
 ffmpeg.launch(); //and launch the process!
 ```
 
-###Transcoding two different files, and a few more options
+### Transcoding two different files, and a few more options
 ```javascript
 //new FFMpeg instance, encoding will overwrite files, and statistics will be shown
 var ffmpeg = new FFMpeg('-y -stats');
