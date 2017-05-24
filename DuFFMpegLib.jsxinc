@@ -40,43 +40,45 @@
  */
 function FFMpeg(options)
 {
-    if (options == undefined) options = '-stats';
+    //detect os
+    var mac = $.os.toLowerCase().indexOf("mac") >= 0;
+    this.mac = mac;
+    this.win = !mac;
 
-    //TODO mac version
+    if (options == undefined) options = '-stats';
 
     this.ffmpegPath = '';
 
     //try to detect the ffmpeg path
+    var ffmpegBinName = '';
+    if (this.win) ffmpegBinName = 'ffmpeg.exe';
+    else ffmpegBinName = 'ffmpeg';
     //first, in the same dir
-    var ffmpegFile = new File($.fileName.substring(0,$.fileName.lastIndexOf('/')) + '/ffmpeg.exe');
+    var ffmpegFile = new File($.fileName.substring(0,$.fileName.lastIndexOf('/')) + '/' + ffmpegBinName);
     //in an (ffmpeg) subfolder
     if (!ffmpegFile.exists)
     {
-        ffmpegFile = new File($.fileName.substring(0,$.fileName.lastIndexOf('/')) + '/(ffmpeg)/ffmpeg.exe');
+        ffmpegFile = new File($.fileName.substring(0,$.fileName.lastIndexOf('/')) + '/(ffmpeg)/' + ffmpegBinName);
     }
     //in AE Scripts folder
     if (!ffmpegFile.exists)
     {
-        if (Duik.win) ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts' + '/ffmpeg.exe');
-        //else ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Contents/Resources/Scripts' + '/ffmpeg.exe');
+        ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/' + ffmpegBinName);
     }
     //in AE Scripts/(ffmpeg) folder
     if (!ffmpegFile.exists)
     {
-        if (Duik.win) ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/(ffmpeg)' + '/ffmpeg.exe');
-        //else ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Contents/Resources/Scripts/(ffmpeg)' + '/ffmpeg.exe');
+        ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/(ffmpeg)/' + ffmpegBinName);
     }
     //in AE ScriptUI Panels
     if (!ffmpegFile.exists)
     {
-        if (Duik.win) ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/ScriptUI Panels' + '/ffmpeg.exe');
-        //else ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Contents/Resources/Scripts/ScriptUI Panels' + '/ffmpeg.exe');
+        ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/ScriptUI Panels/' + ffmpegBinName);
     }
     //in AE ScriptUI Panels/(ffmpeg)
     if (!ffmpegFile.exists)
     {
-        if (Duik.win) ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/ScriptUI Panels/(ffmpeg)' + '/ffmpeg.exe');
-        //else ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Contents/Resources/Scripts/ScriptUI Panels/(ffmpeg)' + '/(ffmpeg)/ffmpeg.exe');
+        ffmpegFile = new File(Folder.appPackage.absoluteURI + '/Scripts/ScriptUI Panels/(ffmpeg)/' + ffmpegBinName);
     }
 
     if (ffmpegFile.exists) this.ffmpegPath = ffmpegFile.fsName;
@@ -94,7 +96,12 @@ FFMpeg.prototype.launch = function ()
     //TODO mac version
 
     var cmd = '';
-    if (Duik.win) cmd += '"' + this.ffmpegPath + '"';
+    if (this.win) cmd += '"' + this.ffmpegPath + '"';
+    else
+    {
+      var ffmpegFile = new File(this.ffmpegPath);
+      cmd += '"' + ffmpegFile.parent.fsName + '"/./' + ffmpegFile.name;
+    }
 
     //add options
     cmd += ' ' + this.options;
@@ -116,6 +123,7 @@ FFMpeg.prototype.launch = function ()
     }
 
     //launch!
+    alert(cmd);
     system.callSystem(cmd);
 }
 
