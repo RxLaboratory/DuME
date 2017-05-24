@@ -90,11 +90,10 @@ function FFMpeg(options)
 /**
  * Launches encoding
  * @memberof FFMpeg
+ * @return {string} The text returned by ffmpeg (currently works on win only, empty string on mac)
  */
 FFMpeg.prototype.launch = function ()
 {
-    //TODO mac version
-
     var cmd = '';
     if (this.win) cmd += '"' + this.ffmpegPath + '"';
     else
@@ -123,8 +122,7 @@ FFMpeg.prototype.launch = function ()
     }
 
     //launch!
-    alert(cmd);
-    system.callSystem(cmd);
+    return system.callSystem(cmd);
 }
 
 /**
