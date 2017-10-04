@@ -30,7 +30,7 @@
 
 /**
  * Constructs a new FFMpeg encoder.
- * The constructor will try to find the ffmpeg binary in the same folder as libDuik, or an (ffmpeg) subfolder, or in the scripts folder of After Effects.
+ * The constructor will try to find the ffmpeg binary in the same folder as DuFFMpeg, or an (ffmpeg) subfolder, or in the scripts folder of After Effects.
  * If ffmpeg is not in one of those, the property ffmpegPath will be an empty string, and it has to be set by the user.
  * @class FFMpeg
  * @classdesc A class used to easily encode medias with ffmpeg
