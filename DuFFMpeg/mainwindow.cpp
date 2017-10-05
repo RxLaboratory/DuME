@@ -256,17 +256,32 @@ void MainWindow::on_actionGo_triggered()
     arguments << outputEdit->text().replace("/","\\");
 
     //Launch!
-
-    //ffmpeg->setArguments(QStringList("-h"));
-
-    //QProcess::execute(ffmpegPath,arguments);
-    //TODO use ffmpeg start instead
-    //try startdetached
-    //try waitForStarted
-    //try not changing arguments (codecs)
-    //or try simple -h for help
     ffmpeg->setArguments(arguments);
     ffmpeg->start(QIODevice::ReadWrite);
     ffmpeg->waitForStarted();
     stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_frameRateBox_activated(const QString &arg1)
+{
+    if (arg1 != "Custom")
+    {
+        QString num = frameRateBox->currentText().replace(" fps","");
+        frameRateEdit->setValue(num.toDouble());
+    }
+}
+
+void MainWindow::on_frameRateEdit_valueChanged(double arg1)
+{
+    //look for corresponding value
+    for (int i = 1 ; i < frameRateBox->count() ; i++)
+    {
+        QString num = frameRateBox->itemText(i).replace(" fps","");
+        if (num.toDouble() == arg1)
+        {
+            frameRateBox->setCurrentIndex(i);
+            return;
+        }
+    }
+    frameRateBox->setCurrentIndex(0);
 }

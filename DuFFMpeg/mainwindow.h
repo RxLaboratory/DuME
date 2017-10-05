@@ -38,6 +38,10 @@ private slots:
     void on_outputEdit_textChanged(const QString &arg1);
     void on_actionGo_triggered();
 
+    void on_frameRateBox_activated(const QString &arg1);
+
+    void on_frameRateEdit_valueChanged(double arg1);
+
 private:
     bool isReady();
 
