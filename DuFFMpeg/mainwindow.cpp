@@ -9,7 +9,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // === UI SETUP ===
 
+
+    //remove right click on toolbar
+    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    //populate toolbar
+    ToolBarSpacer *tbs = new ToolBarSpacer();
+    mainToolBar->addWidget(tbs);
+    //window buttons
+#ifndef Q_OS_MAC
+    // Maximize and minimize only on linux and windows
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    maximizeButton = new QPushButton(QIcon(":/icons/maximize"),"");
+    minimizeButton = new QPushButton(QIcon(":/icons/minimize"),"");
+    mainToolBar->addWidget(minimizeButton);
+    mainToolBar->addWidget(maximizeButton);
+#endif
+    quitButton = new QPushButton(QIcon(":/icons/close"),"");
+    mainToolBar->addWidget(quitButton);
+
+    //drag window
+    toolBarClicked = false;
+    mainToolBar->installEventFilter(this);
+
+    //set style
+    updateCSS(":/styles/default");
+
     consoleTabs->setCurrentIndex(0);
+    mainStackWidget->setCurrentIndex(0);
 
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
@@ -36,7 +62,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ffmpegRunningType = 1;
     ffmpeg->start(QIODevice::ReadOnly);
 
-    // === UI READY ===
+    // === MAP EVENTS ===
+
+    // Window management
+#ifndef Q_OS_MAC
+    // Windows and linux
+    connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
+    connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
+#endif
+    connect(quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
 }
 
 void MainWindow::ffmpeg_stdError()
@@ -349,6 +383,18 @@ void MainWindow::on_actionStop_triggered()
     }
 }
 
+void MainWindow::on_actionSettings_triggered(bool checked)
+{
+    if (checked)
+    {
+        mainStackWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        mainStackWidget->setCurrentIndex(0);
+    }
+}
+
 bool MainWindow::isReady()
 {
     if (!QFile(inputEdit->text()).exists())
@@ -367,4 +413,79 @@ bool MainWindow::isReady()
     return true;
 }
 
+void MainWindow::updateCSS(QString cssFileName)
+{
+    QString css = "";
 
+    QFile cssFile(cssFileName);
+    if (cssFile.exists())
+    {
+        cssFile.open(QFile::ReadOnly);
+        css = QString(cssFile.readAll());
+        cssFile.close();
+    }
+
+    qApp->setStyleSheet(css);
+}
+
+#ifndef Q_OS_MAC
+void MainWindow::maximize()
+{
+
+    if (this->isMaximized())
+    {
+        maximizeButton->setIcon(QIcon(":/icons/maximize"));
+        this->showNormal();
+    }
+    else
+    {
+        maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
+        this->showMaximized();
+    }
+
+}
+#endif
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+  if (event->type() == QEvent::MouseButtonPress)
+  {
+      QMouseEvent *mouseEvent = (QMouseEvent*)event;
+      if (mouseEvent->button() == Qt::LeftButton)
+      {
+        toolBarClicked = true;
+        dragPosition = mouseEvent->globalPos() - this->frameGeometry().topLeft();
+        event->accept();
+      }
+      return true;
+  }
+  else if (event->type() == QEvent::MouseMove)
+  {
+    QMouseEvent *mouseEvent = (QMouseEvent*)event;
+    if (mouseEvent->buttons() & Qt::LeftButton && toolBarClicked)
+    {
+        if (this->isMaximized()) this->showNormal();
+        this->move(mouseEvent->globalPos() - dragPosition);
+        event->accept();
+    }
+    return true;
+  }
+  else if (event->type() == QEvent::MouseButtonRelease)
+  {
+      toolBarClicked = false;
+      return true;
+  }
+#ifndef Q_OS_MAC
+  else if (event->type() == QEvent::MouseButtonDblClick)
+  {
+      maximize();
+      event->accept();
+      return true;
+  }
+#endif
+  else
+  {
+      // standard event processing
+      return QObject::eventFilter(obj, event);
+  }
+}

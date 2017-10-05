@@ -8,6 +8,9 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QScrollBar>
+#include <QMouseEvent>
+
+#include "toolbarspacer.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -41,15 +44,45 @@ private slots:
     void on_frameRateEdit_valueChanged(double arg1);
     void on_actionGo_triggered();
     void on_actionStop_triggered();
+    void on_actionSettings_triggered(bool checked);
+
+    void maximize();
 
 private:
     bool isReady();
 
     // ====== UI ========
+
+    void updateCSS(QString cssFileName);
     /**
      * @brief statusLabel The status shown in the status bar
      */
     QLabel *statusLabel;
+
+#ifndef Q_OS_MAC
+    /**
+     * @brief maximizeButton Button to maximize the window
+     */
+    QPushButton *maximizeButton;
+    /**
+     * @brief minimizeButton Button to minimize the window
+     */
+    QPushButton *minimizeButton;
+#endif
+    /**
+     * @brief quitButton Button to quit application
+     */
+    QPushButton *quitButton;
+
+    /**
+     * @brief Is the tool bar currently clicked or not
+     */
+    bool toolBarClicked;
+    /**
+     * @brief Drag position
+     * Used for drag n drop feature
+     */
+    QPoint dragPosition;
 
     // ===== FFMPEG ======
     /**
@@ -69,6 +102,10 @@ private:
      * 3: stopping
      */
     int ffmpegRunningType;
+
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
 };
 
 #endif // MAINWINDOW_H
