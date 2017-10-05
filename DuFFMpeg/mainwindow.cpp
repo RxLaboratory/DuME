@@ -7,8 +7,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setupUi(this);
 
-    stackedWidget->setCurrentIndex(1);
+    // === UI SETUP ===
 
+    consoleTabs->setCurrentIndex(0);
+
+    statusLabel = new QLabel("Ready");
+    mainStatusBar->addWidget(statusLabel);
+
+
+    // === FFMPEG INIT ===
+
+    ffmpegRunningType = -1;
     //Load FFMpeg path
     //TODO in settings
     ffmpegPath = "E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe";
@@ -18,13 +27,16 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect ffmpeg
     connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(ffmpeg_stdError()));
     connect(ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(ffmpeg_stdOutput()));
+    connect(ffmpeg,SIGNAL(started()),this,SLOT(ffmpeg_started()));
+    connect(ffmpeg,SIGNAL(finished(int)),this,SLOT(ffmpeg_finished()));
     connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(ffmpeg_errorOccurred(QProcess::ProcessError)));
 
     //get codec list
     ffmpeg->setArguments(QStringList("-codecs"));
+    ffmpegRunningType = 1;
     ffmpeg->start(QIODevice::ReadOnly);
 
-    stackedWidget->setCurrentIndex(0);
+    // === UI READY ===
 }
 
 void MainWindow::ffmpeg_stdError()
@@ -41,11 +53,8 @@ void MainWindow::ffmpeg_stdOutput()
 
 void MainWindow::ffmpeg_readyRead(QString ffmpegOutput)
 {
-    //read
-    qDebug() << ffmpegOutput;
-
     //got codecs list
-    if (ffmpegOutput.startsWith("Codecs:"))
+    if (ffmpegRunningType == 1)
     {
         videoCodecsBox->clear();
         audioCodecsBox->clear();
@@ -71,10 +80,13 @@ void MainWindow::ffmpeg_readyRead(QString ffmpegOutput)
                 audioCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
             }
         }
-        ffmpeg->close();
+    }
+    else if (ffmpegRunningType == 2)
+    {
+        helpEdit->setText(helpEdit->toPlainText() + ffmpegOutput);
     }
     //encoding
-    else if (ffmpegOutput.startsWith("frame="))
+    else if (ffmpegRunningType == 0)
     {
         console(ffmpegOutput);
     }
@@ -89,7 +101,14 @@ void MainWindow::ffmpeg_errorOccurred(QProcess::ProcessError e)
     }
     else if (e == QProcess::Crashed)
     {
-        error = "FFMpeg just crashed.";
+        if (ffmpegRunningType == 3)
+        {
+            error = "WARNING: FFmpeg could not be stopped properly, the output file may be unreadable.";
+        }
+        else
+        {
+            error = "FFmpeg just crashed.";
+        }
     }
     else if (e == QProcess::Timedout)
     {
@@ -109,6 +128,51 @@ void MainWindow::ffmpeg_errorOccurred(QProcess::ProcessError e)
     }
     console(error);
     qDebug() << error;
+
+
+
+    mainStatusBar->showMessage("An FFmpeg error has occured, see the console.");
+}
+
+void MainWindow::ffmpeg_started()
+{
+    mainStatusBar->clearMessage();
+    if (ffmpegRunningType == 1)
+    {
+        statusLabel->setText("Listing codecs...");
+    }
+    else if (ffmpegRunningType == 2)
+    {
+        statusLabel->setText("Getting FFmpeg help...");
+    }
+    else if (ffmpegRunningType == 0)
+    {
+        statusLabel->setText("Transcoding...");
+    }
+    actionGo->setEnabled(false);
+    actionStop->setEnabled(true);
+}
+
+void MainWindow::ffmpeg_finished()
+{
+    isReady();
+    actionStop->setEnabled(false);
+
+    if (ffmpegRunningType == 1)
+    {
+        //get help too
+        QStringList args("-h");
+        args << "long";
+        ffmpeg->setArguments(args);
+        ffmpegRunningType = 2;
+        ffmpeg->start(QIODevice::ReadOnly);
+        return;
+    }
+
+    mainStatusBar->clearMessage();
+    statusLabel->setText("Ready");
+
+    ffmpegRunningType = -1;
 }
 
 void MainWindow::console(QString log)
@@ -148,11 +212,6 @@ void MainWindow::on_samplingButton_toggled(bool checked)
     samplingBox->setEnabled(checked);
 }
 
-void MainWindow::on_channelsButton_toggled(bool checked)
-{
-    channelsBox->setEnabled(checked);
-}
-
 void MainWindow::on_inputBrowseButton_clicked()
 {
     QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode");
@@ -180,27 +239,47 @@ void MainWindow::on_outputEdit_textChanged(const QString &arg1)
     isReady();
 }
 
-bool MainWindow::isReady()
+void MainWindow::on_frameRateBox_activated(const QString &arg1)
 {
-    if (!QFile(inputEdit->text()).exists())
+    if (arg1 != "Custom")
     {
-        actionGo->setEnabled(false);
-        //TODO add warning icon
-        return false;
+        QString num = frameRateBox->currentText().replace(" fps","");
+        frameRateEdit->setValue(num.toDouble());
     }
-    if (outputEdit->text() == "")
+}
+
+void MainWindow::on_frameRateEdit_valueChanged(double arg1)
+{
+    //look for corresponding value
+    for (int i = 1 ; i < frameRateBox->count() ; i++)
     {
-        actionGo->setEnabled(false);
-        //TODO add warning icon
-        return false;
+        QString num = frameRateBox->itemText(i).replace(" fps","");
+        if (num.toDouble() == arg1)
+        {
+            frameRateBox->setCurrentIndex(i);
+            return;
+        }
     }
-    actionGo->setEnabled(true);
-    return true;
+    frameRateBox->setCurrentIndex(0);
 }
 
 void MainWindow::on_actionGo_triggered()
 {
+    //Detect if output already exists
+    bool replaceOutput = false;
+    if (QFile(outputEdit->text()).exists())
+    {
+        //TODO ask for replace
+        replaceOutput = true;
+    }
+
     QStringList arguments("-stats");
+
+    if (replaceOutput)
+    {
+        arguments << "-y";
+    }
+
     //inFile
     arguments << "-i" << inputEdit->text().replace("/","\\");
     //out options
@@ -240,13 +319,7 @@ void MainWindow::on_actionGo_triggered()
     {
         if (samplingButton->isChecked())
         {
-            //TODO set sampling rate
-            arguments << "-ar" << "48000";
-        }
-        if (channelsButton->isChecked())
-        {
-            //TODO set channels
-            arguments << "-ac" << "2";
+            arguments << "-ar" << samplingBox->currentText().replace(" Hz","").replace(",","");
         }
         arguments << "-acodec" << audioCodecsBox->currentData().toString();
         arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1000);
@@ -257,31 +330,41 @@ void MainWindow::on_actionGo_triggered()
 
     //Launch!
     ffmpeg->setArguments(arguments);
+    ffmpegRunningType = 0;
     ffmpeg->start(QIODevice::ReadWrite);
     ffmpeg->waitForStarted();
-    stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_frameRateBox_activated(const QString &arg1)
+void MainWindow::on_actionStop_triggered()
 {
-    if (arg1 != "Custom")
+    ffmpegRunningType = 3;
+    mainStatusBar->showMessage("Stopping current transcoding...");
+    //TODO ask for confirmation
+    ffmpeg->write("q");
+    // Wait until it finishes, or ask to kill
+    if (!ffmpeg->waitForFinished(2000))
     {
-        QString num = frameRateBox->currentText().replace(" fps","");
-        frameRateEdit->setValue(num.toDouble());
+        //TODO ask before killing
+        ffmpeg->kill();
     }
 }
 
-void MainWindow::on_frameRateEdit_valueChanged(double arg1)
+bool MainWindow::isReady()
 {
-    //look for corresponding value
-    for (int i = 1 ; i < frameRateBox->count() ; i++)
+    if (!QFile(inputEdit->text()).exists())
     {
-        QString num = frameRateBox->itemText(i).replace(" fps","");
-        if (num.toDouble() == arg1)
-        {
-            frameRateBox->setCurrentIndex(i);
-            return;
-        }
+        actionGo->setEnabled(false);
+        //TODO add warning icon
+        return false;
     }
-    frameRateBox->setCurrentIndex(0);
+    if (outputEdit->text() == "")
+    {
+        actionGo->setEnabled(false);
+        //TODO add warning icon
+        return false;
+    }
+    actionGo->setEnabled(true);
+    return true;
 }
+
+
