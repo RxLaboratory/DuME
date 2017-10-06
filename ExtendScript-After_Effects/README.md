@@ -4,8 +4,6 @@ ExtendScript framework to use FFMpeg inside Adobe After Effects
 You will need FFMpeg binaries which can be downloaded here: http://ffmpeg.org/download.html
 More info about FFMpeg on the official website: http://ffmpeg.org/
 
-Right now, it only works under windows, mac implementation will be done in a few days.
-
 DuFFMpegLib.jsxinc contains custom classes to quickly and easily launch a transcoding process using the FFMpeg binary.
 The classes are fully documented inside the .jsxinc file.
 
