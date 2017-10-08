@@ -337,7 +337,7 @@ void MainWindow::on_actionGo_triggered()
             arguments << "-r" << QString::number(frameRateEdit->value());
         }
         arguments << "-vcodec" << videoCodecsBox->currentData().toString();
-        arguments << "-b:v" << QString::number(videoBitRateEdit->value()*1000000);
+        arguments << "-b:v" << QString::number(videoBitRateEdit->value()*1024*1024);
         //TODO Passes
     }
 
@@ -356,7 +356,7 @@ void MainWindow::on_actionGo_triggered()
             arguments << "-ar" << samplingBox->currentText().replace(" Hz","").replace(",","");
         }
         arguments << "-acodec" << audioCodecsBox->currentData().toString();
-        arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1000);
+        arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1024);
     }
 
     //output file
