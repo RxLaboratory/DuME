@@ -112,6 +112,7 @@ private:
      * 1: gettings codecs
      * 2: getting help
      * 3: stopping
+     * 4: getting input media infos
      */
     int ffmpegRunningType;
 

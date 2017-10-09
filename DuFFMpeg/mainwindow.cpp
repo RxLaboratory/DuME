@@ -115,6 +115,7 @@ void MainWindow::ffmpeg_readyRead(QString ffmpegOutput)
             }
         }
     }
+    //got help
     else if (ffmpegRunningType == 2)
     {
         helpEdit->setText(helpEdit->toPlainText() + ffmpegOutput);
@@ -123,6 +124,12 @@ void MainWindow::ffmpeg_readyRead(QString ffmpegOutput)
     else if (ffmpegRunningType == 0)
     {
         console(ffmpegOutput);
+    }
+    //got file infos
+    else if (ffmpegRunningType == 4)
+    {
+        console(ffmpegOutput);
+        //populate window
     }
 }
 
@@ -178,6 +185,10 @@ void MainWindow::ffmpeg_started()
     else if (ffmpegRunningType == 2)
     {
         statusLabel->setText("Getting FFmpeg help...");
+    }
+    else if (ffmpegRunningType == 4)
+    {
+        statusLabel->setText("Getting file infos...");
     }
     else if (ffmpegRunningType == 0)
     {
@@ -248,10 +259,18 @@ void MainWindow::on_samplingButton_toggled(bool checked)
 
 void MainWindow::on_inputBrowseButton_clicked()
 {
-    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode");
+    //get current file path
+    QFileInfo fi(inputEdit->text());
+    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",fi.path());
     if (inputPath == "") return;
     inputEdit->setText(inputPath);
     toolBox->setItemText(0,QFileInfo(inputPath).fileName());
+    //get media infos
+    QStringList arguments("-i");
+    arguments << inputEdit->text().replace("/","\\");
+    ffmpeg->setArguments(arguments);
+    ffmpegRunningType = 4;
+    ffmpeg->start(QIODevice::ReadOnly);
     isReady();
 }
 
@@ -321,7 +340,6 @@ void MainWindow::on_videoQualitySlider_valueChanged(int value)
     }
 }
 
-
 void MainWindow::on_videoQualitySlider_sliderReleased()
 {
     //Adjust bitrate
@@ -384,8 +402,6 @@ void MainWindow::on_audioBitRateEdit_valueChanged(int arg1)
     int quality = arg1*100/320;
     audioQualitySlider->setValue(quality);
 }
-
-
 
 void MainWindow::on_actionGo_triggered()
 {
