@@ -53,6 +53,12 @@ private slots:
     void maximize();
 
 
+    void on_audioQualitySlider_sliderReleased();
+
+    void on_audioQualitySlider_valueChanged(int value);
+
+    void on_audioBitRateEdit_valueChanged(int arg1);
+
 private:
     bool isReady();
     QStringList generateArguments(int pass);

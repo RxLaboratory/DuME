@@ -344,6 +344,49 @@ void MainWindow::on_videoBitRateEdit_valueChanged(double arg1)
     videoQualitySlider->setValue(quality);
 }
 
+void MainWindow::on_audioQualitySlider_sliderReleased()
+{
+    //Adjust bitrate
+    //TODO adjust depending on codec
+    int value = audioQualitySlider->value();
+    int bitrate = value*320/100;
+    audioBitRateEdit->setValue(bitrate);
+}
+
+void MainWindow::on_audioQualitySlider_valueChanged(int value)
+{
+    if (value >= 90)
+    {
+        audioQualityLabel->setText("(Nearly) Lossless | " + QString::number(value) + "%");
+    }
+    else if (value >= 60)
+    {
+        audioQualityLabel->setText("Very good | " + QString::number(value) + "%");
+    }
+    else if (value >= 30)
+    {
+        audioQualityLabel->setText("Good | " + QString::number(value) + "%");
+    }
+    else if (value >= 17)
+    {
+        audioQualityLabel->setText("Bad | " + QString::number(value) + "%");
+    }
+    else
+    {
+        audioQualityLabel->setText("Very bad | " + QString::number(value) + "%");
+    }
+}
+
+void MainWindow::on_audioBitRateEdit_valueChanged(int arg1)
+{
+    //Adjust bitrate
+    //TODO adjust depending on codec
+    int quality = arg1*100/320;
+    audioQualitySlider->setValue(quality);
+}
+
+
+
 void MainWindow::on_actionGo_triggered()
 {
     QStringList arguments = generateArguments(1);
@@ -538,6 +581,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
+
 
 
 
