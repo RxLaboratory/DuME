@@ -42,14 +42,20 @@ private slots:
     void on_outputEdit_textChanged(const QString &arg1);
     void on_frameRateBox_activated(const QString &arg1);
     void on_frameRateEdit_valueChanged(double arg1);
+    void on_videoQualitySlider_valueChanged(int value);
+    void on_videoQualitySlider_sliderReleased();
+    void on_videoBitRateEdit_valueChanged(double arg1);
+    //actions
     void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionSettings_triggered(bool checked);
 
     void maximize();
 
+
 private:
     bool isReady();
+    QStringList generateArguments(int pass);
 
     // ====== UI ========
 

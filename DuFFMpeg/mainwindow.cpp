@@ -297,70 +297,58 @@ void MainWindow::on_frameRateEdit_valueChanged(double arg1)
     frameRateBox->setCurrentIndex(0);
 }
 
+void MainWindow::on_videoQualitySlider_valueChanged(int value)
+{
+    if (value >= 90)
+    {
+        qualityLabel->setText("(Visually) Lossless | " + QString::number(value) + "%");
+    }
+    else if (value >= 75)
+    {
+        qualityLabel->setText("Very good | " + QString::number(value) + "%");
+    }
+    else if (value >= 50)
+    {
+        qualityLabel->setText("Good | " + QString::number(value) + "%");
+    }
+    else if (value >= 25)
+    {
+        qualityLabel->setText("Bad | " + QString::number(value) + "%");
+    }
+    else
+    {
+        qualityLabel->setText("Very bad | " + QString::number(value) + "%");
+    }
+}
+
+
+void MainWindow::on_videoQualitySlider_sliderReleased()
+{
+    //Adjust bitrate
+    //TODO Must depend on resolution (and bpc)
+    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
+    //TODO adjust depending on codec
+    int value = videoQualitySlider->value();
+    double bitrate = value;
+    bitrate = bitrate*24/75;
+    videoBitRateEdit->setValue(bitrate);
+}
+
+void MainWindow::on_videoBitRateEdit_valueChanged(double arg1)
+{
+    //Adjust quality
+    //TODO Must depend on resolution (and bpc)
+    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
+    //TODO adjust depending on codec
+    int quality = arg1*75/24;
+    videoQualitySlider->setValue(quality);
+}
+
 void MainWindow::on_actionGo_triggered()
 {
-    //Detect if output already exists
-    bool replaceOutput = false;
-    if (QFile(outputEdit->text()).exists())
-    {
-        //TODO ask for replace
-        replaceOutput = true;
-    }
+    QStringList arguments = generateArguments(1);
 
-    QStringList arguments("-stats");
-
-    if (replaceOutput)
-    {
-        arguments << "-y";
-    }
-
-    //inFile
-    arguments << "-i" << inputEdit->text().replace("/","\\");
-    //out options
-    if (noVideoButton->isChecked())
-    {
-        arguments << "-vn";
-    }
-    else if (videoCopyButton->isChecked())
-    {
-        arguments << "-vcodec" << "copy";
-    }
-    else
-    {
-        //resize
-        if (resizeButton->isChecked())
-        {
-            arguments << "-s" << QString::number(videoWidthButton->value()) + "x" + QString::number(videoHeightButton->value()) ;
-        }
-        if (frameRateButton->isChecked())
-        {
-            arguments << "-r" << QString::number(frameRateEdit->value());
-        }
-        arguments << "-vcodec" << videoCodecsBox->currentData().toString();
-        arguments << "-b:v" << QString::number(videoBitRateEdit->value()*1024*1024);
-        //TODO Passes
-    }
-
-    if (noAudioButton->isChecked())
-    {
-        arguments << "-an";
-    }
-    else if (audioCopyButton->isChecked())
-    {
-        arguments << "-acodec" << "copy";
-    }
-    else
-    {
-        if (samplingButton->isChecked())
-        {
-            arguments << "-ar" << samplingBox->currentText().replace(" Hz","").replace(",","");
-        }
-        arguments << "-acodec" << audioCodecsBox->currentData().toString();
-        arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1024);
-    }
-
-    //output file
-    arguments << outputEdit->text().replace("/","\\");
+    qDebug() << "LAUNCHING WITH ARGUMENTS:" << arguments.join(" | ");
 
     //Launch!
     ffmpeg->setArguments(arguments);
@@ -411,6 +399,67 @@ bool MainWindow::isReady()
     }
     actionGo->setEnabled(true);
     return true;
+}
+
+QStringList MainWindow::generateArguments(int pass)
+{
+    QStringList arguments("-stats");
+
+    arguments << "-y";
+
+    //inFile
+    QStringList inArgs("-i");
+    inArgs << inputEdit->text().replace("/","\\");
+    arguments.append(inArgs);
+
+    //out options
+    if (noVideoButton->isChecked())
+    {
+        arguments << "-vn";
+    }
+    else if (videoCopyButton->isChecked())
+    {
+        arguments << "-vcodec" << "copy";
+    }
+    else
+    {
+        //resize
+        if (resizeButton->isChecked())
+        {
+            arguments << "-s" << QString::number(videoWidthButton->value()) + "x" + QString::number(videoHeightButton->value()) ;
+        }
+        if (frameRateButton->isChecked())
+        {
+            arguments << "-r" << QString::number(frameRateEdit->value());
+        }
+        arguments << "-vcodec" << videoCodecsBox->currentData().toString();
+        arguments << "-b:v" << QString::number(videoBitRateEdit->value()*1024*1024);
+    }
+
+    if (noAudioButton->isChecked())
+    {
+        arguments << "-an";
+    }
+    else if (audioCopyButton->isChecked())
+    {
+        arguments << "-acodec" << "copy";
+    }
+    else
+    {
+        if (samplingButton->isChecked())
+        {
+            arguments << "-ar" << samplingBox->currentText().replace(" Hz","").replace(",","");
+        }
+        arguments << "-acodec" << audioCodecsBox->currentData().toString();
+        arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1024);
+    }
+
+    //output file
+    arguments << outputEdit->text().replace("/","\\");
+
+    return arguments;
+
+
 }
 
 void MainWindow::updateCSS(QString cssFileName)
@@ -489,3 +538,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
+
+
+

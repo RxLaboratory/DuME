@@ -95,16 +95,9 @@
                 <number>3</number>
                </property>
                <item>
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Input</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QLineEdit" name="inputEdit">
                  <property name="text">
-                  <string>E:/RAINBOX/MASTERS/Bave Circus/Come_live_the_life_03HQ.mov</string>
+                  <string>E:/DEV SRC/DuFFMpeg/Test Medias/CLTL.mov</string>
                  </property>
                  <property name="frame">
                   <bool>false</bool>
@@ -132,7 +125,7 @@
                 <enum>QTabWidget::West</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="tab_3">
                 <attribute name="title">
@@ -187,7 +180,7 @@
                  <item>
                   <widget class="QWidget" name="videoTranscodeWidget" native="true">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <layout class="QFormLayout" name="formLayout">
                     <item row="0" column="0">
@@ -278,100 +271,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="4" column="1">
-                     <widget class="QDoubleSpinBox" name="frameRateEdit">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="frame">
-                       <bool>false</bool>
-                      </property>
-                      <property name="suffix">
-                       <string> fps</string>
-                      </property>
-                      <property name="minimum">
-                       <double>1.000000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>24.000000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="0">
-                     <widget class="QLabel" name="label_2">
-                      <property name="text">
-                       <string>Codec</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="1">
-                     <widget class="QComboBox" name="videoCodecsBox">
-                      <property name="frame">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="0">
-                     <widget class="QLabel" name="label_3">
-                      <property name="text">
-                       <string>Bitrate</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="1">
-                     <widget class="QSpinBox" name="videoBitRateEdit">
-                      <property name="frame">
-                       <bool>false</bool>
-                      </property>
-                      <property name="suffix">
-                       <string> Mbps</string>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>1000</number>
-                      </property>
-                      <property name="singleStep">
-                       <number>1</number>
-                      </property>
-                      <property name="value">
-                       <number>10</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="0">
-                     <widget class="QLabel" name="label_5">
-                      <property name="text">
-                       <string>Passes</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="1">
-                     <widget class="QComboBox" name="comboBox_2">
-                      <property name="currentIndex">
-                       <number>0</number>
-                      </property>
-                      <property name="frame">
-                       <bool>false</bool>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>1 Pass</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>2 Passes</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>3 Passes</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
                     <item row="3" column="1">
                      <widget class="QComboBox" name="frameRateBox">
                       <property name="enabled">
@@ -454,6 +353,95 @@
                         <string>120 fps</string>
                        </property>
                       </item>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <widget class="QDoubleSpinBox" name="frameRateEdit">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="frame">
+                       <bool>false</bool>
+                      </property>
+                      <property name="suffix">
+                       <string> fps</string>
+                      </property>
+                      <property name="minimum">
+                       <double>1.000000000000000</double>
+                      </property>
+                      <property name="value">
+                       <double>24.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="0">
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>Codec</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="1">
+                     <widget class="QComboBox" name="videoCodecsBox">
+                      <property name="frame">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="1">
+                     <widget class="QSlider" name="videoQualitySlider">
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>10</number>
+                      </property>
+                      <property name="value">
+                       <number>75</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="tickPosition">
+                       <enum>QSlider::TicksBelow</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="1">
+                     <widget class="QLabel" name="qualityLabel">
+                      <property name="text">
+                       <string>Very good</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="text">
+                       <string>Bitrate</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="0">
+                     <widget class="QLabel" name="label_3">
+                      <property name="text">
+                       <string>Quality</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="1">
+                     <widget class="QDoubleSpinBox" name="videoBitRateEdit">
+                      <property name="frame">
+                       <bool>false</bool>
+                      </property>
+                      <property name="suffix">
+                       <string> Mbps</string>
+                      </property>
+                      <property name="maximum">
+                       <double>300.000000000000000</double>
+                      </property>
+                      <property name="value">
+                       <double>24.000000000000000</double>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -666,7 +654,7 @@
                    <item>
                     <widget class="QLineEdit" name="outputEdit">
                      <property name="text">
-                      <string>E:/RAINBOX/MASTERS/Bave Circus/Come_live_the_life_03HQtest.mov</string>
+                      <string>E:/DEV SRC/DuFFMpeg/Test Medias/CLTL_test.mp4</string>
                      </property>
                      <property name="frame">
                       <bool>false</bool>
