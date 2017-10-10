@@ -104,6 +104,10 @@ void MainWindow::ffmpeg_readyRead(QString output)
     else if (ffmpegRunningType == 0)
     {
         console(output);
+
+        //TODO test frame, update ui
+        //REGEX:
+        //    frame=\s*(\d+) fps= (\d+) .+ size=\s*(\d+)kB time=(\d\d:\d\d:\d\d.\d\d) bitrate=(\d+.\d+)kbits\/s speed=(\d+.\d*)x
     }
 }
 
@@ -253,6 +257,8 @@ void MainWindow::ffmpeg_gotMediaInfo()
         if (!input) continue;
 
         allInfos = allInfos + "\n" + info;
+
+        //TODO Needs to get duration
 
         //test video stream
         match = reVideoStream.match(info);
