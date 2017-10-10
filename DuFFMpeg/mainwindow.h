@@ -22,7 +22,7 @@ private slots:
     // FFMPEG
     void ffmpeg_stdError();
     void ffmpeg_stdOutput();
-    void ffmpeg_readyRead(QString ffmpegOutput);
+    void ffmpeg_readyRead(QString output);
     void ffmpeg_errorOccurred(QProcess::ProcessError e);
     void ffmpeg_started();
     void ffmpeg_finished();
@@ -45,6 +45,11 @@ private slots:
     void on_videoQualitySlider_valueChanged(int value);
     void on_videoQualitySlider_sliderReleased();
     void on_videoBitRateEdit_valueChanged(double arg1);
+    void on_audioQualitySlider_sliderReleased();
+    void on_audioQualitySlider_valueChanged(int value);
+    void on_audioBitRateEdit_valueChanged(int arg1);
+    void on_videoWidthButton_valueChanged();
+    void on_videoHeightButton_valueChanged();
     //actions
     void on_actionGo_triggered();
     void on_actionStop_triggered();
@@ -53,15 +58,9 @@ private slots:
     void maximize();
 
 
-    void on_audioQualitySlider_sliderReleased();
-
-    void on_audioQualitySlider_valueChanged(int value);
-
-    void on_audioBitRateEdit_valueChanged(int arg1);
-
 private:
     bool isReady();
-    QStringList generateArguments(int pass);
+    void aspectRatio();
 
     // ====== UI ========
 
@@ -115,6 +114,26 @@ private:
      * 4: getting input media infos
      */
     int ffmpegRunningType;
+    /**
+     * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
+     */
+    QString ffmpegOutput;
+    /**
+     * @brief generateArguments Generate FFmpeg arguments to launch the transcoding process
+     * @param pass The number of the pass to launch
+     * @return The list of arguments to pass to the ffmpeg QProcess
+     */
+    QStringList generateArguments(int pass);
+    /**
+     * @brief gotMediaInfo Displays input media infos and populates input widgets
+     * Called in ffmpeg_finished() when ffmpegRunningType is 4
+     */
+    void ffmpeg_gotMediaInfo();
+    /**
+     * @brief gotCodecs Builds the list of codecs and populates the output widgets
+     * Called in ffmpeg_finished() when ffmpegRunningType is 1
+     */
+    void ffmpeg_gotCodecs();
 
 
 protected:

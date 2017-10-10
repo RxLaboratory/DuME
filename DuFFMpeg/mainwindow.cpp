@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // === FFMPEG INIT ===
 
     ffmpegRunningType = -1;
+    ffmpegOutput = "";
     //Load FFMpeg path
     //TODO in settings
     ffmpegPath = "E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe";
@@ -85,51 +86,24 @@ void MainWindow::ffmpeg_stdOutput()
     ffmpeg_readyRead(output);
 }
 
-void MainWindow::ffmpeg_readyRead(QString ffmpegOutput)
+void MainWindow::ffmpeg_readyRead(QString output)
 {
+    ffmpegOutput = ffmpegOutput + output;
     //got codecs list
     if (ffmpegRunningType == 1)
     {
         videoCodecsBox->clear();
         audioCodecsBox->clear();
-        //get codecs
-        QStringList codecs = ffmpegOutput.split("\n");
-        for (int i = 10 ; i < codecs.count() ; i++)
-        {
-            QString codec = codecs[i];
-            //if video encoding
-            QRegExp reVideo("[\\.D]EV[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-            if (reVideo.indexIn(codec) != -1)
-            {
-                QString codecName = reVideo.cap(1);
-                QString codecPrettyName = reVideo.cap(2);
-                videoCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
-            }
-            //if audio encoding
-            QRegExp reAudio("[\\.D]EA[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-            if (reAudio.indexIn(codec) != -1)
-            {
-                QString codecName = reAudio.cap(1);
-                QString codecPrettyName = reAudio.cap(2);
-                audioCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
-            }
-        }
     }
     //got help
     else if (ffmpegRunningType == 2)
     {
-        helpEdit->setText(helpEdit->toPlainText() + ffmpegOutput);
+        helpEdit->setText(helpEdit->toPlainText() + output);
     }
     //encoding
     else if (ffmpegRunningType == 0)
     {
-        console(ffmpegOutput);
-    }
-    //got file infos
-    else if (ffmpegRunningType == 4)
-    {
-        console(ffmpegOutput);
-        //populate window
+        console(output);
     }
 }
 
@@ -177,6 +151,7 @@ void MainWindow::ffmpeg_errorOccurred(QProcess::ProcessError e)
 
 void MainWindow::ffmpeg_started()
 {
+    ffmpegOutput = "";
     mainStatusBar->clearMessage();
     if (ffmpegRunningType == 1)
     {
@@ -206,6 +181,7 @@ void MainWindow::ffmpeg_finished()
     if (ffmpegRunningType == 1)
     {
         //get help too
+        ffmpeg_gotCodecs();
         QStringList args("-h");
         args << "long";
         ffmpeg->setArguments(args);
@@ -213,11 +189,107 @@ void MainWindow::ffmpeg_finished()
         ffmpeg->start(QIODevice::ReadOnly);
         return;
     }
+    else if (ffmpegRunningType == 4)
+    {
+        ffmpeg_gotMediaInfo();
+    }
 
     mainStatusBar->clearMessage();
     statusLabel->setText("Ready");
 
     ffmpegRunningType = -1;
+}
+
+void MainWindow::ffmpeg_gotCodecs()
+{
+    //get codecs
+    QStringList codecs = ffmpegOutput.split("\n");
+    for (int i = 10 ; i < codecs.count() ; i++)
+    {
+        QString codec = codecs[i];
+        //if video encoding
+        QRegExp reVideo("[\\.D]EV[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
+        if (reVideo.indexIn(codec) != -1)
+        {
+            QString codecName = reVideo.cap(1);
+            QString codecPrettyName = reVideo.cap(2);
+            videoCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
+        }
+        //if audio encoding
+        QRegExp reAudio("[\\.D]EA[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
+        if (reAudio.indexIn(codec) != -1)
+        {
+            QString codecName = reAudio.cap(1);
+            QString codecPrettyName = reAudio.cap(2);
+            audioCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
+        }
+    }
+}
+
+void MainWindow::ffmpeg_gotMediaInfo()
+{
+    QStringList infos = ffmpegOutput.split("\n");
+
+    bool input = false;
+
+    QString allInfos = "Media Informations:";
+
+
+    //regexes to get infos
+    QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
+    QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,2}.?\\d{0,2}) fps");
+    QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
+
+    foreach(QString info,infos)
+    {
+        //test input
+        QRegularExpressionMatch match = reInput.match(info);
+        if (match.hasMatch())
+        {
+            input = true;
+            qDebug() << info;
+        }
+
+        if (!input) continue;
+
+        allInfos = allInfos + "\n" + info;
+
+        //test video stream
+        match = reVideoStream.match(info);
+        if (match.hasMatch())
+        {
+            qDebug() << info;
+            //set size
+            QString width = match.captured(1);
+            QString height = match.captured(2);
+            QString fps = match.captured(3);
+            videoWidthButton->setValue(width.toInt());
+            videoHeightButton->setValue(height.toInt());
+            frameRateEdit->setValue(fps.toDouble());
+            continue;
+        }
+
+        //test audio stream
+        match = reAudioStream.match(info);
+        if (match.hasMatch())
+        {
+            qDebug() << info;
+            //set sampling rate
+            QString samplingRate = match.captured(1);
+            if (samplingRate == "8000") samplingBox->setCurrentIndex(0);
+            else if (samplingRate == "11025") samplingBox->setCurrentIndex(1);
+            else if (samplingRate == "16000") samplingBox->setCurrentIndex(2);
+            else if (samplingRate == "22050") samplingBox->setCurrentIndex(3);
+            else if (samplingRate == "32000") samplingBox->setCurrentIndex(4);
+            else if (samplingRate == "44100") samplingBox->setCurrentIndex(5);
+            else if (samplingRate == "48000") samplingBox->setCurrentIndex(6);
+            else if (samplingRate == "88200") samplingBox->setCurrentIndex(7);
+            else if (samplingRate == "96000") samplingBox->setCurrentIndex(8);
+            continue;
+        }
+    }
+
+    mediaInfosText->setText(allInfos);
 }
 
 void MainWindow::console(QString log)
@@ -243,7 +315,7 @@ void MainWindow::on_resizeButton_toggled(bool checked)
     videoHeightButton->setEnabled(checked);
     widthLabel->setEnabled(checked);
     heightLabel->setEnabled(checked);
-    aspectLabel->setEnabled(checked);
+    aspectRatioLabel->setEnabled(checked);
 }
 
 void MainWindow::on_frameRateButton_toggled(bool checked)
@@ -403,6 +475,16 @@ void MainWindow::on_audioBitRateEdit_valueChanged(int arg1)
     audioQualitySlider->setValue(quality);
 }
 
+void MainWindow::on_videoWidthButton_valueChanged()
+{
+    aspectRatio();
+}
+
+void MainWindow::on_videoHeightButton_valueChanged()
+{
+    aspectRatio();
+}
+
 void MainWindow::on_actionGo_triggered()
 {
     QStringList arguments = generateArguments(1);
@@ -458,6 +540,19 @@ bool MainWindow::isReady()
     }
     actionGo->setEnabled(true);
     return true;
+}
+
+void MainWindow::aspectRatio()
+{
+    double width = videoWidthButton->value();
+    double height = videoHeightButton->value();
+    double ratio =  width / height;
+    //round it to 3 digits
+    int roundedRatio = ratio*100+0.5;
+    ratio = roundedRatio;
+    ratio = ratio/100;
+    qDebug() << ratio;
+    aspectRatioLabel->setText(QString::number(ratio) + ":1");
 }
 
 QStringList MainWindow::generateArguments(int pass)
@@ -516,9 +611,7 @@ QStringList MainWindow::generateArguments(int pass)
     //output file
     arguments << outputEdit->text().replace("/","\\");
 
-    return arguments;
-
-
+    return arguments;  
 }
 
 void MainWindow::updateCSS(QString cssFileName)
@@ -597,7 +690,3 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
-
-
-
-
