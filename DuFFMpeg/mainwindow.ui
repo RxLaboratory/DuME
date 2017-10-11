@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>838</width>
-    <height>762</height>
+    <width>851</width>
+    <height>876</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,9 @@
        </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_11">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <property name="sizeConstraint">
@@ -165,12 +168,15 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
+      <property name="handleWidth">
+       <number>15</number>
+      </property>
       <widget class="QTabWidget" name="consoleTabs">
        <property name="tabPosition">
         <enum>QTabWidget::North</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -181,13 +187,13 @@
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="topMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="bottomMargin">
           <number>3</number>
@@ -217,13 +223,13 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="topMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="bottomMargin">
           <number>3</number>
@@ -275,22 +281,40 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>-166</y>
-              <width>803</width>
-              <height>404</height>
+              <y>0</y>
+              <width>816</width>
+              <height>395</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Input 1</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_9">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QSplitter" name="splitter">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="handleWidth">
+                <number>10</number>
+               </property>
                <widget class="QWidget" name="">
                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <property name="spacing">
+                  <number>3</number>
+                 </property>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <property name="spacing">
@@ -349,7 +373,7 @@ p, li { white-space: pre-wrap; }
                    <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>6</number>
+                   <number>3</number>
                   </property>
                   <property name="rightMargin">
                    <number>0</number>
@@ -359,6 +383,9 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <property name="spacing">
+                     <number>3</number>
+                    </property>
                     <property name="rightMargin">
                      <number>3</number>
                     </property>
@@ -417,15 +444,15 @@ p, li { white-space: pre-wrap; }
                       </property>
                       <item>
                        <widget class="QWidget" name="videoSelectionWidget" native="true">
-                        <layout class="QFormLayout" name="formLayout_8">
-                         <item row="0" column="0">
+                        <layout class="QVBoxLayout" name="verticalLayout_12">
+                         <item>
                           <widget class="QRadioButton" name="noVideoButton">
                            <property name="text">
                             <string>No Video</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="0">
+                         <item>
                           <widget class="QRadioButton" name="videoCopyButton">
                            <property name="text">
                             <string>Copy Stream</string>
@@ -435,7 +462,7 @@ p, li { white-space: pre-wrap; }
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="0">
+                         <item>
                           <widget class="QRadioButton" name="videoTranscodeButton">
                            <property name="text">
                             <string>Transcode</string>
@@ -451,6 +478,18 @@ p, li { white-space: pre-wrap; }
                          <bool>false</bool>
                         </property>
                         <layout class="QFormLayout" name="formLayout">
+                         <property name="horizontalSpacing">
+                          <number>3</number>
+                         </property>
+                         <property name="verticalSpacing">
+                          <number>3</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <item row="0" column="0">
                           <widget class="QCheckBox" name="resizeButton">
                            <property name="text">
@@ -955,8 +994,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>820</width>
-              <height>238</height>
+              <width>833</width>
+              <height>293</height>
              </rect>
             </property>
             <attribute name="label">

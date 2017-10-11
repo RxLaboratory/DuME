@@ -39,9 +39,10 @@ QLabel:disabled {
 /* LINE EDIT */
 
 QLineEdit {
-    background-color: #6d6d6d;
+    background-color: #434343;
     color: #e3e3e3;
-    padding: 3px;
+    padding: 4px;
+    padding-bottom: 5px;
     border: 2px solid #6d6d6d;
 }
 
@@ -62,7 +63,8 @@ QLineEdit:disabled {
 QPlainTextEdit, QTextBrowser, QTextEdit {
         background-color: #434343;
         color: #e3e3e3;
-        padding: 3px;
+	padding: 4px;
+	padding-bottom: 5px;
         border: 2px solid #6d6d6d;
 }
 
@@ -158,7 +160,7 @@ QSpinBox, QDoubleSpinBox {
         background-color: #434343;
 	border: 2px solid #6d6d6d;
         color: #e3e3e3;
-        padding: 3px;
+	padding: 4px;
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {
@@ -217,8 +219,6 @@ QSlider::handle:disabled {
 QSlider::handle:hover:disabled {
     background-color: #6d6d6d;
 }
-
-
 
 /* TOOLBAR */
 
@@ -387,7 +387,7 @@ QComboBox {
         border: 2px solid;
         border-color:  #6d6d6d;
         background-color:#434343;
-        padding: 6px;
+	padding: 4px;
 }
 
 QComboBox::disabled {
@@ -544,7 +544,7 @@ QTabBar::tab {
     background-color: #434343;
     color: #e3e3e3;
     border-bottom: 2px solid #434343; /* same as the pane color */
-    padding: 10px;
+    padding: 8px;
 }
 
 QTabBar::tab:selected {
@@ -606,11 +606,9 @@ QStatusBar QLabel {
 
  QProgressBar {
         color: #6d6d6d;
-        border:2px solid #6d6d6d;
-        background-color: #434343;
-        height:15px;
+	border: none;
+	background-color: #333333;
 }
-
 
 QProgressBar::chunk {
     background-color: #e3e3e3;
