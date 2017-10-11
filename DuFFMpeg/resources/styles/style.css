@@ -171,12 +171,12 @@ QSpinBox, QDoubleSpinBox {
         border:none;
         border-radius:8px;
         background-color: #434343;
-        border: 2px solid #6d6d6d;
+	border: 2px solid #6d6d6d;
         color: #e3e3e3;
         padding: 3px;
 }
 
-QSpinBox:hover, QDoubleSpinBox::hover {
+QSpinBox:hover, QDoubleSpinBox:hover {
         background-color: #e3e3e3;
         color: #434343;
         border-color:  #e3e3e3;
@@ -206,6 +206,26 @@ QSpinBox:disabled, QDoubleSpinBox:disabled {
         background-color: #434343;
         border-color: #434343;
         color: #6d6d6d;
+}
+
+/* SLIDER */
+
+QSlider::sub-page:horizontal {
+    background-color: #6d6d6d;
+}
+
+QSlider::add-page:horizontal {
+    background-color: #333333;
+}
+
+QSlider::handle {
+    background-color: #434343;
+    border: 2px solid #6d6d6d;
+}
+
+QSlider::handle:hover {
+    background-color: #e3e3e3;
+    border-color:  #e3e3e3;
 }
 
 
