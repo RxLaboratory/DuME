@@ -7,6 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setupUi(this);
 
+    // === SETTINGS ===
+    QCoreApplication::setOrganizationName("Duduf");
+    QCoreApplication::setOrganizationDomain("duduf.com");
+    QCoreApplication::setApplicationName("DuFFmpeg");
+    settings = new QSettings(this);
+
     // === UI SETUP ===
 
 
@@ -31,18 +37,35 @@ MainWindow::MainWindow(QWidget *parent) :
     toolBarClicked = false;
     mainToolBar->installEventFilter(this);
 
+    //settings widget
+    settingsWidget = new SettingsWidget(settings,this);
+    settingsPage->layout()->addWidget(settingsWidget);
+
     //set style
     updateCSS(":/styles/default");
 
+
+    //init UI
     consoleTabs->setCurrentIndex(0);
     mainStackWidget->setCurrentIndex(0);
-    QList<int> sizes;
-    sizes << 0;
-    sizes << 100;
-    consoleSplitter->setSizes(sizes);
-
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
+
+    //restore geometry
+    settings->beginGroup("mainwindow");
+    //size
+    resize(settings->value("size", QSize(850, 850)).toSize());
+    //position
+    move(settings->value("pos", QPoint(200, 200)).toPoint());
+    settings->endGroup();
+    //console splitter sizes
+    settings->beginGroup("consolesplitter");
+    QList<int>sizes;
+    sizes << settings->value("consolesize",0).toInt();
+    sizes << settings->value("queuesize",100).toInt();
+    consoleSplitter->setSizes(sizes);
+    settings->endGroup();
+
 
 
     // === FFMPEG INIT ===
@@ -50,10 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ffmpegRunningType = -1;
     ffmpegOutput = "";
     //Load FFMpeg path
-    //TODO in settings
-    ffmpegPath = "E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe";
     ffmpeg = new QProcess(this);
-    ffmpeg->setProgram(ffmpegPath);
+    //TODO auto find ffmpeg if no settings
+    ffmpeg->setProgram(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
 
     //connect ffmpeg
     connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(ffmpeg_stdError()));
@@ -75,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
 #endif
-    connect(quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
+    connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 }
 
 void MainWindow::ffmpeg_stdError()
@@ -674,6 +696,23 @@ void MainWindow::maximize()
 
 }
 #endif
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //save ui geometry
+    settings->beginGroup("mainwindow");
+    settings->setValue("size", size());
+    settings->setValue("pos", pos());
+    settings->endGroup();
+    settings->beginGroup("consolesplitter");
+    settings->setValue("consolesize",consoleSplitter->sizes()[0]);
+    settings->setValue("queuesize",consoleSplitter->sizes()[1]);
+    settings->endGroup();
+    settings->sync();
+
+    qDebug() << "About to close";
+    event->accept();
+}
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {

@@ -9,9 +9,11 @@
 #include <QFile>
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QSettings>
 
 #include "toolbarspacer.h"
 #include "mediainfo.h"
+#include "settingswidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -62,6 +64,11 @@ private slots:
 private:
     bool isReady();
     void aspectRatio();
+
+    /**
+     * @brief settings The application settings
+     */
+    QSettings *settings;
     /**
      * @brief displayMediaInfo Displays input media infos and populates input widgets
      * @param info The info to display
@@ -90,7 +97,10 @@ private:
      * @brief quitButton Button to quit application
      */
     QPushButton *quitButton;
-
+    /**
+     * @brief settingsWidget The settings page
+     */
+    SettingsWidget *settingsWidget;
     /**
      * @brief Is the tool bar currently clicked or not
      */
@@ -102,10 +112,6 @@ private:
     QPoint dragPosition;
 
     // ===== FFMPEG ======
-    /**
-     * @brief ffmpegPath The path to the ffmpeg executable
-     */
-    QString ffmpegPath;
     /**
      * @brief ffmpeg The ffmpeg process
      */
@@ -143,6 +149,7 @@ private:
 
 
 protected:
+    void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
 };
 

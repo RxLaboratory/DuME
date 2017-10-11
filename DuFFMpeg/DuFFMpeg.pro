@@ -27,16 +27,19 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     toolbarspacer.cpp \
-    mediainfo.cpp
+    mediainfo.cpp \
+    settingswidget.cpp
 
 HEADERS += \
         mainwindow.h \
     toolbarspacer.h \
-    mediainfo.h
+    mediainfo.h \
+    settingswidget.h
 
 FORMS += \
         mainwindow.ui \
-    toolbarspacer.ui
+    toolbarspacer.ui \
+    settingswidget.ui
 
 RESOURCES += \
     resources.qrc
