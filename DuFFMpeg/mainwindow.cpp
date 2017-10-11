@@ -162,6 +162,9 @@ void MainWindow::ffmpeg_readyRead(QString output)
             //if beginning, get infos (duration) of current input
             MediaInfo *info = ffmpeg_gotMediaInfo();
             progressBar->setMaximum(info->getDuration()*info->getVideoFramerate());
+
+            currentEncodingNameLabel->setText(QFileInfo(outputEdit->text()).fileName());
+
             delete info;
         }
     }
