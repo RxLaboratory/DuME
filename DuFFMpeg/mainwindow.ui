@@ -66,7 +66,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>484</width>
+              <width>512</width>
               <height>687</height>
              </rect>
             </property>
@@ -770,7 +770,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>484</width>
+              <width>512</width>
               <height>687</height>
              </rect>
             </property>
@@ -842,6 +842,123 @@
         <item>
          <widget class="QWidget" name="progressWidget" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Output size: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="outputSizeLabel">
+               <property name="text">
+                <string>0 MB</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Output bitrate: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="outputBitrateLabel">
+               <property name="text">
+                <string>0 Mbps</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>Time elapsed: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="timeLabel">
+               <property name="text">
+                <string>00:00:00</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>Speed: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="speedLabel">
+               <property name="text">
+                <string>0x</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Time Remaining:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="timeRemainingLabel">
+               <property name="text">
+                <string>00:00:00</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QProgressBar" name="progressBar">
              <property name="value">

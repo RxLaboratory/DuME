@@ -4,6 +4,15 @@
 
 MediaInfo::MediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
 {
+    container = QStringList();
+    fileName = "";
+    duration = 0.0;
+    videoWidth = 0;
+    videoHeight = 0;
+    videoFramerate = 0.0;
+    audioSamplingRate = 0;
+
+
     QStringList infos = ffmpeg.split("\n");
 
     bool input = false;
@@ -12,6 +21,7 @@ MediaInfo::MediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
     QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,2}.?\\d{0,2}) fps");
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
+    QRegularExpression reDuration("  Duration: (\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), ");
 
     foreach(QString info,infos)
     {
@@ -29,7 +39,18 @@ MediaInfo::MediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
 
         ffmpegOutput = ffmpegOutput + "\n" + info;
 
-        //TODO Needs to get duration
+        //test duration
+        match = reDuration.match(info);
+        if (match.hasMatch())
+        {
+            qDebug() << info;
+            //set duration
+            double h = match.captured(1).toDouble();
+            double m = match.captured(2).toDouble();
+            double s = match.captured(3).toDouble();
+            duration = h*60*60+m*60+s;
+            qDebug() << "Duration" << duration;
+        }
 
         //test video stream
         match = reVideoStream.match(info);
