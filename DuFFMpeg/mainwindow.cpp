@@ -109,7 +109,7 @@ void MainWindow::ffmpeg_readyRead(QString output)
     {
         console(output);
 
-        QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d).\\d\\d bitrate= *(\\d+).\\d+kbits\\/s speed= *(\\d+.\\d*x)");
+        QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d).\\d\\d bitrate= *(\\d+).\\d+kbits\\/s.* speed= *(\\d+.\\d*x)");
 
         QRegularExpressionMatch match = reProgress.match(output);
         //if progress, update UI
