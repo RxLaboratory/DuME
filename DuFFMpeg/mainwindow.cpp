@@ -195,7 +195,9 @@ void MainWindow::ffmpeg_finished()
     }
     else if (ffmpegRunningType == 4)
     {
-        ffmpeg_gotMediaInfo();
+        MediaInfo *info = ffmpeg_gotMediaInfo();
+        displayMediaInfo(info);
+        delete info;
     }
 
     mainStatusBar->clearMessage();
@@ -230,72 +232,31 @@ void MainWindow::ffmpeg_gotCodecs()
     }
 }
 
-void MainWindow::ffmpeg_gotMediaInfo()
+MediaInfo *MainWindow::ffmpeg_gotMediaInfo()
 {
-    QStringList infos = ffmpegOutput.split("\n");
+    MediaInfo *info = new MediaInfo(ffmpegOutput,this);
+    return info;
+}
 
-    bool input = false;
+void MainWindow::displayMediaInfo(MediaInfo *info)
+{
 
-    QString allInfos = "Media Informations:";
+    videoWidthButton->setValue(info->getVideoWidth());
+    videoHeightButton->setValue(info->getVideoHeight());
+    frameRateEdit->setValue(info->getVideoFramerate());
+    int samplingRate = info->getAudioSamplingRate();
+    if (samplingRate == 8000) samplingBox->setCurrentIndex(0);
+    else if (samplingRate == 11025) samplingBox->setCurrentIndex(1);
+    else if (samplingRate == 16000) samplingBox->setCurrentIndex(2);
+    else if (samplingRate == 22050) samplingBox->setCurrentIndex(3);
+    else if (samplingRate == 32000) samplingBox->setCurrentIndex(4);
+    else if (samplingRate == 44100) samplingBox->setCurrentIndex(5);
+    else if (samplingRate == 48000) samplingBox->setCurrentIndex(6);
+    else if (samplingRate == 88200) samplingBox->setCurrentIndex(7);
+    else if (samplingRate == 96000) samplingBox->setCurrentIndex(8);
+    else samplingBox->setCurrentIndex(6);
 
-
-    //regexes to get infos
-    QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
-    QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,2}.?\\d{0,2}) fps");
-    QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
-
-    foreach(QString info,infos)
-    {
-        //test input
-        QRegularExpressionMatch match = reInput.match(info);
-        if (match.hasMatch())
-        {
-            input = true;
-            qDebug() << info;
-        }
-
-        if (!input) continue;
-
-        allInfos = allInfos + "\n" + info;
-
-        //TODO Needs to get duration
-
-        //test video stream
-        match = reVideoStream.match(info);
-        if (match.hasMatch())
-        {
-            qDebug() << info;
-            //set size
-            QString width = match.captured(1);
-            QString height = match.captured(2);
-            QString fps = match.captured(3);
-            videoWidthButton->setValue(width.toInt());
-            videoHeightButton->setValue(height.toInt());
-            frameRateEdit->setValue(fps.toDouble());
-            continue;
-        }
-
-        //test audio stream
-        match = reAudioStream.match(info);
-        if (match.hasMatch())
-        {
-            qDebug() << info;
-            //set sampling rate
-            QString samplingRate = match.captured(1);
-            if (samplingRate == "8000") samplingBox->setCurrentIndex(0);
-            else if (samplingRate == "11025") samplingBox->setCurrentIndex(1);
-            else if (samplingRate == "16000") samplingBox->setCurrentIndex(2);
-            else if (samplingRate == "22050") samplingBox->setCurrentIndex(3);
-            else if (samplingRate == "32000") samplingBox->setCurrentIndex(4);
-            else if (samplingRate == "44100") samplingBox->setCurrentIndex(5);
-            else if (samplingRate == "48000") samplingBox->setCurrentIndex(6);
-            else if (samplingRate == "88200") samplingBox->setCurrentIndex(7);
-            else if (samplingRate == "96000") samplingBox->setCurrentIndex(8);
-            continue;
-        }
-    }
-
-    mediaInfosText->setText(allInfos);
+    mediaInfosText->setText("Media Information:\n"+info->getFfmpegOutput());
 }
 
 void MainWindow::console(QString log)
@@ -617,7 +578,7 @@ QStringList MainWindow::generateArguments(int pass)
     //output file
     arguments << outputEdit->text().replace("/","\\");
 
-    return arguments;  
+    return arguments;
 }
 
 void MainWindow::updateCSS(QString cssFileName)

@@ -11,6 +11,7 @@
 #include <QMouseEvent>
 
 #include "toolbarspacer.h"
+#include "mediainfo.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -61,6 +62,11 @@ private slots:
 private:
     bool isReady();
     void aspectRatio();
+    /**
+     * @brief displayMediaInfo Displays input media infos and populates input widgets
+     * @param info The info to display
+     */
+    void displayMediaInfo(MediaInfo *info);
 
     // ====== UI ========
 
@@ -125,10 +131,10 @@ private:
      */
     QStringList generateArguments(int pass);
     /**
-     * @brief gotMediaInfo Displays input media infos and populates input widgets
-     * Called in ffmpeg_finished() when ffmpegRunningType is 4
+     * @brief ffmpeg_gotMediaInfo Gets the info of the current media being processed by FFmpeg
+     * @return The media info
      */
-    void ffmpeg_gotMediaInfo();
+    MediaInfo *ffmpeg_gotMediaInfo();
     /**
      * @brief gotCodecs Builds the list of codecs and populates the output widgets
      * Called in ffmpeg_finished() when ffmpegRunningType is 1

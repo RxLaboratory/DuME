@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    toolbarspacer.cpp
+    toolbarspacer.cpp \
+    mediainfo.cpp
 
 HEADERS += \
         mainwindow.h \
-    toolbarspacer.h
+    toolbarspacer.h \
+    mediainfo.h
 
 FORMS += \
         mainwindow.ui \
