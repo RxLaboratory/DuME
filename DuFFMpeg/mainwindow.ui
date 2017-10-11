@@ -24,6 +24,18 @@
        </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_11">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
@@ -393,7 +405,7 @@ p, li { white-space: pre-wrap; }
                    <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>3</number>
+                   <number>2</number>
                   </property>
                   <property name="rightMargin">
                    <number>0</number>
@@ -1015,7 +1027,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>833</width>
-              <height>293</height>
+              <height>300</height>
              </rect>
             </property>
             <attribute name="label">
