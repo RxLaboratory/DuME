@@ -36,6 +36,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     consoleTabs->setCurrentIndex(0);
     mainStackWidget->setCurrentIndex(0);
+    QList<int> sizes;
+    sizes << 0;
+    sizes << 100;
+    consoleSplitter->setSizes(sizes);
 
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
@@ -105,7 +109,7 @@ void MainWindow::ffmpeg_readyRead(QString output)
     {
         console(output);
 
-        QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size=\\s*(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d).\\d\\d bitrate=(\\d+).\\d+kbits\\/s speed=(\\d+.\\d*x)");
+        QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d).\\d\\d bitrate= *(\\d+).\\d+kbits\\/s speed= *(\\d+.\\d*x)");
 
         QRegularExpressionMatch match = reProgress.match(output);
         //if progress, update UI
