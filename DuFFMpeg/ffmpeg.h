@@ -52,6 +52,32 @@ public:
      * @return All informations
      */
     FFMediaInfo *getMediaInfo(QString mediaPath);
+    /**
+     * @brief encode Launches the encoding of the current queue
+     */
+    void encode();
+    /**
+     * @brief encode Launches the encoding of the given item
+     * @param item The item to encode
+     */
+    void encode(FFQueueItem item);
+    /**
+     * @brief encode Launches the encoding of the given list of items
+     * @param list The items to be encoded
+     */
+    void encode(QList<FFQueueItem> list);
+    /**
+     * @brief encode Launches the encoding of the given input media with multiple outputs
+     * @param input The input media
+     * @param outputs The list of output medias
+     */
+    void encode(FFMediaInfo *input,QList<FFMediaInfo*> outputs);
+    /**
+     * @brief encode Launches the encoding of the given input to the given output
+     * @param input The input media
+     * @param output The output media
+     */
+    void encode(FFMediaInfo *input, FFMediaInfo *output);
 
 signals:
     /**
@@ -120,6 +146,11 @@ private:
     double encodingSpeed;
     QTime timeRemaining;
     FFMediaInfo *inputInfos;
+    //=== Queue ===
+    /**
+     * @brief encodingQueue The queue of items to be encoded
+     */
+    QList<FFQueueItem> encodingQueue;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list

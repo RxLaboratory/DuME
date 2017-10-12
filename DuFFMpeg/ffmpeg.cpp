@@ -107,6 +107,32 @@ FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
     }
 }
 
+void FFmpeg::encode()
+{
+    encode(encodingQueue);
+}
+
+void FFmpeg::encode(FFQueueItem item)
+{
+    encode(QList<FFQueueItem>(item));
+}
+
+void FFmpeg::encode(QList<FFQueueItem> list)
+{
+    //TODO build arguments and launch
+    //don't forget to emit signals
+}
+
+void FFmpeg::encode(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
+{
+    //TODO create queueitem, add to list, and launch
+}
+
+void FFmpeg::encode(FFMediaInfo *input, FFMediaInfo *output)
+{
+    //TODO create queueitem, add to list, and launch
+}
+
 void FFmpeg::stdError()
 {
     QString output = ffmpeg->readAllStandardError();
