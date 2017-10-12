@@ -32,6 +32,16 @@ public:
      * @return The audio codec list
      */
     QList<FFmpegCodec> getAudioEncoders();
+    /**
+     * @brief getHelp Gets the help text of FFmpeg
+     * @return The documentation
+     */
+    QString getHelp();
+    /**
+     * @brief getLongHelp Gets the longer help of FFmpeg
+     * @return The longer version of the documentation
+     */
+    QString getLongHelp();
 
 signals:
 
@@ -50,6 +60,15 @@ private:
      * @brief audioEncoders The list of the encoders supported by the current version of FFmpeg
      */
     QList<FFmpegCodec> audioEncoders;
+    /**
+     * @brief help The FFmpeg help returned by the -h command
+     */
+    QString help;
+    /**
+     * @brief longHelp The longer FFmpeg help returned by the -h long command
+     */
+    QString longHelp;
+
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
      * @param output The output of the FFmpeg process with the codecs list

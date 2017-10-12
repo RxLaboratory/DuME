@@ -14,6 +14,7 @@
 #include "toolbarspacer.h"
 #include "mediainfo.h"
 #include "settingswidget.h"
+#include "ffmpeg.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -116,6 +117,7 @@ private:
      * @brief ffmpeg The ffmpeg process
      */
     QProcess *ffmpeg;
+    FFmpeg *ffmpegTest;
     /**
      * @brief ffmpegRunningType This value tells what the ffmpeg process is currently doing
      * -1: stopped

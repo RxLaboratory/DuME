@@ -5,12 +5,15 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     ffmpeg = new QProcess(this);
     ffmpeg->setProgram(path);
     getEncoders();
+    getHelp();
+    getLongHelp();
 }
 
 QList<FFmpegCodec> FFmpeg::getEncoders()
 {
     if (audioEncoders.count() == 0 || videoEncoders.count() == 0)
     {
+        //TODO use signals instead of waiting? it's very quick maybe not needed
         ffmpeg->setArguments(QStringList("-encoders"));
         ffmpeg->start(QIODevice::ReadOnly);
         if (ffmpeg->waitForFinished(3000))
@@ -43,6 +46,38 @@ QList<FFmpegCodec> FFmpeg::getAudioEncoders()
     }
     getEncoders();
     return audioEncoders;
+}
+
+QString FFmpeg::getHelp()
+{
+    if (help != "") return help;
+
+    //if first run, get the help
+    //TODO use signals instead of waiting? it's very quick maybe not needed
+    ffmpeg->setArguments(QStringList("-h"));
+    ffmpeg->start(QIODevice::ReadOnly);
+    if (ffmpeg->waitForFinished(3000))
+    {
+        help = ffmpeg->readAll();
+    }
+    return help;
+}
+
+QString FFmpeg::getLongHelp()
+{
+    if (longHelp != "") return longHelp;
+
+    //if first run, get the long help
+    //TODO use signals instead of waiting? it's very quick maybe not needed
+    QStringList args("-h");
+    args << "long";
+    ffmpeg->setArguments(args);
+    ffmpeg->start(QIODevice::ReadOnly);
+    if (ffmpeg->waitForFinished(3000))
+    {
+        longHelp = ffmpeg->readAll();
+    }
+    return longHelp;
 }
 
 void FFmpeg::gotCodecs(QString output)
