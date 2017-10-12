@@ -70,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // === FFMPEG INIT ===
 
+    ffmpegTest = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+
     ffmpegRunningType = -1;
     ffmpegOutput = "";
     //Load FFMpeg path
