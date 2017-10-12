@@ -3,7 +3,7 @@
 
 #include <QString>
 
-class FFmpegCodec
+class FFCodec
 {
 public:
     /**
@@ -14,7 +14,7 @@ public:
      * @param e Is the codec an encoder
      * @param d Is the codec a decoder
      */
-    FFmpegCodec(QString n, QString prettyN, bool v = true, bool e = true, bool d = true);
+    FFCodec(QString n, QString prettyN, bool v = true, bool e = true, bool d = true);
     /**
      * @brief getName Gets the internal name
      * @return The internal name
