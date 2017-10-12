@@ -12,7 +12,7 @@
 #include <QSettings>
 
 #include "toolbarspacer.h"
-#include "mediainfo.h"
+#include "ffmediainfo.h"
 #include "settingswidget.h"
 #include "ffmpeg.h"
 
@@ -74,7 +74,7 @@ private:
      * @brief displayMediaInfo Displays input media infos and populates input widgets
      * @param info The info to display
      */
-    void displayMediaInfo(MediaInfo *info);
+    void displayMediaInfo(FFMediaInfo *info);
 
     // ====== UI ========
 
@@ -142,7 +142,7 @@ private:
      * @brief ffmpeg_gotMediaInfo Gets the info of the current media being processed by FFmpeg
      * @return The media info
      */
-    MediaInfo *ffmpeg_gotMediaInfo();
+    FFMediaInfo *ffmpeg_gotMediaInfo();
     /**
      * @brief gotCodecs Builds the list of codecs and populates the output widgets
      * Called in ffmpeg_finished() when ffmpegRunningType is 1

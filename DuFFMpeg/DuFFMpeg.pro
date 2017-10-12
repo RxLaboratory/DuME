@@ -27,18 +27,20 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     toolbarspacer.cpp \
-    mediainfo.cpp \
     settingswidget.cpp \
     ffmpeg.cpp \
-    ffmpegcodec.cpp
+    ffqueueitem.cpp \
+    ffcodec.cpp \
+    ffmediainfo.cpp
 
 HEADERS += \
         mainwindow.h \
     toolbarspacer.h \
-    mediainfo.h \
     settingswidget.h \
     ffmpeg.h \
-    ffmpegcodec.h
+    ffqueueitem.h \
+    ffcodec.h \
+    ffmediainfo.h
 
 FORMS += \
         mainwindow.ui \

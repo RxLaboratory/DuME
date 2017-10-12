@@ -5,11 +5,11 @@
 
 #include <QRegularExpression>
 
-class MediaInfo : public QObject
+class FFMediaInfo : public QObject
 {
     Q_OBJECT
 public:
-    explicit MediaInfo(QString ffmpeg,QObject *parent = nullptr);
+    explicit FFMediaInfo(QString ffmpeg,QObject *parent = nullptr);
     void setContainer(QStringList c);
     void setVideoWidth(int w);
     void setVideoHeight(int h);

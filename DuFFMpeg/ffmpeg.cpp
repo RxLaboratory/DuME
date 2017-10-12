@@ -23,7 +23,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
-QList<FFmpegCodec> FFmpeg::getEncoders()
+QList<FFCodec> FFmpeg::getEncoders()
 {
     if (audioEncoders.count() == 0 || videoEncoders.count() == 0)
     {
@@ -36,13 +36,13 @@ QList<FFmpegCodec> FFmpeg::getEncoders()
         }
     }
 
-    QList<FFmpegCodec> encoders = videoEncoders;
+    QList<FFCodec> encoders = videoEncoders;
     encoders.append(audioEncoders);
 
     return encoders;
 }
 
-QList<FFmpegCodec> FFmpeg::getVideoEncoders()
+QList<FFCodec> FFmpeg::getVideoEncoders()
 {
     if (videoEncoders.count() > 0)
     {
@@ -52,7 +52,7 @@ QList<FFmpegCodec> FFmpeg::getVideoEncoders()
     return videoEncoders;
 }
 
-QList<FFmpegCodec> FFmpeg::getAudioEncoders()
+QList<FFCodec> FFmpeg::getAudioEncoders()
 {
     if (audioEncoders.count() > 0)
     {
@@ -94,7 +94,7 @@ QString FFmpeg::getLongHelp()
     return longHelp;
 }
 
-MediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
+FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
 {
     QStringList args("-i");
     args << QDir::toNativeSeparators(mediaPath);
@@ -102,7 +102,7 @@ MediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
     ffmpeg->start(QIODevice::ReadOnly);
     if (ffmpeg->waitForFinished(3000))
     {
-        MediaInfo *info = new MediaInfo(ffmpegOutput,this);
+        FFMediaInfo *info = new FFMediaInfo(ffmpegOutput,this);
         return info;
     }
 }
@@ -186,7 +186,7 @@ void FFmpeg::gotCodecs(QString output)
         {
             QString codecName = reVideo.cap(1);
             QString codecPrettyName = reVideo.cap(2);
-            FFmpegCodec co(codecName,codecPrettyName,true);
+            FFCodec co(codecName,codecPrettyName,true);
             videoEncoders << co;
         }
         //if audio encoding
@@ -195,7 +195,7 @@ void FFmpeg::gotCodecs(QString output)
         {
             QString codecName = reAudio.cap(1);
             QString codecPrettyName = reAudio.cap(2);
-            FFmpegCodec co(codecName,codecPrettyName,false);
+            FFCodec co(codecName,codecPrettyName,false);
             audioEncoders << co;
         }
     }
@@ -249,6 +249,6 @@ void FFmpeg::readyRead(QString output)
     {
         //if beginning, get infos (duration) of current input
         delete inputInfos;
-        inputInfos = new MediaInfo(ffmpegOutput,this);
+        inputInfos = new FFMediaInfo(ffmpegOutput,this);
     }
 }

@@ -185,7 +185,7 @@ void MainWindow::ffmpeg_finished()
     }
     else if (ffmpegRunningType == 4)
     {
-        MediaInfo *info = ffmpeg_gotMediaInfo();
+        FFMediaInfo *info = ffmpeg_gotMediaInfo();
         displayMediaInfo(info);
         delete info;
     }
@@ -224,13 +224,13 @@ void MainWindow::ffmpeg_gotCodecs()
     }
 }
 
-MediaInfo *MainWindow::ffmpeg_gotMediaInfo()
+FFMediaInfo *MainWindow::ffmpeg_gotMediaInfo()
 {
-    MediaInfo *info = new MediaInfo(ffmpegOutput,this);
+    FFMediaInfo *info = new FFMediaInfo(ffmpegOutput,this);
     return info;
 }
 
-void MainWindow::displayMediaInfo(MediaInfo *info)
+void MainWindow::displayMediaInfo(FFMediaInfo *info)
 {
 
     videoWidthButton->setValue(info->getVideoWidth());

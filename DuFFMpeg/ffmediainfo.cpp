@@ -1,8 +1,8 @@
-#include "mediainfo.h"
+#include "ffmediainfo.h"
 
 #include <QtDebug>
 
-MediaInfo::MediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
+FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
 {
     container = QStringList();
     fileName = "";
@@ -77,77 +77,77 @@ MediaInfo::MediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
 
 }
 
-void MediaInfo::setContainer(QStringList c)
+void FFMediaInfo::setContainer(QStringList c)
 {
     container = c;
 }
 
-void MediaInfo::setVideoWidth(int w)
+void FFMediaInfo::setVideoWidth(int w)
 {
     videoWidth = w;
 }
 
-void MediaInfo::setVideoHeight(int h)
+void FFMediaInfo::setVideoHeight(int h)
 {
     videoHeight = h;
 }
 
-void MediaInfo::setVideoFramerate(double fps)
+void FFMediaInfo::setVideoFramerate(double fps)
 {
     videoFramerate = fps;
 }
 
-void MediaInfo::setAudioSamplingRate(int s)
+void FFMediaInfo::setAudioSamplingRate(int s)
 {
     audioSamplingRate = s;
 }
 
-void MediaInfo::setDuration(double d)
+void FFMediaInfo::setDuration(double d)
 {
     duration = d;
 }
 
-void MediaInfo::setFileName(QString f)
+void FFMediaInfo::setFileName(QString f)
 {
     fileName = f;
 }
 
-QStringList MediaInfo::getContainer()
+QStringList FFMediaInfo::getContainer()
 {
     return container;
 }
 
-int MediaInfo::getVideoWidth()
+int FFMediaInfo::getVideoWidth()
 {
     return videoWidth;
 }
 
-int MediaInfo::getVideoHeight()
+int FFMediaInfo::getVideoHeight()
 {
     return videoHeight;
 }
 
-double MediaInfo::getVideoFramerate()
+double FFMediaInfo::getVideoFramerate()
 {
     return videoFramerate;
 }
 
-int MediaInfo::getAudioSamplingRate()
+int FFMediaInfo::getAudioSamplingRate()
 {
     return audioSamplingRate;
 }
 
-double MediaInfo::getDuration()
+double FFMediaInfo::getDuration()
 {
     return duration;
 }
 
-QString MediaInfo::getFfmpegOutput()
+QString FFMediaInfo::getFfmpegOutput()
 {
     return ffmpegOutput;
 }
 
-QString MediaInfo::getFileName()
+QString FFMediaInfo::getFileName()
 {
     return fileName;
 }

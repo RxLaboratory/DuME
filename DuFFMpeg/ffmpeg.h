@@ -7,8 +7,9 @@
 #include <QTime>
 #include <QDir>
 
-#include "ffmpegcodec.h"
-#include "mediainfo.h"
+#include "ffcodec.h"
+#include "ffmediainfo.h"
+#include "ffqueueitem.h"
 
 class FFmpeg : public QObject
 {
@@ -24,17 +25,17 @@ public:
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @return The codec list
      */
-    QList<FFmpegCodec> getEncoders();
+    QList<FFCodec> getEncoders();
     /**
      * @brief getVideoEncoders Gets the list of video encoders supported by the current version of FFmpeg
      * @return The video codec list
      */
-    QList<FFmpegCodec> getVideoEncoders();
+    QList<FFCodec> getVideoEncoders();
     /**
      * @brief getVideoEncoders Gets the list of audio encoders supported by the current version of FFmpeg
      * @return The audio codec list
      */
-    QList<FFmpegCodec> getAudioEncoders();
+    QList<FFCodec> getAudioEncoders();
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -50,7 +51,7 @@ public:
      * @param mediaPath The path to the media file
      * @return All informations
      */
-    MediaInfo *getMediaInfo(QString mediaPath);
+    FFMediaInfo *getMediaInfo(QString mediaPath);
 
 signals:
     /**
@@ -60,7 +61,7 @@ signals:
     /**
      * @brief encodingStarted Emitted when FFmpeg starts an encoding process, with infos about the input media
      */
-    void encodingStarted(MediaInfo*);
+    void encodingStarted(FFMediaInfo*);
     /**
      * @brief encodingFinished Emitted when the encoding finishes or is stopped
      */
@@ -94,11 +95,11 @@ private:
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */
-    QList<FFmpegCodec> videoEncoders;
+    QList<FFCodec> videoEncoders;
     /**
      * @brief audioEncoders The list of the encoders supported by the current version of FFmpeg
      */
-    QList<FFmpegCodec> audioEncoders;
+    QList<FFCodec> audioEncoders;
     /**
      * @brief help The FFmpeg help returned by the -h command
      */
@@ -118,7 +119,7 @@ private:
     int outputBitrate;
     double encodingSpeed;
     QTime timeRemaining;
-    MediaInfo *inputInfos;
+    FFMediaInfo *inputInfos;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
