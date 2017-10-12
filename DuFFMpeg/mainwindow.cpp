@@ -137,40 +137,6 @@ void MainWindow::ffmpeg_readyRead(QString output)
 
 void MainWindow::ffmpeg_errorOccurred(QProcess::ProcessError e)
 {
-    QString error;
-    if (e == QProcess::FailedToStart)
-    {
-        error = "Failed to start FFMpeg.";
-    }
-    else if (e == QProcess::Crashed)
-    {
-        if (ffmpegRunningType == 3)
-        {
-            error = "WARNING: FFmpeg could not be stopped properly, the output file may be unreadable.";
-        }
-        else
-        {
-            error = "FFmpeg just crashed.";
-        }
-    }
-    else if (e == QProcess::Timedout)
-    {
-        error = "Operation timed out.";
-    }
-    else if (e == QProcess::WriteError)
-    {
-        error = "Write Error.";
-    }
-    else if (e == QProcess::ReadError)
-    {
-        error = "Cannot read FFMpeg output.";
-    }
-    else if (e == QProcess::UnknownError)
-    {
-        error = "An unknown error occured.";
-    }
-    console(error);
-    qDebug() << error;
 
 
 
