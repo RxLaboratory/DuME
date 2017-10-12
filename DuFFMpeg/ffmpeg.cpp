@@ -32,7 +32,7 @@ QList<FFmpegCodec> FFmpeg::getEncoders()
         ffmpeg->start(QIODevice::ReadOnly);
         if (ffmpeg->waitForFinished(3000))
         {
-            gotCodecs(ffmpeg->readAll());
+            gotCodecs(ffmpegOutput);
         }
     }
 
@@ -72,7 +72,7 @@ QString FFmpeg::getHelp()
     ffmpeg->start(QIODevice::ReadOnly);
     if (ffmpeg->waitForFinished(3000))
     {
-        help = ffmpeg->readAll();
+        help = ffmpegOutput;
     }
     return help;
 }
@@ -89,9 +89,22 @@ QString FFmpeg::getLongHelp()
     ffmpeg->start(QIODevice::ReadOnly);
     if (ffmpeg->waitForFinished(3000))
     {
-        longHelp = ffmpeg->readAll();
+        longHelp = ffmpegOutput;
     }
     return longHelp;
+}
+
+MediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
+{
+    QStringList args("-i");
+    args << QDir::toNativeSeparators(mediaPath);
+    ffmpeg->setArguments(args);
+    ffmpeg->start(QIODevice::ReadOnly);
+    if (ffmpeg->waitForFinished(3000))
+    {
+        MediaInfo *info = new MediaInfo(ffmpegOutput,this);
+        return info;
+    }
 }
 
 void FFmpeg::stdError()
@@ -108,7 +121,7 @@ void FFmpeg::stdOutput()
 
 void FFmpeg::started()
 {
-
+    ffmpegOutput = "";
 }
 
 void FFmpeg::finished()
@@ -118,7 +131,41 @@ void FFmpeg::finished()
 
 void FFmpeg::errorOccurred(QProcess::ProcessError e)
 {
+    QString error;
+    if (e == QProcess::FailedToStart)
+    {
+        error = "Failed to start FFMpeg.";
+    }
+    else if (e == QProcess::Crashed)
+    {
+        if (ffmpegRunningType == 3)
+        {
+            error = "WARNING: FFmpeg could not be stopped properly, the output file may be unreadable.";
+        }
+        else
+        {
+            error = "FFmpeg just crashed.";
+        }
+    }
+    else if (e == QProcess::Timedout)
+    {
+        error = "Operation timed out.";
+    }
+    else if (e == QProcess::WriteError)
+    {
+        error = "Write Error.";
+    }
+    else if (e == QProcess::ReadError)
+    {
+        error = "Cannot read FFMpeg output.";
+    }
+    else if (e == QProcess::UnknownError)
+    {
+        error = "An unknown error occured.";
+    }
+    qDebug() << error;
 
+    emit processError(error);
 }
 
 void FFmpeg::gotCodecs(QString output)

@@ -5,6 +5,7 @@
 
 #include <QProcess>
 #include <QTime>
+#include <QDir>
 
 #include "ffmpegcodec.h"
 #include "mediainfo.h"
@@ -44,6 +45,12 @@ public:
      * @return The longer version of the documentation
      */
     QString getLongHelp();
+    /**
+     * @brief getMediaInfo Gets the information for the media
+     * @param mediaPath The path to the media file
+     * @return All informations
+     */
+    MediaInfo *getMediaInfo(QString mediaPath);
 
 signals:
     /**
@@ -55,10 +62,18 @@ signals:
      */
     void encodingStarted(MediaInfo*);
     /**
+     * @brief encodingFinished Emitted when the encoding finishes or is stopped
+     */
+    void encodingFinished();
+    /**
      * @brief progress Emitted each time the transcoding process outputs new stats
      */
     void progress();
-
+    /**
+     * @brief error Emitted when an error occured with the FFmpeg process
+     * Emits a human readable string
+     */
+    void processError(QString);
 
 public slots:
 
