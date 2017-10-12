@@ -7,6 +7,20 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     getEncoders();
     getHelp();
     getLongHelp();
+
+
+    currentFrame = 0;
+    startTime = QTime(0,0,0);
+    outputSize = 0.0;
+    outputBitrate = 0;
+    encodingSpeed = 0.0;
+
+    //Connect process
+    connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
+    connect(ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
+    connect(ffmpeg,SIGNAL(started()),this,SLOT(started()));
+    connect(ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
+    connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
 QList<FFmpegCodec> FFmpeg::getEncoders()
@@ -80,6 +94,33 @@ QString FFmpeg::getLongHelp()
     return longHelp;
 }
 
+void FFmpeg::stdError()
+{
+    QString output = ffmpeg->readAllStandardError();
+    readyRead(output);
+}
+
+void FFmpeg::stdOutput()
+{
+    QString output = ffmpeg->readAllStandardOutput();
+    readyRead(output);
+}
+
+void FFmpeg::started()
+{
+
+}
+
+void FFmpeg::finished()
+{
+
+}
+
+void FFmpeg::errorOccurred(QProcess::ProcessError e)
+{
+
+}
+
 void FFmpeg::gotCodecs(QString output)
 {
     videoEncoders.clear();
@@ -110,5 +151,57 @@ void FFmpeg::gotCodecs(QString output)
             FFmpegCodec co(codecName,codecPrettyName,false);
             audioEncoders << co;
         }
+    }
+}
+
+void FFmpeg::readyRead(QString output)
+{
+    emit newOutput(output);
+
+    ffmpegOutput = ffmpegOutput + output;
+
+    QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d) bitrate= *(\\d+).\\d+kbits\\/s.* speed= *(\\d+.\\d*)x");
+    QRegularExpressionMatch match = reProgress.match(output);
+    //if progress, update UI
+    if (match.hasMatch())
+    {
+        QString frame = match.captured(1);
+        QString size = match.captured(3);
+        QString bitrate = match.captured(5);
+        QString speed = match.captured(6);
+
+        //frame
+        currentFrame = frame.toInt();
+
+        //size
+        int sizeKB = size.toInt();
+        outputSize = sizeKB/1024;
+        int sizeMBRounded = outputSize*100+0.5;
+        outputSize = sizeMBRounded / 100.0;
+
+        //size
+        int bitrateKB = bitrate.toInt();
+        outputSize = bitrateKB/1024;
+
+        //speed
+        encodingSpeed = speed.toDouble();
+
+        //time remaining
+        if (inputInfos->getDuration() > 0)
+        {
+            int max = inputInfos->getDuration() * inputInfos->getVideoFramerate();
+            if (currentFrame > 0)
+            {
+                int elapsed = startTime.elapsed() / 1000;
+                int remaining = elapsed*max/currentFrame - elapsed;
+                timeRemaining = QTime(0,0,0).addSecs(remaining);
+            }
+        }
+    }
+    else
+    {
+        //if beginning, get infos (duration) of current input
+        delete inputInfos;
+        inputInfos = new MediaInfo(ffmpegOutput,this);
     }
 }

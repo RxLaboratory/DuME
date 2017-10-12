@@ -4,8 +4,10 @@
 #include <QObject>
 
 #include <QProcess>
+#include <QTime>
 
 #include "ffmpegcodec.h"
+#include "mediainfo.h"
 
 class FFmpeg : public QObject
 {
@@ -44,10 +46,32 @@ public:
     QString getLongHelp();
 
 signals:
+    /**
+     * @brief newOutput Emitteed when FFmpeg outputs on stderr or stdoutput
+     */
+    void newOutput(QString);
+    /**
+     * @brief encodingStarted Emitted when FFmpeg starts an encoding process, with infos about the input media
+     */
+    void encodingStarted(MediaInfo*);
+    /**
+     * @brief progress Emitted each time the transcoding process outputs new stats
+     */
+    void progress();
+
 
 public slots:
 
+private slots:
+    //FFmpeg signals
+    void stdError();
+    void stdOutput();
+    void started();
+    void finished();
+    void errorOccurred(QProcess::ProcessError e);
+
 private:
+    //=== About FFmpeg ===
     /**
      * @brief ffmpeg The process used to handle the binary
      */
@@ -68,12 +92,29 @@ private:
      * @brief longHelp The longer FFmpeg help returned by the -h long command
      */
     QString longHelp;
-
+    /**
+     * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
+     */
+    QString ffmpegOutput;
+    //=== Current Encoding ===
+    int currentFrame;
+    QTime startTime;
+    double outputSize;
+    int outputBitrate;
+    double encodingSpeed;
+    QTime timeRemaining;
+    MediaInfo *inputInfos;
+    //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
      * @param output The output of the FFmpeg process with the codecs list
      */
     void gotCodecs(QString output);
+    /**
+     * @brief readyRead Called when FFmpeg outputs somehting on stdError or stdOutput
+     * @param The output from FFmpeg
+     */
+    void readyRead(QString output);
 };
 
 #endif // FFMPEG_H
