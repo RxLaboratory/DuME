@@ -132,65 +132,6 @@ void MainWindow::ffmpeg_readyRead(QString output)
     else if (ffmpegRunningType == 0)
     {
         console(output);
-
-        QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d).\\d\\d bitrate= *(\\d+).\\d+kbits\\/s.* speed= *(\\d+.\\d*x)");
-
-        QRegularExpressionMatch match = reProgress.match(output);
-        //if progress, update UI
-        if (match.hasMatch())
-        {
-            QString frame = match.captured(1);
-            QString time = match.captured(4);
-            QString size = match.captured(3);
-            QString bitrate = match.captured(5);
-            QString speed = match.captured(6);
-
-            //update progress bar
-            progressBar->setValue(frame.toInt());
-            int sizeKB = size.toInt();
-            double sizeMB = sizeKB/1024;
-            int sizeMBRounded = sizeMB*100+0.5;
-            sizeMB = sizeMBRounded / 100.0;
-            outputSizeLabel->setText(QString::number(sizeMB) + " MB");
-
-            timeLabel->setText(time);
-
-            int bitrateKB = bitrate.toInt();
-            int bitrateMB = bitrateKB/1024;
-            outputBitrateLabel->setText(QString::number(bitrateMB) + " Mbps");
-
-            speedLabel->setText(speed);
-
-            //time remaining
-            int max = progressBar->maximum();
-            int current = progressBar->value();
-            if (current > 0)
-            {
-                QStringList elapsedString = time.split(":");
-                QString hString = elapsedString[0];
-                int h = hString.toInt();
-                QString mString = elapsedString[1];
-                int m = mString.toInt();
-                QString sString = elapsedString[2];
-                int s = sString.toInt();
-                int elapsed = h*60*60+m*60+s;
-                int remaining = elapsed*max/current - elapsed;
-                int remH = remaining/60/60;
-                int remM = remaining/60-remH*60;
-                int remS = remaining-remM*60-remH*60*60;
-                timeRemainingLabel->setText(QString::number(remH) + ":" + QString::number(remM) + ":" + QString::number(remS));
-            }
-        }
-        else
-        {
-            //if beginning, get infos (duration) of current input
-            MediaInfo *info = ffmpeg_gotMediaInfo();
-            progressBar->setMaximum(info->getDuration()*info->getVideoFramerate());
-
-            currentEncodingNameLabel->setText(QFileInfo(outputEdit->text()).fileName());
-
-            delete info;
-        }
     }
 }
 
