@@ -28,13 +28,17 @@ SOURCES += \
         mainwindow.cpp \
     toolbarspacer.cpp \
     mediainfo.cpp \
-    settingswidget.cpp
+    settingswidget.cpp \
+    ffmpeg.cpp \
+    ffmpegcodec.cpp
 
 HEADERS += \
         mainwindow.h \
     toolbarspacer.h \
     mediainfo.h \
-    settingswidget.h
+    settingswidget.h \
+    ffmpeg.h \
+    ffmpegcodec.h
 
 FORMS += \
         mainwindow.ui \
