@@ -78,6 +78,28 @@ public:
      * @param output The output media
      */
     void encode(FFMediaInfo *input, FFMediaInfo *output);
+    /**
+     * @brief addQueueItem Adds an item to the encoding queue
+     * @param item
+     * @return The item id
+     */
+    int addQueueItem(FFQueueItem *item);
+    /**
+     * @brief removeQueueItem Removes the item from the encoding queue.
+     * The item will be deleted
+     * @param id The id of the item to remove
+     */
+    void removeQueueItem(int id);
+    /**
+     * @brief takeQueueItem Removes the item from the encoding queue and returns it.
+     * @param id The id of the item to take
+     * @return The item, or nullptr if not found
+     */
+    FFQueueItem *takeQueueItem(int id);
+    /**
+     * @brief clearQueue Clears the current queue and deletes the items
+     */
+    void clearQueue();
 
 signals:
     /**

@@ -133,6 +133,31 @@ void FFmpeg::encode(FFMediaInfo *input, FFMediaInfo *output)
     //TODO create queueitem, add to list, and launch
 }
 
+int FFmpeg::addQueueItem(FFQueueItem *item)
+{
+    encodingQueue.append(item);
+    return encodingQueue.count()-1;
+}
+
+void FFmpeg::removeQueueItem(int id)
+{
+    FFQueueItem i = encodingQueue.takeAt(id);
+    delete i;
+}
+
+FFQueueItem *FFmpeg::takeQueueItem(int id)
+{
+    return encodingQueue.takeAt(id);
+}
+
+void FFmpeg::clearQueue()
+{
+    while(encodingQueue.count() > 0)
+    {
+        removeQueueItem(0);
+    }
+}
+
 void FFmpeg::stdError()
 {
     QString output = ffmpeg->readAllStandardError();
