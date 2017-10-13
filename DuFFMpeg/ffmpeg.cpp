@@ -15,6 +15,8 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     outputBitrate = 0;
     encodingSpeed = 0.0;
 
+    status = Waiting;
+
     //Connect process
     connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
     connect(ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
@@ -112,15 +114,23 @@ void FFmpeg::encode()
     encode(encodingQueue);
 }
 
-void FFmpeg::encode(FFQueueItem item)
+void FFmpeg::encode(FFQueueItem *item)
 {
-    encode(QList<FFQueueItem>(item));
+    QList<FFQueueItem*> list;
+    list << item;
+    encode(list);
 }
 
-void FFmpeg::encode(QList<FFQueueItem> list)
+void FFmpeg::encode(QList<FFQueueItem*> list)
 {
+    status = Encoding;
+    emit statusChanged(status);
+
+
     //TODO build arguments and launch
     //don't forget to emit signals
+
+
 }
 
 void FFmpeg::encode(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
@@ -141,7 +151,7 @@ int FFmpeg::addQueueItem(FFQueueItem *item)
 
 void FFmpeg::removeQueueItem(int id)
 {
-    FFQueueItem i = encodingQueue.takeAt(id);
+    FFQueueItem *i = encodingQueue.takeAt(id);
     delete i;
 }
 
@@ -177,7 +187,8 @@ void FFmpeg::started()
 
 void FFmpeg::finished()
 {
-
+    status = Waiting;
+    emit statusChanged(status);
 }
 
 void FFmpeg::errorOccurred(QProcess::ProcessError e)
@@ -189,14 +200,7 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
     else if (e == QProcess::Crashed)
     {
-        if (ffmpegRunningType == 3)
-        {
-            error = "WARNING: FFmpeg could not be stopped properly, the output file may be unreadable.";
-        }
-        else
-        {
-            error = "FFmpeg just crashed.";
-        }
+        error = "FFmpeg just crashed.";
     }
     else if (e == QProcess::Timedout)
     {
@@ -214,9 +218,10 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     {
         error = "An unknown error occured.";
     }
-    qDebug() << error;
 
+    status = Error;
     emit processError(error);
+    emit statusChanged(status);
 }
 
 void FFmpeg::gotCodecs(QString output)

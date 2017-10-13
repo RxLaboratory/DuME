@@ -21,6 +21,13 @@ public:
      * @param parent The parent QObject
      */
     explicit FFmpeg(QString path, QObject *parent = nullptr);
+
+    /**
+     * @brief The Status enum Used to describe the current status of ffmpeg
+     */
+    enum Status { Waiting, Encoding, Error };
+    Q_ENUM(Status)
+
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @return The codec list
@@ -60,12 +67,12 @@ public:
      * @brief encode Launches the encoding of the given item
      * @param item The item to encode
      */
-    void encode(FFQueueItem item);
+    void encode(FFQueueItem *item);
     /**
      * @brief encode Launches the encoding of the given list of items
      * @param list The items to be encoded
      */
-    void encode(QList<FFQueueItem> list);
+    void encode(QList<FFQueueItem*> list);
     /**
      * @brief encode Launches the encoding of the given input media with multiple outputs
      * @param input The input media
@@ -109,7 +116,7 @@ signals:
     /**
      * @brief encodingStarted Emitted when FFmpeg starts an encoding process, with infos about the input media
      */
-    void encodingStarted(FFMediaInfo*);
+    void encodingStarted(FFQueueItem*);
     /**
      * @brief encodingFinished Emitted when the encoding finishes or is stopped
      */
@@ -123,6 +130,10 @@ signals:
      * Emits a human readable string
      */
     void processError(QString);
+    /**
+     * @brief statusChanged Emitted when FFmpeg status changes
+     */
+    void statusChanged(Status);
 
 public slots:
 
@@ -160,6 +171,10 @@ private:
      * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
      */
     QString ffmpegOutput;
+    /**
+     * @brief status FFmpeg current status
+     */
+    Status status;
     //=== Current Encoding ===
     int currentFrame;
     QTime startTime;
@@ -172,7 +187,7 @@ private:
     /**
      * @brief encodingQueue The queue of items to be encoded
      */
-    QList<FFQueueItem> encodingQueue;
+    QList<FFQueueItem *> encodingQueue;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
