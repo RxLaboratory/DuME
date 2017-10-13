@@ -11,11 +11,16 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     videoHeight = 0;
     videoFramerate = 0.0;
     audioSamplingRate = 0;
+    size = 0;
+    audioBitrate = 0;
+    videoBitrate = 0;
+    videoCodec = "";
+    audioCodec = "";
+    imageSequence = false;
 
 
     QStringList infos = ffmpeg.split("\n");
 
-    bool input = false;
 
     //regexes to get infos
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
@@ -23,6 +28,8 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
     QRegularExpression reDuration("  Duration: (\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), ");
 
+
+    bool input = false;
     foreach(QString info,infos)
     {
         //test input
@@ -112,6 +119,58 @@ void FFMediaInfo::setFileName(QString f)
     fileName = f;
 }
 
+void FFMediaInfo::setVideoCodec(QString codec)
+{
+    videoCodec = codec;
+}
+
+void FFMediaInfo::setAudioCodec(QString codec)
+{
+    audioCodec = codec;
+}
+
+void FFMediaInfo::setVideoBitrate(double bitrate, BitrateUnit unit)
+{
+    if (unit == Kbps) bitrate = bitrate*1024;
+    else if (unit == Mbps) bitrate = bitrate*1024*1024;
+    videoBitrate = bitrate;
+}
+
+void FFMediaInfo::setAudioBitrate(double bitrate, BitrateUnit unit)
+{
+    if (unit == Kbps) bitrate = bitrate*1024;
+    else if (unit == Mbps) bitrate = bitrate*1024*1024;
+    audioBitrate = bitrate;
+}
+
+void FFMediaInfo::setSize(double s, FFMediaInfo::SizeUnit unit)
+{
+
+    if (unit == KB) s = s*1024;
+    if (unit == MB) s = s*1024*1024;
+    size = s;
+}
+
+void FFMediaInfo::setFFmpegOptions(QStringList options)
+{
+    ffmpegOptions = options;
+}
+
+void FFMediaInfo::addFFmpegOption(QString option)
+{
+    ffmpegOptions << option;
+}
+
+void FFMediaInfo::removeFFmpegOpstion(QString option)
+{
+    ffmpegOptions.removeAll(option);
+}
+
+void FFMediaInfo::clearFFmpegOptions()
+{
+    ffmpegOptions.clear();
+}
+
 QStringList FFMediaInfo::getContainer()
 {
     return container;
@@ -150,4 +209,38 @@ QString FFMediaInfo::getFfmpegOutput()
 QString FFMediaInfo::getFileName()
 {
     return fileName;
+}
+
+QString FFMediaInfo::getVideoCodec()
+{
+    return videoCodec;
+}
+
+QString FFMediaInfo::getAudioCodec()
+{
+    return audioCodec;
+}
+
+double FFMediaInfo::getAudioBitrate(BitrateUnit unit)
+{
+    double bitrate = audioBitrate;
+    if (unit == Kbps) bitrate = bitrate/1024;
+    if (unit == Mbps) bitrate = bitrate/1024/1024;
+    return bitrate;
+}
+
+double FFMediaInfo::getVideoBitrate(BitrateUnit unit)
+{
+    double bitrate = videoBitrate;
+    if (unit == Kbps) bitrate = bitrate/1024;
+    if (unit == Mbps) bitrate = bitrate/1024/1024;
+    return bitrate;
+}
+
+double FFMediaInfo::getSize(FFMediaInfo::SizeUnit unit)
+{
+    double s = size;
+    if (unit == KB) s = s/1024;
+    if (unit == MB) s = s/1024/1024;
+    return s;
 }
