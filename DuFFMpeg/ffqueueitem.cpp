@@ -5,16 +5,17 @@ FFQueueItem::FFQueueItem(QList<FFMediaInfo *> inputs, QList<FFMediaInfo *> outpu
     inputMedias = inputs;
     outputMedias = outputs;
     status = Waiting;
+    emit queued();
 }
 
-FFQueueItem::FFQueueItem(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
+FFQueueItem::FFQueueItem(FFMediaInfo *input, QList<FFMediaInfo *> outputs, QObject *parent)
 {
     inputMedias << input;
     outputMedias = outputs;
     status = Waiting;
 }
 
-FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output)
+FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output, QObject *parent)
 {
     inputMedias << input;
     outputMedias << output;
@@ -82,6 +83,11 @@ FFQueueItem::Status FFQueueItem::getStatus()
 
 void FFQueueItem::setStatus(Status st)
 {
+    if(status == st) return;
     status = st;
     emit statusChanged(status);
+    if (status == InProgress) emit encodingStarted();
+    else if (status == Finished) emit encodingFinished();
+    else if (status == Stopped) emit encodingStopped();
+    else if (status == Waiting) emit queued();
 }

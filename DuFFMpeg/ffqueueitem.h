@@ -10,8 +10,8 @@ class FFQueueItem : public QObject
         Q_OBJECT
 public:
     FFQueueItem(QList<FFMediaInfo*> inputs,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
-    FFQueueItem(FFMediaInfo *input,QList<FFMediaInfo*> outputs);
-    FFQueueItem(FFMediaInfo *input,FFMediaInfo *output);
+    FFQueueItem(FFMediaInfo *input,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
+    FFQueueItem(FFMediaInfo *input,FFMediaInfo *output,QObject *parent = nullptr);
 
     /**
      * @brief The Status enum Used to describe the current status of the item
@@ -40,6 +40,7 @@ signals:
     void encodingStarted();
     void encodingStopped();
     void encodingFinished();
+    void queued();
     void statusChanged(Status);
 
 private:
