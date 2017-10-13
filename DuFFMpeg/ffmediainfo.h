@@ -36,6 +36,8 @@ public:
     void setAudioBitrate(double bitrate, BitrateUnit unit = Bits);
     void setSize(double s, SizeUnit unit = Bytes);
     void setFFmpegOptions(QStringList options);
+    void setVideo(bool v = true);
+    void setAudio(bool a = true);
     void addFFmpegOption(QString option);
     void removeFFmpegOpstion(QString option);
     void clearFFmpegOptions();
@@ -52,6 +54,9 @@ public:
     double getAudioBitrate(BitrateUnit unit = Bits);
     double getVideoBitrate(BitrateUnit unit = Bits);
     double getSize(SizeUnit unit = Bytes);
+    QStringList getFFmpegOptions();
+    bool hasVideo();
+    bool hasAudio();
 signals:
 
 public slots:
@@ -72,6 +77,8 @@ private:
     int size;
     bool imageSequence;
     QStringList ffmpegOptions;
+    bool video;
+    bool audio;
 };
 
 #endif // MEDIAINFO_H

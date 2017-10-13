@@ -17,6 +17,8 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     videoCodec = "";
     audioCodec = "";
     imageSequence = false;
+    video = false;
+    audio = false;
 
 
     QStringList infos = ffmpeg.split("\n");
@@ -68,6 +70,7 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
             videoWidth = match.captured(1).toInt();
             videoHeight = match.captured(2).toInt();
             videoFramerate = match.captured(3).toDouble();
+            video = true;
             continue;
         }
 
@@ -78,6 +81,7 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
             qDebug() << info;
             //set sampling rate
             audioSamplingRate = match.captured(1).toInt();
+            audio = true;
             continue;
         }
     }
@@ -154,6 +158,16 @@ void FFMediaInfo::setSize(double s, FFMediaInfo::SizeUnit unit)
 void FFMediaInfo::setFFmpegOptions(QStringList options)
 {
     ffmpegOptions = options;
+}
+
+void FFMediaInfo::setVideo(bool v)
+{
+    video = v;
+}
+
+void FFMediaInfo::setAudio(bool a)
+{
+    audio = a;
 }
 
 void FFMediaInfo::addFFmpegOption(QString option)
@@ -243,4 +257,19 @@ double FFMediaInfo::getSize(FFMediaInfo::SizeUnit unit)
     if (unit == KB) s = s/1024;
     if (unit == MB) s = s/1024/1024;
     return s;
+}
+
+QStringList FFMediaInfo::getFFmpegOptions()
+{
+    return ffmpegOptions;
+}
+
+bool FFMediaInfo::hasVideo()
+{
+    return video;
+}
+
+bool FFMediaInfo::hasAudio()
+{
+    return audio;
 }
