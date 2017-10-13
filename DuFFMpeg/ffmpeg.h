@@ -120,7 +120,7 @@ signals:
     /**
      * @brief encodingFinished Emitted when the encoding finishes or is stopped
      */
-    void encodingFinished();
+    void encodingFinished(FFQueueItem*);
     /**
      * @brief progress Emitted each time the transcoding process outputs new stats
      */
@@ -144,6 +144,12 @@ private slots:
     void started();
     void finished();
     void errorOccurred(QProcess::ProcessError e);
+
+    //Queue
+    void encodeNextItem();
+
+    //self
+    void setStatus(Status st);
 
 private:
     //=== About FFmpeg ===
@@ -188,6 +194,14 @@ private:
      * @brief encodingQueue The queue of items to be encoded
      */
     QList<FFQueueItem *> encodingQueue;
+    /**
+     * @brief encodingHistory The list of items which has been encoded
+     */
+    QList<FFQueueItem *> encodingHistory;
+    /**
+     * @brief currentItem The item currently being encoded
+     */
+    FFQueueItem *currentItem;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list

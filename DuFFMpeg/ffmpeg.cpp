@@ -111,36 +111,37 @@ FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
 
 void FFmpeg::encode()
 {
-    encode(encodingQueue);
+    if (status == Encoding) return;
+    setStatus(Encoding);
+
+    //launch first item
+    encodeNextItem();
 }
 
 void FFmpeg::encode(FFQueueItem *item)
 {
-    QList<FFQueueItem*> list;
-    list << item;
-    encode(list);
+    encodingQueue << item;
+    encode();
 }
 
 void FFmpeg::encode(QList<FFQueueItem*> list)
 {
-    status = Encoding;
-    emit statusChanged(status);
-
-
-    //TODO build arguments and launch
-    //don't forget to emit signals
-
-
+    encodingQueue.append(list);
+    encode();
 }
 
 void FFmpeg::encode(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
 {
-    //TODO create queueitem, add to list, and launch
+    FFQueueItem *item = new FFQueueItem(input,outputs,this);
+    encodingQueue << item;
+    encode();
 }
 
 void FFmpeg::encode(FFMediaInfo *input, FFMediaInfo *output)
 {
-    //TODO create queueitem, add to list, and launch
+    FFQueueItem *item = new FFQueueItem(input,output,this);
+    encodingQueue << item;
+    encode();
 }
 
 int FFmpeg::addQueueItem(FFQueueItem *item)
@@ -187,8 +188,18 @@ void FFmpeg::started()
 
 void FFmpeg::finished()
 {
-    status = Waiting;
-    emit statusChanged(status);
+    if (status == Encoding)
+    {
+        currentItem->setStatus(FFQueueItem::Finished);
+        emit encodingFinished(currentItem);
+        //move to history
+        encodingHistory << currentItem;
+        encodeNextItem();
+    }
+    else
+    {
+        setStatus(Waiting);
+    }
 }
 
 void FFmpeg::errorOccurred(QProcess::ProcessError e)
@@ -219,8 +230,130 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
         error = "An unknown error occured.";
     }
 
-    status = Error;
+    if (status == Encoding)
+    {
+        currentItem->setStatus(FFQueueItem::Stopped);
+        encodingHistory << currentItem;
+    }
+
+    setStatus(Error);
     emit processError(error);
+}
+
+void FFmpeg::encodeNextItem()
+{
+    if (encodingQueue.count() == 0)
+    {
+        setStatus(Waiting);
+        return;
+    }
+
+    currentItem = encodingQueue.takeAt(0);
+
+    //generate arguments
+    QStringList arguments("-stats");
+    arguments << "-y";
+
+    //add inputs
+    foreach(FFMediaInfo *input,currentItem->getInputMedias())
+    {
+        //add custom options
+        arguments.append(input->getFFmpegOptions());
+        //add input file
+        arguments << "-i" << QDir::toNativeSeparators(input->getFileName());
+    }
+    //add outputs
+    foreach(FFMediaInfo *output,currentItem->getOutputMedias())
+    {
+        //add custom options
+        arguments.append(output->getFFmpegOptions());
+
+        //video
+        QString codec = output->getVideoCodec();
+
+        if (output->hasVideo() && codec != "")
+        {
+            //codec
+            arguments << "-vcodec" << codec;
+
+            if (codec != "copy")
+            {
+                //bitrate
+                int bitrate = output->getVideoBitrate();
+                if (bitrate != 0)
+                {
+                    arguments << "-b:v" << QString::number(bitrate);
+
+                }
+
+                //size
+                int width = output->getVideoWidth();
+                int height = output->getVideoHeight();
+                if (width != 0 && height != 0)
+                {
+                    arguments << "-s" << QString::number(width) + "x" + QString::number(height);
+                }
+
+                //framerate
+                double framerate = output->getVideoFramerate();
+                if (framerate != 0.0)
+                {
+                    arguments << "-r" << QString::number(framerate);
+                }
+            }
+        }
+        else
+        {
+            //no video
+            arguments << "-vn";
+        }
+
+        //audio
+        QString acodec = output->getAudioCodec();
+
+        if (output->hasAudio() && acodec != "")
+        {
+            //codec
+            arguments << "-acodec" << acodec;
+
+            if (acodec != "copy")
+            {
+                //bitrate
+                int bitrate = output->getAudioBitrate();
+                if (bitrate != 0)
+                {
+                    arguments << "-b:a" << QString::number(output->getAudioBitrate());
+                }
+
+                //sampling
+                int sampling = output->getAudioSamplingRate();
+                if (sampling != 0)
+                {
+                    arguments << "-ar" << QString::number(sampling);
+                }
+            }
+        }
+        else
+        {
+            //no audio
+            arguments << "-an";
+        }
+
+        //file
+        arguments << QDir::toNativeSeparators(output->getFileName());
+    }
+
+    //launch
+    ffmpeg->setArguments(arguments);
+    ffmpeg->start();
+
+    currentItem->setStatus(FFQueueItem::InProgress);
+    emit  encodingStarted(currentItem);
+}
+
+void FFmpeg::setStatus(Status st)
+{
+    status = st;
     emit statusChanged(status);
 }
 
