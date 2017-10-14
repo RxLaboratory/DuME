@@ -209,7 +209,28 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
 
 void MainWindow::ffmpeg_progress()
 {
-
+#ifdef QT_DEBUG
+    qDebug() << "== Encoding Progress ==";
+#endif
+    //size
+    int outputSize = ffmpeg->getOutputSize(FFMediaInfo::MB);
+    outputSizeLabel->setText(QString::number(outputSize) + " MB");
+    //bitrate
+    int bitrate = ffmpeg->getOutputBitrate(FFMediaInfo::Mbps);
+    outputBitrateLabel->setText(QString::number(bitrate) + " Mbps");
+    //time elapsed
+    QTime elapsed = ffmpeg->getElapsedTime();
+    timeLabel->setText(elapsed.toString("hh:mm:ss"));
+#ifdef QT_DEBUG
+    qDebug() << elapsed.toString("hh:mm:ss") << QString::number(outputSize) + " MB";
+#endif
+    //speed
+    speedLabel->setText(QString::number(ffmpeg->getEncodingSpeed()) + "x");
+    //time remaining
+    QTime remaining = ffmpeg->getTimeRemaining();
+    timeRemainingLabel->setText(remaining.toString("hh:mm:ss"));
+    //progress bar
+    progressBar->setValue(ffmpeg->getCurrentFrame());
 }
 
 void MainWindow::displayMediaInfo(FFMediaInfo *info)
