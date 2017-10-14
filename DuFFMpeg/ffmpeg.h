@@ -32,8 +32,9 @@ public:
     /**
      * @brief setBinaryFileName Sets the path to the FFmpeg binary
      * @param path The path to the binary executable file
+     * @return true if the exe is found
      */
-    void setBinaryFileName(QString path);
+    bool setBinaryFileName(QString path);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
@@ -110,6 +111,21 @@ public:
      * @return The queue item
      */
     FFQueueItem *getCurrentItem();
+    /**
+     * @brief getLastError Gets the last error that occured
+     * @return The error
+     */
+    QProcess::ProcessError getLastError();
+    /**
+     * @brief getLastErrorMessage Gets a human readable description of the last error
+     * @return The description
+     */
+    QString getLastErrorMessage();
+    /**
+     * @brief getStatus Gets the current status of FFmpeg
+     * @return The status
+     */
+    Status getStatus();
     /**
      * @brief encode Launches the encoding of the current queue
      */
@@ -237,6 +253,14 @@ private:
      * @brief status FFmpeg current status
      */
     Status status;
+    /**
+     * @brief lastError The last error that occured
+     */
+    QProcess::ProcessError lastError;
+    /**
+     * @brief lastErrorMessage The human readable description of the last error
+     */
+    QString lastErrorMessage;
     //=== Current Encoding ===
     int currentFrame;
     QTime startTime;

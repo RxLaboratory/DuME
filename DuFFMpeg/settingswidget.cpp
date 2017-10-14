@@ -7,7 +7,7 @@ SettingsWidget::SettingsWidget(QSettings *s,QWidget *parent) :
 
     settings = s;
 
-    ffmpegPathEdit->setText(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+    ffmpegPathEdit->setText(settings->value("ffmpeg/path","ffmpeg.exe").toString());
 }
 
 void SettingsWidget::changeFFmpegPath(QString path)
@@ -16,15 +16,15 @@ void SettingsWidget::changeFFmpegPath(QString path)
     emit ffmpegPathChanged(path);
 }
 
-void SettingsWidget::on_ffmpegPathEdit_textChanged(const QString &arg1)
-{
-    changeFFmpegPath(arg1);
-}
-
 void SettingsWidget::on_ffmpegBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
     ffmpegPathEdit->setText(path);
     changeFFmpegPath(path);
+}
+
+void SettingsWidget::on_ffmpegPathEdit_editingFinished()
+{
+    changeFFmpegPath(ffmpegPathEdit->text());
 }

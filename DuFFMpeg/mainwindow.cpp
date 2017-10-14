@@ -92,7 +92,11 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
-    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
+    if (ffmpeg->getStatus() == FFmpeg::Error)
+    {
+        console(ffmpeg->getLastErrorMessage());
+    }
 
 
     // === MAP EVENTS ===

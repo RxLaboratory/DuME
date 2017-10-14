@@ -6,16 +6,19 @@
 
 FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
 {
+    status = Waiting;
+
+    lastErrorMessage = "";
+    lastError = QProcess::UnknownError;
+
     ffmpeg = new QProcess(this);
-    ffmpeg->setProgram(path);
+    setBinaryFileName(path);
 
     currentFrame = 0;
     startTime = QTime(0,0,0);
     outputSize = 0.0;
     outputBitrate = 0;
     encodingSpeed = 0.0;
-
-    status = Waiting;
 
     //Connect process
     connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
@@ -25,9 +28,20 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
-void FFmpeg::setBinaryFileName(QString path)
+bool FFmpeg::setBinaryFileName(QString path)
 {
-    ffmpeg->setProgram(path);
+    if(QFile(path).exists())
+    {
+        ffmpeg->setProgram(path);
+        return true;
+    }
+    else
+    {
+        status = Error;
+        emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
+        return false;
+    }
 }
 
 QList<FFCodec> FFmpeg::getEncoders(bool reload)
@@ -159,6 +173,21 @@ QTime FFmpeg::getTimeRemaining()
 FFQueueItem *FFmpeg::getCurrentItem()
 {
     return currentItem;
+}
+
+QProcess::ProcessError FFmpeg::getLastError()
+{
+    return lastError;
+}
+
+QString FFmpeg::getLastErrorMessage()
+{
+    return lastErrorMessage;
+}
+
+FFmpeg::Status FFmpeg::getStatus()
+{
+    return status;
 }
 
 void FFmpeg::encode()
@@ -300,6 +329,8 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
 
     setStatus(Error);
+    lastErrorMessage = error;
+    lastError = e;
     emit processError(error);
 }
 

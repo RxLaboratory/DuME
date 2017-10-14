@@ -18,8 +18,8 @@ signals:
     void ffmpegPathChanged(QString);
 
 private slots:
-    void on_ffmpegPathEdit_textChanged(const QString &arg1);
     void on_ffmpegBrowseButton_clicked();
+    void on_ffmpegPathEdit_editingFinished();
 
 private:
     QSettings *settings;
