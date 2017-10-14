@@ -29,20 +29,28 @@ public:
     Q_ENUM(Status)
 
     /**
+     * @brief setBinaryFileName Sets the path to the FFmpeg binary
+     * @param path The path to the binary executable file
+     */
+    void setBinaryFileName(QString path);
+    /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
+     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The codec list
      */
-    QList<FFCodec> getEncoders();
+    QList<FFCodec> getEncoders(bool reload = false);
     /**
      * @brief getVideoEncoders Gets the list of video encoders supported by the current version of FFmpeg
+     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The video codec list
      */
-    QList<FFCodec> getVideoEncoders();
+    QList<FFCodec> getVideoEncoders(bool reload = false);
     /**
      * @brief getVideoEncoders Gets the list of audio encoders supported by the current version of FFmpeg
+     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The audio codec list
      */
-    QList<FFCodec> getAudioEncoders();
+    QList<FFCodec> getAudioEncoders(bool reload = false);
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -107,6 +115,11 @@ public:
      * @brief clearQueue Clears the current queue and deletes the items
      */
     void clearQueue();
+    /**
+     * @brief stop Stops the current FFmpeg process
+     * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
+     */
+    void stop(int timeout = 10000);
 
 signals:
     /**
@@ -133,7 +146,7 @@ signals:
     /**
      * @brief statusChanged Emitted when FFmpeg status changes
      */
-    void statusChanged(Status);
+    void statusChanged(FFmpeg::Status);
 
 public slots:
 

@@ -1,19 +1,20 @@
 #include "ffmpeg.h"
 
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif
+
 FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
 {
     ffmpeg = new QProcess(this);
     ffmpeg->setProgram(path);
-    getEncoders();
-    getHelp();
-    getLongHelp();
-
 
     currentFrame = 0;
     startTime = QTime(0,0,0);
     outputSize = 0.0;
     outputBitrate = 0;
     encodingSpeed = 0.0;
+    inputInfos = new FFMediaInfo("",this);
 
     status = Waiting;
 
@@ -25,14 +26,22 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
-QList<FFCodec> FFmpeg::getEncoders()
+void FFmpeg::setBinaryFileName(QString path)
 {
-    if (audioEncoders.count() == 0 || videoEncoders.count() == 0)
+    ffmpeg->setProgram(path);
+}
+
+QList<FFCodec> FFmpeg::getEncoders(bool reload)
+{
+#ifdef QT_DEBUG
+    qDebug() << "FFmpeg - Getting Encoders";
+#endif
+    if (audioEncoders.count() == 0 || videoEncoders.count() == 0 || reload)
     {
         //TODO use signals instead of waiting? it's very quick maybe not needed
         ffmpeg->setArguments(QStringList("-encoders"));
         ffmpeg->start(QIODevice::ReadOnly);
-        if (ffmpeg->waitForFinished(3000))
+        if (ffmpeg->waitForFinished(10000))
         {
             gotCodecs(ffmpegOutput);
         }
@@ -44,23 +53,21 @@ QList<FFCodec> FFmpeg::getEncoders()
     return encoders;
 }
 
-QList<FFCodec> FFmpeg::getVideoEncoders()
+QList<FFCodec> FFmpeg::getVideoEncoders(bool reload)
 {
-    if (videoEncoders.count() > 0)
+    if (reload || videoEncoders.count() == 0)
     {
-        return videoEncoders;
+        getEncoders(reload);
     }
-    getEncoders();
     return videoEncoders;
 }
 
-QList<FFCodec> FFmpeg::getAudioEncoders()
+QList<FFCodec> FFmpeg::getAudioEncoders(bool reload)
 {
-    if (audioEncoders.count() > 0)
+    if (reload || audioEncoders.count() == 0)
     {
-        return audioEncoders;
+        getEncoders(reload);
     }
-    getEncoders();
     return audioEncoders;
 }
 
@@ -169,6 +176,17 @@ void FFmpeg::clearQueue()
     }
 }
 
+void FFmpeg::stop(int timeout)
+{
+    if (ffmpeg->state() == QProcess::NotRunning) return;
+    ffmpeg->write("q");
+    if (!ffmpeg->waitForFinished(timeout))
+    {
+        ffmpeg->kill();
+    }
+    setStatus(Waiting);
+}
+
 void FFmpeg::stdError()
 {
     QString output = ffmpeg->readAllStandardError();
@@ -269,7 +287,7 @@ void FFmpeg::encodeNextItem()
         arguments.append(output->getFFmpegOptions());
 
         //video
-        QString codec = output->getVideoCodec();
+        QString codec = output->getVideoCodec().getName();
 
         if (output->hasVideo() && codec != "")
         {
@@ -309,7 +327,7 @@ void FFmpeg::encodeNextItem()
         }
 
         //audio
-        QString acodec = output->getAudioCodec();
+        QString acodec = output->getAudioCodec().getName();
 
         if (output->hasAudio() && acodec != "")
         {
@@ -345,7 +363,7 @@ void FFmpeg::encodeNextItem()
 
     //launch
     ffmpeg->setArguments(arguments);
-    ffmpeg->start();
+    ffmpeg->start(QIODevice::ReadWrite);
 
     currentItem->setStatus(FFQueueItem::InProgress);
     emit  encodingStarted(currentItem);
@@ -363,27 +381,30 @@ void FFmpeg::gotCodecs(QString output)
     audioEncoders.clear();
     //get codecs
     QStringList codecs = output.split("\n");
-    for (int i = 10 ; i < codecs.count() ; i++)
+    for (int i = 0 ; i < codecs.count() ; i++)
     {
         QString codec = codecs[i];
 
         //TODO adjust regexp to detect if encoding and/or decoding
 
         //if video encoding
-        QRegExp reVideo("[\\.D]EV[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-        if (reVideo.indexIn(codec) != -1)
+        QRegularExpression reVideo("V[.F][.S][.X][.B][.D] (\\w+) +([^\\(\\n]+)");
+        QRegularExpressionMatch matchVideo = reVideo.match(codec);
+        if (matchVideo.hasMatch())
         {
-            QString codecName = reVideo.cap(1);
-            QString codecPrettyName = reVideo.cap(2);
+
+            QString codecName = matchVideo.captured(1);
+            QString codecPrettyName = matchVideo.captured(2);
             FFCodec co(codecName,codecPrettyName,true);
             videoEncoders << co;
         }
         //if audio encoding
-        QRegExp reAudio("[\\.D]EA[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-        if (reAudio.indexIn(codec) != -1)
+        QRegularExpression reAudio("A[.F][.S][.X][.B][.D] (\\w+) +([^\\(\\n]+)");
+        QRegularExpressionMatch matchAudio = reAudio.match(codec);
+        if (matchAudio.hasMatch())
         {
-            QString codecName = reAudio.cap(1);
-            QString codecPrettyName = reAudio.cap(2);
+            QString codecName = matchAudio.captured(1);
+            QString codecPrettyName = matchAudio.captured(2);
             FFCodec co(codecName,codecPrettyName,false);
             audioEncoders << co;
         }
