@@ -452,7 +452,7 @@ p, li { white-space: pre-wrap; }
                      <enum>QTabWidget::West</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>0</number>
+                     <number>1</number>
                     </property>
                     <widget class="QWidget" name="tab_3">
                      <attribute name="title">
@@ -867,56 +867,11 @@ p, li { white-space: pre-wrap; }
                             <bool>false</bool>
                            </property>
                            <property name="currentIndex">
-                            <number>6</number>
+                            <number>-1</number>
                            </property>
                            <property name="frame">
                             <bool>false</bool>
                            </property>
-                           <item>
-                            <property name="text">
-                             <string>8,000 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>11,025 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>16,000 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>22,050 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>32,000 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>44,100 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>48,000 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>88,200 Hz</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>96,000 Hz</string>
-                            </property>
-                           </item>
                           </widget>
                          </item>
                          <item row="1" column="0">
