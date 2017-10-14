@@ -1,6 +1,6 @@
 #include "ffqueueitem.h"
 
-FFQueueItem::FFQueueItem(QList<FFMediaInfo *> inputs, QList<FFMediaInfo *> outputs, QObject *parent)
+FFQueueItem::FFQueueItem(QList<FFMediaInfo *> inputs, QList<FFMediaInfo *> outputs, QObject *parent) : QObject(parent)
 {
     inputMedias = inputs;
     outputMedias = outputs;
@@ -8,14 +8,14 @@ FFQueueItem::FFQueueItem(QList<FFMediaInfo *> inputs, QList<FFMediaInfo *> outpu
     emit queued();
 }
 
-FFQueueItem::FFQueueItem(FFMediaInfo *input, QList<FFMediaInfo *> outputs, QObject *parent)
+FFQueueItem::FFQueueItem(FFMediaInfo *input, QList<FFMediaInfo *> outputs, QObject *parent) : QObject(parent)
 {
     inputMedias << input;
     outputMedias = outputs;
     status = Waiting;
 }
 
-FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output, QObject *parent)
+FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output, QObject *parent) : QObject(parent)
 {
     inputMedias << input;
     outputMedias << output;
