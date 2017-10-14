@@ -315,7 +315,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>833</width>
-              <height>396</height>
+              <height>379</height>
              </rect>
             </property>
             <attribute name="label">
@@ -982,7 +982,7 @@ p, li { white-space: pre-wrap; }
               <x>0</x>
               <y>0</y>
               <width>833</width>
-              <height>396</height>
+              <height>379</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1018,6 +1018,9 @@ p, li { white-space: pre-wrap; }
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -1034,6 +1037,10 @@ p, li { white-space: pre-wrap; }
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/settings</normaloff>:/icons/settings</iconset>
+   </property>
    <property name="text">
     <string>Settings...</string>
    </property>
@@ -1045,6 +1052,10 @@ p, li { white-space: pre-wrap; }
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/play</normaloff>:/icons/play</iconset>
+   </property>
    <property name="text">
     <string>Go!</string>
    </property>
@@ -1053,12 +1064,18 @@ p, li { white-space: pre-wrap; }
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/stop</normaloff>:/icons/stop</iconset>
+   </property>
    <property name="text">
     <string>Stop</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -4,6 +4,9 @@
         <file alias="unmaximize">resources/icons/angle down double 2.png</file>
         <file alias="maximize">resources/icons/angle up double 2.png</file>
         <file alias="close">resources/icons/close 2.png</file>
+        <file alias="settings">resources/icons/cogs2.png</file>
+        <file alias="play">resources/icons/play_circle.png</file>
+        <file alias="stop">resources/icons/stop_circle.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
