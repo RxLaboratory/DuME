@@ -97,6 +97,10 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         console(ffmpeg->getLastErrorMessage());
     }
+    else
+    {
+        ffmpeg_init();
+    }
 
 
     // === MAP EVENTS ===
