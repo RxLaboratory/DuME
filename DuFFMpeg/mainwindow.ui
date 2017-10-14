@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>DuFFMpeg</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/app</normaloff>:/icons/app</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_10">
     <item>
@@ -405,7 +409,7 @@ p, li { white-space: pre-wrap; }
                    <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>2</number>
+                   <number>1</number>
                   </property>
                   <property name="rightMargin">
                    <number>0</number>

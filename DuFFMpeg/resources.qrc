@@ -7,6 +7,7 @@
         <file alias="settings">resources/icons/cogs2.png</file>
         <file alias="play">resources/icons/play_circle.png</file>
         <file alias="stop">resources/icons/stop_circle.png</file>
+        <file alias="app">resources/icons/icon-02.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
