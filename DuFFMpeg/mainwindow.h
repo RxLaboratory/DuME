@@ -13,10 +13,8 @@
 #include <QDateTime>
 
 #include "toolbarspacer.h"
-#include "ffmediainfo.h"
 #include "settingswidget.h"
 #include "ffmpeg.h"
-#include "ffcodec.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
