@@ -38,7 +38,7 @@ QList<FFCodec> FFmpeg::getEncoders(bool reload)
     if (audioEncoders.count() == 0 || videoEncoders.count() == 0 || reload)
     {
         //TODO use signals instead of waiting? it's very quick maybe not needed
-        ffmpeg->setArguments(QStringList("-encoders"));
+        ffmpeg->setArguments(QStringList("-codecs"));
         ffmpeg->start(QIODevice::ReadOnly);
         if (ffmpeg->waitForFinished(10000))
         {
@@ -434,7 +434,7 @@ void FFmpeg::gotCodecs(QString output)
         //TODO adjust regexp to detect if encoding and/or decoding
 
         //if video encoding
-        QRegularExpression reVideo("V[.F][.S][.X][.B][.D] (\\w+) +([^\\(\\n]+)");
+        QRegularExpression reVideo("[D.]EV[I.][L.][S.] (\\w+) +([^\\(\\n]+)");
         QRegularExpressionMatch matchVideo = reVideo.match(codec);
         if (matchVideo.hasMatch())
         {
@@ -445,7 +445,7 @@ void FFmpeg::gotCodecs(QString output)
             videoEncoders << co;
         }
         //if audio encoding
-        QRegularExpression reAudio("A[.F][.S][.X][.B][.D] (\\w+) +([^\\(\\n]+)");
+        QRegularExpression reAudio("[D.]EA[I.][L.][S.] (\\w+) +([^\\(\\n]+)");
         QRegularExpressionMatch matchAudio = reAudio.match(codec);
         if (matchAudio.hasMatch())
         {
