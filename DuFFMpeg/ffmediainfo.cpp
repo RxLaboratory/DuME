@@ -14,8 +14,8 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     size = 0;
     audioBitrate = 0;
     videoBitrate = 0;
-    videoCodec = "";
-    audioCodec = "";
+    videoCodec = FFCodec();
+    audioCodec = FFCodec("","",false);
     imageSequence = false;
     video = false;
     audio = false;
@@ -123,12 +123,12 @@ void FFMediaInfo::setFileName(QString f)
     fileName = f;
 }
 
-void FFMediaInfo::setVideoCodec(QString codec)
+void FFMediaInfo::setVideoCodec(FFCodec codec)
 {
     videoCodec = codec;
 }
 
-void FFMediaInfo::setAudioCodec(QString codec)
+void FFMediaInfo::setAudioCodec(FFCodec codec)
 {
     audioCodec = codec;
 }
@@ -225,12 +225,12 @@ QString FFMediaInfo::getFileName()
     return fileName;
 }
 
-QString FFMediaInfo::getVideoCodec()
+FFCodec FFMediaInfo::getVideoCodec()
 {
     return videoCodec;
 }
 
-QString FFMediaInfo::getAudioCodec()
+FFCodec FFMediaInfo::getAudioCodec()
 {
     return audioCodec;
 }
@@ -272,4 +272,9 @@ bool FFMediaInfo::hasVideo()
 bool FFMediaInfo::hasAudio()
 {
     return audio;
+}
+
+bool FFMediaInfo::isImageSequence()
+{
+    return imageSequence;
 }

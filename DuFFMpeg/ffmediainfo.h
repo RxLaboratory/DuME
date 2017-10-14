@@ -5,6 +5,8 @@
 
 #include <QRegularExpression>
 
+#include "ffcodec.h"
+
 class FFMediaInfo : public QObject
 {
     Q_OBJECT
@@ -30,8 +32,8 @@ public:
     void setAudioSamplingRate(int s);
     void setDuration(double d);
     void setFileName(QString f);
-    void setVideoCodec(QString codec);
-    void setAudioCodec(QString codec);
+    void setVideoCodec(FFCodec codec);
+    void setAudioCodec(FFCodec codec);
     void setVideoBitrate(double bitrate, BitrateUnit unit = Bits);
     void setAudioBitrate(double bitrate, BitrateUnit unit = Bits);
     void setSize(double s, SizeUnit unit = Bytes);
@@ -49,36 +51,38 @@ public:
     double getDuration();
     QString getFfmpegOutput();
     QString getFileName();
-    QString getVideoCodec();
-    QString getAudioCodec();
+    FFCodec getVideoCodec();
+    FFCodec getAudioCodec();
     double getAudioBitrate(BitrateUnit unit = Bits);
     double getVideoBitrate(BitrateUnit unit = Bits);
     double getSize(SizeUnit unit = Bytes);
     QStringList getFFmpegOptions();
     bool hasVideo();
     bool hasAudio();
+    bool isImageSequence();
 signals:
 
 public slots:
 
 private:
     QStringList container;
+    double duration;
+    int size;
+    bool video;
+    bool audio;
+    bool imageSequence;
+    FFCodec videoCodec;
     int videoWidth;
     int videoHeight;
     double videoFramerate;
-    int audioSamplingRate;
-    double duration;
-    QString ffmpegOutput;
-    QString fileName;
-    QString videoCodec;
-    QString audioCodec;
-    int audioBitrate;
     int videoBitrate;
-    int size;
-    bool imageSequence;
+    FFCodec audioCodec;
+    int audioSamplingRate;
+    int audioBitrate;
+    QString ffmpegOutput;
+    QString fileName;  
     QStringList ffmpegOptions;
-    bool video;
-    bool audio;
+
 };
 
 #endif // MEDIAINFO_H
