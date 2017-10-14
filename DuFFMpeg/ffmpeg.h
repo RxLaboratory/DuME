@@ -28,6 +28,7 @@ public:
     enum Status { Waiting, Encoding, Error };
     Q_ENUM(Status)
 
+
     /**
      * @brief setBinaryFileName Sets the path to the FFmpeg binary
      * @param path The path to the binary executable file
@@ -67,6 +68,48 @@ public:
      * @return All informations
      */
     FFMediaInfo *getMediaInfo(QString mediaPath);
+    /**
+     * @brief getCurrentFrame Gets the number of the latest encoded frame
+     * @return The number of the latest encoded frame
+     */
+    int getCurrentFrame();
+    /**
+     * @brief getStartTime Gets the time when the latest encoding process started
+     * @return The time
+     */
+    QTime getStartTime();
+    /**
+     * @brief getElapsedTime Gets the time elapsed since the encoding started
+     * @return The time elapsed
+     */
+    QTime getElapsedTime();
+    /**
+     * @brief getOutputSize Gets the current size of the output file being encoded
+     * @param The unit of the size
+     * @return The size
+     */
+    double getOutputSize(FFMediaInfo::SizeUnit unit = FFMediaInfo::Bytes);
+    /**
+     * @brief getOutputBitrate Gets the average bitrate of the output file being encoded
+     * @param unit The unit of the bitrate
+     * @return The bitrate
+     */
+    double getOutputBitrate(FFMediaInfo::BitrateUnit unit = FFMediaInfo::Bits);
+    /**
+     * @brief getEncodingSpeed Gets the speed of the current encoding
+     * @return The speed
+     */
+    double getEncodingSpeed();
+    /**
+     * @brief getTimeRemaining Gets the estimated time remaining before the encoding process finishes
+     * @return The time remaining
+     */
+    QTime getTimeRemaining();
+    /**
+     * @brief getCurrentInputInfos Gets the item currently being encoded
+     * @return The queue item
+     */
+    FFQueueItem *getCurrentItem();
     /**
      * @brief encode Launches the encoding of the current queue
      */
@@ -201,7 +244,6 @@ private:
     int outputBitrate;
     double encodingSpeed;
     QTime timeRemaining;
-    FFMediaInfo *inputInfos;
     //=== Queue ===
     /**
      * @brief encodingQueue The queue of items to be encoded

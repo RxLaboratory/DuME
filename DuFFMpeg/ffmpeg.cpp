@@ -14,7 +14,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     outputSize = 0.0;
     outputBitrate = 0;
     encodingSpeed = 0.0;
-    inputInfos = new FFMediaInfo("",this);
 
     status = Waiting;
 
@@ -114,6 +113,52 @@ FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
         FFMediaInfo *info = new FFMediaInfo(ffmpegOutput,this);
         return info;
     }
+}
+
+int FFmpeg::getCurrentFrame()
+{
+    return currentFrame;
+}
+
+QTime FFmpeg::getStartTime()
+{
+    return startTime;
+}
+
+QTime FFmpeg::getElapsedTime()
+{
+    return QTime(0,0,0).addSecs(startTime.elapsed() / 1000);
+}
+
+double FFmpeg::getOutputSize(FFMediaInfo::SizeUnit unit)
+{
+    double s = outputSize;
+    if (unit == FFMediaInfo::KB) s = s/1024;
+    if (unit == FFMediaInfo::MB) s = s/1024/1024;
+    return s;
+}
+
+double FFmpeg::getOutputBitrate(FFMediaInfo::BitrateUnit unit)
+{
+    double bitrate = outputBitrate;
+    if (unit == FFMediaInfo::Kbps) bitrate = bitrate/1024;
+    if (unit == FFMediaInfo::Mbps) bitrate = bitrate/1024/1024;
+    return bitrate;
+}
+
+double FFmpeg::getEncodingSpeed()
+{
+    return encodingSpeed;
+}
+
+QTime FFmpeg::getTimeRemaining()
+{
+    return timeRemaining;
+}
+
+FFQueueItem *FFmpeg::getCurrentItem()
+{
+    return currentItem;
 }
 
 void FFmpeg::encode()
@@ -366,6 +411,7 @@ void FFmpeg::encodeNextItem()
     ffmpeg->start(QIODevice::ReadWrite);
 
     currentItem->setStatus(FFQueueItem::InProgress);
+    startTime = QTime::currentTime();
     emit  encodingStarted(currentItem);
 }
 
@@ -432,33 +478,37 @@ void FFmpeg::readyRead(QString output)
 
         //size
         int sizeKB = size.toInt();
-        outputSize = sizeKB/1024;
-        int sizeMBRounded = outputSize*100+0.5;
-        outputSize = sizeMBRounded / 100.0;
+        outputSize = sizeKB*1024;
 
-        //size
+        //bitrate
         int bitrateKB = bitrate.toInt();
-        outputSize = bitrateKB/1024;
+        outputBitrate = bitrateKB*1024;
 
         //speed
         encodingSpeed = speed.toDouble();
 
         //time remaining
-        if (inputInfos->getDuration() > 0)
+        //get current input duration
+        //gets the current item duration
+        int duration = 0;
+        foreach(FFMediaInfo *input,currentItem->getInputMedias())
         {
-            int max = inputInfos->getDuration() * inputInfos->getVideoFramerate();
+            if (input->hasVideo())
+            {
+                duration = input->getDuration() * input->getVideoFramerate();
+                break;
+            }
+        }
+        if (duration > 0)
+        {
             if (currentFrame > 0)
             {
                 int elapsed = startTime.elapsed() / 1000;
-                int remaining = elapsed*max/currentFrame - elapsed;
+                int remaining = elapsed*duration/currentFrame - elapsed;
                 timeRemaining = QTime(0,0,0).addSecs(remaining);
             }
         }
+        emit progress();
     }
-    else
-    {
-        //if beginning, get infos (duration) of current input
-        delete inputInfos;
-        inputInfos = new FFMediaInfo(ffmpegOutput,this);
-    }
+
 }
