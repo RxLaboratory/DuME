@@ -25,6 +25,7 @@ public:
     enum SizeUnit { Bytes, KB, MB};
     Q_ENUM(SizeUnit)
 
+    void updateInfo(QString ffmpeg);
     void setContainer(QStringList c);
     void setVideoWidth(int w);
     void setVideoHeight(int h);

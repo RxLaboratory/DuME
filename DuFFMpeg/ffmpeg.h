@@ -29,13 +29,6 @@ public:
     enum Status { Waiting, Encoding, Error };
     Q_ENUM(Status)
 
-
-    /**
-     * @brief setBinaryFileName Sets the path to the FFmpeg binary
-     * @param path The path to the binary executable file
-     * @return true if the exe is found
-     */
-    bool setBinaryFileName(QString path);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
@@ -70,6 +63,12 @@ public:
      * @return All informations
      */
     FFMediaInfo *getMediaInfo(QString mediaPath);
+    /**
+     * @brief getMediaInfo Gets the information for the media
+     * @param mediaPath The path to the media file
+     * @return The information returned by FFmpeg
+     */
+    QString getMediaInfoString(QString mediaPath);
     /**
      * @brief getCurrentFrame Gets the number of the latest encoded frame
      * @return The number of the latest encoded frame
@@ -207,8 +206,18 @@ signals:
      * @brief statusChanged Emitted when FFmpeg status changes
      */
     void statusChanged(FFmpeg::Status);
+    /**
+     * @brief binaryChanged Emitted when the path to the binary has been changed
+     */
+    void binaryChanged();
 
-public slots:
+public slots:   
+    /**
+     * @brief setBinaryFileName Sets the path to the FFmpeg binary
+     * @param path The path to the binary executable file
+     * @return true if the exe is found
+     */
+    bool setBinaryFileName(QString path);
 
 private slots:
     //FFmpeg signals

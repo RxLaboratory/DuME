@@ -33,6 +33,7 @@ bool FFmpeg::setBinaryFileName(QString path)
     if(QFile(path).exists())
     {
         ffmpeg->setProgram(path);
+        emit binaryChanged();
         return true;
     }
     else
@@ -118,15 +119,23 @@ QString FFmpeg::getLongHelp()
 
 FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
 {
+    QString infoString = getMediaInfoString(mediaPath);
+    if (infoString == "") return new FFMediaInfo("",this);
+    FFMediaInfo *info = new FFMediaInfo(infoString,this);
+    return info;
+}
+
+QString FFmpeg::getMediaInfoString(QString mediaPath)
+{
     QStringList args("-i");
     args << QDir::toNativeSeparators(mediaPath);
     ffmpeg->setArguments(args);
     ffmpeg->start(QIODevice::ReadOnly);
     if (ffmpeg->waitForFinished(3000))
     {
-        FFMediaInfo *info = new FFMediaInfo(ffmpegOutput,this);
-        return info;
+        return ffmpegOutput;
     }
+    return "";
 }
 
 int FFmpeg::getCurrentFrame()
