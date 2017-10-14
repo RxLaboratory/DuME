@@ -31,7 +31,10 @@ SOURCES += \
     ffmpeg.cpp \
     ffqueueitem.cpp \
     ffcodec.cpp \
-    ffmediainfo.cpp
+    ffmediainfo.cpp \
+    queuewidget.cpp \
+    inputwidget.cpp \
+    outputwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,12 +43,18 @@ HEADERS += \
     ffmpeg.h \
     ffqueueitem.h \
     ffcodec.h \
-    ffmediainfo.h
+    ffmediainfo.h \
+    queuewidget.h \
+    inputwidget.h \
+    outputwidget.h
 
 FORMS += \
         mainwindow.ui \
     toolbarspacer.ui \
-    settingswidget.ui
+    settingswidget.ui \
+    queuewidget.ui \
+    inputwidget.ui \
+    outputwidget.ui
 
 RESOURCES += \
     resources.qrc
