@@ -5,9 +5,16 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Init";
+#endif
+
     setupUi(this);
 
     // === SETTINGS ===
+#ifdef QT_DEBUG
+    qDebug() << "Init - Settings";
+#endif
     QCoreApplication::setOrganizationName("Duduf");
     QCoreApplication::setOrganizationDomain("duduf.com");
     QCoreApplication::setApplicationName("DuFFmpeg");
@@ -15,7 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // === UI SETUP ===
 
-
+#ifdef QT_DEBUG
+    qDebug() << "Init - UI";
+#endif
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //populate toolbar
@@ -66,33 +75,30 @@ MainWindow::MainWindow(QWidget *parent) :
     consoleSplitter->setSizes(sizes);
     settings->endGroup();
 
-
+    //populate sampling box
+    samplingBox->addItem("8,000 Hz",QVariant(8000));
+    samplingBox->addItem("11,025 Hz",QVariant(11025));
+    samplingBox->addItem("16,000 Hz",QVariant(16000));
+    samplingBox->addItem("22,050 Hz",QVariant(22050));
+    samplingBox->addItem("32,000 Hz",QVariant(32000));
+    samplingBox->addItem("44,100 Hz",QVariant(44100));
+    samplingBox->addItem("48,000 Hz",QVariant(48000));
+    samplingBox->addItem("88,200 Hz",QVariant(88200));
+    samplingBox->addItem("96,000 Hz",QVariant(96000));
 
     // === FFMPEG INIT ===
-
-    ffmpegTest = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
-
-    ffmpegRunningType = -1;
-    ffmpegOutput = "";
-    //Load FFMpeg path
-    ffmpeg = new QProcess(this);
-    //TODO auto find ffmpeg if no settings
-    ffmpeg->setProgram(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
-
-    //connect ffmpeg
-    connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(ffmpeg_stdError()));
-    connect(ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(ffmpeg_stdOutput()));
-    connect(ffmpeg,SIGNAL(started()),this,SLOT(ffmpeg_started()));
-    connect(ffmpeg,SIGNAL(finished(int)),this,SLOT(ffmpeg_finished()));
-    connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(ffmpeg_errorOccurred(QProcess::ProcessError)));
-
-    //get codec list
-    ffmpeg->setArguments(QStringList("-codecs"));
-    ffmpegRunningType = 1;
-    ffmpeg->start(QIODevice::ReadOnly);
+#ifdef QT_DEBUG
+    qDebug() << "Init - FFmpeg";
+#endif
+    //TODO auto find ffmpeg if no settings or path invalid
+    //then save to settings
+    ffmpeg = nullptr;
+    ffmpeg_init();
 
     // === MAP EVENTS ===
-
+#ifdef QT_DEBUG
+    qDebug() << "Init - Map Events";
+#endif
     // Window management
 #ifndef Q_OS_MAC
     // Windows and linux
@@ -102,158 +108,135 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 }
 
-void MainWindow::ffmpeg_stdError()
+void MainWindow::ffmpeg_init()
 {
-    QString output = ffmpeg->readAllStandardError();
-    ffmpeg_readyRead(output);
+    if (ffmpeg == nullptr)
+    {
+        ffmpeg = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+        //Map events
+        connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));
+        connect(ffmpeg,SIGNAL(processError(QString)),this,SLOT(ffmpeg_errorOccurred(QString)));
+        connect(ffmpeg,SIGNAL(encodingStarted(FFQueueItem*)),this,SLOT(ffmpeg_started(FFQueueItem*)));
+        connect(ffmpeg,SIGNAL(encodingFinished(FFQueueItem*)),this,SLOT(ffmpeg_finished(FFQueueItem*)));
+        connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
+        connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
+    }
+    else
+    {
+        ffmpeg->setBinaryFileName(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+    }
+    //get codecs
+    videoCodecsBox->clear();
+    audioCodecsBox->clear();
+    QList<FFCodec> encoders = ffmpeg->getEncoders(true);
+    foreach(FFCodec encoder,encoders)
+    {
+        if (encoder.isVideo())
+        {
+            videoCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
+        }
+
+        if (encoder.isAudio())
+        {
+            audioCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
+        }
+    }
+    //get help
+    helpEdit->setText(ffmpeg->getLongHelp());
 }
 
-void MainWindow::ffmpeg_stdOutput()
+void MainWindow::ffmpeg_errorOccurred(QString e)
 {
-    QString output = ffmpeg->readAllStandardOutput();
-    ffmpeg_readyRead(output);
-}
-
-void MainWindow::ffmpeg_readyRead(QString output)
-{
-    ffmpegOutput = ffmpegOutput + output;
-    //got codecs list
-    if (ffmpegRunningType == 1)
-    {
-        videoCodecsBox->clear();
-        audioCodecsBox->clear();
-    }
-    //got help
-    else if (ffmpegRunningType == 2)
-    {
-        helpEdit->setText(helpEdit->toPlainText() + output);
-    }
-    //encoding
-    else if (ffmpegRunningType == 0)
-    {
-        console(output);
-    }
-}
-
-void MainWindow::ffmpeg_errorOccurred(QProcess::ProcessError e)
-{
-
-
-
+    console(e);
     mainStatusBar->showMessage("An FFmpeg error has occured, see the console.");
 }
 
-void MainWindow::ffmpeg_started()
+void MainWindow::ffmpeg_started(FFQueueItem *item)
 {
-    ffmpegOutput = "";
-    mainStatusBar->clearMessage();
-    if (ffmpegRunningType == 1)
+    //TODO disable corresponding queue widget
+
+    reInitCurrentProgress();
+    //Get input infos from first video input
+    foreach(FFMediaInfo *input, item->getInputMedias())
     {
-        statusLabel->setText("Listing codecs...");
+        if (input->hasVideo())
+        {
+            QFileInfo inputFile(input->getFileName());
+            mainStatusBar->clearMessage();
+            statusLabel->setText("Transcoding: " + inputFile.fileName());
+
+            //adjust progress
+            currentEncodingNameLabel->setText(inputFile.fileName());
+            progressBar->setMaximum(input->getDuration() * input->getVideoFramerate());
+            break;
+        }
     }
-    else if (ffmpegRunningType == 2)
-    {
-        statusLabel->setText("Getting FFmpeg help...");
-    }
-    else if (ffmpegRunningType == 4)
-    {
-        statusLabel->setText("Getting file infos...");
-    }
-    else if (ffmpegRunningType == 0)
-    {
-        statusLabel->setText("Transcoding...");
-    }
-    actionGo->setEnabled(false);
-    actionStop->setEnabled(true);
 }
 
-void MainWindow::ffmpeg_finished()
+void MainWindow::ffmpeg_finished(FFQueueItem *item)
 {
-    isReady();
+    //TODO move to status changed
     actionStop->setEnabled(false);
-
-    if (ffmpegRunningType == 1)
-    {
-        //get help too
-        ffmpeg_gotCodecs();
-        QStringList args("-h");
-        args << "long";
-        ffmpeg->setArguments(args);
-        ffmpegRunningType = 2;
-        ffmpeg->start(QIODevice::ReadOnly);
-        return;
-    }
-    else if (ffmpegRunningType == 4)
-    {
-        FFMediaInfo *info = ffmpeg_gotMediaInfo();
-        displayMediaInfo(info);
-        delete info;
-    }
-
-    mainStatusBar->clearMessage();
-    statusLabel->setText("Ready");
-
-    ffmpegRunningType = -1;
+    actionGo->setEnabled(true);
 
     progressBar->setValue(0);
+    //TODO add item to history
 }
 
-void MainWindow::ffmpeg_gotCodecs()
+void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
 {
-    //get codecs
-    QStringList codecs = ffmpegOutput.split("\n");
-    for (int i = 10 ; i < codecs.count() ; i++)
+    if (status == FFmpeg::Waiting)
     {
-        QString codec = codecs[i];
-        //if video encoding
-        QRegExp reVideo("[\\.D]EV[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-        if (reVideo.indexIn(codec) != -1)
-        {
-            QString codecName = reVideo.cap(1);
-            QString codecPrettyName = reVideo.cap(2);
-            videoCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
-        }
-        //if audio encoding
-        QRegExp reAudio("[\\.D]EA[\\.I][\\.L][\\.S] ([\\S]+)\\s+([^\\(\\n]+)");
-        if (reAudio.indexIn(codec) != -1)
-        {
-            QString codecName = reAudio.cap(1);
-            QString codecPrettyName = reAudio.cap(2);
-            audioCodecsBox->addItem(codecPrettyName.trimmed(),QVariant(codecName));
-        }
+        actionGo->setEnabled(true);
+        actionStop->setEnabled(false);
+        mainStatusBar->clearMessage();
+        statusLabel->setText("Ready.");
+    }
+    else if (status == FFmpeg::Encoding)
+    {
+        actionGo->setEnabled(false);
+        actionStop->setEnabled(true);
+        mainStatusBar->clearMessage();
+        statusLabel->setText("Transcoding...");
+    }
+    else if (status == FFmpeg::Error)
+    {
+        actionGo->setEnabled(true);
+        actionStop->setEnabled(false);
+        statusLabel->setText("Ready.");
     }
 }
 
-FFMediaInfo *MainWindow::ffmpeg_gotMediaInfo()
+void MainWindow::ffmpeg_progress()
 {
-    FFMediaInfo *info = new FFMediaInfo(ffmpegOutput,this);
-    return info;
+
 }
 
 void MainWindow::displayMediaInfo(FFMediaInfo *info)
 {
-
     videoWidthButton->setValue(info->getVideoWidth());
     videoHeightButton->setValue(info->getVideoHeight());
     frameRateEdit->setValue(info->getVideoFramerate());
     int samplingRate = info->getAudioSamplingRate();
-    if (samplingRate == 8000) samplingBox->setCurrentIndex(0);
-    else if (samplingRate == 11025) samplingBox->setCurrentIndex(1);
-    else if (samplingRate == 16000) samplingBox->setCurrentIndex(2);
-    else if (samplingRate == 22050) samplingBox->setCurrentIndex(3);
-    else if (samplingRate == 32000) samplingBox->setCurrentIndex(4);
-    else if (samplingRate == 44100) samplingBox->setCurrentIndex(5);
-    else if (samplingRate == 48000) samplingBox->setCurrentIndex(6);
-    else if (samplingRate == 88200) samplingBox->setCurrentIndex(7);
-    else if (samplingRate == 96000) samplingBox->setCurrentIndex(8);
-    else samplingBox->setCurrentIndex(6);
+    samplingBox->setCurrentIndex(6);
+    for (int i = 0 ; i < samplingBox->count() ; i++)
+    {
+        if (samplingRate == samplingBox->itemData(i).toInt())
+        {
+            samplingBox->setCurrentIndex(i);
+            break;
+        }
+    }
 
     mediaInfosText->setText("Media Information:\n"+info->getFfmpegOutput());
 }
 
 void MainWindow::console(QString log)
 {
-    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + log);
+    //add date
+    QTime currentTime = QTime::currentTime();
+    //log
+    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
     // put the slider at the bottom
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
@@ -294,15 +277,66 @@ void MainWindow::on_inputBrowseButton_clicked()
     QFileInfo fi(inputEdit->text());
     QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",fi.path());
     if (inputPath == "") return;
+
+    //update UI
     inputEdit->setText(inputPath);
     toolBox->setItemText(0,QFileInfo(inputPath).fileName());
+
     //get media infos
-    QStringList arguments("-i");
-    arguments << inputEdit->text().replace("/","\\");
-    ffmpeg->setArguments(arguments);
-    ffmpegRunningType = 4;
-    ffmpeg->start(QIODevice::ReadOnly);
-    isReady();
+    FFMediaInfo *input = ffmpeg->getMediaInfo(inputPath);
+    //populate UI
+    videoWidthButton->setValue(input->getVideoWidth());
+    videoHeightButton->setValue(input->getVideoHeight());
+    frameRateEdit->setValue(input->getVideoFramerate());
+    int sampling = input->getAudioSamplingRate();
+    if (sampling == 8000) samplingBox->setCurrentIndex(0);
+    else if (sampling == 11025) samplingBox->setCurrentIndex(1);
+    else if (sampling == 16000) samplingBox->setCurrentIndex(2);
+    else if (sampling == 22050) samplingBox->setCurrentIndex(3);
+    else if (sampling == 32000) samplingBox->setCurrentIndex(4);
+    else if (sampling == 44100) samplingBox->setCurrentIndex(5);
+    else if (sampling == 48000) samplingBox->setCurrentIndex(6);
+    else if (sampling == 88200) samplingBox->setCurrentIndex(7);
+    else if (sampling == 96000) samplingBox->setCurrentIndex(8);
+    else samplingBox->setCurrentIndex(6);
+
+    //Text
+    QString mediaInfos = "Media information";
+
+    mediaInfos += "\n\nContainers: " + input->getContainer().join(",");
+    QTime duration(0,0,0);
+    duration = duration.addSecs(input->getDuration());
+    mediaInfos += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+    double size = input->getSize(FFMediaInfo::MB);
+    int roundedSize = size*1000+0.5;
+    size = roundedSize/1000;
+    mediaInfos += "\nSize: " + QString::number(size) + " MB";
+    mediaInfos += "\nContains video: ";
+    if (input->hasVideo()) mediaInfos += "yes";
+    else mediaInfos += "no";
+    mediaInfos += "\nContains audio: ";
+    if (input->hasAudio()) mediaInfos += "yes";
+    else mediaInfos += "no";
+    mediaInfos += "\nImage sequence: ";
+    if (input->isImageSequence()) mediaInfos += "yes";
+    else mediaInfos += "no";
+
+    mediaInfos += "\n\nVideo codec: " + input->getVideoCodec().getPrettyName();
+    mediaInfos += "\nResolution: " + QString::number(input->getVideoWidth()) + "x" + QString::number(input->getVideoHeight());
+    mediaInfos += "\nFramerate: " + QString::number(input->getVideoFramerate()) + " fps";
+    int bitrate = input->getVideoBitrate(FFMediaInfo::Mbps);
+    mediaInfos += "\nBitrate: " + QString::number(bitrate) + " Mbps";
+
+    mediaInfos += "\n\nAudio codec: " + input->getAudioCodec().getPrettyName();
+    mediaInfos += "\nSampling rate: " + QString::number(input->getAudioSamplingRate()) + " Hz";
+    int abitrate = input->getAudioBitrate(FFMediaInfo::Kbps);
+    mediaInfos += "\nBitrate: " + QString::number(abitrate) + " Kbps";
+
+    mediaInfos += "\n\nFFmpeg analysis:\n" + input->getFfmpegOutput();
+
+    delete input;
+
+    mediaInfosText->setText(mediaInfos);
 }
 
 void MainWindow::on_outputBrowseButton_clicked()
@@ -310,17 +344,16 @@ void MainWindow::on_outputBrowseButton_clicked()
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file");
     if (outputPath == "") return;
     outputEdit->setText(outputPath);
-    isReady();
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString &arg1)
 {
-    isReady();
+
 }
 
 void MainWindow::on_outputEdit_textChanged(const QString &arg1)
 {
-    isReady();
+
 }
 
 void MainWindow::on_frameRateBox_activated(const QString &arg1)
@@ -446,29 +479,52 @@ void MainWindow::on_videoHeightButton_valueChanged()
 
 void MainWindow::on_actionGo_triggered()
 {
-    QStringList arguments = generateArguments(1);
-
-    qDebug() << "LAUNCHING WITH ARGUMENTS:" << arguments.join(" | ");
-
+    //generate input and output
+    FFMediaInfo *input = ffmpeg->getMediaInfo(inputEdit->text());
+    FFMediaInfo *output = new FFMediaInfo();
+    output->setFileName(outputEdit->text());
+    if (!noVideoButton->isChecked())
+    {
+        output->setVideo(true);
+        if (videoCopyButton->isChecked()) output->setVideoCodec(FFCodec("copy","Copy stream"));
+        else
+        {
+            output->setVideoCodec(FFCodec(videoCodecsBox->currentData().toString(),videoCodecsBox->currentText()));
+            if (resizeButton->isChecked())
+            {
+                output->setVideoWidth(videoWidthButton->value());
+                output->setVideoHeight(videoHeightButton->value());
+            }
+            if (frameRateButton->isChecked())
+            {
+                output->setVideoFramerate(frameRateEdit->value());
+            }
+            output->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
+        }
+    }
+    if (!noAudioButton->isChecked())
+    {
+        output->setAudio(true);
+        if (audioCopyButton->isChecked()) output->setAudioCodec(FFCodec("copy","Copy Stream",false));
+        else
+        {
+            output->setAudioCodec(FFCodec(audioCodecsBox->currentData().toString(),audioCodecsBox->currentText()));
+            if (samplingButton->isChecked())
+            {
+                output->setAudioSamplingRate(samplingBox->currentData().toInt());
+            }
+            output->setAudioBitrate(audioBitRateEdit->value(),FFMediaInfo::Kbps);
+        }
+    }
     //Launch!
-    ffmpeg->setArguments(arguments);
-    ffmpegRunningType = 0;
-    ffmpeg->start(QIODevice::ReadWrite);
-    ffmpeg->waitForStarted();
+    ffmpeg->encode(input,output);
 }
 
 void MainWindow::on_actionStop_triggered()
 {
-    ffmpegRunningType = 3;
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
-    ffmpeg->write("q");
-    // Wait until it finishes, or ask to kill
-    if (!ffmpeg->waitForFinished(2000))
-    {
-        //TODO ask before killing
-        ffmpeg->kill();
-    }
+    ffmpeg->stop(5000);
 }
 
 void MainWindow::on_actionSettings_triggered(bool checked)
@@ -483,24 +539,6 @@ void MainWindow::on_actionSettings_triggered(bool checked)
     }
 }
 
-bool MainWindow::isReady()
-{
-    if (!QFile(inputEdit->text()).exists())
-    {
-        actionGo->setEnabled(false);
-        //TODO add warning icon
-        return false;
-    }
-    if (outputEdit->text() == "")
-    {
-        actionGo->setEnabled(false);
-        //TODO add warning icon
-        return false;
-    }
-    actionGo->setEnabled(true);
-    return true;
-}
-
 void MainWindow::aspectRatio()
 {
     double width = videoWidthButton->value();
@@ -512,65 +550,6 @@ void MainWindow::aspectRatio()
     ratio = ratio/100;
     qDebug() << ratio;
     aspectRatioLabel->setText(QString::number(ratio) + ":1");
-}
-
-QStringList MainWindow::generateArguments(int pass)
-{
-    QStringList arguments("-stats");
-
-    arguments << "-y";
-
-    //inFile
-    QStringList inArgs("-i");
-    inArgs << inputEdit->text().replace("/","\\");
-    arguments.append(inArgs);
-
-    //out options
-    if (noVideoButton->isChecked())
-    {
-        arguments << "-vn";
-    }
-    else if (videoCopyButton->isChecked())
-    {
-        arguments << "-vcodec" << "copy";
-    }
-    else
-    {
-        //resize
-        if (resizeButton->isChecked())
-        {
-            arguments << "-s" << QString::number(videoWidthButton->value()) + "x" + QString::number(videoHeightButton->value()) ;
-        }
-        if (frameRateButton->isChecked())
-        {
-            arguments << "-r" << QString::number(frameRateEdit->value());
-        }
-        arguments << "-vcodec" << videoCodecsBox->currentData().toString();
-        arguments << "-b:v" << QString::number(videoBitRateEdit->value()*1024*1024);
-    }
-
-    if (noAudioButton->isChecked())
-    {
-        arguments << "-an";
-    }
-    else if (audioCopyButton->isChecked())
-    {
-        arguments << "-acodec" << "copy";
-    }
-    else
-    {
-        if (samplingButton->isChecked())
-        {
-            arguments << "-ar" << samplingBox->currentText().replace(" Hz","").replace(",","");
-        }
-        arguments << "-acodec" << audioCodecsBox->currentData().toString();
-        arguments << "-b:a" << QString::number(audioBitRateEdit->value()*1024);
-    }
-
-    //output file
-    arguments << outputEdit->text().replace("/","\\");
-
-    return arguments;
 }
 
 void MainWindow::updateCSS(QString cssFileName)
@@ -588,10 +567,22 @@ void MainWindow::updateCSS(QString cssFileName)
     qApp->setStyleSheet(css);
 }
 
+void MainWindow::reInitCurrentProgress()
+{
+    outputSizeLabel->setText("0 MB");
+    outputBitrateLabel->setText("0 Mbps");
+    timeLabel->setText("00:00:00");
+    timeRemainingLabel->setText("00:00:00");
+    speedLabel->setText("0x");
+    currentEncodingNameLabel->setText("");
+    progressBar->setMaximum(100);
+    progressBar->setValue(0);
+}
+
 #ifndef Q_OS_MAC
 void MainWindow::maximize()
 {
-
+    //TODO save setting
     if (this->isMaximized())
     {
         maximizeButton->setIcon(QIcon(":/icons/maximize"));

@@ -10,11 +10,13 @@
 #include <QScrollBar>
 #include <QMouseEvent>
 #include <QSettings>
+#include <QDateTime>
 
 #include "toolbarspacer.h"
 #include "ffmediainfo.h"
 #include "settingswidget.h"
 #include "ffmpeg.h"
+#include "ffcodec.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -24,12 +26,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 private slots:
     // FFMPEG
-    void ffmpeg_stdError();
-    void ffmpeg_stdOutput();
-    void ffmpeg_readyRead(QString output);
-    void ffmpeg_errorOccurred(QProcess::ProcessError e);
-    void ffmpeg_started();
-    void ffmpeg_finished();
+    void ffmpeg_errorOccurred(QString e);
+    void ffmpeg_started(FFQueueItem *item);
+    void ffmpeg_finished(FFQueueItem *item);
+    void ffmpeg_statusChanged(FFmpeg::Status status);
+    void ffmpeg_progress();
 
     // CONSOLE
     void console(QString log);
@@ -63,7 +64,9 @@ private slots:
 
 
 private:
-    bool isReady();
+    /**
+     * @brief aspectRatio Computes the aspect ratio of a video
+     */
     void aspectRatio();
 
     /**
@@ -79,6 +82,10 @@ private:
     // ====== UI ========
 
     void updateCSS(QString cssFileName);
+    /**
+     * @brief reInitCurrentProgress Initializes the current progress bar and infos
+     */
+    void reInitCurrentProgress();
     /**
      * @brief statusLabel The status shown in the status bar
      */
@@ -114,41 +121,13 @@ private:
 
     // ===== FFMPEG ======
     /**
-     * @brief ffmpeg The ffmpeg process
+     * @brief ffmpeg The ffmpeg bridge
      */
-    QProcess *ffmpeg;
-    FFmpeg *ffmpegTest;
+    FFmpeg *ffmpeg;
     /**
-     * @brief ffmpegRunningType This value tells what the ffmpeg process is currently doing
-     * -1: stopped
-     * 0: transcoding
-     * 1: gettings codecs
-     * 2: getting help
-     * 3: stopping
-     * 4: getting input media infos
+     * @brief initFFmpeg Set FFmpeg binary path (using settings) and get codec list and help
      */
-    int ffmpegRunningType;
-    /**
-     * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
-     */
-    QString ffmpegOutput;
-    /**
-     * @brief generateArguments Generate FFmpeg arguments to launch the transcoding process
-     * @param pass The number of the pass to launch
-     * @return The list of arguments to pass to the ffmpeg QProcess
-     */
-    QStringList generateArguments(int pass);
-    /**
-     * @brief ffmpeg_gotMediaInfo Gets the info of the current media being processed by FFmpeg
-     * @return The media info
-     */
-    FFMediaInfo *ffmpeg_gotMediaInfo();
-    /**
-     * @brief gotCodecs Builds the list of codecs and populates the output widgets
-     * Called in ffmpeg_finished() when ffmpegRunningType is 1
-     */
-    void ffmpeg_gotCodecs();
-
+    void ffmpeg_init();
 
 protected:
     void closeEvent(QCloseEvent *event);
