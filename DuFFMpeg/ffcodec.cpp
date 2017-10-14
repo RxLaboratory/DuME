@@ -1,13 +1,13 @@
 #include "ffcodec.h"
 
-FFCodec::FFCodec(QString n, QString prettyN, bool v, bool e, bool d)
+FFCodec::FFCodec(QString n, QString prettyN, bool vid, bool encode, bool decode)
 {
     name = n;
     prettyName = prettyN;
-    encoder = e;
-    decoder = d;
-    video = v;
-    audio = !v;
+    encoder = encode;
+    decoder = decode;
+    video = vid;
+    audio = !vid;
 }
 
 QString FFCodec::getName()
