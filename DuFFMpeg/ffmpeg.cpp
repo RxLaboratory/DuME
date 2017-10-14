@@ -486,6 +486,10 @@ void FFmpeg::gotCodecs(QString output)
             audioEncoders << co;
         }
     }
+
+    //Sort codecs by pretty name
+    std::sort(videoEncoders.begin(),videoEncoders.end());
+    std::sort(audioEncoders.begin(),audioEncoders.end());
 }
 
 void FFmpeg::readyRead(QString output)

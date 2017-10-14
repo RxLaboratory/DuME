@@ -46,6 +46,9 @@ public:
      */
     bool isDecoder();
 
+    bool operator<(FFCodec c);
+    bool operator>(FFCodec c);
+
 private:
     QString name;
     QString prettyName;
@@ -53,6 +56,9 @@ private:
     bool encoder;
     bool audio;
     bool video;
+
+protected:
+
 };
 
 #endif // FFMPEGCODEC_H

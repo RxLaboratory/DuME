@@ -6,6 +6,7 @@
 #include <QProcess>
 #include <QTime>
 #include <QDir>
+#include <algorithm>
 
 #include "ffcodec.h"
 #include "ffmediainfo.h"

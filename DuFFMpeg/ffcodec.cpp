@@ -39,3 +39,13 @@ bool FFCodec::isDecoder()
 {
     return decoder;
 }
+
+bool FFCodec::operator<(FFCodec c)
+{
+    return this->prettyName.toLower() < c.getPrettyName().toLower();
+}
+
+bool FFCodec::operator>(FFCodec c)
+{
+    return this->prettyName.toLower() > c.getPrettyName().toLower();
+}
