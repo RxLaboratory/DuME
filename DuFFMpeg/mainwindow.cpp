@@ -92,8 +92,8 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
-    ffmpeg = nullptr;
-    ffmpeg_init();
+    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
+
 
     // === MAP EVENTS ===
 #ifdef QT_DEBUG
@@ -106,25 +106,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
 #endif
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
+    //FFmpeg
+    connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));
+    connect(ffmpeg,SIGNAL(processError(QString)),this,SLOT(ffmpeg_errorOccurred(QString)));
+    connect(ffmpeg,SIGNAL(encodingStarted(FFQueueItem*)),this,SLOT(ffmpeg_started(FFQueueItem*)));
+    connect(ffmpeg,SIGNAL(encodingFinished(FFQueueItem*)),this,SLOT(ffmpeg_finished(FFQueueItem*)));
+    connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
+    connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
+    //settings
+    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),this,SLOT(changeFFmpegPath(QString)));
 }
 
 void MainWindow::ffmpeg_init()
 {
-    if (ffmpeg == nullptr)
-    {
-        ffmpeg = new FFmpeg(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
-        //Map events
-        connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));
-        connect(ffmpeg,SIGNAL(processError(QString)),this,SLOT(ffmpeg_errorOccurred(QString)));
-        connect(ffmpeg,SIGNAL(encodingStarted(FFQueueItem*)),this,SLOT(ffmpeg_started(FFQueueItem*)));
-        connect(ffmpeg,SIGNAL(encodingFinished(FFQueueItem*)),this,SLOT(ffmpeg_finished(FFQueueItem*)));
-        connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
-        connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
-    }
-    else
-    {
-        ffmpeg->setBinaryFileName(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
-    }
+    ffmpeg->setBinaryFileName(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
     //get codecs
     videoCodecsBox->clear();
     audioCodecsBox->clear();
@@ -615,6 +610,11 @@ void MainWindow::maximize()
         this->showMaximized();
     }
 
+}
+
+void MainWindow::changeFFmpegPath(QString path)
+{
+    ffmpeg_init();
 }
 #endif
 

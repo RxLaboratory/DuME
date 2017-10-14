@@ -60,6 +60,9 @@ private slots:
 
     void maximize();
 
+    //SETTINGS
+    void changeFFmpegPath(QString path);
+
 
 private:
     /**
