@@ -20,6 +20,26 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
     video = false;
     audio = false;
 
+    if (ffmpeg != "") updateInfo(ffmpeg);
+}
+
+void FFMediaInfo::updateInfo(QString ffmpeg)
+{
+    container = QStringList();
+    fileName = "";
+    duration = 0.0;
+    videoWidth = 0;
+    videoHeight = 0;
+    videoFramerate = 0.0;
+    audioSamplingRate = 0;
+    size = 0;
+    audioBitrate = 0;
+    videoBitrate = 0;
+    videoCodec = FFCodec();
+    audioCodec = FFCodec("","",false);
+    imageSequence = false;
+    video = false;
+    audio = false;
 
     QStringList infos = ffmpeg.split("\n");
 
@@ -85,7 +105,6 @@ FFMediaInfo::FFMediaInfo(QString ffmpeg, QObject *parent) : QObject(parent)
             continue;
         }
     }
-
 }
 
 void FFMediaInfo::setContainer(QStringList c)
