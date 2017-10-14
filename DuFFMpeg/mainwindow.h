@@ -15,6 +15,7 @@
 #include "toolbarspacer.h"
 #include "settingswidget.h"
 #include "ffmpeg.h"
+#include "queuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -29,30 +30,14 @@ private slots:
     void ffmpeg_finished(FFQueueItem *item);
     void ffmpeg_statusChanged(FFmpeg::Status status);
     void ffmpeg_progress();
+    /**
+     * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get codec list and help
+     */
+    void ffmpeg_init();
 
     // CONSOLE
     void console(QString log);
 
-    // UI
-    void on_videoTranscodeButton_toggled(bool checked);
-    void on_audioTranscodeButton_toggled(bool checked);
-    void on_resizeButton_toggled(bool checked);
-    void on_frameRateButton_toggled(bool checked);
-    void on_samplingButton_toggled(bool checked);
-    void on_inputBrowseButton_clicked();
-    void on_outputBrowseButton_clicked();
-    void on_inputEdit_textChanged(const QString &arg1);
-    void on_outputEdit_textChanged(const QString &arg1);
-    void on_frameRateBox_activated(const QString &arg1);
-    void on_frameRateEdit_valueChanged(double arg1);
-    void on_videoQualitySlider_valueChanged(int value);
-    void on_videoQualitySlider_sliderReleased();
-    void on_videoBitRateEdit_valueChanged(double arg1);
-    void on_audioQualitySlider_sliderReleased();
-    void on_audioQualitySlider_valueChanged(int value);
-    void on_audioBitRateEdit_valueChanged(int arg1);
-    void on_videoWidthButton_valueChanged();
-    void on_videoHeightButton_valueChanged();
     //actions
     void on_actionGo_triggered();
     void on_actionStop_triggered();
@@ -60,27 +45,15 @@ private slots:
 
     void maximize();
 
-    //SETTINGS
-    void changeFFmpegPath(QString path);
-
-
 private:
-    /**
-     * @brief aspectRatio Computes the aspect ratio of a video
-     */
-    void aspectRatio();
-
     /**
      * @brief settings The application settings
      */
     QSettings *settings;
-    /**
-     * @brief displayMediaInfo Displays input media infos and populates input widgets
-     * @param info The info to display
-     */
-    void displayMediaInfo(FFMediaInfo *info);
 
     // ====== UI ========
+
+    QueueWidget *queueWidget;
 
     void updateCSS(QString cssFileName);
     /**
@@ -125,10 +98,6 @@ private:
      * @brief ffmpeg The ffmpeg bridge
      */
     FFmpeg *ffmpeg;
-    /**
-     * @brief initFFmpeg Set FFmpeg binary path (using settings) and get codec list and help
-     */
-    void ffmpeg_init();
 
 protected:
     void closeEvent(QCloseEvent *event);

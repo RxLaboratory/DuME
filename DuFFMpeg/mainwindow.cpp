@@ -20,6 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setApplicationName("DuFFmpeg");
     settings = new QSettings(this);
 
+    // === FFMPEG INIT ===
+#ifdef QT_DEBUG
+    qDebug() << "Init - Create FFmpeg";
+#endif
+    //TODO auto find ffmpeg if no settings or path invalid
+    //then save to settings
+    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
+
+
     // === UI SETUP ===
 
 #ifdef QT_DEBUG
@@ -50,9 +59,12 @@ MainWindow::MainWindow(QWidget *parent) :
     settingsWidget = new SettingsWidget(settings,this);
     settingsPage->layout()->addWidget(settingsWidget);
 
+    //queue widget
+    queueWidget = new QueueWidget(ffmpeg,this);
+    page1->layout()->addWidget(queueWidget);
+
     //set style
     updateCSS(":/styles/default");
-
 
     //init UI
     consoleTabs->setCurrentIndex(0);
@@ -75,24 +87,10 @@ MainWindow::MainWindow(QWidget *parent) :
     consoleSplitter->setSizes(sizes);
     settings->endGroup();
 
-    //populate sampling box
-    samplingBox->addItem("8,000 Hz",QVariant(8000));
-    samplingBox->addItem("11,025 Hz",QVariant(11025));
-    samplingBox->addItem("16,000 Hz",QVariant(16000));
-    samplingBox->addItem("22,050 Hz",QVariant(22050));
-    samplingBox->addItem("32,000 Hz",QVariant(32000));
-    samplingBox->addItem("44,100 Hz",QVariant(44100));
-    samplingBox->addItem("48,000 Hz",QVariant(48000));
-    samplingBox->addItem("88,200 Hz",QVariant(88200));
-    samplingBox->addItem("96,000 Hz",QVariant(96000));
-
     // === FFMPEG INIT ===
 #ifdef QT_DEBUG
     qDebug() << "Init - FFmpeg";
 #endif
-    //TODO auto find ffmpeg if no settings or path invalid
-    //then save to settings
-    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
     if (ffmpeg->getStatus() == FFmpeg::Error)
     {
         console(ffmpeg->getLastErrorMessage());
@@ -101,7 +99,6 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         ffmpeg_init();
     }
-
 
     // === MAP EVENTS ===
 #ifdef QT_DEBUG
@@ -121,29 +118,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ffmpeg,SIGNAL(encodingFinished(FFQueueItem*)),this,SLOT(ffmpeg_finished(FFQueueItem*)));
     connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
     connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
+    connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
     //settings
-    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),this,SLOT(changeFFmpegPath(QString)));
+    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
 }
 
 void MainWindow::ffmpeg_init()
 {
-    ffmpeg->setBinaryFileName(settings->value("ffmpeg/path","E:/DEV SRC/DuFFMpeg/ffmpeg/ffmpeg.exe").toString());
-    //get codecs
-    videoCodecsBox->clear();
-    audioCodecsBox->clear();
-    QList<FFCodec> encoders = ffmpeg->getEncoders(true);
-    foreach(FFCodec encoder,encoders)
-    {
-        if (encoder.isVideo())
-        {
-            videoCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
-        }
-
-        if (encoder.isAudio())
-        {
-            audioCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
-        }
-    }
     //get help
     helpEdit->setText(ffmpeg->getLongHelp());
 }
@@ -178,10 +159,6 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
 
 void MainWindow::ffmpeg_finished(FFQueueItem *item)
 {
-    //TODO move to status changed
-    actionStop->setEnabled(false);
-    actionGo->setEnabled(true);
-
     progressBar->setValue(0);
     //TODO add item to history
 }
@@ -236,25 +213,6 @@ void MainWindow::ffmpeg_progress()
     progressBar->setValue(ffmpeg->getCurrentFrame());
 }
 
-void MainWindow::displayMediaInfo(FFMediaInfo *info)
-{
-    videoWidthButton->setValue(info->getVideoWidth());
-    videoHeightButton->setValue(info->getVideoHeight());
-    frameRateEdit->setValue(info->getVideoFramerate());
-    int samplingRate = info->getAudioSamplingRate();
-    samplingBox->setCurrentIndex(6);
-    for (int i = 0 ; i < samplingBox->count() ; i++)
-    {
-        if (samplingRate == samplingBox->itemData(i).toInt())
-        {
-            samplingBox->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    mediaInfosText->setText("Media Information:\n"+info->getFfmpegOutput());
-}
-
 void MainWindow::console(QString log)
 {
     //add date
@@ -265,281 +223,12 @@ void MainWindow::console(QString log)
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
-void MainWindow::on_videoTranscodeButton_toggled(bool checked)
-{
-    videoTranscodeWidget->setEnabled(checked);
-}
-
-void MainWindow::on_audioTranscodeButton_toggled(bool checked)
-{
-    audioTranscodeWidget->setEnabled(checked);
-}
-
-void MainWindow::on_resizeButton_toggled(bool checked)
-{
-    videoWidthButton->setEnabled(checked);
-    videoHeightButton->setEnabled(checked);
-    widthLabel->setEnabled(checked);
-    heightLabel->setEnabled(checked);
-    aspectRatioLabel->setEnabled(checked);
-}
-
-void MainWindow::on_frameRateButton_toggled(bool checked)
-{
-    frameRateBox->setEnabled(checked);
-    frameRateEdit->setEnabled(checked);
-}
-
-void MainWindow::on_samplingButton_toggled(bool checked)
-{
-    samplingBox->setEnabled(checked);
-}
-
-void MainWindow::on_inputBrowseButton_clicked()
-{
-    //get current file path
-    QFileInfo fi(inputEdit->text());
-    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",fi.path());
-    if (inputPath == "") return;
-
-    //update UI
-    inputEdit->setText(inputPath);
-    toolBox->setItemText(0,QFileInfo(inputPath).fileName());
-
-    //get media infos
-    FFMediaInfo *input = ffmpeg->getMediaInfo(inputPath);
-    //populate UI
-    videoWidthButton->setValue(input->getVideoWidth());
-    videoHeightButton->setValue(input->getVideoHeight());
-    frameRateEdit->setValue(input->getVideoFramerate());
-    int sampling = input->getAudioSamplingRate();
-    if (sampling == 8000) samplingBox->setCurrentIndex(0);
-    else if (sampling == 11025) samplingBox->setCurrentIndex(1);
-    else if (sampling == 16000) samplingBox->setCurrentIndex(2);
-    else if (sampling == 22050) samplingBox->setCurrentIndex(3);
-    else if (sampling == 32000) samplingBox->setCurrentIndex(4);
-    else if (sampling == 44100) samplingBox->setCurrentIndex(5);
-    else if (sampling == 48000) samplingBox->setCurrentIndex(6);
-    else if (sampling == 88200) samplingBox->setCurrentIndex(7);
-    else if (sampling == 96000) samplingBox->setCurrentIndex(8);
-    else samplingBox->setCurrentIndex(6);
-
-    //Text
-    QString mediaInfos = "Media information";
-
-    mediaInfos += "\n\nContainers: " + input->getContainer().join(",");
-    QTime duration(0,0,0);
-    duration = duration.addSecs(input->getDuration());
-    mediaInfos += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
-    double size = input->getSize(FFMediaInfo::MB);
-    int roundedSize = size*1000+0.5;
-    size = roundedSize/1000;
-    mediaInfos += "\nSize: " + QString::number(size) + " MB";
-    mediaInfos += "\nContains video: ";
-    if (input->hasVideo()) mediaInfos += "yes";
-    else mediaInfos += "no";
-    mediaInfos += "\nContains audio: ";
-    if (input->hasAudio()) mediaInfos += "yes";
-    else mediaInfos += "no";
-    mediaInfos += "\nImage sequence: ";
-    if (input->isImageSequence()) mediaInfos += "yes";
-    else mediaInfos += "no";
-
-    mediaInfos += "\n\nVideo codec: " + input->getVideoCodec().getPrettyName();
-    mediaInfos += "\nResolution: " + QString::number(input->getVideoWidth()) + "x" + QString::number(input->getVideoHeight());
-    mediaInfos += "\nFramerate: " + QString::number(input->getVideoFramerate()) + " fps";
-    int bitrate = input->getVideoBitrate(FFMediaInfo::Mbps);
-    mediaInfos += "\nBitrate: " + QString::number(bitrate) + " Mbps";
-
-    mediaInfos += "\n\nAudio codec: " + input->getAudioCodec().getPrettyName();
-    mediaInfos += "\nSampling rate: " + QString::number(input->getAudioSamplingRate()) + " Hz";
-    int abitrate = input->getAudioBitrate(FFMediaInfo::Kbps);
-    mediaInfos += "\nBitrate: " + QString::number(abitrate) + " Kbps";
-
-    mediaInfos += "\n\nFFmpeg analysis:\n" + input->getFfmpegOutput();
-
-    delete input;
-
-    mediaInfosText->setText(mediaInfos);
-}
-
-void MainWindow::on_outputBrowseButton_clicked()
-{
-    QString outputPath = QFileDialog::getSaveFileName(this,"Output file");
-    if (outputPath == "") return;
-    outputEdit->setText(outputPath);
-}
-
-void MainWindow::on_inputEdit_textChanged(const QString &arg1)
-{
-
-}
-
-void MainWindow::on_outputEdit_textChanged(const QString &arg1)
-{
-
-}
-
-void MainWindow::on_frameRateBox_activated(const QString &arg1)
-{
-    if (arg1 != "Custom")
-    {
-        QString num = frameRateBox->currentText().replace(" fps","");
-        frameRateEdit->setValue(num.toDouble());
-    }
-}
-
-void MainWindow::on_frameRateEdit_valueChanged(double arg1)
-{
-    //look for corresponding value
-    for (int i = 1 ; i < frameRateBox->count() ; i++)
-    {
-        QString num = frameRateBox->itemText(i).replace(" fps","");
-        if (num.toDouble() == arg1)
-        {
-            frameRateBox->setCurrentIndex(i);
-            return;
-        }
-    }
-    frameRateBox->setCurrentIndex(0);
-}
-
-void MainWindow::on_videoQualitySlider_valueChanged(int value)
-{
-    if (value >= 90)
-    {
-        qualityLabel->setText("(Visually) Lossless | " + QString::number(value) + "%");
-    }
-    else if (value >= 75)
-    {
-        qualityLabel->setText("Very good | " + QString::number(value) + "%");
-    }
-    else if (value >= 50)
-    {
-        qualityLabel->setText("Good | " + QString::number(value) + "%");
-    }
-    else if (value >= 25)
-    {
-        qualityLabel->setText("Bad | " + QString::number(value) + "%");
-    }
-    else
-    {
-        qualityLabel->setText("Very bad | " + QString::number(value) + "%");
-    }
-}
-
-void MainWindow::on_videoQualitySlider_sliderReleased()
-{
-    //Adjust bitrate
-    //TODO Must depend on resolution (and bpc)
-    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
-    //TODO adjust depending on codec
-    int value = videoQualitySlider->value();
-    double bitrate = value;
-    bitrate = bitrate*24/75;
-    videoBitRateEdit->setValue(bitrate);
-}
-
-void MainWindow::on_videoBitRateEdit_valueChanged(double arg1)
-{
-    //Adjust quality
-    //TODO Must depend on resolution (and bpc)
-    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
-    //TODO adjust depending on codec
-    int quality = arg1*75/24;
-    videoQualitySlider->setValue(quality);
-}
-
-void MainWindow::on_audioQualitySlider_sliderReleased()
-{
-    //Adjust bitrate
-    //TODO adjust depending on codec
-    int value = audioQualitySlider->value();
-    int bitrate = value*320/100;
-    audioBitRateEdit->setValue(bitrate);
-}
-
-void MainWindow::on_audioQualitySlider_valueChanged(int value)
-{
-    if (value >= 90)
-    {
-        audioQualityLabel->setText("(Nearly) Lossless | " + QString::number(value) + "%");
-    }
-    else if (value >= 60)
-    {
-        audioQualityLabel->setText("Very good | " + QString::number(value) + "%");
-    }
-    else if (value >= 30)
-    {
-        audioQualityLabel->setText("Good | " + QString::number(value) + "%");
-    }
-    else if (value >= 17)
-    {
-        audioQualityLabel->setText("Bad | " + QString::number(value) + "%");
-    }
-    else
-    {
-        audioQualityLabel->setText("Very bad | " + QString::number(value) + "%");
-    }
-}
-
-void MainWindow::on_audioBitRateEdit_valueChanged(int arg1)
-{
-    //Adjust bitrate
-    //TODO adjust depending on codec
-    int quality = arg1*100/320;
-    audioQualitySlider->setValue(quality);
-}
-
-void MainWindow::on_videoWidthButton_valueChanged()
-{
-    aspectRatio();
-}
-
-void MainWindow::on_videoHeightButton_valueChanged()
-{
-    aspectRatio();
-}
-
 void MainWindow::on_actionGo_triggered()
 {
     //generate input and output
-    FFMediaInfo *input = ffmpeg->getMediaInfo(inputEdit->text());
-    FFMediaInfo *output = new FFMediaInfo();
-    output->setFileName(outputEdit->text());
-    if (!noVideoButton->isChecked())
-    {
-        output->setVideo(true);
-        if (videoCopyButton->isChecked()) output->setVideoCodec(FFCodec("copy","Copy stream"));
-        else
-        {
-            output->setVideoCodec(FFCodec(videoCodecsBox->currentData().toString(),videoCodecsBox->currentText()));
-            if (resizeButton->isChecked())
-            {
-                output->setVideoWidth(videoWidthButton->value());
-                output->setVideoHeight(videoHeightButton->value());
-            }
-            if (frameRateButton->isChecked())
-            {
-                output->setVideoFramerate(frameRateEdit->value());
-            }
-            output->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
-        }
-    }
-    if (!noAudioButton->isChecked())
-    {
-        output->setAudio(true);
-        if (audioCopyButton->isChecked()) output->setAudioCodec(FFCodec("copy","Copy Stream",false));
-        else
-        {
-            output->setAudioCodec(FFCodec(audioCodecsBox->currentData().toString(),audioCodecsBox->currentText()));
-            if (samplingButton->isChecked())
-            {
-                output->setAudioSamplingRate(samplingBox->currentData().toInt());
-            }
-            output->setAudioBitrate(audioBitRateEdit->value(),FFMediaInfo::Kbps);
-        }
-    }
+    FFMediaInfo *input = queueWidget->getInputMedia();
+    FFMediaInfo *output = queueWidget->getOutputMedia();
+
     //Launch!
     ffmpeg->encode(input,output);
 }
@@ -561,19 +250,6 @@ void MainWindow::on_actionSettings_triggered(bool checked)
     {
         mainStackWidget->setCurrentIndex(0);
     }
-}
-
-void MainWindow::aspectRatio()
-{
-    double width = videoWidthButton->value();
-    double height = videoHeightButton->value();
-    double ratio =  width / height;
-    //round it to 3 digits
-    int roundedRatio = ratio*100+0.5;
-    ratio = roundedRatio;
-    ratio = ratio/100;
-    qDebug() << ratio;
-    aspectRatioLabel->setText(QString::number(ratio) + ":1");
 }
 
 void MainWindow::updateCSS(QString cssFileName)
@@ -620,10 +296,6 @@ void MainWindow::maximize()
 
 }
 
-void MainWindow::changeFFmpegPath(QString path)
-{
-    ffmpeg_init();
-}
 #endif
 
 void MainWindow::closeEvent(QCloseEvent *event)
