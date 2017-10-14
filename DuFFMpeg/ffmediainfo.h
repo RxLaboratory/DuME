@@ -14,13 +14,13 @@ public:
     explicit FFMediaInfo(QString ffmpeg = "",QObject *parent = nullptr);
 
     /**
-     * @brief The unit used for sizes and bitrates
+     * @brief The unit used for bitrates
      */
     enum BitrateUnit { Bits, Kbps, Mbps};
     Q_ENUM(BitrateUnit)
 
     /**
-     * @brief The unit used for sizes and bitrates
+     * @brief The unit used for sizes
      */
     enum SizeUnit { Bytes, KB, MB};
     Q_ENUM(SizeUnit)
