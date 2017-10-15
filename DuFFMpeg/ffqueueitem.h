@@ -44,9 +44,9 @@ signals:
     void statusChanged(Status);
 
 private:
-    QList<FFMediaInfo*> inputMedias;
-    QList<FFMediaInfo*> outputMedias;
-    Status status;
+    QList<FFMediaInfo *> _inputMedias;
+    QList<FFMediaInfo *> _outputMedias;
+    Status _status;
 };
 
 #endif // FFQUEUEITEM_H

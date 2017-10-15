@@ -1,51 +1,104 @@
 #include "ffcodec.h"
 
-FFCodec::FFCodec(QString n, QString prettyN, bool vid, bool encode, bool decode)
+FFCodec::FFCodec(QString name, QString prettyName, bool video, bool encode, bool decode, bool lossy, bool lossless, bool iframe, QObject *parent)  : QObject(parent)
 {
-    name = n;
-    prettyName = prettyN;
-    encoder = encode;
-    decoder = decode;
-    video = vid;
-    audio = !vid;
+    _name = name;
+    _prettyName = prettyName;
+    _encoder = encode;
+    _decoder = decode;
+    _video = video;
+    _audio = !video;
+    _lossy = lossy;
+    _lossless = lossless;
+    _iframe = iframe;
 }
 
-QString FFCodec::getName()
+const QString FFCodec::name()
 {
-    return name;
+    return _name;
 }
 
-QString FFCodec::getPrettyName()
+const QString FFCodec::prettyName()
 {
-    return prettyName;
+    return _prettyName;
 }
 
-bool FFCodec::isVideo()
+bool FFCodec::isVideo() const
 {
-    return video;
+    return _video;
 }
 
-bool FFCodec::isAudio()
+bool FFCodec::isAudio() const
 {
-    return audio;
+    return _audio;
 }
 
-bool FFCodec::isEncoder()
+bool FFCodec::isEncoder() const
 {
-    return encoder;
+    return _encoder;
 }
 
-bool FFCodec::isDecoder()
+bool FFCodec::isDecoder() const
 {
-    return decoder;
+    return _decoder;
 }
 
-bool FFCodec::operator<(FFCodec c)
+bool FFCodec::isLossy() const
 {
-    return this->prettyName.toLower() < c.getPrettyName().toLower();
+    return _lossy;
 }
 
-bool FFCodec::operator>(FFCodec c)
+bool FFCodec::isLossless() const
 {
-    return this->prettyName.toLower() > c.getPrettyName().toLower();
+    return _lossless;
+}
+
+bool FFCodec::isIframe() const
+{
+    return _iframe;
+}
+
+void FFCodec::setName(const QString &name)
+{
+    _name = name;
+}
+
+void FFCodec::setPrettyName(const QString &prettyName)
+{
+    _prettyName = prettyName;
+}
+
+void FFCodec::setDecoder(bool decoder)
+{
+    _decoder = decoder;
+}
+
+void FFCodec::setEncoder(bool encoder)
+{
+    _encoder = encoder;
+}
+
+void FFCodec::setAudio(bool audio)
+{
+    _audio = audio;
+}
+
+void FFCodec::setVideo(bool video)
+{
+    _video = video;
+}
+
+void FFCodec::setLossy(bool lossy)
+{
+    _lossy = lossy;
+}
+
+void FFCodec::setLossless(bool lossless)
+{
+    _lossless = lossless;
+}
+
+void FFCodec::setIframe(bool iframe)
+{
+    _iframe = iframe;
 }

@@ -2,92 +2,92 @@
 
 FFQueueItem::FFQueueItem(QList<FFMediaInfo *> inputs, QList<FFMediaInfo *> outputs, QObject *parent) : QObject(parent)
 {
-    inputMedias = inputs;
-    outputMedias = outputs;
-    status = Waiting;
+    _inputMedias = inputs;
+    _outputMedias = outputs;
+    _status = Waiting;
     emit queued();
 }
 
 FFQueueItem::FFQueueItem(FFMediaInfo *input, QList<FFMediaInfo *> outputs, QObject *parent) : QObject(parent)
 {
-    inputMedias << input;
-    outputMedias = outputs;
-    status = Waiting;
+    _inputMedias << input;
+    _outputMedias = outputs;
+    _status = Waiting;
 }
 
 FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output, QObject *parent) : QObject(parent)
 {
-    inputMedias << input;
-    outputMedias << output;
-    status = Waiting;
+    _inputMedias << input;
+    _outputMedias << output;
+    _status = Waiting;
 }
 
 QList<FFMediaInfo *> FFQueueItem::getInputMedias()
 {
-    return inputMedias;
+    return _inputMedias;
 }
 
 QList<FFMediaInfo *> FFQueueItem::getOutputMedias()
 {
-    return outputMedias;
+    return _outputMedias;
 }
 
 int FFQueueItem::addInputMedia(FFMediaInfo *input)
 {
-    inputMedias << input;
-    return inputMedias.count() - 1;
+    _inputMedias << input;
+    return _inputMedias.count() - 1;
 }
 
 int FFQueueItem::addOutputMedia(FFMediaInfo *output)
 {
-    outputMedias << output;
-    return outputMedias.count() -1;
+    _outputMedias << output;
+    return _outputMedias.count() -1;
 }
 
 FFMediaInfo *FFQueueItem::removeInputMedia(int id)
 {
-    return inputMedias.takeAt(id);
+    return _inputMedias.takeAt(id);
 }
 
 FFMediaInfo *FFQueueItem::removeInputMedia(QString fileName)
 {
-    for (int i = 0 ; i < inputMedias.count() ; i++)
+    for (int i = 0 ; i < _inputMedias.count() ; i++)
     {
-        if (inputMedias[i]->getFileName() == fileName)
+        if (_inputMedias[i]->getFileName() == fileName)
         {
-            return inputMedias.takeAt(i);
+            return _inputMedias.takeAt(i);
         }
     }
 }
 
 FFMediaInfo *FFQueueItem::removeOutputMedia(int id)
 {
-    return outputMedias.takeAt(id);
+    return _outputMedias.takeAt(id);
 }
 
 FFMediaInfo *FFQueueItem::removeOutputMedia(QString fileName)
 {
-    for (int i = 0 ; i < outputMedias.count() ; i++)
+    for (int i = 0 ; i < _outputMedias.count() ; i++)
     {
-        if (outputMedias[i]->getFileName() == fileName)
+        if (_outputMedias[i]->getFileName() == fileName)
         {
-            return outputMedias.takeAt(i);
+            return _outputMedias.takeAt(i);
         }
     }
 }
 
 FFQueueItem::Status FFQueueItem::getStatus()
 {
-    return status;
+    return _status;
 }
 
 void FFQueueItem::setStatus(Status st)
 {
-    if(status == st) return;
-    status = st;
-    emit statusChanged(status);
-    if (status == InProgress) emit encodingStarted();
-    else if (status == Finished) emit encodingFinished();
-    else if (status == Stopped) emit encodingStopped();
-    else if (status == Waiting) emit queued();
+    if(_status == st) return;
+    _status = st;
+    emit statusChanged(_status);
+    if (_status == InProgress) emit encodingStarted();
+    else if (_status == Finished) emit encodingFinished();
+    else if (_status == Stopped) emit encodingStopped();
+    else if (_status == Waiting) emit queued();
 }

@@ -11,7 +11,7 @@ class FFMediaInfo : public QObject
 {
     Q_OBJECT
 public:
-    explicit FFMediaInfo(QString ffmpeg = "",QObject *parent = nullptr);
+    explicit FFMediaInfo(QString ffmpegOutput = "",QObject *parent = nullptr);
 
     /**
      * @brief The unit used for bitrates
@@ -25,22 +25,22 @@ public:
     enum SizeUnit { Bytes, KB, MB};
     Q_ENUM(SizeUnit)
 
-    void updateInfo(QString ffmpeg);
-    void setContainer(QStringList c);
-    void setVideoWidth(int w);
-    void setVideoHeight(int h);
+    void updateInfo(QString ffmpegOutput);
+    void setContainer(QStringList container);
+    void setVideoWidth(int width);
+    void setVideoHeight(int height);
     void setVideoFramerate(double fps);
-    void setAudioSamplingRate(int s);
-    void setDuration(double d);
-    void setFileName(QString f);
-    void setVideoCodec(FFCodec codec);
-    void setAudioCodec(FFCodec codec);
+    void setAudioSamplingRate(int sampling);
+    void setDuration(double duration);
+    void setFileName(QString fileName);
+    void setVideoCodec(FFCodec *codec);
+    void setAudioCodec(FFCodec *codec);
     void setVideoBitrate(double bitrate, BitrateUnit unit = Bits);
     void setAudioBitrate(double bitrate, BitrateUnit unit = Bits);
-    void setSize(double s, SizeUnit unit = Bytes);
+    void setSize(double size, SizeUnit unit = Bytes);
     void setFFmpegOptions(QStringList options);
-    void setVideo(bool v = true);
-    void setAudio(bool a = true);
+    void setVideo(bool video = true);
+    void setAudio(bool audio = true);
     void addFFmpegOption(QString option);
     void removeFFmpegOpstion(QString option);
     void clearFFmpegOptions();
@@ -52,8 +52,8 @@ public:
     double getDuration();
     QString getFfmpegOutput();
     QString getFileName();
-    FFCodec getVideoCodec();
-    FFCodec getAudioCodec();
+    FFCodec *getVideoCodec();
+    FFCodec *getAudioCodec();
     double getAudioBitrate(BitrateUnit unit = Bits);
     double getVideoBitrate(BitrateUnit unit = Bits);
     double getSize(SizeUnit unit = Bytes);
@@ -66,23 +66,23 @@ signals:
 public slots:
 
 private:
-    QStringList container;
-    double duration;
-    int size;
-    bool video;
-    bool audio;
-    bool imageSequence;
-    FFCodec videoCodec;
-    int videoWidth;
-    int videoHeight;
-    double videoFramerate;
-    int videoBitrate;
-    FFCodec audioCodec;
-    int audioSamplingRate;
-    int audioBitrate;
-    QString ffmpegOutput;
-    QString fileName;  
-    QStringList ffmpegOptions;
+    QStringList _container;
+    double _duration;
+    int _size;
+    bool _video;
+    bool _audio;
+    bool _imageSequence;
+    FFCodec *_videoCodec;
+    int _videoWidth;
+    int _videoHeight;
+    double _videoFramerate;
+    int _videoBitrate;
+    FFCodec *_audioCodec;
+    int _audioSamplingRate;
+    int _audioBitrate;
+    QString _ffmpegOutput;
+    QString _fileName;
+    QStringList _ffmpegOptions;
 
 };
 

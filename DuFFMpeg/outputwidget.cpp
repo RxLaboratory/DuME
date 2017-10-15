@@ -33,10 +33,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
     if (!noVideoButton->isChecked())
     {
         mediaInfo->setVideo(true);
-        if (videoCopyButton->isChecked()) mediaInfo->setVideoCodec(FFCodec("copy","Copy stream"));
+        if (videoCopyButton->isChecked()) mediaInfo->setVideoCodec(ffmpeg->getVideoEncoder("copy"));
         else
         {
-            mediaInfo->setVideoCodec(FFCodec(videoCodecsBox->currentData().toString(),videoCodecsBox->currentText()));
+            mediaInfo->setVideoCodec(ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
             if (resizeButton->isChecked())
             {
                 mediaInfo->setVideoWidth(videoWidthButton->value());
@@ -52,10 +52,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
     if (!noAudioButton->isChecked())
     {
         mediaInfo->setAudio(true);
-        if (audioCopyButton->isChecked()) mediaInfo->setAudioCodec(FFCodec("copy","Copy Stream",false));
+        if (audioCopyButton->isChecked()) mediaInfo->setAudioCodec(ffmpeg->getAudioEncoder("copy"));
         else
         {
-            mediaInfo->setAudioCodec(FFCodec(audioCodecsBox->currentData().toString(),audioCodecsBox->currentText()));
+            mediaInfo->setAudioCodec(ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
             if (samplingButton->isChecked())
             {
                 mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
@@ -242,17 +242,18 @@ void OutputWidget::ffmpeg_init()
     //get codecs
     videoCodecsBox->clear();
     audioCodecsBox->clear();
-    QList<FFCodec> encoders = ffmpeg->getEncoders(true);
-    foreach(FFCodec encoder,encoders)
+    QList<FFCodec *> encoders = ffmpeg->getEncoders(true);
+    foreach(FFCodec *encoder,encoders)
     {
-        if (encoder.isVideo())
+        if (encoder->name() == "copy") continue;
+        if (encoder->isVideo())
         {
-            videoCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
+            videoCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
         }
 
-        if (encoder.isAudio())
+        if (encoder->isAudio())
         {
-            audioCodecsBox->addItem(encoder.getPrettyName(),QVariant(encoder.getName()));
+            audioCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
         }
     }
 }

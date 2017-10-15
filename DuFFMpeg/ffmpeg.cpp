@@ -6,115 +6,134 @@
 
 FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
 {
-    status = Waiting;
+    _status = Waiting;
 
-    lastErrorMessage = "";
-    lastError = QProcess::UnknownError;
+    _lastErrorMessage = "";
+    _lastError = QProcess::UnknownError;
 
-    ffmpeg = new QProcess(this);
+    _ffmpeg = new QProcess(this);
     setBinaryFileName(path);
 
-    currentFrame = 0;
-    startTime = QTime(0,0,0);
-    outputSize = 0.0;
-    outputBitrate = 0;
-    encodingSpeed = 0.0;
+    _currentFrame = 0;
+    _startTime = QTime(0,0,0);
+    _outputSize = 0.0;
+    _outputBitrate = 0;
+    _encodingSpeed = 0.0;
 
     //Connect process
-    connect(ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
-    connect(ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
-    connect(ffmpeg,SIGNAL(started()),this,SLOT(started()));
-    connect(ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
-    connect(ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
+    connect(_ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
+    connect(_ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
+    connect(_ffmpeg,SIGNAL(started()),this,SLOT(started()));
+    connect(_ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
+    connect(_ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
 bool FFmpeg::setBinaryFileName(QString path)
 {
     if(QFile(path).exists())
     {
-        ffmpeg->setProgram(path);
+        _ffmpeg->setProgram(path);
         emit binaryChanged();
         return true;
     }
     else
     {
-        status = Error;
+        _status = Error;
         emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
-        lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
+        _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
         return false;
     }
 }
 
-QList<FFCodec> FFmpeg::getEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getEncoders(bool reload)
 {
 #ifdef QT_DEBUG
     qDebug() << "FFmpeg - Getting Encoders";
 #endif
-    if (audioEncoders.count() == 0 || videoEncoders.count() == 0 || reload)
+    if (_audioEncoders.count() == 0 || _videoEncoders.count() == 0 || reload)
     {
         //TODO use signals instead of waiting? it's very quick maybe not needed
-        ffmpeg->setArguments(QStringList("-codecs"));
-        ffmpeg->start(QIODevice::ReadOnly);
-        if (ffmpeg->waitForFinished(10000))
+        //signals may actually be better to have a progress bar at launch of the app
+        _ffmpeg->setArguments(QStringList("-codecs"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(10000))
         {
-            gotCodecs(ffmpegOutput);
+            gotCodecs(_ffmpegOutput);
         }
     }
 
-    QList<FFCodec> encoders = videoEncoders;
-    encoders.append(audioEncoders);
+    QList<FFCodec *> encoders = _videoEncoders;
+    encoders.append(_audioEncoders);
 
     return encoders;
 }
 
-QList<FFCodec> FFmpeg::getVideoEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getVideoEncoders(bool reload)
 {
-    if (reload || videoEncoders.count() == 0)
+    if (reload || _videoEncoders.count() == 0)
     {
         getEncoders(reload);
     }
-    return videoEncoders;
+    return _videoEncoders;
 }
 
-QList<FFCodec> FFmpeg::getAudioEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getAudioEncoders(bool reload)
 {
-    if (reload || audioEncoders.count() == 0)
+    if (reload || _audioEncoders.count() == 0)
     {
         getEncoders(reload);
     }
-    return audioEncoders;
+    return _audioEncoders;
+}
+
+FFCodec *FFmpeg::getVideoEncoder(QString name)
+{
+    foreach(FFCodec *codec,_videoEncoders)
+    {
+        if (codec->name() == name) return codec;
+    }
+    return nullptr;
+}
+
+FFCodec *FFmpeg::getAudioEncoder(QString name)
+{
+    foreach(FFCodec *codec,_audioEncoders)
+    {
+        if (codec->name() == name) return codec;
+    }
+    return nullptr;
 }
 
 QString FFmpeg::getHelp()
 {
-    if (help != "") return help;
+    if (_help != "") return _help;
 
     //if first run, get the help
     //TODO use signals instead of waiting? it's very quick maybe not needed
-    ffmpeg->setArguments(QStringList("-h"));
-    ffmpeg->start(QIODevice::ReadOnly);
-    if (ffmpeg->waitForFinished(3000))
+    _ffmpeg->setArguments(QStringList("-h"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
     {
-        help = ffmpegOutput;
+        _help = _ffmpegOutput;
     }
-    return help;
+    return _help;
 }
 
 QString FFmpeg::getLongHelp()
 {
-    if (longHelp != "") return longHelp;
+    if (_longHelp != "") return _longHelp;
 
     //if first run, get the long help
     //TODO use signals instead of waiting? it's very quick maybe not needed
     QStringList args("-h");
     args << "long";
-    ffmpeg->setArguments(args);
-    ffmpeg->start(QIODevice::ReadOnly);
-    if (ffmpeg->waitForFinished(3000))
+    _ffmpeg->setArguments(args);
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
     {
-        longHelp = ffmpegOutput;
+        _longHelp = _ffmpegOutput;
     }
-    return longHelp;
+    return _longHelp;
 }
 
 FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
@@ -129,33 +148,33 @@ QString FFmpeg::getMediaInfoString(QString mediaPath)
 {
     QStringList args("-i");
     args << QDir::toNativeSeparators(mediaPath);
-    ffmpeg->setArguments(args);
-    ffmpeg->start(QIODevice::ReadOnly);
-    if (ffmpeg->waitForFinished(3000))
+    _ffmpeg->setArguments(args);
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
     {
-        return ffmpegOutput;
+        return _ffmpegOutput;
     }
     return "";
 }
 
 int FFmpeg::getCurrentFrame()
 {
-    return currentFrame;
+    return _currentFrame;
 }
 
 QTime FFmpeg::getStartTime()
 {
-    return startTime;
+    return _startTime;
 }
 
 QTime FFmpeg::getElapsedTime()
 {
-    return QTime(0,0,0).addSecs(startTime.elapsed() / 1000);
+    return QTime(0,0,0).addSecs(_startTime.elapsed() / 1000);
 }
 
 double FFmpeg::getOutputSize(FFMediaInfo::SizeUnit unit)
 {
-    double s = outputSize;
+    double s = _outputSize;
     if (unit == FFMediaInfo::KB) s = s/1024;
     if (unit == FFMediaInfo::MB) s = s/1024/1024;
     return s;
@@ -163,7 +182,7 @@ double FFmpeg::getOutputSize(FFMediaInfo::SizeUnit unit)
 
 double FFmpeg::getOutputBitrate(FFMediaInfo::BitrateUnit unit)
 {
-    double bitrate = outputBitrate;
+    double bitrate = _outputBitrate;
     if (unit == FFMediaInfo::Kbps) bitrate = bitrate/1024;
     if (unit == FFMediaInfo::Mbps) bitrate = bitrate/1024/1024;
     return bitrate;
@@ -171,37 +190,37 @@ double FFmpeg::getOutputBitrate(FFMediaInfo::BitrateUnit unit)
 
 double FFmpeg::getEncodingSpeed()
 {
-    return encodingSpeed;
+    return _encodingSpeed;
 }
 
 QTime FFmpeg::getTimeRemaining()
 {
-    return timeRemaining;
+    return _timeRemaining;
 }
 
 FFQueueItem *FFmpeg::getCurrentItem()
 {
-    return currentItem;
+    return _currentItem;
 }
 
 QProcess::ProcessError FFmpeg::getLastError()
 {
-    return lastError;
+    return _lastError;
 }
 
 QString FFmpeg::getLastErrorMessage()
 {
-    return lastErrorMessage;
+    return _lastErrorMessage;
 }
 
 FFmpeg::Status FFmpeg::getStatus()
 {
-    return status;
+    return _status;
 }
 
 void FFmpeg::encode()
 {
-    if (status == Encoding) return;
+    if (_status == Encoding) return;
     setStatus(Encoding);
 
     //launch first item
@@ -210,50 +229,50 @@ void FFmpeg::encode()
 
 void FFmpeg::encode(FFQueueItem *item)
 {
-    encodingQueue << item;
+    _encodingQueue << item;
     encode();
 }
 
 void FFmpeg::encode(QList<FFQueueItem*> list)
 {
-    encodingQueue.append(list);
+    _encodingQueue.append(list);
     encode();
 }
 
 void FFmpeg::encode(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
 {
     FFQueueItem *item = new FFQueueItem(input,outputs,this);
-    encodingQueue << item;
+    _encodingQueue << item;
     encode();
 }
 
 void FFmpeg::encode(FFMediaInfo *input, FFMediaInfo *output)
 {
     FFQueueItem *item = new FFQueueItem(input,output,this);
-    encodingQueue << item;
+    _encodingQueue << item;
     encode();
 }
 
 int FFmpeg::addQueueItem(FFQueueItem *item)
 {
-    encodingQueue.append(item);
-    return encodingQueue.count()-1;
+    _encodingQueue.append(item);
+    return _encodingQueue.count()-1;
 }
 
 void FFmpeg::removeQueueItem(int id)
 {
-    FFQueueItem *i = encodingQueue.takeAt(id);
+    FFQueueItem *i = _encodingQueue.takeAt(id);
     delete i;
 }
 
 FFQueueItem *FFmpeg::takeQueueItem(int id)
 {
-    return encodingQueue.takeAt(id);
+    return _encodingQueue.takeAt(id);
 }
 
 void FFmpeg::clearQueue()
 {
-    while(encodingQueue.count() > 0)
+    while(_encodingQueue.count() > 0)
     {
         removeQueueItem(0);
     }
@@ -261,40 +280,40 @@ void FFmpeg::clearQueue()
 
 void FFmpeg::stop(int timeout)
 {
-    if (ffmpeg->state() == QProcess::NotRunning) return;
-    ffmpeg->write("q");
-    if (!ffmpeg->waitForFinished(timeout))
+    if (_ffmpeg->state() == QProcess::NotRunning) return;
+    _ffmpeg->write("q");
+    if (!_ffmpeg->waitForFinished(timeout))
     {
-        ffmpeg->kill();
+        _ffmpeg->kill();
     }
     setStatus(Waiting);
 }
 
 void FFmpeg::stdError()
 {
-    QString output = ffmpeg->readAllStandardError();
+    QString output = _ffmpeg->readAllStandardError();
     readyRead(output);
 }
 
 void FFmpeg::stdOutput()
 {
-    QString output = ffmpeg->readAllStandardOutput();
+    QString output = _ffmpeg->readAllStandardOutput();
     readyRead(output);
 }
 
 void FFmpeg::started()
 {
-    ffmpegOutput = "";
+    _ffmpegOutput = "";
 }
 
 void FFmpeg::finished()
 {
-    if (status == Encoding)
+    if (_status == Encoding)
     {
-        currentItem->setStatus(FFQueueItem::Finished);
-        emit encodingFinished(currentItem);
+        _currentItem->setStatus(FFQueueItem::Finished);
+        emit encodingFinished(_currentItem);
         //move to history
-        encodingHistory << currentItem;
+        _encodingHistory << _currentItem;
         encodeNextItem();
     }
     else
@@ -331,34 +350,34 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
         error = "An unknown error occured.";
     }
 
-    if (status == Encoding)
+    if (_status == Encoding)
     {
-        currentItem->setStatus(FFQueueItem::Stopped);
-        encodingHistory << currentItem;
+        _currentItem->setStatus(FFQueueItem::Stopped);
+        _encodingHistory << _currentItem;
     }
 
     setStatus(Error);
-    lastErrorMessage = error;
-    lastError = e;
+    _lastErrorMessage = error;
+    _lastError = e;
     emit processError(error);
 }
 
 void FFmpeg::encodeNextItem()
 {
-    if (encodingQueue.count() == 0)
+    if (_encodingQueue.count() == 0)
     {
         setStatus(Waiting);
         return;
     }
 
-    currentItem = encodingQueue.takeAt(0);
+    _currentItem = _encodingQueue.takeAt(0);
 
     //generate arguments
     QStringList arguments("-stats");
     arguments << "-y";
 
     //add inputs
-    foreach(FFMediaInfo *input,currentItem->getInputMedias())
+    foreach(FFMediaInfo *input,_currentItem->getInputMedias())
     {
         //add custom options
         arguments.append(input->getFFmpegOptions());
@@ -366,13 +385,15 @@ void FFmpeg::encodeNextItem()
         arguments << "-i" << QDir::toNativeSeparators(input->getFileName());
     }
     //add outputs
-    foreach(FFMediaInfo *output,currentItem->getOutputMedias())
+    foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
     {
         //add custom options
         arguments.append(output->getFFmpegOptions());
 
         //video
-        QString codec = output->getVideoCodec().getName();
+        QString codec = "";
+        if (output->getVideoCodec() != nullptr) codec = output->getVideoCodec()->name();
+
 
         if (output->hasVideo() && codec != "")
         {
@@ -412,7 +433,8 @@ void FFmpeg::encodeNextItem()
         }
 
         //audio
-        QString acodec = output->getAudioCodec().getName();
+        QString acodec = "";
+        if (output->getAudioCodec() != nullptr) acodec = output->getAudioCodec()->name();
 
         if (output->hasAudio() && acodec != "")
         {
@@ -447,65 +469,79 @@ void FFmpeg::encodeNextItem()
     }
 
     //launch
-    ffmpeg->setArguments(arguments);
-    ffmpeg->start(QIODevice::ReadWrite);
+    _ffmpeg->setArguments(arguments);
+    _ffmpeg->start(QIODevice::ReadWrite);
 
-    currentItem->setStatus(FFQueueItem::InProgress);
-    startTime = QTime::currentTime();
-    emit  encodingStarted(currentItem);
+    _currentItem->setStatus(FFQueueItem::InProgress);
+    _startTime = QTime::currentTime();
+    emit  encodingStarted(_currentItem);
 }
 
 void FFmpeg::setStatus(Status st)
 {
-    status = st;
-    emit statusChanged(status);
+    _status = st;
+    emit statusChanged(_status);
+}
+
+bool codecSorter(FFCodec *c1,FFCodec *c2)
+{
+    return c1->prettyName().toLower() < c2->prettyName().toLower();
 }
 
 void FFmpeg::gotCodecs(QString output)
 {
-    videoEncoders.clear();
-    audioEncoders.clear();
+    //delete all
+    qDeleteAll(_videoEncoders);
+    qDeleteAll(_audioEncoders);
+    qDeleteAll(_videoDecoders);
+    qDeleteAll(_audioDecoders);
+    _videoEncoders.clear();
+    _audioEncoders.clear();
+    _videoDecoders.clear();
+    _audioDecoders.clear();
+
+    //add copy
+    FFCodec *copyVideo = new FFCodec("copy","Copy video stream",true,true,false,true,true,true,this);
+    _videoEncoders << copyVideo;
+    FFCodec *copyAudio = new FFCodec("copy","Copy video stream",false,true,false,true,true,true,this);
+    _audioEncoders << copyAudio;
+
     //get codecs
     QStringList codecs = output.split("\n");
     for (int i = 0 ; i < codecs.count() ; i++)
     {
         QString codec = codecs[i];
 
-        //TODO adjust regexp to detect if encoding and/or decoding
-
         //if video encoding
-        QRegularExpression reVideo("[D.]EV[I.][L.][S.] (\\w+) +([^\\(\\n]+)");
-        QRegularExpressionMatch matchVideo = reVideo.match(codec);
-        if (matchVideo.hasMatch())
+        QRegularExpression re("([D.])([E.])([VA])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
+        QRegularExpressionMatch match = re.match(codec);
+        if (match.hasMatch())
         {
-
-            QString codecName = matchVideo.captured(1);
-            QString codecPrettyName = matchVideo.captured(2);
-            FFCodec co(codecName,codecPrettyName,true);
-            videoEncoders << co;
-        }
-        //if audio encoding
-        QRegularExpression reAudio("[D.]EA[I.][L.][S.] (\\w+) +([^\\(\\n]+)");
-        QRegularExpressionMatch matchAudio = reAudio.match(codec);
-        if (matchAudio.hasMatch())
-        {
-            QString codecName = matchAudio.captured(1);
-            QString codecPrettyName = matchAudio.captured(2);
-            FFCodec co(codecName,codecPrettyName,false);
-            audioEncoders << co;
+            bool decode = match.captured(1) == "D";
+            bool encode = match.captured(2) == "E";
+            bool video = match.captured(3) == "V";
+            bool iframe = match.captured(4) == "I";
+            bool lossy = match.captured(5) == "L";
+            bool lossless = match.captured(6) == "S";
+            QString codecName = match.captured(7);
+            QString codecPrettyName = match.captured(8);
+            FFCodec *co = new FFCodec(codecName,codecPrettyName,video,encode,decode,lossy,lossless,iframe,this);
+            if (video && encode) _videoEncoders << co;
+            else if (!video && encode) _audioEncoders << co;
+            else if (video && decode) _videoDecoders << co;
+            else if (!video && decode) _audioDecoders << co;
         }
     }
 
-    //Sort codecs by pretty name
-    std::sort(videoEncoders.begin(),videoEncoders.end());
-    std::sort(audioEncoders.begin(),audioEncoders.end());
+    std::sort(_videoEncoders.begin(),_videoEncoders.end(),codecSorter);
+    std::sort(_audioEncoders.begin(),_audioEncoders.end(),codecSorter);
 }
 
 void FFmpeg::readyRead(QString output)
 {
     emit newOutput(output);
 
-    ffmpegOutput = ffmpegOutput + output;
+    _ffmpegOutput = _ffmpegOutput + output;
 
     QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d) bitrate= *(\\d+).\\d+kbits\\/s.* speed= *(\\d+.\\d*)x");
     QRegularExpressionMatch match = reProgress.match(output);
@@ -518,24 +554,24 @@ void FFmpeg::readyRead(QString output)
         QString speed = match.captured(6);
 
         //frame
-        currentFrame = frame.toInt();
+        _currentFrame = frame.toInt();
 
         //size
         int sizeKB = size.toInt();
-        outputSize = sizeKB*1024;
+        _outputSize = sizeKB*1024;
 
         //bitrate
         int bitrateKB = bitrate.toInt();
-        outputBitrate = bitrateKB*1024;
+        _outputBitrate = bitrateKB*1024;
 
         //speed
-        encodingSpeed = speed.toDouble();
+        _encodingSpeed = speed.toDouble();
 
         //time remaining
         //get current input duration
         //gets the current item duration
         int duration = 0;
-        foreach(FFMediaInfo *input,currentItem->getInputMedias())
+        foreach(FFMediaInfo *input,_currentItem->getInputMedias())
         {
             if (input->hasVideo())
             {
@@ -545,11 +581,11 @@ void FFmpeg::readyRead(QString output)
         }
         if (duration > 0)
         {
-            if (currentFrame > 0)
+            if (_currentFrame > 0)
             {
-                int elapsed = startTime.elapsed() / 1000;
-                int remaining = elapsed*duration/currentFrame - elapsed;
-                timeRemaining = QTime(0,0,0).addSecs(remaining);
+                int elapsed = _startTime.elapsed() / 1000;
+                int remaining = elapsed*duration/_currentFrame - elapsed;
+                _timeRemaining = QTime(0,0,0).addSecs(remaining);
             }
         }
         emit progress();

@@ -1,10 +1,13 @@
 #ifndef FFMPEGCODEC_H
 #define FFMPEGCODEC_H
 
+#include <QObject>
+
 #include <QString>
 
-class FFCodec
+class FFCodec : public QObject
 {
+    Q_OBJECT
 public:
     /**
      * @brief FFmpegCodec Constructs a codec instance for FFmpeg
@@ -14,48 +17,73 @@ public:
      * @param e Is the codec an encoder
      * @param d Is the codec a decoder
      */
-    FFCodec(QString n = "", QString prettyN = "", bool vid = true, bool encode = true, bool decode = true);
+    FFCodec(QString name = "", QString prettyName = "", bool video = true, bool encode = true, bool decode = true, bool lossy = true, bool lossless = true, bool iframe = false,QObject *parent = nullptr);
     /**
-     * @brief getName Gets the internal name
+     * @brief name Gets the internal name
      * @return The internal name
      */
-    QString getName();
+    const QString name();
     /**
-     * @brief getPrettyName Gets the pretty name
+     * @brief prettyName Gets the pretty name
      * @return The pretty name
      */
-    QString getPrettyName();
+    const QString prettyName();
     /**
      * @brief isVideo Is this a video codec
      * @return
      */
-    bool isVideo();
+    bool isVideo() const;
     /**
      * @brief isAudio Is this an audio codec
      * @return
      */
-    bool isAudio();
+    bool isAudio() const;
     /**
      * @brief isEncoder Can this codec be used for encoding
      * @return The encoding ability
      */
-    bool isEncoder();
+    bool isEncoder() const;
     /**
-     * @brief isDecoderCan this codec be used for decoding
+     * @brief isDecoder Can this codec be used for decoding
      * @return The decoding ability
      */
-    bool isDecoder();
+    bool isDecoder() const;
+    /**
+     * @brief isLossy Does this codec use lossy compression
+     * @return Lossy compression ability
+     */
+    bool isLossy() const;
+    /**
+     * @brief isLossless Does this codec use lossless compression
+     * @return Lossless compression ability
+     */
+    bool isLossless() const;
+    /**
+     * @brief isIframe Is this codec intra-frame
+     * @return I-Frame ability
+     */
+    bool isIframe() const;
 
-    bool operator<(FFCodec c);
-    bool operator>(FFCodec c);
+    void setName(const QString &name);
+    void setPrettyName(const QString &prettyName);
+    void setDecoder(bool decoder);
+    void setEncoder(bool encoder);
+    void setAudio(bool audio);
+    void setVideo(bool video);
+    void setLossy(bool lossy);
+    void setLossless(bool lossless);
+    void setIframe(bool iframe);
 
 private:
-    QString name;
-    QString prettyName;
-    bool decoder;
-    bool encoder;
-    bool audio;
-    bool video;
+    QString _name;
+    QString _prettyName;
+    bool _decoder;
+    bool _encoder;
+    bool _audio;
+    bool _video;
+    bool _lossy;
+    bool _lossless;
+    bool _iframe;
 
 protected:
 

@@ -34,19 +34,31 @@ public:
      * @param reload Forces reloading the list from the ffmpeg binary
      * @return The codec list
      */
-    QList<FFCodec> getEncoders(bool reload = false);
+    QList<FFCodec *> getEncoders(bool reload = false);
     /**
      * @brief getVideoEncoders Gets the list of video encoders supported by the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
      * @return The video codec list
      */
-    QList<FFCodec> getVideoEncoders(bool reload = false);
+    QList<FFCodec *> getVideoEncoders(bool reload = false);
     /**
      * @brief getVideoEncoders Gets the list of audio encoders supported by the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
      * @return The audio codec list
      */
-    QList<FFCodec> getAudioEncoders(bool reload = false);
+    QList<FFCodec *> getAudioEncoders(bool reload = false);
+    /**
+     * @brief getCodec Gets a video encoder using its name
+     * @param name The name of the codec
+     * @return A pointer to the codec
+     */
+    FFCodec *getVideoEncoder(QString name);
+    /**
+     * @brief getCodec Gets an audio encoder using its name
+     * @param name The name of the codec
+     * @return A pointer to the codec
+     */
+    FFCodec *getAudioEncoder(QString name);
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -238,59 +250,61 @@ private:
     /**
      * @brief ffmpeg The process used to handle the binary
      */
-    QProcess *ffmpeg;
+    QProcess *_ffmpeg;
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */
-    QList<FFCodec> videoEncoders;
+    QList<FFCodec *> _videoEncoders;
     /**
      * @brief audioEncoders The list of the encoders supported by the current version of FFmpeg
      */
-    QList<FFCodec> audioEncoders;
+    QList<FFCodec *> _audioEncoders;
+    QList<FFCodec *> _videoDecoders;
+    QList<FFCodec *> _audioDecoders;
     /**
      * @brief help The FFmpeg help returned by the -h command
      */
-    QString help;
+    QString _help;
     /**
      * @brief longHelp The longer FFmpeg help returned by the -h long command
      */
-    QString longHelp;
+    QString _longHelp;
     /**
      * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
      */
-    QString ffmpegOutput;
+    QString _ffmpegOutput;
     /**
      * @brief status FFmpeg current status
      */
-    Status status;
+    Status _status;
     /**
      * @brief lastError The last error that occured
      */
-    QProcess::ProcessError lastError;
+    QProcess::ProcessError _lastError;
     /**
      * @brief lastErrorMessage The human readable description of the last error
      */
-    QString lastErrorMessage;
+    QString _lastErrorMessage;
     //=== Current Encoding ===
-    int currentFrame;
-    QTime startTime;
-    double outputSize;
-    int outputBitrate;
-    double encodingSpeed;
-    QTime timeRemaining;
+    int _currentFrame;
+    QTime _startTime;
+    double _outputSize;
+    int _outputBitrate;
+    double _encodingSpeed;
+    QTime _timeRemaining;
     //=== Queue ===
     /**
      * @brief encodingQueue The queue of items to be encoded
      */
-    QList<FFQueueItem *> encodingQueue;
+    QList<FFQueueItem *> _encodingQueue;
     /**
      * @brief encodingHistory The list of items which has been encoded
      */
-    QList<FFQueueItem *> encodingHistory;
+    QList<FFQueueItem *> _encodingHistory;
     /**
      * @brief currentItem The item currently being encoded
      */
-    FFQueueItem *currentItem;
+    FFQueueItem *_currentItem;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
@@ -302,6 +316,7 @@ private:
      * @param The output from FFmpeg
      */
     void readyRead(QString output);
+    //bool codecSorter(FFCodec *c1, FFCodec *c2);
 };
 
 #endif // FFMPEG_H

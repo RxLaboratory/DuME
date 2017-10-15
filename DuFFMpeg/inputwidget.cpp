@@ -47,13 +47,13 @@ void InputWidget::on_inputBrowseButton_clicked()
     if (mediaInfo->isImageSequence()) mediaInfoString += "yes";
     else mediaInfoString += "no";
 
-    mediaInfoString += "\n\nVideo codec: " + mediaInfo->getVideoCodec().getPrettyName();
+    mediaInfoString += "\n\nVideo codec: " + mediaInfo->getVideoCodec()->prettyName();
     mediaInfoString += "\nResolution: " + QString::number(mediaInfo->getVideoWidth()) + "x" + QString::number(mediaInfo->getVideoHeight());
     mediaInfoString += "\nFramerate: " + QString::number(mediaInfo->getVideoFramerate()) + " fps";
     int bitrate = mediaInfo->getVideoBitrate(FFMediaInfo::Mbps);
     mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
 
-    mediaInfoString += "\n\nAudio codec: " + mediaInfo->getAudioCodec().getPrettyName();
+    mediaInfoString += "\n\nAudio codec: " + mediaInfo->getAudioCodec()->prettyName();
     mediaInfoString += "\nSampling rate: " + QString::number(mediaInfo->getAudioSamplingRate()) + " Hz";
     int abitrate = mediaInfo->getAudioBitrate(FFMediaInfo::Kbps);
     mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " Kbps";
