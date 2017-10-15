@@ -1,5 +1,9 @@
 #include "outputwidget.h"
 
+#ifdef QT_DEBUG
+#include <QtDebug>
+#endif
+
 OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     QWidget(parent)
 {
@@ -243,17 +247,37 @@ void OutputWidget::ffmpeg_init()
     videoCodecsBox->clear();
     audioCodecsBox->clear();
     QList<FFCodec *> encoders = ffmpeg->getEncoders(true);
+
+    int videoFilter = videoCodecsFilterBox->currentIndex();
+    int audioFilter = audioCodecsFilterBox->currentIndex();
+
     foreach(FFCodec *encoder,encoders)
     {
         if (encoder->name() == "copy") continue;
         if (encoder->isVideo())
         {
-            videoCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
+            if (videoFilter <= 0 || (videoFilter == 1 && encoder->isLossy()) || (videoFilter == 2 && encoder->isLossless()) || (videoFilter == 3 && encoder->isIframe()))
+            {
+                videoCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
+            }
         }
 
         if (encoder->isAudio())
         {
-            audioCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
+            if (audioFilter <= 0 || (audioFilter == 1 && encoder->isLossy()) || (audioFilter == 2 && encoder->isLossless()))
+            {
+                audioCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
+            }
         }
     }
+}
+
+void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1)
+{
+    ffmpeg_init();
+}
+
+void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
+{
+    ffmpeg_init();
 }

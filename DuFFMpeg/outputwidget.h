@@ -35,6 +35,9 @@ private slots:
     void on_audioBitRateEdit_valueChanged(int arg1);
     void on_videoWidthButton_valueChanged();
     void on_videoHeightButton_valueChanged();
+    void on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1);
+
+    void on_audioCodecsFilterBox_currentIndexChanged(int index);
 
 private:
     /**
