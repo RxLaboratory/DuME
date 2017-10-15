@@ -501,9 +501,9 @@ void FFmpeg::gotCodecs(QString output)
     _audioDecoders.clear();
 
     //add copy
-    FFCodec *copyVideo = new FFCodec("copy","Copy video stream",true,true,false,true,true,true,this);
+    FFCodec *copyVideo = new FFCodec("copy","Copy video stream",FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _videoEncoders << copyVideo;
-    FFCodec *copyAudio = new FFCodec("copy","Copy video stream",false,true,false,true,true,true,this);
+    FFCodec *copyAudio = new FFCodec("copy","Copy video stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
     //get codecs
@@ -513,23 +513,26 @@ void FFmpeg::gotCodecs(QString output)
         QString codec = codecs[i];
 
         //if video encoding
-        QRegularExpression re("([D.])([E.])([VA])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
+        QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
         QRegularExpressionMatch match = re.match(codec);
         if (match.hasMatch())
         {
-            bool decode = match.captured(1) == "D";
-            bool encode = match.captured(2) == "E";
-            bool video = match.captured(3) == "V";
-            bool iframe = match.captured(4) == "I";
-            bool lossy = match.captured(5) == "L";
-            bool lossless = match.captured(6) == "S";
             QString codecName = match.captured(7);
             QString codecPrettyName = match.captured(8);
-            FFCodec *co = new FFCodec(codecName,codecPrettyName,video,encode,decode,lossy,lossless,iframe,this);
-            if (video && encode) _videoEncoders << co;
-            else if (!video && encode) _audioEncoders << co;
-            else if (video && decode) _videoDecoders << co;
-            else if (!video && decode) _audioDecoders << co;
+            FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
+
+            co->setDecoder(match.captured(1) == "D");
+            co->setEncoder(match.captured(2) == "E");
+            co->setVideo(match.captured(3) == "V");
+            co->setAudio(match.captured(3) == "A");
+            co->setIframe(match.captured(4) == "I");
+            co->setLossy(match.captured(5) == "L");
+            co->setLossless(match.captured(6) == "S");
+
+            if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
+            else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
+            else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
+            else if (co->isAudio() && co->isDecoder()) _audioDecoders << co;
         }
     }
 

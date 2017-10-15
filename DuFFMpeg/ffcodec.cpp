@@ -1,16 +1,30 @@
 #include "ffcodec.h"
 
-FFCodec::FFCodec(QString name, QString prettyName, bool video, bool encode, bool decode, bool lossy, bool lossless, bool iframe, QObject *parent)  : QObject(parent)
+#ifdef QT_DEBUG
+#include <QtDebug>
+#endif
+
+FFCodec::FFCodec(QObject *parent)  : QObject(parent)
+{
+    _name = "";
+    _prettyName = "";
+    _abilities =  Abilities(0);
+}
+
+
+FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : QObject(parent)
 {
     _name = name;
     _prettyName = prettyName;
-    _encoder = encode;
-    _decoder = decode;
-    _video = video;
-    _audio = !video;
-    _lossy = lossy;
-    _lossless = lossless;
-    _iframe = iframe;
+    _abilities =  Abilities(0);
+}
+
+
+FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : QObject(parent)
+{
+    _name = name;
+    _prettyName = prettyName;
+    _abilities = abilities;
 }
 
 const QString FFCodec::name()
@@ -25,37 +39,37 @@ const QString FFCodec::prettyName()
 
 bool FFCodec::isVideo() const
 {
-    return _video;
+    return _abilities.testFlag(Video);
 }
 
 bool FFCodec::isAudio() const
 {
-    return _audio;
+    return _abilities.testFlag(Audio);
 }
 
 bool FFCodec::isEncoder() const
 {
-    return _encoder;
+    return _abilities.testFlag(Encoder);
 }
 
 bool FFCodec::isDecoder() const
 {
-    return _decoder;
+    return _abilities.testFlag(Decoder);
 }
 
 bool FFCodec::isLossy() const
 {
-    return _lossy;
+    return _abilities.testFlag(Lossy);
 }
 
 bool FFCodec::isLossless() const
 {
-    return _lossless;
+    return _abilities.testFlag(Lossless);
 }
 
 bool FFCodec::isIframe() const
 {
-    return _iframe;
+    return _abilities.testFlag(IFrame);
 }
 
 void FFCodec::setName(const QString &name)
@@ -70,35 +84,40 @@ void FFCodec::setPrettyName(const QString &prettyName)
 
 void FFCodec::setDecoder(bool decoder)
 {
-    _decoder = decoder;
+    _abilities.setFlag(Decoder,decoder);
 }
 
 void FFCodec::setEncoder(bool encoder)
 {
-    _encoder = encoder;
+    _abilities.setFlag(Encoder,encoder);
 }
 
 void FFCodec::setAudio(bool audio)
 {
-    _audio = audio;
+    _abilities.setFlag(Audio,audio);
 }
 
 void FFCodec::setVideo(bool video)
 {
-    _video = video;
+    _abilities.setFlag(Video,video);
 }
 
 void FFCodec::setLossy(bool lossy)
 {
-    _lossy = lossy;
+    _abilities.setFlag(Lossy,lossy);
 }
 
 void FFCodec::setLossless(bool lossless)
 {
-    _lossless = lossless;
+    _abilities.setFlag(Lossless,lossless);
 }
 
 void FFCodec::setIframe(bool iframe)
 {
-    _iframe = iframe;
+    _abilities.setFlag(IFrame,iframe);
+}
+
+void FFCodec::setAbilities(const Abilities &abilities)
+{
+    _abilities = abilities;
 }

@@ -9,15 +9,42 @@ class FFCodec : public QObject
 {
     Q_OBJECT
 public:
+
+    /**
+     * @brief The type of media handled by the codec
+     */
+    enum Ability { Audio = 1 << 0,
+                   Video = 1 << 1,
+                   Subtitle = 1 << 2,
+                   Encoder = 1 << 3,
+                   Decoder = 1 << 4,
+                   Lossy = 1 << 5,
+                   Lossless = 1 << 6,
+                   IFrame = 1 << 7
+                 };
+    Q_DECLARE_FLAGS(Abilities, Ability)
+
     /**
      * @brief FFmpegCodec Constructs a codec instance for FFmpeg
-     * @param n The internal name used by FFmpeg
-     * @param prettyN The pretty name used for user interaction
-     * @pqrqm v Is this a video codec (false if audio)
-     * @param e Is the codec an encoder
-     * @param d Is the codec a decoder
+     * @param name The internal name used by FFmpeg
      */
-    FFCodec(QString name = "", QString prettyName = "", bool video = true, bool encode = true, bool decode = true, bool lossy = true, bool lossless = true, bool iframe = false,QObject *parent = nullptr);
+    FFCodec(QObject *parent = nullptr);
+
+    /**
+     * @brief FFmpegCodec Constructs a codec instance for FFmpeg
+     * @param name The internal name used by FFmpeg
+     * @param prettyName The pretty name used for user interaction
+     */
+    FFCodec(QString name, QString prettyName = "", QObject *parent = nullptr);
+
+    /**
+     * @brief FFmpegCodec Constructs a codec instance for FFmpeg
+     * @param name The internal name used by FFmpeg
+     * @param prettyName The pretty name used for user interaction
+     * @param abilities The abilities of the codec
+     */
+    FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent = nullptr);
+
     /**
      * @brief name Gets the internal name
      * @return The internal name
@@ -66,27 +93,27 @@ public:
 
     void setName(const QString &name);
     void setPrettyName(const QString &prettyName);
-    void setDecoder(bool decoder);
-    void setEncoder(bool encoder);
-    void setAudio(bool audio);
-    void setVideo(bool video);
-    void setLossy(bool lossy);
-    void setLossless(bool lossless);
-    void setIframe(bool iframe);
+    void setDecoder(bool decoder = true);
+    void setEncoder(bool encoder = true);
+    void setAudio(bool audio = true);
+    void setVideo(bool video = true);
+    void setLossy(bool lossy = true);
+    void setLossless(bool lossless = true);
+    void setIframe(bool iframe = true);
+    void setAbilities(const Abilities &abilities);
+
+
+
 
 private:
     QString _name;
     QString _prettyName;
-    bool _decoder;
-    bool _encoder;
-    bool _audio;
-    bool _video;
-    bool _lossy;
-    bool _lossless;
-    bool _iframe;
+    Abilities _abilities;
 
 protected:
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(FFCodec::Abilities)
 
 #endif // FFMPEGCODEC_H
