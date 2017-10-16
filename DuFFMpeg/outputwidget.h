@@ -33,8 +33,8 @@ private slots:
     void on_audioQualitySlider_sliderReleased();
     void on_audioQualitySlider_valueChanged(int value);
     void on_audioBitRateEdit_valueChanged(int arg1);
-    void on_videoWidthButton_valueChanged();
-    void on_videoHeightButton_valueChanged();
+    void on_videoWidthButton_valueChanged(int val);
+    void on_videoHeightButton_valueChanged(int val);
     void on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1);
     void on_audioCodecsFilterBox_currentIndexChanged(int index);
     void on_addParam_clicked();

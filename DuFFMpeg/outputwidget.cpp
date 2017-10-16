@@ -97,7 +97,6 @@ FFMediaInfo *OutputWidget::getMediaInfo()
     return _mediaInfo;
 }
 
-
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
     videoTranscodeWidget->setEnabled(checked);
@@ -246,12 +245,12 @@ void OutputWidget::on_audioBitRateEdit_valueChanged(int arg1)
     audioQualitySlider->setValue(quality);
 }
 
-void OutputWidget::on_videoWidthButton_valueChanged()
+void OutputWidget::on_videoWidthButton_valueChanged(int val)
 {
     aspectRatio();
 }
 
-void OutputWidget::on_videoHeightButton_valueChanged()
+void OutputWidget::on_videoHeightButton_valueChanged(int val)
 {
     aspectRatio();
 }
