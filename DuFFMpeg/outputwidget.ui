@@ -51,7 +51,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="browseButton">
+      <widget class="QPushButton" name="outputBrowseButton">
        <property name="text">
         <string>Browse...</string>
        </property>
@@ -68,7 +68,7 @@
       <enum>QTabWidget::West</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
