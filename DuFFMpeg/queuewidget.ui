@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -34,14 +34,43 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="handleWidth">
-      <number>10</number>
-     </property>
+     <widget class="QTabWidget" name="inputTab">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="inputTab1">
+       <attribute name="title">
+        <string>Input 1</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>3</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>1</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="addInputTab">
+       <attribute name="title">
+        <string>Add...</string>
+       </attribute>
+      </widget>
+     </widget>
      <widget class="QTabWidget" name="outputTab">
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab1">
+      <widget class="QWidget" name="outputTab1">
        <attribute name="title">
         <string>Output 1</string>
        </attribute>
@@ -63,7 +92,7 @@
         </property>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab2">
+      <widget class="QWidget" name="addOutputTab">
        <attribute name="title">
         <string>Add...</string>
        </attribute>

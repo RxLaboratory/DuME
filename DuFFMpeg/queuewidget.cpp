@@ -10,8 +10,8 @@ QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
     inputWidget = new InputWidget(ffmpeg,this);
     outputWidget = new OutputWidget(ffmpeg,this);
 
-    splitter->insertWidget(0,inputWidget);
-    tab1->layout()->addWidget(outputWidget);
+    inputTab1->layout()->addWidget(inputWidget);
+    outputTab1->layout()->addWidget(outputWidget);
 
     ffmpeg_init();
 
