@@ -45,6 +45,27 @@ bool FFmpeg::setBinaryFileName(QString path)
     }
 }
 
+void FFmpeg::runCommand(QString commands)
+{
+    //detect arguments
+    QRegularExpression re("(\"[^\"]*\"|[\\S]+)");
+    QRegularExpressionMatchIterator i = re.globalMatch(commands);
+    QStringList commandList;
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        QString command = match.captured(1);
+        command.replace("\"","");
+        commandList << command;
+    }
+    runCommand(commandList);
+}
+
+void FFmpeg::runCommand(QStringList commands)
+{
+    _ffmpeg->setArguments(commands);
+    _ffmpeg->start();
+}
+
 QList<FFCodec *> FFmpeg::getEncoders(bool reload)
 {
 #ifdef QT_DEBUG

@@ -26,7 +26,7 @@ public:
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
      */
-    enum Status { Waiting, Encoding, Error };
+    enum Status { Waiting, Encoding, Error, Other };
     Q_ENUM(Status)
 
     /**
@@ -230,6 +230,16 @@ public slots:
      * @return true if the exe is found
      */
     bool setBinaryFileName(QString path);
+    /**
+     * @brief runCommand Runs FFmpeg with the commands
+     * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
+     */
+    void runCommand(QString commands);
+    /**
+     * @brief runCommand Runs FFmpeg with the commands
+     * @param commands The arguments
+     */
+    void runCommand(QStringList commands);
 
 private slots:
     //FFmpeg signals
