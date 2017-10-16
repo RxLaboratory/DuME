@@ -402,6 +402,14 @@ QSplitter::handle {
     background: #434343;
 }
 
+QSplitter::handle:vertical {
+    image: url(:/icons/microkeyboard);
+}
+
+QSplitter::handle:horizontal {
+    image: url(:/icons/hsplitter);
+}
+
 QSplitter::handle:pressed {
     background-color: #e3e3e3;
 }

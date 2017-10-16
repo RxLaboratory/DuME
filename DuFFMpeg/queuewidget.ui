@@ -34,6 +34,9 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="handleWidth">
+      <number>9</number>
+     </property>
      <widget class="QTabWidget" name="inputTab">
       <property name="currentIndex">
        <number>0</number>
