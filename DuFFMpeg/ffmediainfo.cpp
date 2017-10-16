@@ -4,23 +4,7 @@
 
 FFMediaInfo::FFMediaInfo(QString ffmpegOutput, QObject *parent) : QObject(parent)
 {
-    _container = QStringList();
-    _fileName = "";
-    _duration = 0.0;
-    _videoWidth = 0;
-    _videoHeight = 0;
-    _videoFramerate = 0.0;
-    _audioSamplingRate = 0;
-    _size = 0;
-    _audioBitrate = 0;
-    _videoBitrate = 0;
-    _videoCodec = nullptr;
-    _audioCodec = nullptr;
-    _imageSequence = false;
-    _video = false;
-    _audio = false;
-
-    if (ffmpegOutput != "") updateInfo(ffmpegOutput);
+    updateInfo(ffmpegOutput);
 }
 
 void FFMediaInfo::updateInfo(QString ffmpegOutput)
@@ -33,13 +17,15 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _videoFramerate = 0.0;
     _audioSamplingRate = 0;
     _size = 0;
-    _audioBitrate = 0;
-    _videoBitrate = 0;
     _videoCodec = nullptr;
     _audioCodec = nullptr;
+    _audioBitrate = 0;
+    _videoBitrate = 0;
     _imageSequence = false;
     _video = false;
     _audio = false;
+    _ffmpegOptions.clear();
+    _ffmpegOutput = ffmpegOutput;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -65,8 +51,6 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
         }
 
         if (!input) continue;
-
-        _ffmpegOutput = _ffmpegOutput + "\n" + info;
 
         //test duration
         match = reDuration.match(info);
