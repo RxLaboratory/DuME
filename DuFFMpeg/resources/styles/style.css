@@ -73,12 +73,13 @@ QPlainTextEdit:disabled, QTextEdit:disabled,QTextBrowser:disabled, QLineEdit:dis
 QPushButton {
         border: 2px solid #6d6d6d;
 	color: #e3e3e3;
-	background-color: #6d6d6d !important;
+	background-color: #6d6d6d;
 	padding: 6px;
 }
 
 QPushButton:disabled {
         border-color:  #434343;
+	background-color: #434343;
 	color: #6d6d6d;
 }
 
@@ -182,6 +183,10 @@ QSpinBox:disabled, QDoubleSpinBox:disabled {
 
 QSlider::sub-page:horizontal {
     background-color: #6d6d6d;
+}
+
+QSlider::sub-page:horizontal:disabled {
+    background-color: #333333;
 }
 
 QSlider::add-page:horizontal {
