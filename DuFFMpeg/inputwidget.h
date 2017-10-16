@@ -17,10 +17,13 @@ public:
 
 private slots:
     void on_inputBrowseButton_clicked();
+    void on_addParamButton_clicked();
 
 private:
     FFmpeg *ffmpeg;
-    FFMediaInfo *mediaInfo;
+    FFMediaInfo *_mediaInfo;
+    QList<QLineEdit *> _customParamEdits;
+    QList<QLineEdit *> _customValueEdits;
 };
 
 #endif // INPUTWIDGET_H

@@ -1,17 +1,34 @@
 #include "inputwidget.h"
 
+#ifdef QT_DEBUG
+#include <QtDebug>
+#endif
+
 InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
     ffmpeg = ff;
-    mediaInfo = new FFMediaInfo("",this);
+    _mediaInfo = new FFMediaInfo("",this);
 }
 
 FFMediaInfo *InputWidget::getMediaInfo()
 {
-    return mediaInfo;
+    //update custom params before returning
+    _mediaInfo->clearFFmpegOptions();
+
+    for (int i = 0 ; i < _customParamEdits.count() ; i++)
+    {
+        QString param = _customParamEdits[i]->text();
+        if (param != "")
+        {
+            _mediaInfo->addFFmpegOption(param);
+            _mediaInfo->addFFmpegOption(_customValueEdits[0]->text());
+        }
+    }
+
+    return _mediaInfo;
 }
 
 void InputWidget::on_inputBrowseButton_clicked()
@@ -24,41 +41,51 @@ void InputWidget::on_inputBrowseButton_clicked()
     //update UI
     inputEdit->setText(inputPath);
 
-    mediaInfo->updateInfo(ffmpeg->getMediaInfoString(inputPath));
+    _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(inputPath));
 
     //Text
     QString mediaInfoString = "Media information";
 
-    mediaInfoString += "\n\nContainers: " + mediaInfo->getContainer().join(",");
+    mediaInfoString += "\n\nContainers: " + _mediaInfo->getContainer().join(",");
+
     QTime duration(0,0,0);
-    duration = duration.addSecs(mediaInfo->getDuration());
+    duration = duration.addSecs(_mediaInfo->getDuration());
     mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
-    double size = mediaInfo->getSize(FFMediaInfo::MB);
+
+    double size = _mediaInfo->getSize(FFMediaInfo::MB);
     int roundedSize = size*1000+0.5;
     size = roundedSize/1000;
     mediaInfoString += "\nSize: " + QString::number(size) + " MB";
+
     mediaInfoString += "\nContains video: ";
-    if (mediaInfo->hasVideo()) mediaInfoString += "yes";
+    if (_mediaInfo->hasVideo()) mediaInfoString += "yes";
     else mediaInfoString += "no";
     mediaInfoString += "\nContains audio: ";
-    if (mediaInfo->hasAudio()) mediaInfoString += "yes";
+    if (_mediaInfo->hasAudio()) mediaInfoString += "yes";
     else mediaInfoString += "no";
     mediaInfoString += "\nImage sequence: ";
-    if (mediaInfo->isImageSequence()) mediaInfoString += "yes";
+    if (_mediaInfo->isImageSequence()) mediaInfoString += "yes";
     else mediaInfoString += "no";
 
-    mediaInfoString += "\n\nVideo codec: " + mediaInfo->getVideoCodec()->prettyName();
-    mediaInfoString += "\nResolution: " + QString::number(mediaInfo->getVideoWidth()) + "x" + QString::number(mediaInfo->getVideoHeight());
-    mediaInfoString += "\nFramerate: " + QString::number(mediaInfo->getVideoFramerate()) + " fps";
-    int bitrate = mediaInfo->getVideoBitrate(FFMediaInfo::Mbps);
+    mediaInfoString += "\n\nVideo codec: ";
+    if(_mediaInfo->getVideoCodec() != nullptr)
+    {
+        mediaInfoString += _mediaInfo->getVideoCodec()->prettyName();
+    }
+    mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->getVideoWidth()) + "x" + QString::number(_mediaInfo->getVideoHeight());
+    mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->getVideoFramerate()) + " fps";
+    int bitrate = _mediaInfo->getVideoBitrate(FFMediaInfo::Mbps);
     mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
 
-    mediaInfoString += "\n\nAudio codec: " + mediaInfo->getAudioCodec()->prettyName();
-    mediaInfoString += "\nSampling rate: " + QString::number(mediaInfo->getAudioSamplingRate()) + " Hz";
-    int abitrate = mediaInfo->getAudioBitrate(FFMediaInfo::Kbps);
+    mediaInfoString += "\n\nAudio codec: ";
+    if(_mediaInfo->getAudioCodec() != nullptr)
+    {
+        mediaInfoString += _mediaInfo->getAudioCodec()->prettyName();
+    }
+    mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->getAudioSamplingRate()) + " Hz";
+    int abitrate = _mediaInfo->getAudioBitrate(FFMediaInfo::Kbps);
     mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " Kbps";
-
-    mediaInfoString += "\n\nFFmpeg analysis:\n" + mediaInfo->getFfmpegOutput();
+    mediaInfoString += "\n\nFFmpeg analysis:\n" + _mediaInfo->getFfmpegOutput();
 
     mediaInfosText->setText(mediaInfoString);
 
@@ -80,4 +107,20 @@ void InputWidget::on_inputBrowseButton_clicked()
     else if (sampling == 96000) samplingBox->setCurrentIndex(8);
     else samplingBox->setCurrentIndex(6);
     */
+}
+
+void InputWidget::on_addParamButton_clicked()
+{
+    //add a param and a value
+    QLineEdit *customParam = new QLineEdit(this);
+    customParam->setPlaceholderText("-param");
+    customParam->setMinimumWidth(100);
+    customParam->setMaximumWidth(100);
+    //the value edit
+    QLineEdit *customValue = new QLineEdit(this);
+    customValue->setPlaceholderText("Value");
+    //add to layout and lists
+    customParamsLayout->insertRow(customParamsLayout->rowCount()-1,customParam,customValue);
+    _customParamEdits << customParam;
+    _customValueEdits << customValue;
 }
