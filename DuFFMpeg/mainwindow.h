@@ -31,7 +31,7 @@ private slots:
     void ffmpeg_statusChanged(FFmpeg::Status status);
     void ffmpeg_progress();
     /**
-     * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get codec list and help
+     * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
      */
     void ffmpeg_init();
 
