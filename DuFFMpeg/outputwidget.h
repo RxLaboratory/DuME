@@ -36,16 +36,21 @@ private slots:
     void on_videoWidthButton_valueChanged();
     void on_videoHeightButton_valueChanged();
     void on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1);
-
     void on_audioCodecsFilterBox_currentIndexChanged(int index);
+    void on_addParam_clicked();
+    void on_addAudioParam_clicked();
 
 private:
     /**
      * @brief aspectRatio Computes the aspect ratio of the video
      */
     void aspectRatio();
-    FFmpeg *ffmpeg;
-    FFMediaInfo *mediaInfo;
+    FFmpeg *_ffmpeg;
+    FFMediaInfo *_mediaInfo;
+    QList<QLineEdit *> _customVideoParamEdits;
+    QList<QLineEdit *> _customVideoValueEdits;
+    QList<QLineEdit *> _customAudioParamEdits;
+    QList<QLineEdit *> _customAudioValueEdits;
 };
 
 #endif // OUTPUTWIDGET_H

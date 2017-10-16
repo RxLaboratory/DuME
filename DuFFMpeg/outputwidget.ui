@@ -63,12 +63,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget_2">
+    <widget class="QTabWidget" name="outputTabs">
      <property name="tabPosition">
       <enum>QTabWidget::West</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
@@ -92,11 +92,14 @@
        </property>
        <item>
         <widget class="QWidget" name="videoSelectionWidget" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout_13">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
           <item>
-           <widget class="QRadioButton" name="noVideoButton">
+           <widget class="QRadioButton" name="videoTranscodeButton">
             <property name="text">
-             <string>No Video</string>
+             <string>Transcode</string>
             </property>
            </widget>
           </item>
@@ -111,11 +114,24 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="videoTranscodeButton">
+           <widget class="QRadioButton" name="noVideoButton">
             <property name="text">
-             <string>Transcode</string>
+             <string>No Video</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -125,15 +141,21 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_4">
+         <layout class="QFormLayout" name="formLayout">
           <property name="horizontalSpacing">
            <number>3</number>
           </property>
           <property name="verticalSpacing">
            <number>3</number>
           </property>
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
           <property name="topMargin">
            <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
           </property>
           <property name="bottomMargin">
            <number>0</number>
@@ -155,7 +177,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="widthLabel">
             <property name="enabled">
              <bool>false</bool>
@@ -165,7 +187,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QSpinBox" name="videoWidthButton">
             <property name="enabled">
              <bool>false</bool>
@@ -187,7 +209,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="heightLabel">
             <property name="enabled">
              <bool>false</bool>
@@ -197,7 +219,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="4" column="1">
            <widget class="QSpinBox" name="videoHeightButton">
             <property name="enabled">
              <bool>false</bool>
@@ -219,14 +241,14 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="6" column="0">
            <widget class="QCheckBox" name="frameRateButton">
             <property name="text">
              <string>Frame Rate</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="6" column="1">
            <widget class="QComboBox" name="frameRateBox">
             <property name="enabled">
              <bool>false</bool>
@@ -310,7 +332,7 @@
             </item>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="8" column="1">
            <widget class="QDoubleSpinBox" name="frameRateEdit">
             <property name="enabled">
              <bool>false</bool>
@@ -329,8 +351,26 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="10" column="0">
            <widget class="QComboBox" name="videoCodecsFilterBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="frame">
              <bool>false</bool>
             </property>
@@ -356,21 +396,21 @@
             </item>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="10" column="1">
            <widget class="QComboBox" name="videoCodecsBox">
             <property name="frame">
              <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="12" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Bitrate</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="12" column="1">
            <widget class="QDoubleSpinBox" name="videoBitRateEdit">
             <property name="frame">
              <bool>false</bool>
@@ -386,14 +426,14 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="14" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Quality</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="14" column="1">
            <widget class="QSlider" name="videoQualitySlider">
             <property name="maximum">
              <number>100</number>
@@ -409,10 +449,41 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="1">
+          <item row="17" column="1">
            <widget class="QLabel" name="qualityLabel">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string>Very good</string>
+            </property>
+           </widget>
+          </item>
+          <item row="18" column="0">
+           <widget class="QPushButton" name="addParam">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Add parameter...</string>
             </property>
            </widget>
           </item>
@@ -456,15 +527,18 @@
        </property>
        <item>
         <widget class="QWidget" name="audioSelectionWidget" native="true">
-         <layout class="QFormLayout" name="formLayout_5">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="noAudioButton">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="audioTranscodeButton">
             <property name="text">
-             <string>No Audio</string>
+             <string>Transcode</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item>
            <widget class="QRadioButton" name="audioCopyButton">
             <property name="text">
              <string>Copy Stream</string>
@@ -474,12 +548,25 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QRadioButton" name="audioTranscodeButton">
+          <item>
+           <widget class="QRadioButton" name="noAudioButton">
             <property name="text">
-             <string>Transcode</string>
+             <string>No Audio</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -489,7 +576,25 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_6">
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="horizontalSpacing">
+           <number>3</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>3</number>
+          </property>
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QCheckBox" name="samplingButton">
             <property name="text">
@@ -510,6 +615,40 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QComboBox" name="audioCodecsFilterBox">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="frame">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>All codecs</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Lossy</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Lossless</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item row="1" column="1">
            <widget class="QComboBox" name="audioCodecsBox">
             <property name="frame">
@@ -517,14 +656,14 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_16">
             <property name="text">
              <string>Bitrate</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="2" column="1">
            <widget class="QSpinBox" name="audioBitRateEdit">
             <property name="frame">
              <bool>false</bool>
@@ -546,14 +685,14 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="1">
-           <widget class="QLabel" name="audioQualityLabel">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_17">
             <property name="text">
-             <string>(Nearly) Lossless</string>
+             <string>Quality</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="3" column="1">
            <widget class="QSlider" name="audioQualitySlider">
             <property name="maximum">
              <number>100</number>
@@ -566,33 +705,30 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="label_17">
+          <item row="4" column="1">
+           <widget class="QLabel" name="audioQualityLabel">
             <property name="text">
-             <string>Quality</string>
+             <string>(Nearly) Lossless</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QComboBox" name="audioCodecsFilterBox">
-            <property name="frame">
-             <bool>false</bool>
+          <item row="5" column="0">
+           <widget class="QPushButton" name="addAudioParam">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
             </property>
-            <item>
-             <property name="text">
-              <string>All codecs</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Lossy</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Lossless</string>
-             </property>
-            </item>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Add parameter...</string>
+            </property>
            </widget>
           </item>
          </layout>

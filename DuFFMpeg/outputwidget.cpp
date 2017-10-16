@@ -9,9 +9,11 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
 {
     setupUi(this);
 
-    ffmpeg = ff;
+    outputTabs->setCurrentIndex(0);
 
-    mediaInfo = new FFMediaInfo("",this);
+    _ffmpeg = ff;
+
+    _mediaInfo = new FFMediaInfo("",this);
 
     //populate sampling box
     samplingBox->addItem("8,000 Hz",QVariant(8000));
@@ -26,50 +28,75 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
 
     ffmpeg_init();
 
-    connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
+    connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
 }
 
 FFMediaInfo *OutputWidget::getMediaInfo()
 {
-    mediaInfo->updateInfo("");
+    _mediaInfo->updateInfo("");
 
-    mediaInfo->setFileName(outputEdit->text());
+    _mediaInfo->setFileName(outputEdit->text());
+
+    //VIDEO
     if (!noVideoButton->isChecked())
     {
-        mediaInfo->setVideo(true);
-        if (videoCopyButton->isChecked()) mediaInfo->setVideoCodec(ffmpeg->getVideoEncoder("copy"));
+        _mediaInfo->setVideo(true);
+        if (videoCopyButton->isChecked()) _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder("copy"));
         else
         {
-            mediaInfo->setVideoCodec(ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
+            _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
             if (resizeButton->isChecked())
             {
-                mediaInfo->setVideoWidth(videoWidthButton->value());
-                mediaInfo->setVideoHeight(videoHeightButton->value());
+                _mediaInfo->setVideoWidth(videoWidthButton->value());
+                _mediaInfo->setVideoHeight(videoHeightButton->value());
             }
             if (frameRateButton->isChecked())
             {
-                mediaInfo->setVideoFramerate(frameRateEdit->value());
+                _mediaInfo->setVideoFramerate(frameRateEdit->value());
             }
-            mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
-        }
-    }
-    if (!noAudioButton->isChecked())
-    {
-        mediaInfo->setAudio(true);
-        if (audioCopyButton->isChecked()) mediaInfo->setAudioCodec(ffmpeg->getAudioEncoder("copy"));
-        else
-        {
-            mediaInfo->setAudioCodec(ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
-            if (samplingButton->isChecked())
-            {
-                mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
-            }
-            mediaInfo->setAudioBitrate(audioBitRateEdit->value(),FFMediaInfo::Kbps);
+            _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
         }
     }
 
-    return mediaInfo;
+    //AUDIO
+    if (!noAudioButton->isChecked())
+    {
+        _mediaInfo->setAudio(true);
+        if (audioCopyButton->isChecked()) _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder("copy"));
+        else
+        {
+            _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
+            if (samplingButton->isChecked())
+            {
+                _mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
+            }
+            _mediaInfo->setAudioBitrate(audioBitRateEdit->value(),FFMediaInfo::Kbps);
+        }
+    }
+
+    //CUSTOM
+    for (int i = 0 ; i < _customVideoParamEdits.count() ; i++)
+    {
+        QString param = _customVideoParamEdits[i]->text();
+        if (param != "")
+        {
+            _mediaInfo->addFFmpegOption(param);
+            _mediaInfo->addFFmpegOption(_customVideoValueEdits[0]->text());
+        }
+    }
+    for (int i = 0 ; i < _customAudioParamEdits.count() ; i++)
+    {
+        QString param = _customAudioParamEdits[i]->text();
+        if (param != "")
+        {
+            _mediaInfo->addFFmpegOption(param);
+            _mediaInfo->addFFmpegOption(_customAudioValueEdits[0]->text());
+        }
+    }
+
+    return _mediaInfo;
 }
+
 
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
@@ -246,7 +273,7 @@ void OutputWidget::ffmpeg_init()
     //get codecs
     videoCodecsBox->clear();
     audioCodecsBox->clear();
-    QList<FFCodec *> encoders = ffmpeg->getEncoders(true);
+    QList<FFCodec *> encoders = _ffmpeg->getEncoders(true);
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
@@ -280,4 +307,39 @@ void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(const QString &ar
 void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_init();
+}
+
+void OutputWidget::on_addParam_clicked()
+{
+    //add a param and a value
+    QLineEdit *customParam = new QLineEdit(this);
+    customParam->setPlaceholderText("-param");
+    customParam->setMinimumWidth(100);
+    customParam->setMaximumWidth(100);
+    //the value edit
+    QLineEdit *customValue = new QLineEdit(this);
+    customValue->setPlaceholderText("Value");
+    //add to layout and lists
+    QFormLayout *layout = (QFormLayout*)videoTranscodeWidget->layout();
+    layout->insertRow(layout->rowCount()-1,customParam,customValue);
+    _customVideoParamEdits << customParam;
+    _customVideoValueEdits << customValue;
+}
+
+void OutputWidget::on_addAudioParam_clicked()
+{
+    //add a param and a value
+    QLineEdit *customParam = new QLineEdit(this);
+    customParam->setPlaceholderText("-param");
+    customParam->setMinimumWidth(100);
+    customParam->setMaximumWidth(100);
+    //the value edit
+    QLineEdit *customValue = new QLineEdit(this);
+    customValue->setPlaceholderText("Value");
+    //add to layout and lists
+    QFormLayout *layout = (QFormLayout*)audioTranscodeWidget->layout();
+    layout->insertRow(layout->rowCount()-1,customParam,customValue);
+    _customAudioParamEdits << customParam;
+    _customAudioValueEdits << customValue;
+
 }
