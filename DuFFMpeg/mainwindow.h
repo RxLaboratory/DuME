@@ -35,10 +35,14 @@ private slots:
      */
     void ffmpeg_init();
 
+    // UI EVENTS
+    void on_ffmpegCommandsEdit_returnPressed();
+    void on_ffmpegCommandsButton_clicked();
+
     // CONSOLE
     void console(QString log);
 
-    //actions
+    // ACTIONS
     void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionSettings_triggered(bool checked);

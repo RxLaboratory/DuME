@@ -223,6 +223,19 @@ void MainWindow::console(QString log)
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
+
+void MainWindow::on_ffmpegCommandsEdit_returnPressed()
+{
+    on_ffmpegCommandsButton_clicked();
+}
+
+void MainWindow::on_ffmpegCommandsButton_clicked()
+{
+    QString commands = ffmpegCommandsEdit->text();
+    if (commands == "") commands = "-h";
+    ffmpeg->runCommand(commands);
+}
+
 void MainWindow::on_actionGo_triggered()
 {
     //generate input and output
@@ -358,3 +371,4 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
+
