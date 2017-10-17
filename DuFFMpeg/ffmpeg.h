@@ -222,6 +222,11 @@ signals:
      * @brief binaryChanged Emitted when the path to the binary has been changed
      */
     void binaryChanged();
+    /**
+     * @brief debugInfo Regularly sends useful informations for debugging
+     * @param log
+     */
+    void debugInfo(QString log);
 
 public slots:   
     /**

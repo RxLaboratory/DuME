@@ -302,7 +302,7 @@ void FFmpeg::clearQueue()
 void FFmpeg::stop(int timeout)
 {
     if (_ffmpeg->state() == QProcess::NotRunning) return;
-    _ffmpeg->write("q");
+    _ffmpeg->write("q\n");
     if (!_ffmpeg->waitForFinished(timeout))
     {
         _ffmpeg->kill();
@@ -488,6 +488,8 @@ void FFmpeg::encodeNextItem()
         //file
         arguments << QDir::toNativeSeparators(output->getFileName());
     }
+
+    emit debugInfo("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
 
     //launch
     _ffmpeg->setArguments(arguments);
