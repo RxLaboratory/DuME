@@ -34,7 +34,8 @@ SOURCES += \
     ffmediainfo.cpp \
     queuewidget.cpp \
     inputwidget.cpp \
-    outputwidget.cpp
+    outputwidget.cpp \
+    rainboxui.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +47,8 @@ HEADERS += \
     ffmediainfo.h \
     queuewidget.h \
     inputwidget.h \
-    outputwidget.h
+    outputwidget.h \
+    rainboxui.h
 
 FORMS += \
         mainwindow.ui \

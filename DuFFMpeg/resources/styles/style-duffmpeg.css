@@ -1,0 +1,7 @@
+QSplitter::handle:vertical {
+    image: url(:/icons/microkeyboard);
+}
+
+QSplitter::handle:horizontal {
+    image: url(:/icons/hsplitter);
+}

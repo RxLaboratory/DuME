@@ -16,6 +16,7 @@
 #include "settingswidget.h"
 #include "ffmpeg.h"
 #include "queuewidget.h"
+#include "rainboxui.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -58,7 +59,6 @@ private:
     // ====== UI ========
 
     QueueWidget *queueWidget;
-
     void updateCSS(QString cssFileName);
     /**
      * @brief reInitCurrentProgress Initializes the current progress bar and infos

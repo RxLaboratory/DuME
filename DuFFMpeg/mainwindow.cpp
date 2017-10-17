@@ -223,7 +223,6 @@ void MainWindow::console(QString log)
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
-
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()
 {
     on_ffmpegCommandsButton_clicked();
@@ -267,16 +266,19 @@ void MainWindow::on_actionSettings_triggered(bool checked)
 
 void MainWindow::updateCSS(QString cssFileName)
 {
-    QString css = "";
-
-    QFile cssFile(cssFileName);
-    if (cssFile.exists())
+    QStringList cssFiles(cssFileName);
+    //check if there's a duffmpeg file to include
+    QFileInfo cssFileInfo(cssFileName);
+    QString includeName = cssFileInfo.completeBaseName() + "-duffmpeg";
+    QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
+    QFile includeFile(includePath);
+    includePath = cssFileInfo.path() + "/" + includeName;
+    if (!includeFile.exists()) includeFile.setFileName(includePath);
+    if (includeFile.exists())
     {
-        cssFile.open(QFile::ReadOnly);
-        css = QString(cssFile.readAll());
-        cssFile.close();
+        cssFiles << includePath;
     }
-
+    QString css = RainboxUI::loadCSS(cssFiles);
     qApp->setStyleSheet(css);
 }
 
