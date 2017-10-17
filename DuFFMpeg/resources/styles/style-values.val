@@ -13,3 +13,4 @@
 @margin = 3px
 @bars-size = 15px
 @handle-size = 15px
+@border-radius = 0px
