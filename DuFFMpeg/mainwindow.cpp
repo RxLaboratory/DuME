@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 
+#ifdef QT_DEBUG
 #include <QtDebug>
+#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -10,11 +12,13 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
     setupUi(this);
+    debugLog("Initialization");
 
     // === SETTINGS ===
 #ifdef QT_DEBUG
     qDebug() << "Init - Settings";
 #endif
+    debugLog("Init - Settings");
     QCoreApplication::setOrganizationName("Duduf");
     QCoreApplication::setOrganizationDomain("duduf.com");
     QCoreApplication::setApplicationName("DuFFmpeg");
@@ -24,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Init - Create FFmpeg";
 #endif
+    debugLog("Init - FFmpeg");
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
     ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
@@ -34,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Init - UI";
 #endif
+    debugLog("Init - UI");
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //populate toolbar
@@ -91,9 +97,11 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Init - FFmpeg";
 #endif
+    debugLog("Init - FFmpeg (run test)");
     if (ffmpeg->getStatus() == FFmpeg::Error)
     {
-        console(ffmpeg->getLastErrorMessage());
+        debugLog("FFmpeg error",Warning);
+        debugLog(ffmpeg->getLastErrorMessage());
     }
     else
     {
@@ -104,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Init - Map Events";
 #endif
+    debugLog("Init - Map events");
     // Window management
 #ifndef Q_OS_MAC
     // Windows and linux
@@ -119,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
     connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
     connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
+    connect(ffmpeg,SIGNAL(debugInfo(QString)),this,SLOT(ffmpeg_debugLog(QString)));
     //settings
     connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
 }
@@ -129,10 +139,15 @@ void MainWindow::ffmpeg_init()
     helpEdit->setText(ffmpeg->getLongHelp());
 }
 
+void MainWindow::ffmpeg_debugLog(QString log)
+{
+    debugLog("FFmpeg: " + log);
+}
+
 void MainWindow::ffmpeg_errorOccurred(QString e)
 {
-    console(e);
-    mainStatusBar->showMessage("An FFmpeg error has occured, see the console.");
+    debugLog("FFmpeg error: " + e,Warning);
+    mainStatusBar->showMessage("An FFmpeg error has occured, see the console and the debug log.");
 }
 
 void MainWindow::ffmpeg_started(FFQueueItem *item)
@@ -204,6 +219,7 @@ void MainWindow::ffmpeg_progress()
 #ifdef QT_DEBUG
     qDebug() << elapsed.toString("hh:mm:ss") << QString::number(outputSize) + " MB";
 #endif
+    debugLog("=== Encoding progress: output file size: " + QString::number(outputSize) + "MB");
     //speed
     speedLabel->setText(QString::number(ffmpeg->getEncodingSpeed()) + "x");
     //time remaining
@@ -221,6 +237,21 @@ void MainWindow::console(QString log)
     consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
     // put the slider at the bottom
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
+}
+
+void MainWindow::debugLog(QString log, ErrorType type)
+{
+    //add date
+    QTime currentTime = QTime::currentTime();
+    //type
+    QString typeString = "";
+    if (type == Warning) typeString = "/!\\ Warning: ";
+    else if (type == Critical) typeString = " --- !!! Critical: ";
+    else if (type == Fatal) typeString = " === Fatal === ";
+    //log
+    debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
+    // put the slider at the bottom
+    debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
 }
 
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()
@@ -242,6 +273,7 @@ void MainWindow::on_actionGo_triggered()
     FFMediaInfo *output = queueWidget->getOutputMedia();
 
     //Launch!
+    debugLog("=== Beginning encoding ===");
     ffmpeg->encode(input,output);
 }
 
@@ -249,7 +281,7 @@ void MainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
-    ffmpeg->stop(5000);
+    ffmpeg->stop(6000);
 }
 
 void MainWindow::on_actionSettings_triggered(bool checked)

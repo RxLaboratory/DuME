@@ -24,6 +24,13 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
+    /**
+     * @brief The ErrorType enum Error level for printing the debug log
+     */
+    enum ErrorType { Information, Warning, Critical, Fatal };
+    Q_ENUM(ErrorType)
+
 private slots:
     // FFMPEG
     void ffmpeg_errorOccurred(QString e);
@@ -35,6 +42,7 @@ private slots:
      * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
      */
     void ffmpeg_init();
+    void ffmpeg_debugLog(QString log);
 
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
@@ -42,6 +50,7 @@ private slots:
 
     // CONSOLE
     void console(QString log);
+    void debugLog(QString log,ErrorType type = Information);
 
     // ACTIONS
     void on_actionGo_triggered();
