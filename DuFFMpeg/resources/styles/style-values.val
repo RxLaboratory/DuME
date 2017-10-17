@@ -5,8 +5,8 @@
 @color-dark = #434343
 @color-less-dark = #535353
 @color-medium = #6d6d6d
+@color-less-light = #9d9d9d
 @color-light = #e3e3e3
-@color-very-light = #9d9d9d
 @border-size = 2px
 @edit-padding = 4px
 @button-padding = 6px
