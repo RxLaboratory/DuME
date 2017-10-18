@@ -36,7 +36,8 @@ SOURCES += \
     inputwidget.cpp \
     outputwidget.cpp \
     rainboxui.cpp \
-    frameless.cpp
+    frameless.cpp \
+    ffmuxer.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -50,7 +51,8 @@ HEADERS += \
     inputwidget.h \
     outputwidget.h \
     rainboxui.h \
-    frameless.h
+    frameless.h \
+    ffmuxer.h
 
 FORMS += \
         mainwindow.ui \
