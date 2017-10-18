@@ -11,6 +11,7 @@
 #include "ffcodec.h"
 #include "ffmediainfo.h"
 #include "ffqueueitem.h"
+#include "ffmuxer.h"
 
 class FFmpeg : public QObject
 {
@@ -29,6 +30,7 @@ public:
     enum Status { Waiting, Encoding, Error, Other };
     Q_ENUM(Status)
 
+    QList<FFMuxer *> getMuxers(bool reload = false) const;
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
@@ -276,6 +278,7 @@ private:
     QList<FFCodec *> _audioEncoders;
     QList<FFCodec *> _videoDecoders;
     QList<FFCodec *> _audioDecoders;
+    QList<FFMuxer *> _muxers;
     /**
      * @brief help The FFmpeg help returned by the -h command
      */

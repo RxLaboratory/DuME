@@ -66,6 +66,12 @@ void FFmpeg::runCommand(QStringList commands)
     _ffmpeg->start();
 }
 
+QList<FFMuxer *> FFmpeg::getMuxers(bool reload) const
+{
+    //TODO list muxers, like in getEncoders
+    return _muxers;
+}
+
 QList<FFCodec *> FFmpeg::getEncoders(bool reload)
 {
 #ifdef QT_DEBUG
