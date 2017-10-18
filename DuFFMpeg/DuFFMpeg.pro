@@ -35,7 +35,8 @@ SOURCES += \
     queuewidget.cpp \
     inputwidget.cpp \
     outputwidget.cpp \
-    rainboxui.cpp
+    rainboxui.cpp \
+    frameless.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,7 +49,8 @@ HEADERS += \
     queuewidget.h \
     inputwidget.h \
     outputwidget.h \
-    rainboxui.h
+    rainboxui.h \
+    frameless.h
 
 FORMS += \
         mainwindow.ui \
