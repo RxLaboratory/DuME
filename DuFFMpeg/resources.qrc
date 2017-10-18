@@ -16,6 +16,6 @@
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
         <file alias="default-duffmpeg">resources/styles/style-duffmpeg.css</file>
-        <file alias="default-values">resources/styles/style-values.val</file>
+        <file alias="default-values">resources/styles/style-values.rui</file>
     </qresource>
 </RCC>
