@@ -358,7 +358,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings->endGroup();
     settings->sync();
 
-    qDebug() << "About to close";
     event->accept();
 }
 
