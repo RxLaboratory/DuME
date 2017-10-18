@@ -535,22 +535,26 @@ QTabBar {
 QTabBar::tab {
         background-color: @color-dark;
 	color: @color-light;
-	border-bottom: @border-size solid @color-dark; /* same as the pane color */
+	border: @border-size solid @color-dark;
 	padding: @button-padding;
+	margin-bottom: @margin;
 }
 
 QTabBar::tab:selected {
         background-color: @color-very-dark;
+	border-color: @color-very-dark;
 	color: @color-light;
 }
 
 QTabBar::tab:hover {
         background-color: @color-light;
+	border-color: @color-light;
 	color: @color-dark;
 }
 
 QTabBar::tab:selected:hover {
         background-color: @color-very-dark;
+	border-color: @color-very-dark;
 	color: @color-medium;
 }
 
