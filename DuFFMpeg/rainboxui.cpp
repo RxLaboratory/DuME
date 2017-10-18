@@ -36,11 +36,12 @@ QString RainboxUI::loadCSS(QStringList cssFileNames)
     //find values
     QFileInfo cssInfo(cssFileNames[0]);
     QString baseName = cssInfo.path() + "/" + cssInfo.completeBaseName();
-    QFile valuesFile(baseName + "-values.val");
+    QFile valuesFile(baseName + "-values.rui");
     if (!valuesFile.exists()) valuesFile.setFileName(baseName + "-values");
     if (!valuesFile.exists()) valuesFile.setFileName(baseName + "-values.txt");
     if (!valuesFile.exists()) valuesFile.setFileName(baseName + ".val");
     if (!valuesFile.exists()) valuesFile.setFileName(baseName + ".txt");
+    if (!valuesFile.exists()) valuesFile.setFileName(baseName + ".rui");
     if (valuesFile.exists())
     {
         if (valuesFile.open(QFile::ReadOnly))
