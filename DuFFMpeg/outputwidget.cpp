@@ -274,6 +274,11 @@ void OutputWidget::ffmpeg_init()
     audioCodecsBox->clear();
     QList<FFCodec *> encoders = _ffmpeg->getEncoders(true);
 
+    //get muxers
+    //TODO
+    //clear muxersBox
+    QList<FFMuxer *> muxers = _ffmpeg->getMuxers(true);
+
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
 
@@ -295,6 +300,11 @@ void OutputWidget::ffmpeg_init()
                 audioCodecsBox->addItem(encoder->prettyName(),QVariant(encoder->name()));
             }
         }
+    }
+
+    foreach(FFMuxer *muxer,muxers)
+    {
+        //TODO add to box
     }
 }
 
