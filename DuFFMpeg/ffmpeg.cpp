@@ -401,19 +401,19 @@ void FFmpeg::encodeNextItem()
     foreach(FFMediaInfo *input,_currentItem->getInputMedias())
     {
         //add custom options
-        arguments.append(input->getFFmpegOptions());
+        arguments.append(input->ffmpegOptions());
         //add input file
-        arguments << "-i" << QDir::toNativeSeparators(input->getFileName());
+        arguments << "-i" << QDir::toNativeSeparators(input->fileName());
     }
     //add outputs
     foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
     {
         //add custom options
-        arguments.append(output->getFFmpegOptions());
+        arguments.append(output->ffmpegOptions());
 
         //video
         QString codec = "";
-        if (output->getVideoCodec() != nullptr) codec = output->getVideoCodec()->name();
+        if (output->videoCodec() != nullptr) codec = output->videoCodec()->name();
 
 
         if (output->hasVideo() && codec != "")
@@ -424,7 +424,7 @@ void FFmpeg::encodeNextItem()
             if (codec != "copy")
             {
                 //bitrate
-                int bitrate = output->getVideoBitrate();
+                int bitrate = output->videoBitrate();
                 if (bitrate != 0)
                 {
                     arguments << "-b:v" << QString::number(bitrate);
@@ -432,15 +432,15 @@ void FFmpeg::encodeNextItem()
                 }
 
                 //size
-                int width = output->getVideoWidth();
-                int height = output->getVideoHeight();
+                int width = output->videoWidth();
+                int height = output->videoHeight();
                 if (width != 0 && height != 0)
                 {
                     arguments << "-s" << QString::number(width) + "x" + QString::number(height);
                 }
 
                 //framerate
-                double framerate = output->getVideoFramerate();
+                double framerate = output->videoFramerate();
                 if (framerate != 0.0)
                 {
                     arguments << "-r" << QString::number(framerate);
@@ -455,7 +455,7 @@ void FFmpeg::encodeNextItem()
 
         //audio
         QString acodec = "";
-        if (output->getAudioCodec() != nullptr) acodec = output->getAudioCodec()->name();
+        if (output->audioCodec() != nullptr) acodec = output->audioCodec()->name();
 
         if (output->hasAudio() && acodec != "")
         {
@@ -465,14 +465,14 @@ void FFmpeg::encodeNextItem()
             if (acodec != "copy")
             {
                 //bitrate
-                int bitrate = output->getAudioBitrate();
+                int bitrate = output->audioBitrate();
                 if (bitrate != 0)
                 {
-                    arguments << "-b:a" << QString::number(output->getAudioBitrate());
+                    arguments << "-b:a" << QString::number(output->audioBitrate());
                 }
 
                 //sampling
-                int sampling = output->getAudioSamplingRate();
+                int sampling = output->audioSamplingRate();
                 if (sampling != 0)
                 {
                     arguments << "-ar" << QString::number(sampling);
@@ -486,7 +486,7 @@ void FFmpeg::encodeNextItem()
         }
 
         //file
-        arguments << QDir::toNativeSeparators(output->getFileName());
+        arguments << QDir::toNativeSeparators(output->fileName());
     }
 
     emit debugInfo("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
@@ -601,7 +601,7 @@ void FFmpeg::readyRead(QString output)
         {
             if (input->hasVideo())
             {
-                duration = input->getDuration() * input->getVideoFramerate();
+                duration = input->duration() * input->videoFramerate();
                 break;
             }
         }

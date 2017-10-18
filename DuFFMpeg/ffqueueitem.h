@@ -43,6 +43,8 @@ signals:
     void queued();
     void statusChanged(Status);
 
+private slots:
+
 private:
     QList<FFMediaInfo *> _inputMedias;
     QList<FFMediaInfo *> _outputMedias;

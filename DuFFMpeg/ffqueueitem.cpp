@@ -53,7 +53,7 @@ FFMediaInfo *FFQueueItem::removeInputMedia(QString fileName)
 {
     for (int i = 0 ; i < _inputMedias.count() ; i++)
     {
-        if (_inputMedias[i]->getFileName() == fileName)
+        if (_inputMedias[i]->fileName() == fileName)
         {
             return _inputMedias.takeAt(i);
         }
@@ -69,7 +69,7 @@ FFMediaInfo *FFQueueItem::removeOutputMedia(QString fileName)
 {
     for (int i = 0 ; i < _outputMedias.count() ; i++)
     {
-        if (_outputMedias[i]->getFileName() == fileName)
+        if (_outputMedias[i]->fileName() == fileName)
         {
             return _outputMedias.takeAt(i);
         }

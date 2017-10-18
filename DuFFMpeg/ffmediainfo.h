@@ -44,23 +44,24 @@ public:
     void addFFmpegOption(QString option);
     void removeFFmpegOpstion(QString option);
     void clearFFmpegOptions();
-    QStringList getContainer();
-    int getVideoWidth();
-    int getVideoHeight();
-    double getVideoFramerate();
-    int getAudioSamplingRate();
-    double getDuration();
-    QString getFfmpegOutput();
-    QString getFileName();
-    FFCodec *getVideoCodec();
-    FFCodec *getAudioCodec();
-    double getAudioBitrate(BitrateUnit unit = Bits);
-    double getVideoBitrate(BitrateUnit unit = Bits);
-    double getSize(SizeUnit unit = Bytes);
-    QStringList getFFmpegOptions();
+    QStringList container();
+    int videoWidth();
+    int videoHeight();
+    double videoFramerate();
+    int audioSamplingRate();
+    double duration();
+    QString ffmpegOutput();
+    QString fileName();
+    FFCodec *videoCodec();
+    FFCodec *audioCodec();
+    double audioBitrate(BitrateUnit unit = Bits);
+    double videoBitrate(BitrateUnit unit = Bits);
+    double size(SizeUnit unit = Bytes);
+    QStringList ffmpegOptions();
     bool hasVideo();
     bool hasAudio();
     bool isImageSequence();
+
 signals:
 
 public slots:

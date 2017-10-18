@@ -188,57 +188,57 @@ void FFMediaInfo::clearFFmpegOptions()
     _ffmpegOptions.clear();
 }
 
-QStringList FFMediaInfo::getContainer()
+QStringList FFMediaInfo::container()
 {
     return _container;
 }
 
-int FFMediaInfo::getVideoWidth()
+int FFMediaInfo::videoWidth()
 {
     return _videoWidth;
 }
 
-int FFMediaInfo::getVideoHeight()
+int FFMediaInfo::videoHeight()
 {
     return _videoHeight;
 }
 
-double FFMediaInfo::getVideoFramerate()
+double FFMediaInfo::videoFramerate()
 {
     return _videoFramerate;
 }
 
-int FFMediaInfo::getAudioSamplingRate()
+int FFMediaInfo::audioSamplingRate()
 {
     return _audioSamplingRate;
 }
 
-double FFMediaInfo::getDuration()
+double FFMediaInfo::duration()
 {
     return _duration;
 }
 
-QString FFMediaInfo::getFfmpegOutput()
+QString FFMediaInfo::ffmpegOutput()
 {
     return _ffmpegOutput;
 }
 
-QString FFMediaInfo::getFileName()
+QString FFMediaInfo::fileName()
 {
     return _fileName;
 }
 
-FFCodec *FFMediaInfo::getVideoCodec()
+FFCodec *FFMediaInfo::videoCodec()
 {
     return _videoCodec;
 }
 
-FFCodec *FFMediaInfo::getAudioCodec()
+FFCodec *FFMediaInfo::audioCodec()
 {
     return _audioCodec;
 }
 
-double FFMediaInfo::getAudioBitrate(BitrateUnit unit)
+double FFMediaInfo::audioBitrate(BitrateUnit unit)
 {
     double bitrate = _audioBitrate;
     if (unit == Kbps) bitrate = bitrate/1024;
@@ -246,7 +246,7 @@ double FFMediaInfo::getAudioBitrate(BitrateUnit unit)
     return bitrate;
 }
 
-double FFMediaInfo::getVideoBitrate(BitrateUnit unit)
+double FFMediaInfo::videoBitrate(BitrateUnit unit)
 {
     double bitrate = _videoBitrate;
     if (unit == Kbps) bitrate = bitrate/1024;
@@ -254,7 +254,7 @@ double FFMediaInfo::getVideoBitrate(BitrateUnit unit)
     return bitrate;
 }
 
-double FFMediaInfo::getSize(FFMediaInfo::SizeUnit unit)
+double FFMediaInfo::size(FFMediaInfo::SizeUnit unit)
 {
     double s = _size;
     if (unit == KB) s = s/1024;
@@ -262,7 +262,7 @@ double FFMediaInfo::getSize(FFMediaInfo::SizeUnit unit)
     return s;
 }
 
-QStringList FFMediaInfo::getFFmpegOptions()
+QStringList FFMediaInfo::ffmpegOptions()
 {
     return _ffmpegOptions;
 }

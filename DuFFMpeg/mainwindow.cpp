@@ -162,13 +162,13 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
     {
         if (input->hasVideo())
         {
-            QFileInfo inputFile(input->getFileName());
+            QFileInfo inputFile(input->fileName());
             mainStatusBar->clearMessage();
             statusLabel->setText("Transcoding: " + inputFile.fileName());
 
             //adjust progress
             currentEncodingNameLabel->setText(inputFile.fileName());
-            progressBar->setMaximum(input->getDuration() * input->getVideoFramerate());
+            progressBar->setMaximum(input->duration() * input->videoFramerate());
             break;
         }
     }
