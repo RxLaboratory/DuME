@@ -17,6 +17,7 @@ public:
 
 public slots:
     void ffmpeg_init();
+    void newInputMedia(FFMediaInfo *input);
 
 private slots:
     void on_videoTranscodeButton_toggled(bool checked);

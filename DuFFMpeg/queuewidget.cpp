@@ -17,8 +17,7 @@ QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
 
     connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
 
-
-    //TODO Connect input infos to output
+    connect(inputWidget,SIGNAL(newMediaLoaded(FFMediaInfo*)),outputWidget,SLOT(newInputMedia(FFMediaInfo*)));
 }
 
 FFMediaInfo *QueueWidget::getInputMedia()

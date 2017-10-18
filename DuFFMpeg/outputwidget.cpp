@@ -298,6 +298,33 @@ void OutputWidget::ffmpeg_init()
     }
 }
 
+void OutputWidget::newInputMedia(FFMediaInfo *input)
+{
+    //if not checked, update fields
+    if (!resizeButton->isChecked())
+    {
+        videoWidthButton->setValue(input->videoWidth());
+        videoHeightButton->setValue(input->videoHeight());
+    }
+    if (!frameRateButton->isChecked())
+    {
+        frameRateEdit->setValue(input->videoFramerate());
+    }
+    if (!samplingButton->isChecked())
+    {
+        int sampling = input->audioSamplingRate();
+        if (sampling == 8000) samplingBox->setCurrentIndex(0);
+        else if (sampling == 11025) samplingBox->setCurrentIndex(1);
+        else if (sampling == 16000) samplingBox->setCurrentIndex(2);
+        else if (sampling == 22050) samplingBox->setCurrentIndex(3);
+        else if (sampling == 32000) samplingBox->setCurrentIndex(4);
+        else if (sampling == 44100) samplingBox->setCurrentIndex(5);
+        else if (sampling == 48000) samplingBox->setCurrentIndex(6);
+        else if (sampling == 88200) samplingBox->setCurrentIndex(7);
+        else if (sampling == 96000) samplingBox->setCurrentIndex(8);
+    }
+}
+
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1)
 {
     ffmpeg_init();

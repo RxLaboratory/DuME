@@ -15,6 +15,9 @@ public:
     explicit InputWidget(FFmpeg *ff,QWidget *parent = 0);
     FFMediaInfo *getMediaInfo();
 
+signals:
+    void newMediaLoaded(FFMediaInfo *);
+
 private slots:
     void on_inputBrowseButton_clicked();
     void on_addParamButton_clicked();
