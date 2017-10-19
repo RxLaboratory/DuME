@@ -2,36 +2,44 @@
 
 FFMuxer::FFMuxer(QObject *parent) : QObject(parent)
 {
-
+    _defaultAudioCodec = nullptr;
+    _defaultVideoCodec = nullptr;
+    _name = "";
+    _prettyName = "";
 }
 
 FFMuxer::FFMuxer(QString name,QObject *parent) : QObject(parent)
 {
     _name = name;
+    _prettyName = "";
+    _defaultAudioCodec = nullptr;
+    _defaultVideoCodec = nullptr;
 }
 
 FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : QObject(parent)
 {
     _name = name;
     _prettyName = prettyName;
+    _defaultAudioCodec = nullptr;
+    _defaultVideoCodec = nullptr;
 }
 
-QString FFMuxer::defaultVideoCodec() const
+FFCodec *FFMuxer::defaultVideoCodec() const
 {
     return _defaultVideoCodec;
 }
 
-void FFMuxer::setDefaultVideoCodec(const QString &defaultVideoCodec)
+void FFMuxer::setDefaultVideoCodec(FFCodec *defaultVideoCodec)
 {
     _defaultVideoCodec = defaultVideoCodec;
 }
 
-QString FFMuxer::defaultAudioCodec() const
+FFCodec *FFMuxer::defaultAudioCodec() const
 {
     return _defaultAudioCodec;
 }
 
-void FFMuxer::setDefaultAudioCodec(const QString &defaultAudioCodec)
+void FFMuxer::setDefaultAudioCodec(FFCodec *defaultAudioCodec)
 {
     _defaultAudioCodec = defaultAudioCodec;
 }

@@ -7,6 +7,7 @@
 OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     QWidget(parent)
 {
+    _freezeUI = true;
     setupUi(this);
 
     outputTabs->setCurrentIndex(0);
@@ -29,6 +30,8 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     ffmpeg_init();
 
     connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
+
+    _freezeUI = false;
 }
 
 FFMediaInfo *OutputWidget::getMediaInfo()
@@ -269,6 +272,7 @@ void OutputWidget::aspectRatio()
 
 void OutputWidget::ffmpeg_init()
 {
+    _freezeUI = true;
     //get codecs and muxers
     videoCodecsBox->clear();
     audioCodecsBox->clear();
@@ -303,6 +307,7 @@ void OutputWidget::ffmpeg_init()
     {
         formatsBox->addItem(muxer->name() + " | " + muxer->prettyName(),QVariant(muxer->name()));
     }
+    _freezeUI = false;
 }
 
 void OutputWidget::newInputMedia(FFMediaInfo *input)
@@ -375,4 +380,40 @@ void OutputWidget::on_addAudioParam_clicked()
     _customAudioParamEdits << customParam;
     _customAudioValueEdits << customValue;
 
+}
+
+void OutputWidget::on_formatsBox_currentIndexChanged(int index)
+{
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+    FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Video);
+    FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Audio);
+    //qDebug() << audioCodec->name();
+
+
+    if (videoCodec != nullptr)
+    {
+        for (int v = 0; v < videoCodecsBox->count() ; v++)
+        {
+            if (videoCodecsBox->itemData(v).toString() == videoCodec->name())
+            {
+                videoCodecsBox->setCurrentIndex(v);
+            }
+        }
+    }
+
+    if (audioCodec != nullptr)
+    {
+        for (int a = 0; a < audioCodecsBox->count() ; a++)
+        {
+            if (audioCodecsBox->itemData(a).toString() == audioCodec->name())
+            {
+                audioCodecsBox->setCurrentIndex(a);
+            }
+        }
+    }
+
+    _freezeUI = false;
 }

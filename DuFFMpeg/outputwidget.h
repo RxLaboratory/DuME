@@ -41,6 +41,8 @@ private slots:
     void on_addParam_clicked();
     void on_addAudioParam_clicked();
 
+    void on_formatsBox_currentIndexChanged(int index);
+
 private:
     /**
      * @brief aspectRatio Computes the aspect ratio of the video
@@ -52,6 +54,8 @@ private:
     QList<QLineEdit *> _customVideoValueEdits;
     QList<QLineEdit *> _customAudioParamEdits;
     QList<QLineEdit *> _customAudioValueEdits;
+
+    bool _freezeUI;
 };
 
 #endif // OUTPUTWIDGET_H

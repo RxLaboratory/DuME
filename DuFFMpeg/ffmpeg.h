@@ -31,6 +31,9 @@ public:
     Q_ENUM(Status)
 
     QList<FFMuxer *> getMuxers(bool reload = false);
+    FFMuxer *getMuxer(QString name);
+    FFCodec *getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability = FFCodec::Video);
+    FFCodec *getMuxerDefaultCodec(QString name, FFCodec::Ability ability = FFCodec::Video);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary

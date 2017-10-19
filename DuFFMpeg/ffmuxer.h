@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "ffcodec.h"
+
 class FFMuxer : public QObject
 {
     Q_OBJECT
@@ -11,11 +13,19 @@ public:
     explicit FFMuxer(QString name, QObject *parent = nullptr);
     explicit FFMuxer(QString name, QString prettyName,QObject *parent = nullptr);
 
-    QString defaultVideoCodec() const;
-    void setDefaultVideoCodec(const QString &defaultVideoCodec);
+    /**
+     * @brief defaultVideoCodec Gets the default video codec for this muxer
+     * @return The default codec or nullptr if this muxer does not have a default codec
+     */
+    FFCodec * defaultVideoCodec() const;
+    void setDefaultVideoCodec(FFCodec *defaultVideoCodec);
 
-    QString defaultAudioCodec() const;
-    void setDefaultAudioCodec(const QString &defaultAudioCodec);
+    /**
+     * @brief defaultVideoCodec Gets the default audio codec for this muxer
+     * @return The default codec or nullptr if this muxer does not have a default codec
+     */
+    FFCodec * defaultAudioCodec() const;
+    void setDefaultAudioCodec(FFCodec *defaultAudioCodec);
 
     QString name() const;
     void setName(const QString &name);
@@ -28,8 +38,8 @@ signals:
 public slots:
 
 private:
-    QString _defaultVideoCodec;
-    QString _defaultAudioCodec;
+    FFCodec *_defaultVideoCodec;
+    FFCodec *_defaultAudioCodec;
     QString _name;
     QString _prettyName;
 };
