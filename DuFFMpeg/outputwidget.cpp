@@ -13,8 +13,11 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     outputTabs->setCurrentIndex(0);
 
     _ffmpeg = ff;
-
     _mediaInfo = new FFMediaInfo("",this);
+    _currentMuxer = nullptr;
+
+    _currentVideoOptions = VideoOptions(0);
+    updateVideoOptions();
 
     //populate sampling box
     samplingBox->addItem("8,000 Hz",QVariant(8000));
@@ -27,11 +30,14 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     samplingBox->addItem("88,200 Hz",QVariant(88200));
     samplingBox->addItem("96,000 Hz",QVariant(96000));
 
+    //hide params
+    videoCodecsWidget->hide();
+    videoBitrateWidget->hide();
+    videoQualityWidget->hide();
+
     ffmpeg_init();
 
     connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
-
-    _currentMuxer = nullptr;
 
     _freezeUI = false;
 }
@@ -294,6 +300,22 @@ void OutputWidget::updateOutputExtension()
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
 }
 
+void OutputWidget::updateVideoOptions()
+{
+    //combo box items
+    videoOptionsBox->clear();
+    videoOptionsBox->addItem("Add option...");
+    if (!_currentVideoOptions.testFlag(VideoCodec)) videoOptionsBox->addItem("Codec",VideoCodec);
+    if (!_currentVideoOptions.testFlag(VideoBitrate)) videoOptionsBox->addItem("Bitrate",VideoBitrate);
+    if (!_currentVideoOptions.testFlag(VideoQuality)) videoOptionsBox->addItem("Quality",VideoQuality);
+    videoOptionsBox->addItem("Custom",VideoCustom);
+
+    //widgets visibility
+    videoCodecsWidget->setVisible(_currentVideoOptions.testFlag(VideoCodec));
+    videoBitrateWidget->setVisible(_currentVideoOptions.testFlag(VideoBitrate));
+    videoQualityWidget->setVisible(_currentVideoOptions.testFlag(VideoQuality));
+}
+
 void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
@@ -511,4 +533,17 @@ void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadMuxers();
 
+}
+
+void OutputWidget::on_videoOptionsBox_currentIndexChanged(int index)
+{
+    if (_freezeUI) return;
+    _freezeUI = true;
+    if (index > 0 && index < videoOptionsBox->count())
+    {
+        VideoOption option = (VideoOption)videoOptionsBox->currentData().toInt();
+        _currentVideoOptions.setFlag(option);
+    }
+    updateVideoOptions();
+    _freezeUI = false;
 }

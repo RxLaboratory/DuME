@@ -13,6 +13,14 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
 
 public:
     explicit OutputWidget(FFmpeg *ff,QWidget *parent = 0);
+
+    enum VideoOption { VideoCodec = 1 << 0,
+                   VideoBitrate = 1 << 1,
+                   VideoQuality = 1 << 2,
+                   VideoCustom = 1 << 3,
+                 };
+    Q_DECLARE_FLAGS(VideoOptions, VideoOption)
+
     FFMediaInfo *getMediaInfo();
 
 public slots:
@@ -44,6 +52,7 @@ private slots:
     void on_addAudioParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
+    void on_videoOptionsBox_currentIndexChanged(int index);
 
 private:
     /**
@@ -51,6 +60,7 @@ private:
      */
     void aspectRatio();
     void updateOutputExtension();
+    void updateVideoOptions();
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customVideoParamEdits;
@@ -58,8 +68,11 @@ private:
     QList<QLineEdit *> _customAudioParamEdits;
     QList<QLineEdit *> _customAudioValueEdits;
     FFMuxer *_currentMuxer;
+    VideoOptions _currentVideoOptions;
 
     bool _freezeUI;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(OutputWidget::VideoOptions)
 
 #endif // OUTPUTWIDGET_H
