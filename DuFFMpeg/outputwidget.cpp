@@ -31,6 +31,8 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
 
     connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
 
+    _currentMuxer = nullptr;
+
     _freezeUI = false;
 }
 
@@ -270,6 +272,21 @@ void OutputWidget::aspectRatio()
     aspectRatioLabel->setText(QString::number(ratio) + ":1");
 }
 
+void OutputWidget::updateOutputExtension()
+{
+    QFileInfo output(outputEdit->text());
+    QString newExt = "";
+    if (_currentMuxer != nullptr)
+    {
+        if (_currentMuxer->extensions().count() > 0)
+        {
+            newExt = "." + _currentMuxer->extensions()[0];
+        }
+    }
+    QString outputPath = output.path() + "/" + output.completeBaseName() + newExt;
+    outputEdit->setText(QDir::toNativeSeparators(outputPath));
+}
+
 void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
@@ -342,6 +359,14 @@ void OutputWidget::ffmpeg_loadMuxers()
 
 void OutputWidget::newInputMedia(FFMediaInfo *input)
 {
+    //set output fileName
+    QFileInfo inputFile(input->fileName());
+    QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName() + "_transcoded";
+    updateOutputExtension();
+
+
+    outputEdit->setText(outputPath);
+
     //if not checked, update fields
     if (!resizeButton->isChecked())
     {
@@ -414,12 +439,13 @@ void OutputWidget::on_addAudioParam_clicked()
 
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
+    _currentMuxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+
     if (_freezeUI) return;
     _freezeUI = true;
 
-    FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
-    FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Video);
-    FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Audio);
+    FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Video);
+    FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Audio);
 
 
     if (videoCodec != nullptr)
@@ -445,7 +471,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     }
 
     //video
-    if (muxer->isVideo() || muxer->isSequence())
+    if (_currentMuxer->isVideo() || _currentMuxer->isSequence())
     {
         if (noVideoButton->isChecked()) videoTranscodeButton->setChecked(true);
         videoTranscodeButton->setEnabled(true);
@@ -458,7 +484,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
         videoCopyButton->setEnabled(false);
     }
     //audio
-    if (muxer->isAudio())
+    if (_currentMuxer->isAudio())
     {
         if (noAudioButton->isChecked()) audioTranscodeButton->setChecked(true);
         audioTranscodeButton->setEnabled(true);
@@ -471,10 +497,13 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
         audioCopyButton->setEnabled(false);
     }
 
+    updateOutputExtension();
+
     _freezeUI = false;
 }
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadMuxers();
+
 }

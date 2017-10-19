@@ -50,12 +50,14 @@ private:
      * @brief aspectRatio Computes the aspect ratio of the video
      */
     void aspectRatio();
+    void updateOutputExtension();
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customVideoParamEdits;
     QList<QLineEdit *> _customVideoValueEdits;
     QList<QLineEdit *> _customAudioParamEdits;
     QList<QLineEdit *> _customAudioValueEdits;
+    FFMuxer *_currentMuxer;
 
     bool _freezeUI;
 };
