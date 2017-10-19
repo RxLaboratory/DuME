@@ -33,13 +33,15 @@ FFMediaInfo *InputWidget::getMediaInfo()
 
 void InputWidget::on_inputBrowseButton_clicked()
 {
-    //get current file path
-    QFileInfo fi(inputEdit->text());
-    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",fi.path());
+    QSettings settings;
+    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path",QVariant("")).toString());
     if (inputPath == "") return;
 
     //update UI
     inputEdit->setText(inputPath);
+    //keep in settings
+    QFileInfo fi(inputPath);
+    settings.setValue("input/path",QVariant(fi.path()));
 
     _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(inputPath));
 

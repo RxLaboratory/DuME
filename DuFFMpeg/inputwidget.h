@@ -4,6 +4,7 @@
 #include "ui_inputwidget.h"
 
 #include <QFileDialog>
+#include <QSettings>
 
 #include "ffmpeg.h"
 
