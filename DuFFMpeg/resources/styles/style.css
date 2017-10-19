@@ -188,6 +188,10 @@ QSpinBox:disabled, QDoubleSpinBox:disabled {
 	color: @color-medium;
 }
 
+QSpinBox::up-button:disabled, QDoubleSpinBox::up-button:disabled, QSpinBox::down-button:disabled, QDoubleSpinBox::down-button:disabled {
+        background-color:@color-dark;
+}
+
 /* SLIDER */
 
 QSlider::sub-page:horizontal {
