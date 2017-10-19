@@ -542,7 +542,10 @@ void FFmpeg::setStatus(Status st)
 
 bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
 {
-    return m1->name().toLower() < m2->name().toLower();
+    if (m1->extensions().count() == 0 && m2->extensions().count() == 0) return m1->prettyName().toLower() < m2->prettyName().toLower();
+    if (m1->extensions().count() == 0) return true;
+    if (m2->extensions().count() == 0) return false;
+    return m1->extensions()[0] < m2->extensions()[0];
 }
 
 void FFmpeg::gotMuxers(QString output)
