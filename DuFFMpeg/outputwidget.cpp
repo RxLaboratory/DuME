@@ -47,7 +47,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
         if (videoCopyButton->isChecked()) _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder("copy"));
         else
         {
-            _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
+            if (videoCodecButton->isChecked()) _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
             if (resizeButton->isChecked())
             {
                 _mediaInfo->setVideoWidth(videoWidthButton->value());
@@ -57,7 +57,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setVideoFramerate(frameRateEdit->value());
             }
-            _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
+            if (videoBitrateButton->isChecked()) _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
         }
     }
 

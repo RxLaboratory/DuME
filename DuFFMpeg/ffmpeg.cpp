@@ -450,10 +450,10 @@ void FFmpeg::encodeNextItem()
         if (output->videoCodec() != nullptr) codec = output->videoCodec()->name();
 
 
-        if (output->hasVideo() && codec != "")
+        if (output->hasVideo())
         {
             //codec
-            arguments << "-vcodec" << codec;
+            if (codec != "") arguments << "-vcodec" << codec;
 
             if (codec != "copy")
             {
