@@ -28,8 +28,8 @@ public:
         BottomLeft = 0x40,
         BottomRight = 0x80,
     };
-    Q_ENUM(Edge);
-    Q_DECLARE_FLAGS(Edges, Edge);
+    Q_ENUM(Edge)
+    Q_DECLARE_FLAGS(Edges, Edge)
 
     FrameLess(QMainWindow *target);
 
@@ -63,4 +63,4 @@ private:
     bool _dragStart = false;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(FrameLess::Edges);
+Q_DECLARE_OPERATORS_FOR_FLAGS(FrameLess::Edges)
