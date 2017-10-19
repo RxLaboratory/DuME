@@ -562,6 +562,9 @@ void FFmpeg::gotMuxers(QString output)
         {
             QString name = match.captured(1);
             QString prettyName = match.captured(2);
+            // skip image sequence
+            // TODO complete the sequences custom muxers built just after
+            if (name == "image2") continue;
             FFMuxer *m = new FFMuxer(name,prettyName,this);
             _muxers << m;
             //get default codecs
