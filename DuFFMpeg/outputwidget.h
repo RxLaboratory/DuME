@@ -17,6 +17,8 @@ public:
 
 public slots:
     void ffmpeg_init();
+    void ffmpeg_loadCodecs();
+    void ffmpeg_loadMuxers();
     void newInputMedia(FFMediaInfo *input);
 
 private slots:
@@ -40,8 +42,8 @@ private slots:
     void on_audioCodecsFilterBox_currentIndexChanged(int index);
     void on_addParam_clicked();
     void on_addAudioParam_clicked();
-
     void on_formatsBox_currentIndexChanged(int index);
+    void on_formatsFilterBox_currentIndexChanged(int index);
 
 private:
     /**

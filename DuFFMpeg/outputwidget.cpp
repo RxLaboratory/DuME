@@ -273,12 +273,18 @@ void OutputWidget::aspectRatio()
 void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
+    ffmpeg_loadCodecs();
+    ffmpeg_loadMuxers();
+    _freezeUI = false;
+}
+
+void OutputWidget::ffmpeg_loadCodecs()
+{
+    _freezeUI = true;
     //get codecs and muxers
     videoCodecsBox->clear();
     audioCodecsBox->clear();
-    formatsBox->clear();
     QList<FFCodec *> encoders = _ffmpeg->getEncoders();
-    QList<FFMuxer *> muxers = _ffmpeg->getMuxers();
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
@@ -302,10 +308,33 @@ void OutputWidget::ffmpeg_init()
             }
         }
     }
+    _freezeUI = false;
+}
+
+void OutputWidget::ffmpeg_loadMuxers()
+{
+    _freezeUI = true;
+
+    formatsBox->clear();
+
+    QList<FFMuxer *> muxers = _ffmpeg->getMuxers();
+
+    int formatsFilter = formatsFilterBox->currentIndex();
 
     foreach(FFMuxer *muxer,muxers)
     {
-        formatsBox->addItem(muxer->name() + " | " + muxer->prettyName(),QVariant(muxer->name()));
+        //skip muxers without extension
+        if ((formatsFilter != 0 && formatsFilter != 5) && muxer->extensions().count() == 0) continue;
+        else if (formatsFilter == 5 && muxer->extensions().count() == 0) formatsBox->addItem(muxer->prettyName(),QVariant(muxer->name()));
+
+        if (formatsFilter == 0 ||
+                (formatsFilter == 1 && muxer->isAudio() && muxer->isVideo() )  ||
+                (formatsFilter == 2 && muxer->isSequence() ) ||
+                (formatsFilter == 3 && muxer->isAudio() && !muxer->isVideo() )  ||
+                (formatsFilter == 4 && muxer->isVideo() && !muxer->isAudio() ))
+        {
+            formatsBox->addItem("." + muxer->extensions().join(", .") + " | " + muxer->prettyName(),QVariant(muxer->name()));
+        }
     }
     _freezeUI = false;
 }
@@ -339,12 +368,12 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
 
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1)
 {
-    ffmpeg_init();
+    ffmpeg_loadCodecs();
 }
 
 void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
 {
-    ffmpeg_init();
+    ffmpeg_loadCodecs();
 }
 
 void OutputWidget::on_addParam_clicked()
@@ -416,4 +445,9 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     }
 
     _freezeUI = false;
+}
+
+void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
+{
+    ffmpeg_loadMuxers();
 }
