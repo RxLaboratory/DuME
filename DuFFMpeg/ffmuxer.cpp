@@ -44,6 +44,7 @@ FFCodec *FFMuxer::defaultVideoCodec() const
 void FFMuxer::setDefaultVideoCodec(FFCodec *defaultVideoCodec)
 {
     _defaultVideoCodec = defaultVideoCodec;
+    checkType();
 }
 
 FFCodec *FFMuxer::defaultAudioCodec() const
@@ -54,6 +55,7 @@ FFCodec *FFMuxer::defaultAudioCodec() const
 void FFMuxer::setDefaultAudioCodec(FFCodec *defaultAudioCodec)
 {
     _defaultAudioCodec = defaultAudioCodec;
+    checkType();
 }
 
 QString FFMuxer::name() const
@@ -94,4 +96,11 @@ bool FFMuxer::isSequence()
 void FFMuxer::setType(const Type &type)
 {
     _type = type;
+}
+
+void FFMuxer::checkType()
+{
+    if (_defaultAudioCodec == nullptr && _defaultVideoCodec != nullptr) _type = VideoOnly;
+    else if (_defaultAudioCodec != nullptr && _defaultVideoCodec == nullptr) _type = AudioOnly;
+    else if (_defaultAudioCodec != nullptr && _defaultVideoCodec != nullptr) _type = AudioVideo;
 }

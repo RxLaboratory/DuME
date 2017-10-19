@@ -26,6 +26,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     connect(_ffmpeg,SIGNAL(started()),this,SLOT(started()));
     connect(_ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
     connect(_ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
+
+#ifdef QT_DEBUG
+    qDebug() << "FFmpeg - Initialization";
+#endif
+    init();
 }
 
 bool FFmpeg::setBinaryFileName(QString path)
@@ -33,6 +38,7 @@ bool FFmpeg::setBinaryFileName(QString path)
     if(QFile(path).exists())
     {
         _ffmpeg->setProgram(path);
+        init();
         emit binaryChanged();
         return true;
     }
@@ -66,19 +72,27 @@ void FFmpeg::runCommand(QStringList commands)
     _ffmpeg->start();
 }
 
-QList<FFMuxer *> FFmpeg::getMuxers(bool reload)
+void FFmpeg::init()
 {
-    if (_muxers.count() ==  0 || reload)
+    //get codecs
+    _ffmpeg->setArguments(QStringList("-codecs"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
     {
-        _ffmpeg->setArguments(QStringList("-formats"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(10000))
-        {
-            gotMuxers(_ffmpegOutput);
-        }
+        gotCodecs(_ffmpegOutput);
     }
 
-    //TODO list muxers, like in getEncoders
+    //get muxers
+    _ffmpeg->setArguments(QStringList("-formats"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotMuxers(_ffmpegOutput);
+    }
+}
+
+QList<FFMuxer *> FFmpeg::getMuxers()
+{
     return _muxers;
 }
 
@@ -99,88 +113,6 @@ FFCodec *FFmpeg::getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
     FFCodec *videoCodec = muxer->defaultVideoCodec();
     FFCodec *audioCodec = muxer->defaultAudioCodec();
 
-    if (ability == FFCodec::Video && videoCodec != nullptr)
-    {
-        return videoCodec;
-    }
-    else if (ability == FFCodec::Audio && audioCodec != nullptr)
-    {
-        return audioCodec;
-    }
-
-    if (ability != FFCodec::Video && ability != FFCodec::Audio) return nullptr;
-
-    //image sequence
-    if (ability == FFCodec::Video)
-    {
-        //image sequences
-        if (muxer->name() == "bmp")
-        {
-            videoCodec = getVideoEncoder("bmp");
-        }
-        else if (muxer->name() == "dpx")
-        {
-            videoCodec = getVideoEncoder("dpx");
-        }
-        else if (muxer->name() == "jpeg2000")
-        {
-            videoCodec = getVideoEncoder("jpeg2000");
-        }
-        else if (muxer->name() == "jpg")
-        {
-            videoCodec = getVideoEncoder("jpegls");
-        }
-        else if (muxer->name() == "png")
-        {
-            videoCodec = getVideoEncoder("png");
-        }
-        else if (muxer->name() == "tif")
-        {
-            videoCodec = getVideoEncoder("tif");
-        }
-        else if (muxer->name() == "tga")
-        {
-            videoCodec = getVideoEncoder("targa");
-        }
-    }
-
-    //supported formats
-    //get with ffmpeg
-    QStringList args("-h");
-    args << "muxer=" + muxer->name();
-    _ffmpeg->setArguments(args);
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
-    {
-        QStringList lines = _ffmpegOutput.split("\n");
-
-        QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
-        QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
-
-        foreach(QString line,lines)
-        {
-            QRegularExpressionMatch videoMatch = reVideo.match(line);
-            if (videoMatch.hasMatch())
-            {
-                videoCodec = getVideoEncoder(videoMatch.captured(1));
-            }
-
-            QRegularExpressionMatch audioMatch = reAudio.match(line);
-            if (audioMatch.hasMatch())
-            {
-                audioCodec = getAudioEncoder(audioMatch.captured(1));
-            }
-
-            //break if all found
-            if (videoCodec != nullptr && audioCodec != nullptr) break;
-        }
-
-    }
-
-    //set to muxer
-    muxer->setDefaultAudioCodec(audioCodec);
-    muxer->setDefaultVideoCodec(videoCodec);
-
     //return
     if (ability == FFCodec::Video) return videoCodec;
     if (ability == FFCodec::Audio) return audioCodec;
@@ -191,44 +123,21 @@ FFCodec *FFmpeg::getMuxerDefaultCodec(QString name, FFCodec::Ability ability)
     return getMuxerDefaultCodec(getMuxer(name),ability);
 }
 
-QList<FFCodec *> FFmpeg::getEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getEncoders()
 {
-#ifdef QT_DEBUG
-    qDebug() << "FFmpeg - Getting Encoders";
-#endif
-    if (_audioEncoders.count() == 0 || _videoEncoders.count() == 0 || reload)
-    {
-        //TODO use signals instead of waiting? it's very quick maybe not needed
-        //signals may actually be better to have a progress bar at launch of the app
-        _ffmpeg->setArguments(QStringList("-codecs"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(10000))
-        {
-            gotCodecs(_ffmpegOutput);
-        }
-    }
-
     QList<FFCodec *> encoders = _videoEncoders;
     encoders.append(_audioEncoders);
 
     return encoders;
 }
 
-QList<FFCodec *> FFmpeg::getVideoEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getVideoEncoders()
 {
-    if (reload || _videoEncoders.count() == 0)
-    {
-        getEncoders(reload);
-    }
     return _videoEncoders;
 }
 
-QList<FFCodec *> FFmpeg::getAudioEncoders(bool reload)
+QList<FFCodec *> FFmpeg::getAudioEncoders()
 {
-    if (reload || _audioEncoders.count() == 0)
-    {
-        getEncoders(reload);
-    }
     return _audioEncoders;
 }
 
@@ -655,17 +564,62 @@ void FFmpeg::gotMuxers(QString output)
             QString prettyName = match.captured(2);
             FFMuxer *m = new FFMuxer(name,prettyName,this);
             _muxers << m;
+            //get default codecs
+            QStringList args("-h");
+            args << "muxer=" + m->name();
+            _ffmpeg->setArguments(args);
+            _ffmpeg->start(QIODevice::ReadOnly);
+            if (_ffmpeg->waitForFinished(10000))
+            {
+                QStringList lines = _ffmpegOutput.split("\n");
+
+                QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
+                QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
+
+                foreach(QString line,lines)
+                {
+                    QRegularExpressionMatch videoMatch = reVideo.match(line);
+                    if (videoMatch.hasMatch())
+                    {
+                        m->setDefaultVideoCodec(getVideoEncoder(videoMatch.captured(1)));
+                    }
+
+                    QRegularExpressionMatch audioMatch = reAudio.match(line);
+                    if (audioMatch.hasMatch())
+                    {
+                        m->setDefaultAudioCodec(getAudioEncoder(audioMatch.captured(1)));
+                    }
+
+                    //break if all found
+                    if (m->defaultAudioCodec() != nullptr && m->defaultVideoCodec() != nullptr) break;
+                }
+            }
+            //TODO get extensions
         }
     }
 
     //add image sequences
-    _muxers << new FFMuxer("bmp","Bitmap Sequence");
-    _muxers << new FFMuxer("dpx","DPX Sequence");
-    _muxers << new FFMuxer("jpeg2000","JPEG 2000 Sequence");
-    _muxers << new FFMuxer("jpg","JPEG Sequence");
-    _muxers << new FFMuxer("png","PNG Sequence");
-    _muxers << new FFMuxer("tif","TIFF Sequence");
-    _muxers << new FFMuxer("tga","TARGA Sequence");
+    FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("dpx","DPX Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("jpeg2000","JPEG 2000 Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("jpg","JPEG Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("png","PNG Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("tif","TIFF Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
+    muxer = new FFMuxer("tga","TARGA Sequence");
+    muxer->setType(FFMuxer::Sequence);
+    _muxers << muxer;
 
 
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);

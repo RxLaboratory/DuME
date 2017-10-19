@@ -30,28 +30,25 @@ public:
     enum Status { Waiting, Encoding, Error, Other };
     Q_ENUM(Status)
 
-    QList<FFMuxer *> getMuxers(bool reload = false);
+    QList<FFMuxer *> getMuxers();
     FFMuxer *getMuxer(QString name);
     FFCodec *getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability = FFCodec::Video);
     FFCodec *getMuxerDefaultCodec(QString name, FFCodec::Ability ability = FFCodec::Video);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
-     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The codec list
      */
-    QList<FFCodec *> getEncoders(bool reload = false);
+    QList<FFCodec *> getEncoders();
     /**
      * @brief getVideoEncoders Gets the list of video encoders supported by the current version of FFmpeg
-     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The video codec list
      */
-    QList<FFCodec *> getVideoEncoders(bool reload = false);
+    QList<FFCodec *> getVideoEncoders();
     /**
      * @brief getVideoEncoders Gets the list of audio encoders supported by the current version of FFmpeg
-     * @param reload Forces reloading the list from the ffmpeg binary
      * @return The audio codec list
      */
-    QList<FFCodec *> getAudioEncoders(bool reload = false);
+    QList<FFCodec *> getAudioEncoders();
     /**
      * @brief getCodec Gets a video encoder using its name
      * @param name The name of the codec
@@ -250,6 +247,7 @@ public slots:
      * @param commands The arguments
      */
     void runCommand(QStringList commands);
+    void init();
 
 private slots:
     //FFmpeg signals

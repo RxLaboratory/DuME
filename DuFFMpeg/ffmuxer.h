@@ -56,6 +56,8 @@ private:
     QString _name;
     QString _prettyName;
     Type _type;
+
+    void checkType();
 };
 
 #endif // FFMUXER_H

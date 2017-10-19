@@ -277,8 +277,8 @@ void OutputWidget::ffmpeg_init()
     videoCodecsBox->clear();
     audioCodecsBox->clear();
     formatsBox->clear();
-    QList<FFCodec *> encoders = _ffmpeg->getEncoders(true);
-    QList<FFMuxer *> muxers = _ffmpeg->getMuxers(true);
+    QList<FFCodec *> encoders = _ffmpeg->getEncoders();
+    QList<FFMuxer *> muxers = _ffmpeg->getMuxers();
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
