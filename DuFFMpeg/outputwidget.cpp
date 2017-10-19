@@ -269,14 +269,11 @@ void OutputWidget::aspectRatio()
 
 void OutputWidget::ffmpeg_init()
 {
-    //get codecs
+    //get codecs and muxers
     videoCodecsBox->clear();
     audioCodecsBox->clear();
+    formatsBox->clear();
     QList<FFCodec *> encoders = _ffmpeg->getEncoders(true);
-
-    //get muxers
-    //TODO
-    //clear muxersBox
     QList<FFMuxer *> muxers = _ffmpeg->getMuxers(true);
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
@@ -304,7 +301,7 @@ void OutputWidget::ffmpeg_init()
 
     foreach(FFMuxer *muxer,muxers)
     {
-        //TODO add to box
+        formatsBox->addItem(muxer->name() + " | " + muxer->prettyName(),QVariant(muxer->name()));
     }
 }
 

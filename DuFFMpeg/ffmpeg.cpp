@@ -66,8 +66,18 @@ void FFmpeg::runCommand(QStringList commands)
     _ffmpeg->start();
 }
 
-QList<FFMuxer *> FFmpeg::getMuxers(bool reload) const
+QList<FFMuxer *> FFmpeg::getMuxers(bool reload)
 {
+    if (_muxers.count() ==  0 || reload)
+    {
+        _ffmpeg->setArguments(QStringList("-formats"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(10000))
+        {
+            gotMuxers(_ffmpegOutput);
+        }
+    }
+
     //TODO list muxers, like in getEncoders
     return _muxers;
 }
@@ -512,6 +522,36 @@ void FFmpeg::setStatus(Status st)
     emit statusChanged(_status);
 }
 
+bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
+{
+    return m1->name().toLower() < m2->name().toLower();
+}
+
+void FFmpeg::gotMuxers(QString output)
+{
+    //delete all
+    qDeleteAll(_muxers);
+    _muxers.clear();
+
+    //get Muxers
+    QStringList muxers = output.split("\n");
+    QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
+
+    foreach(QString muxer,muxers)
+    {
+        QRegularExpressionMatch match = re.match(muxer);
+        if (match.hasMatch())
+        {
+            QString name = match.captured(1);
+            QString prettyName = match.captured(2);
+            FFMuxer *m = new FFMuxer(name,prettyName,this);
+            _muxers << m;
+        }
+    }
+
+    std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
+}
+
 bool codecSorter(FFCodec *c1,FFCodec *c2)
 {
     return c1->prettyName().toLower() < c2->prettyName().toLower();
@@ -537,12 +577,11 @@ void FFmpeg::gotCodecs(QString output)
 
     //get codecs
     QStringList codecs = output.split("\n");
+    QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
     for (int i = 0 ; i < codecs.count() ; i++)
     {
         QString codec = codecs[i];
 
-        //if video encoding
-        QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
         QRegularExpressionMatch match = re.match(codec);
         if (match.hasMatch())
         {

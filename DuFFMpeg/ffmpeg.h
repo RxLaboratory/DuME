@@ -30,7 +30,7 @@ public:
     enum Status { Waiting, Encoding, Error, Other };
     Q_ENUM(Status)
 
-    QList<FFMuxer *> getMuxers(bool reload = false) const;
+    QList<FFMuxer *> getMuxers(bool reload = false);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @param reload Forces reloading the list from the ffmpeg binary
@@ -324,6 +324,11 @@ private:
      */
     FFQueueItem *_currentItem;
     //=== Process outputs ===
+    /**
+     * @brief ffmpeg_gotCodecs Parses the muxers list
+     * @param output The output of the FFmpeg process with the muxers list
+     */
+    void gotMuxers(QString output);
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
      * @param output The output of the FFmpeg process with the codecs list
