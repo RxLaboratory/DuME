@@ -608,26 +608,33 @@ void FFmpeg::gotMuxers(QString output)
     }
 
     //add image sequences
-    FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
+    FFMuxer *muxer = new FFMuxer("image2","Bitmap Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("bmp"));
     _muxers << muxer;
-    muxer = new FFMuxer("dpx","DPX Sequence");
+    muxer = new FFMuxer("image2","DPX Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("dpx"));
     _muxers << muxer;
-    muxer = new FFMuxer("jpeg2000","JPEG 2000 Sequence");
+    muxer = new FFMuxer("image2","JPEG 2000 Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("jpeg2000"));
     _muxers << muxer;
-    muxer = new FFMuxer("jpg","JPEG Sequence");
+    muxer = new FFMuxer("image2","JPEG Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("jpg"));
     _muxers << muxer;
-    muxer = new FFMuxer("png","PNG Sequence");
+    muxer = new FFMuxer("image2","PNG Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("png"));
     _muxers << muxer;
-    muxer = new FFMuxer("tif","TIFF Sequence");
+    muxer = new FFMuxer("image2","TIFF Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("tif"));
     _muxers << muxer;
-    muxer = new FFMuxer("tga","TARGA Sequence");
+    muxer = new FFMuxer("image2","TARGA Sequence");
     muxer->setType(FFMuxer::Sequence);
+    muxer->setExtensions(QStringList("tga"));
     _muxers << muxer;
 
 
