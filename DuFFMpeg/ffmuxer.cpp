@@ -98,6 +98,16 @@ void FFMuxer::setType(const Type &type)
     _type = type;
 }
 
+QStringList FFMuxer::extensions() const
+{
+    return _extensions;
+}
+
+void FFMuxer::setExtensions(const QStringList &extensions)
+{
+    _extensions = extensions;
+}
+
 void FFMuxer::checkType()
 {
     if (_defaultAudioCodec == nullptr && _defaultVideoCodec != nullptr) _type = VideoOnly;

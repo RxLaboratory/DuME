@@ -575,26 +575,32 @@ void FFmpeg::gotMuxers(QString output)
 
                 QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
                 QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
+                QRegularExpression reExtensions("Common extensions:\\s*(.+)\\.");
 
                 foreach(QString line,lines)
                 {
+                    //video codec
                     QRegularExpressionMatch videoMatch = reVideo.match(line);
                     if (videoMatch.hasMatch())
                     {
                         m->setDefaultVideoCodec(getVideoEncoder(videoMatch.captured(1)));
                     }
 
+                    //audio codec
                     QRegularExpressionMatch audioMatch = reAudio.match(line);
                     if (audioMatch.hasMatch())
                     {
                         m->setDefaultAudioCodec(getAudioEncoder(audioMatch.captured(1)));
                     }
 
-                    //break if all found
-                    if (m->defaultAudioCodec() != nullptr && m->defaultVideoCodec() != nullptr) break;
+                    //extensions
+                    QRegularExpressionMatch extensionsMatch = reExtensions.match(line);
+                    if (extensionsMatch.hasMatch())
+                    {
+                        m->setExtensions(extensionsMatch.captured(1).split(","));
+                    }
                 }
             }
-            //TODO get extensions
         }
     }
 

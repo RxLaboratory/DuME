@@ -46,6 +46,9 @@ public:
     bool isSequence();
     void setType(const Type &type);
 
+    QStringList extensions() const;
+    void setExtensions(const QStringList &extensions);
+
 signals:
 
 public slots:
@@ -56,6 +59,7 @@ private:
     QString _name;
     QString _prettyName;
     Type _type;
+    QStringList _extensions;
 
     void checkType();
 };
