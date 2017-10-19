@@ -337,6 +337,7 @@ void OutputWidget::ffmpeg_loadMuxers()
         }
     }
     _freezeUI = false;
+    on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
 }
 
 void OutputWidget::newInputMedia(FFMediaInfo *input)
@@ -366,7 +367,7 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
     }
 }
 
-void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(const QString &arg1)
+void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadCodecs();
 }
@@ -419,7 +420,6 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
     FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Video);
     FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(muxer, FFCodec::Audio);
-    //qDebug() << audioCodec->name();
 
 
     if (videoCodec != nullptr)
@@ -442,6 +442,33 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
                 audioCodecsBox->setCurrentIndex(a);
             }
         }
+    }
+
+    //video
+    if (muxer->isVideo() || muxer->isSequence())
+    {
+        if (noVideoButton->isChecked()) videoTranscodeButton->setChecked(true);
+        videoTranscodeButton->setEnabled(true);
+        videoCopyButton->setEnabled(true);
+    }
+    else
+    {
+        noVideoButton->setChecked(true);
+        videoTranscodeButton->setEnabled(false);
+        videoCopyButton->setEnabled(false);
+    }
+    //audio
+    if (muxer->isAudio())
+    {
+        if (noAudioButton->isChecked()) audioTranscodeButton->setChecked(true);
+        audioTranscodeButton->setEnabled(true);
+        audioCopyButton->setEnabled(true);
+    }
+    else
+    {
+        noAudioButton->setChecked(true);
+        audioTranscodeButton->setEnabled(false);
+        audioCopyButton->setEnabled(false);
     }
 
     _freezeUI = false;

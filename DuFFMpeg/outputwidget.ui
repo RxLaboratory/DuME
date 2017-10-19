@@ -157,7 +157,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
@@ -190,6 +190,9 @@
             <property name="text">
              <string>Transcode</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -198,7 +201,7 @@
              <string>Copy Stream</string>
             </property>
             <property name="checked">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -227,9 +230,6 @@
        </item>
        <item>
         <widget class="QWidget" name="videoTranscodeWidget" native="true">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <layout class="QFormLayout" name="formLayout">
           <property name="horizontalSpacing">
            <number>3</number>
@@ -673,6 +673,9 @@
             <property name="text">
              <string>Transcode</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -681,7 +684,7 @@
              <string>Copy Stream</string>
             </property>
             <property name="checked">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -710,9 +713,6 @@
        </item>
        <item>
         <widget class="QWidget" name="audioTranscodeWidget" native="true">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <layout class="QFormLayout" name="formLayout_2">
           <property name="horizontalSpacing">
            <number>3</number>
