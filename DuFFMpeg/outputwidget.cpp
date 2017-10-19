@@ -16,9 +16,6 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     _mediaInfo = new FFMediaInfo("",this);
     _currentMuxer = nullptr;
 
-    _currentVideoOptions = VideoOptions(0);
-    updateVideoOptions();
-
     //populate sampling box
     samplingBox->addItem("8,000 Hz",QVariant(8000));
     samplingBox->addItem("11,025 Hz",QVariant(11025));
@@ -29,11 +26,6 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     samplingBox->addItem("48,000 Hz",QVariant(48000));
     samplingBox->addItem("88,200 Hz",QVariant(88200));
     samplingBox->addItem("96,000 Hz",QVariant(96000));
-
-    //hide params
-    videoCodecsWidget->hide();
-    videoBitrateWidget->hide();
-    videoQualityWidget->hide();
 
     ffmpeg_init();
 
@@ -193,28 +185,6 @@ void OutputWidget::on_videoQualitySlider_valueChanged(int value)
     }
 }
 
-void OutputWidget::on_videoQualitySlider_sliderReleased()
-{
-    //Adjust bitrate
-    //TODO Must depend on resolution (and bpc)
-    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
-    //TODO adjust depending on codec
-    int value = videoQualitySlider->value();
-    double bitrate = value;
-    bitrate = bitrate*24/75;
-    videoBitRateEdit->setValue(bitrate);
-}
-
-void OutputWidget::on_videoBitRateEdit_valueChanged(double arg1)
-{
-    //Adjust quality
-    //TODO Must depend on resolution (and bpc)
-    //for now, values for full HD / Very good means at least 24Mbps (H.264 blu ray)
-    //TODO adjust depending on codec
-    int quality = arg1*75/24;
-    videoQualitySlider->setValue(quality);
-}
-
 void OutputWidget::on_audioQualitySlider_sliderReleased()
 {
     //Adjust bitrate
@@ -300,20 +270,24 @@ void OutputWidget::updateOutputExtension()
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
 }
 
-void OutputWidget::updateVideoOptions()
+void OutputWidget::selectDefaultVideoCodec()
 {
-    //combo box items
-    videoOptionsBox->clear();
-    videoOptionsBox->addItem("Add option...");
-    if (!_currentVideoOptions.testFlag(VideoCodec)) videoOptionsBox->addItem("Codec",VideoCodec);
-    if (!_currentVideoOptions.testFlag(VideoBitrate)) videoOptionsBox->addItem("Bitrate",VideoBitrate);
-    if (!_currentVideoOptions.testFlag(VideoQuality)) videoOptionsBox->addItem("Quality",VideoQuality);
-    videoOptionsBox->addItem("Custom",VideoCustom);
+    if (_currentMuxer == nullptr) return;
 
-    //widgets visibility
-    videoCodecsWidget->setVisible(_currentVideoOptions.testFlag(VideoCodec));
-    videoBitrateWidget->setVisible(_currentVideoOptions.testFlag(VideoBitrate));
-    videoQualityWidget->setVisible(_currentVideoOptions.testFlag(VideoQuality));
+    FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Video);
+
+    //Select Default Codec
+
+    if (videoCodec != nullptr)
+    {
+        for (int v = 0; v < videoCodecsBox->count() ; v++)
+        {
+            if (videoCodecsBox->itemData(v).toString() == videoCodec->name())
+            {
+                videoCodecsBox->setCurrentIndex(v);
+            }
+        }
+    }
 }
 
 void OutputWidget::ffmpeg_init()
@@ -354,6 +328,8 @@ void OutputWidget::ffmpeg_loadCodecs()
             }
         }
     }
+
+    selectDefaultVideoCodec();
     _freezeUI = false;
 }
 
@@ -471,20 +447,9 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
     _freezeUI = true;
 
-    FFCodec *videoCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Video);
+    selectDefaultVideoCodec();
+
     FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Audio);
-
-
-    if (videoCodec != nullptr)
-    {
-        for (int v = 0; v < videoCodecsBox->count() ; v++)
-        {
-            if (videoCodecsBox->itemData(v).toString() == videoCodec->name())
-            {
-                videoCodecsBox->setCurrentIndex(v);
-            }
-        }
-    }
 
     if (audioCodec != nullptr)
     {
@@ -496,6 +461,8 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
             }
         }
     }
+
+    //UI
 
     //video
     if (_currentMuxer->isVideo() || _currentMuxer->isSequence())
@@ -532,18 +499,47 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadMuxers();
-
 }
 
-void OutputWidget::on_videoOptionsBox_currentIndexChanged(int index)
+void OutputWidget::on_videoCodecButton_clicked(bool checked)
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-    if (index > 0 && index < videoOptionsBox->count())
+    if (checked)
     {
-        VideoOption option = (VideoOption)videoOptionsBox->currentData().toInt();
-        _currentVideoOptions.setFlag(option);
+        videoCodecsFilterBox->setItemText(0,"All codecs");
+        videoCodecWidget->setEnabled(true);
     }
-    updateVideoOptions();
-    _freezeUI = false;
+    else
+    {
+        videoCodecsFilterBox->setCurrentIndex(0);
+        videoCodecsFilterBox->setItemText(0,"Default");
+        videoCodecWidget->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_videoBitrateButton_clicked(bool checked)
+{
+    if (checked)
+    {
+        videoBitRateEdit->setValue(24.0);
+        videoBitRateEdit->setSuffix(" Mbps");
+        videoBitRateEdit->setEnabled(true);
+    }
+    else
+    {
+        videoBitRateEdit->setValue(0.0);
+        videoBitRateEdit->setSuffix(" Auto");
+        videoBitRateEdit->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_videoQualityButton_clicked(bool checked)
+{
+    if (checked)
+    {
+        videoQualityWidget->setEnabled(true);
+    }
+    else
+    {
+        videoQualityWidget->setEnabled(false);
+    }
 }

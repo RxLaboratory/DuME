@@ -13,14 +13,6 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
 
 public:
     explicit OutputWidget(FFmpeg *ff,QWidget *parent = 0);
-
-    enum VideoOption { VideoCodec = 1 << 0,
-                   VideoBitrate = 1 << 1,
-                   VideoQuality = 1 << 2,
-                   VideoCustom = 1 << 3,
-                 };
-    Q_DECLARE_FLAGS(VideoOptions, VideoOption)
-
     FFMediaInfo *getMediaInfo();
 
 public slots:
@@ -39,8 +31,6 @@ private slots:
     void on_frameRateBox_activated(const QString &arg1);
     void on_frameRateEdit_valueChanged(double arg1);
     void on_videoQualitySlider_valueChanged(int value);
-    void on_videoQualitySlider_sliderReleased();
-    void on_videoBitRateEdit_valueChanged(double arg1);
     void on_audioQualitySlider_sliderReleased();
     void on_audioQualitySlider_valueChanged(int value);
     void on_audioBitRateEdit_valueChanged(int arg1);
@@ -52,7 +42,9 @@ private slots:
     void on_addAudioParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
-    void on_videoOptionsBox_currentIndexChanged(int index);
+    void on_videoCodecButton_clicked(bool checked);
+    void on_videoBitrateButton_clicked(bool checked);
+    void on_videoQualityButton_clicked(bool checked);
 
 private:
     /**
@@ -60,7 +52,7 @@ private:
      */
     void aspectRatio();
     void updateOutputExtension();
-    void updateVideoOptions();
+    void selectDefaultVideoCodec();
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customVideoParamEdits;
@@ -68,11 +60,8 @@ private:
     QList<QLineEdit *> _customAudioParamEdits;
     QList<QLineEdit *> _customAudioValueEdits;
     FFMuxer *_currentMuxer;
-    VideoOptions _currentVideoOptions;
 
     bool _freezeUI;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(OutputWidget::VideoOptions)
 
 #endif // OUTPUTWIDGET_H
