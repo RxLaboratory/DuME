@@ -9,9 +9,17 @@ class FFMuxer : public QObject
 {
     Q_OBJECT
 public:
+
+    /**
+     * @brief The muxer type
+     */
+    enum Type { AudioOnly, VideoOnly, AudioVideo, Sequence};
+    Q_ENUM(Type)
+
     explicit FFMuxer(QObject *parent = nullptr);
     explicit FFMuxer(QString name, QObject *parent = nullptr);
     explicit FFMuxer(QString name, QString prettyName,QObject *parent = nullptr);
+    explicit FFMuxer(QString name, QString prettyName,Type type, QObject *parent = nullptr);
 
     /**
      * @brief defaultVideoCodec Gets the default video codec for this muxer
@@ -33,6 +41,11 @@ public:
     QString prettyName() const;
     void setPrettyName(const QString &prettyName);
 
+    bool isAudio();
+    bool isVideo();
+    bool isSequence();
+    void setType(const Type &type);
+
 signals:
 
 public slots:
@@ -42,6 +55,7 @@ private:
     FFCodec *_defaultAudioCodec;
     QString _name;
     QString _prettyName;
+    Type _type;
 };
 
 #endif // FFMUXER_H
