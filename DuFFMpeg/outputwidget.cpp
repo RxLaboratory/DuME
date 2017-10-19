@@ -134,7 +134,7 @@ void OutputWidget::on_samplingButton_toggled(bool checked)
 
 void OutputWidget::on_outputBrowseButton_clicked()
 {
-    QString outputPath = QFileDialog::getSaveFileName(this,"Output file");
+    QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
     outputEdit->setText(outputPath);
 }
@@ -274,6 +274,7 @@ void OutputWidget::aspectRatio()
 
 void OutputWidget::updateOutputExtension()
 {
+    if (outputEdit->text() == "") return;
     QFileInfo output(outputEdit->text());
     QString newExt = "";
     if (_currentMuxer != nullptr)
@@ -284,6 +285,12 @@ void OutputWidget::updateOutputExtension()
         }
     }
     QString outputPath = output.path() + "/" + output.completeBaseName() + newExt;
+    //check if file exists
+    if (QFile(outputPath).exists())
+    {
+        outputPath = output.path() + "/" + output.completeBaseName() + "_transcoded" + newExt;
+    }
+
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
 }
 
@@ -361,11 +368,9 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
 {
     //set output fileName
     QFileInfo inputFile(input->fileName());
-    QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName() + "_transcoded";
-    updateOutputExtension();
-
-
+    QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
     outputEdit->setText(outputPath);
+    updateOutputExtension();
 
     //if not checked, update fields
     if (!resizeButton->isChecked())
