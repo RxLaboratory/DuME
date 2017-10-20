@@ -100,7 +100,6 @@ QPushButton:pressed:hover {
 /* CHECKBOX AND RADIOBUTTON */
 
 QCheckBox, QRadioButton {
-        border:none;
 	color: @color-light;
 	padding: @button-padding;
 }
