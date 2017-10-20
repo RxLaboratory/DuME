@@ -26,10 +26,10 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     samplingBox->addItem("48,000 Hz",QVariant(48000));
     samplingBox->addItem("88,200 Hz",QVariant(88200));
     samplingBox->addItem("96,000 Hz",QVariant(96000));
+    samplingBox->setCurrentIndex(6);
 
     //hide/show supported/unsupported options
     videoOptionsUpdate();
-
 
     ffmpeg_init();
 
@@ -187,47 +187,6 @@ void OutputWidget::on_videoQualitySlider_valueChanged(int value)
     {
         qualityLabel->setText("Very bad | " + QString::number(value) + "%");
     }
-}
-
-void OutputWidget::on_audioQualitySlider_sliderReleased()
-{
-    //Adjust bitrate
-    //TODO adjust depending on codec
-    int value = audioQualitySlider->value();
-    int bitrate = value*320/100;
-    audioBitRateEdit->setValue(bitrate);
-}
-
-void OutputWidget::on_audioQualitySlider_valueChanged(int value)
-{
-    if (value >= 90)
-    {
-        audioQualityLabel->setText("(Nearly) Lossless | " + QString::number(value) + "%");
-    }
-    else if (value >= 60)
-    {
-        audioQualityLabel->setText("Very good | " + QString::number(value) + "%");
-    }
-    else if (value >= 30)
-    {
-        audioQualityLabel->setText("Good | " + QString::number(value) + "%");
-    }
-    else if (value >= 17)
-    {
-        audioQualityLabel->setText("Bad | " + QString::number(value) + "%");
-    }
-    else
-    {
-        audioQualityLabel->setText("Very bad | " + QString::number(value) + "%");
-    }
-}
-
-void OutputWidget::on_audioBitRateEdit_valueChanged(int arg1)
-{
-    //Adjust bitrate
-    //TODO adjust depending on codec
-    int quality = arg1*100/320;
-    audioQualitySlider->setValue(quality);
 }
 
 void OutputWidget::on_videoWidthButton_valueChanged(int val)
@@ -419,7 +378,7 @@ void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
     ffmpeg_loadCodecs();
 }
 
-void OutputWidget::on_addParam_clicked()
+void OutputWidget::on_addVideoParam_clicked()
 {
     //add a param and a value
     QLineEdit *customParam = new QLineEdit(this);
@@ -431,7 +390,7 @@ void OutputWidget::on_addParam_clicked()
     customValue->setPlaceholderText("Value");
     //add to layout and lists
     QFormLayout *layout = (QFormLayout*)videoTranscodeWidget->layout();
-    layout->insertRow(layout->rowCount()-1,customParam,customValue);
+    layout->insertRow(layout->rowCount()-2,customParam,customValue);
     _customVideoParamEdits << customParam;
     _customVideoValueEdits << customValue;
 }
@@ -525,6 +484,7 @@ void OutputWidget::on_videoCodecButton_clicked(bool checked)
     else
     {
         videoCodecsFilterBox->setCurrentIndex(0);
+        ffmpeg_loadCodecs();
         videoCodecsFilterBox->setItemText(0,"Default");
         videoCodecWidget->setEnabled(false);
     }
@@ -561,5 +521,37 @@ void OutputWidget::on_videoQualityButton_clicked(bool checked)
     {
         videoQualityWidget->setEnabled(false);
         qualityLabel->setText("Excellent");
+    }
+}
+
+void OutputWidget::on_audioCodecButton_clicked(bool checked)
+{
+    if (checked)
+    {
+        audioCodecsFilterBox->setItemText(0,"All codecs");
+        audioCodecWidget->setEnabled(true);
+    }
+    else
+    {
+        audioCodecsFilterBox->setCurrentIndex(0);
+        ffmpeg_loadCodecs();
+        audioCodecsFilterBox->setItemText(0,"Default");
+        audioCodecWidget->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_audioBitrateButton_clicked(bool checked)
+{
+    if (checked)
+    {
+        audioBitRateEdit->setValue(320);
+        audioBitRateEdit->setSuffix(" Kbps");
+        audioBitRateEdit->setEnabled(true);
+    }
+    else
+    {
+        audioBitRateEdit->setValue(0);
+        audioBitRateEdit->setSuffix(" Auto");
+        audioBitRateEdit->setEnabled(false);
     }
 }

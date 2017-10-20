@@ -31,20 +31,21 @@ private slots:
     void on_frameRateBox_activated(const QString &arg1);
     void on_frameRateEdit_valueChanged(double arg1);
     void on_videoQualitySlider_valueChanged(int value);
-    void on_audioQualitySlider_sliderReleased();
-    void on_audioQualitySlider_valueChanged(int value);
-    void on_audioBitRateEdit_valueChanged(int arg1);
     void on_videoWidthButton_valueChanged(int val);
     void on_videoHeightButton_valueChanged(int val);
     void on_videoCodecsFilterBox_currentIndexChanged(int index);
     void on_audioCodecsFilterBox_currentIndexChanged(int index);
-    void on_addParam_clicked();
+    void on_addVideoParam_clicked();
     void on_addAudioParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
     void on_videoCodecButton_clicked(bool checked);
     void on_videoBitrateButton_clicked(bool checked);
     void on_videoQualityButton_clicked(bool checked);
+
+    void on_audioCodecButton_clicked(bool checked);
+
+    void on_audioBitrateButton_clicked(bool checked);
 
 private:
     /**
