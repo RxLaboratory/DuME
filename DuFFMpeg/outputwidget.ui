@@ -91,21 +91,24 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Preset</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="presetsBox"/>
+       <widget class="QComboBox" name="presetsBox">
+        <item>
+         <property name="text">
+          <string>Custom</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Load...</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Save...</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QComboBox" name="formatsFilterBox">
@@ -167,6 +170,49 @@
       </item>
       <item row="2" column="1">
        <widget class="QComboBox" name="formatsBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QComboBox" name="formatsFilterBox_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>All Presets</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Internal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>User</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </widget>
