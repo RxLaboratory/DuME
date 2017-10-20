@@ -83,7 +83,7 @@ void FrameLess::mouseRealese(QMouseEvent *e) {
 void FrameLess::mouseMove(QMouseEvent *e) {
     if (_leftButtonPressed) {
         if (_dragStart) {
-            _target->move(_target->frameGeometry().topLeft() + (e->pos() - _dragPos));
+            _target->move(e->globalPos() - _dragPos);
         }
 
         if (!_mousePress.testFlag(Edge::None)) {
