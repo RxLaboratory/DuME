@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     updateCSS(":/styles/default");
 
     //init UI
-    consoleTabs->setCurrentIndex(0);
+    consoleTabs->setCurrentIndex(3);
     mainStackWidget->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
