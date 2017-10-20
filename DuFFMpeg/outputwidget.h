@@ -53,6 +53,7 @@ private:
     void aspectRatio();
     void updateOutputExtension();
     void selectDefaultVideoCodec();
+    void videoOptionsUpdate();
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customVideoParamEdits;

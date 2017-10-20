@@ -27,6 +27,10 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     samplingBox->addItem("88,200 Hz",QVariant(88200));
     samplingBox->addItem("96,000 Hz",QVariant(96000));
 
+    //hide/show supported/unsupported options
+    videoOptionsUpdate();
+
+
     ffmpeg_init();
 
     connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
@@ -290,6 +294,16 @@ void OutputWidget::selectDefaultVideoCodec()
     }
 }
 
+void OutputWidget::videoOptionsUpdate()
+{
+    //TODO show/hide depending on codec
+
+    //quality
+    videoQualityButton->setChecked(false);
+    videoQualityButton->hide();
+    videoQualityWidget->hide();
+}
+
 void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
@@ -520,6 +534,8 @@ void OutputWidget::on_videoBitrateButton_clicked(bool checked)
 {
     if (checked)
     {
+        videoQualityButton->setChecked(false);
+        on_videoQualityButton_clicked(false);
         videoBitRateEdit->setValue(24.0);
         videoBitRateEdit->setSuffix(" Mbps");
         videoBitRateEdit->setEnabled(true);
@@ -536,10 +552,14 @@ void OutputWidget::on_videoQualityButton_clicked(bool checked)
 {
     if (checked)
     {
+        videoBitrateButton->setChecked(false);
+        on_videoBitrateButton_clicked(false);
         videoQualityWidget->setEnabled(true);
+        on_videoQualitySlider_valueChanged(videoQualitySlider->value());
     }
     else
     {
         videoQualityWidget->setEnabled(false);
+        qualityLabel->setText("Excellent");
     }
 }
