@@ -1,5 +1,9 @@
 #include "queuewidget.h"
 
+#ifdef QT_DEBUG
+#include <QtDebug>
+#endif
+
 QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
     QWidget(parent)
 {
@@ -12,6 +16,14 @@ QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
 
     inputTab1->layout()->addWidget(inputWidget);
     outputTab1->layout()->addWidget(outputWidget);
+
+    //splitter sizes
+    _settings.beginGroup("queuesplitter");
+    QList<int>sizes;
+    sizes << _settings.value("inputsize",100).toInt();
+    sizes << _settings.value("outputsize",100).toInt();
+    splitter->setSizes(sizes);
+    _settings.endGroup();
 
     ffmpeg_init();
 
@@ -33,4 +45,12 @@ FFMediaInfo *QueueWidget::getOutputMedia()
 void QueueWidget::ffmpeg_init()
 {
 
+}
+
+void QueueWidget::saveSettings()
+{
+    _settings.beginGroup("queuesplitter");
+    _settings.setValue("inputsize",splitter->sizes()[0]);
+    _settings.setValue("outputsize",splitter->sizes()[1]);
+    _settings.endGroup();
 }

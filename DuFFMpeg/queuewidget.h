@@ -3,6 +3,8 @@
 
 #include "ui_queuewidget.h"
 
+#include <QCloseEvent>
+
 #include "inputwidget.h"
 #include "outputwidget.h"
 
@@ -14,6 +16,7 @@ public:
     explicit QueueWidget(FFmpeg *ff, QWidget *parent = 0);
     FFMediaInfo *getInputMedia();
     FFMediaInfo *getOutputMedia();
+    void saveSettings();
 
 public slots:
     void ffmpeg_init();
@@ -22,6 +25,9 @@ private:
     InputWidget *inputWidget;
     OutputWidget *outputWidget;
     FFmpeg *ffmpeg;
+    QSettings _settings;
+
+
 };
 
 #endif // QUEUEWIDGET_H

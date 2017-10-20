@@ -360,6 +360,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings->endGroup();
     settings->sync();
 
+    queueWidget->saveSettings();
+
     event->accept();
 }
 
