@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //queue widget
     queueWidget = new QueueWidget(ffmpeg,this);
-    page1->layout()->addWidget(queueWidget);
+    queueLayout->addWidget(queueWidget);
 
     //set style
     updateCSS(":/styles/default");

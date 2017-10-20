@@ -389,8 +389,7 @@ void OutputWidget::on_addVideoParam_clicked()
     QLineEdit *customValue = new QLineEdit(this);
     customValue->setPlaceholderText("Value");
     //add to layout and lists
-    QFormLayout *layout = (QFormLayout*)videoTranscodeWidget->layout();
-    layout->insertRow(layout->rowCount()-2,customParam,customValue);
+    videoTranscodeLayout->insertRow(videoTranscodeLayout->rowCount()-2,customParam,customValue);
     _customVideoParamEdits << customParam;
     _customVideoValueEdits << customValue;
 }
@@ -406,8 +405,7 @@ void OutputWidget::on_addAudioParam_clicked()
     QLineEdit *customValue = new QLineEdit(this);
     customValue->setPlaceholderText("Value");
     //add to layout and lists
-    QFormLayout *layout = (QFormLayout*)audioTranscodeWidget->layout();
-    layout->insertRow(layout->rowCount()-1,customParam,customValue);
+    audioTranscodeLayout->insertRow(audioTranscodeLayout->rowCount()-1,customParam,customValue);
     _customAudioParamEdits << customParam;
     _customAudioValueEdits << customValue;
 

@@ -427,7 +427,7 @@ p, li { white-space: pre-wrap; }
         <number>0</number>
        </property>
        <widget class="QWidget" name="queuePage">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="queueLayout">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -443,53 +443,6 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QToolBox" name="toolBox">
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <widget class="QWidget" name="page1">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>833</width>
-              <height>177</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Item 1</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="page2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>833</width>
-              <height>177</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Add...</string>
-            </attribute>
-           </widget>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="settingsPage">
