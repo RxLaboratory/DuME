@@ -3,8 +3,6 @@
 
 #include "ui_queuewidget.h"
 
-#include <QCloseEvent>
-
 #include "inputwidget.h"
 #include "outputwidget.h"
 
