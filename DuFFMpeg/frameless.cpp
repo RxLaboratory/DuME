@@ -83,6 +83,7 @@ void FrameLess::mouseRealese(QMouseEvent *e) {
 void FrameLess::mouseMove(QMouseEvent *e) {
     if (_leftButtonPressed) {
         if (_dragStart) {
+            _target->setCursor(Qt::SizeAllCursor);
             _target->move(e->globalPos() - _dragPos);
         }
 
