@@ -4,6 +4,7 @@
 #include "ui_outputwidget.h"
 
 #include <QFileDialog>
+#include <QSettings>
 
 #include "ffmpeg.h"
 
@@ -42,11 +43,8 @@ private slots:
     void on_videoCodecButton_clicked(bool checked);
     void on_videoBitrateButton_clicked(bool checked);
     void on_videoQualityButton_clicked(bool checked);
-
     void on_audioCodecButton_clicked(bool checked);
-
     void on_audioBitrateButton_clicked(bool checked);
-
     void on_presetsBox_currentIndexChanged(int index);
 
 private:
@@ -57,6 +55,8 @@ private:
     void updateOutputExtension();
     void selectDefaultVideoCodec();
     void videoOptionsUpdate();
+
+    QSettings _settings;
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customVideoParamEdits;

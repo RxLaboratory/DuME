@@ -75,7 +75,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
         if (audioCopyButton->isChecked()) _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder("copy"));
         else
         {
-            _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
+            if (audioCodecButton->isChecked())_mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
             if (samplingButton->isChecked())
             {
                 _mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
@@ -83,6 +83,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             _mediaInfo->setAudioBitrate(audioBitRateEdit->value(),FFMediaInfo::Kbps);
         }
     }
+
+    //MUXER
+    FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+    _mediaInfo->setMuxer(muxer);
 
     //CUSTOM
     for (int i = 0 ; i < _customVideoParamEdits.count() ; i++)
@@ -565,9 +569,22 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     _freezeUI = true;
     if (index == presetsBox->count()-1)
     {
-        getMediaInfo();
-        _mediaInfo->exportToJson();
         presetsBox->setCurrentIndex(0);
+
+        //ask for file
+        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",_settings.value("output/presetsDir",QVariant("")).toString(),"DuFFmpeg preset (*.dffp *.json);;All Files (*.*)");
+        if (saveFileName == "")
+        {
+            _freezeUI = false;
+            return;
+        }
+        QFile saveFile(saveFileName);
+        //update infos
+        getMediaInfo();
+        //export
+        _mediaInfo->exportToJson(saveFileName);
+        //add to box and select
+
     }
     _freezeUI = false;
 }
