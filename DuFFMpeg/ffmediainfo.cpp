@@ -343,6 +343,7 @@ QJsonDocument FFMediaInfo::exportToJson()
         videoObj.insert("framerate",_videoFramerate);
         //bitrate
         videoObj.insert("bitrate",_videoBitrate);
+        mediaObj.insert("video",videoObj);
     }
 
     //audio
@@ -383,7 +384,9 @@ QJsonDocument FFMediaInfo::exportToJson()
     //insert
     mediaObj.insert("options",options);
 
-    QJsonDocument jsonDoc(mediaObj);
+    QJsonObject mainObj;
+    mainObj.insert("duffmpeg",mediaObj);
+    QJsonDocument jsonDoc(mainObj);
     return jsonDoc;
 }
 
