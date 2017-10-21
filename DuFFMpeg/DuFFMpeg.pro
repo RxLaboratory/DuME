@@ -22,10 +22,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+DEFINES += APPVERSION=\\\"0.0.1-Alpha1\\\"
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
+    main.cpp \
+    mainwindow.cpp \
     toolbarspacer.cpp \
     settingswidget.cpp \
     ffmpeg.cpp \
@@ -37,10 +38,11 @@ SOURCES += \
     outputwidget.cpp \
     rainboxui.cpp \
     frameless.cpp \
-    ffmuxer.cpp
+    ffmuxer.cpp \
+    ffobject.cpp
 
 HEADERS += \
-        mainwindow.h \
+    mainwindow.h \
     toolbarspacer.h \
     settingswidget.h \
     ffmpeg.h \
@@ -52,10 +54,11 @@ HEADERS += \
     outputwidget.h \
     rainboxui.h \
     frameless.h \
-    ffmuxer.h
+    ffmuxer.h \
+    ffobject.h
 
 FORMS += \
-        mainwindow.ui \
+    mainwindow.ui \
     toolbarspacer.ui \
     settingswidget.ui \
     queuewidget.ui \
