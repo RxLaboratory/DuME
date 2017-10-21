@@ -449,6 +449,14 @@ void FFmpeg::encodeNextItem()
     //add outputs
     foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
     {
+        //muxer
+        QString muxer = "";
+        if (output->muxer() != nullptr) muxer = output->muxer()->name();
+        if (muxer != "")
+        {
+            arguments << "-f" << muxer;
+        }
+
         //add custom options
         foreach(QStringList option,output->ffmpegOptions())
         {
@@ -493,6 +501,62 @@ void FFmpeg::encodeNextItem()
                 {
                     arguments << "-r" << QString::number(framerate);
                 }
+
+                //loop (gif)
+                if (codec == "gif")
+                {
+                    int loop = output->loop();
+                    arguments << "-loop" << QString::number(loop);
+                }
+
+                //profile
+                int profile = output->videoProfile();
+                if (profile > -1)
+                {
+                    arguments << "-profile" << QString::number(profile);
+                }
+
+                //quality (h264)
+                int quality = output->videoQuality();
+                if (codec == "h264" && quality > 0 )
+                {
+                    quality = 100-quality;
+                    //adjust to CRF values
+                    if (quality < 10)
+                    {
+                        //convert to range 0-15 // visually lossless
+                        quality = quality*15/10;
+                    }
+                    else if (quality < 25)
+                    {
+                        //convert to range 15-21 // very good
+                        quality = quality-10;
+                        quality = quality*6/15;
+                        quality = quality+15;
+                    }
+                    else if (quality < 50)
+                    {
+                        //convert to range 22-28 // good
+                        quality = quality-25;
+                        quality = quality*6/25;
+                        quality = quality+21;
+                    }
+                    else if (quality < 75)
+                    {
+                        //convert to range 29-34 // bad
+                        quality = quality-50;
+                        quality = quality*6/25;
+                        quality = quality+28;
+                    }
+                    else
+                    {
+                        //convert to range 35-51 // very bad
+                        quality = quality-75;
+                        quality = quality*17/25;
+                        quality = quality+34;
+                    }
+                    arguments << "-crf" << QString::number(quality);
+                }
             }
         }
         else
@@ -505,10 +569,10 @@ void FFmpeg::encodeNextItem()
         QString acodec = "";
         if (output->audioCodec() != nullptr) acodec = output->audioCodec()->name();
 
-        if (output->hasAudio() && acodec != "")
+        if (output->hasAudio())
         {
             //codec
-            arguments << "-acodec" << acodec;
+            if (acodec != "") arguments << "-acodec" << acodec;
 
             if (acodec != "copy")
             {
@@ -806,6 +870,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
     QString muxerName = muxerObj.value("name").toString();
     emit debugInfo("Muxer: " + muxerName);
     mediaInfo->setMuxer(getMuxer(muxerName));
+    mediaInfo->setLoop(mediaObj.value("loop").toInt());
 
     //video
     if (mediaObj.value("hasVideo").toBool())
@@ -822,6 +887,8 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->setVideoHeight(videoObj.value("height").toInt());
         mediaInfo->setVideoFramerate(videoObj.value("framerate").toDouble());
         mediaInfo->setVideoBitrate(videoObj.value("bitrate").toInt());
+        mediaInfo->setVideoProfile(videoObj.value("profile").toInt());
+        mediaInfo->setVideoQuality(videoObj.value("quality").toInt());
     }
 
     //audio
