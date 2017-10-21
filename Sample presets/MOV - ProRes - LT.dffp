@@ -1,0 +1,35 @@
+{
+    "duffmpeg": {
+        "audio": {
+            "bitrate": 0,
+            "codecName": "alac",
+            "codecPrettyName": "ALAC ",
+            "sampling": 0
+        },
+        "hasAudio": true,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "mov"
+            ],
+            "isSequence": false,
+            "name": "mov",
+            "prettyName": "QuickTime / MOV"
+        },
+        "options": [
+            {
+                "name": "-profile",
+                "value": "1"
+            }
+        ],
+        "version": "0.0.1-Alpha1",
+        "video": {
+            "bitrate": 0,
+            "codecName": "prores",
+            "codecPrettyName": "Apple ProRes ",
+            "framerate": 0,
+            "height": 0,
+            "width": 0
+        }
+    }
+}
