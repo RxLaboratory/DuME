@@ -48,7 +48,7 @@ void InputWidget::on_inputBrowseButton_clicked()
     //Text
     QString mediaInfoString = "Media information";
 
-    mediaInfoString += "\n\nContainers: " + _mediaInfo->container().join(",");
+    mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
 
     QTime duration(0,0,0);
     duration = duration.addSecs(_mediaInfo->duration());
