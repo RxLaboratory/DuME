@@ -1,0 +1,16 @@
+{
+    "duffmpeg": {
+        "hasAudio": false,
+        "hasVideo": false,
+        "muxer": {
+            "extensions": [
+            ],
+            "isSequence": false,
+            "name": "",
+            "prettyName": ""
+        },
+        "options": [
+        ],
+        "version": "0.0.1-Alpha1"
+    }
+}
