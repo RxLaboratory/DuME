@@ -18,4 +18,18 @@
         <file alias="default-duffmpeg">resources/styles/style-duffmpeg.css</file>
         <file alias="default-values">resources/styles/style-values.rui</file>
     </qresource>
+    <qresource prefix="/presets">
+        <file alias="MOV - ProRes - HQ">resources/presets/MOV - ProRes - HQ.dffp</file>
+        <file alias="MOV - ProRes - LT">resources/presets/MOV - ProRes - LT.dffp</file>
+        <file alias="MOV - ProRes - Normal">resources/presets/MOV - ProRes - Normal.dffp</file>
+        <file alias="MOV - ProRes - Proxy">resources/presets/MOV - ProRes - Proxy.dffp</file>
+        <file alias="MP4 - Remux">resources/presets/MP4 - Remux.dffp</file>
+        <file alias="GIF - 360p">resources/presets/GIF - 360p.dffp</file>
+        <file alias="GIF - 450p">resources/presets/GIF - 450p.dffp</file>
+        <file alias="GIF - 720p">resources/presets/GIF - 720p.dffp</file>
+        <file alias="GIF">resources/presets/GIF.dffp</file>
+        <file alias="MP4 - Auto - HQ">resources/presets/MP4 - Auto - HQ.dffp</file>
+        <file alias="MP4 - Auto - LQ">resources/presets/MP4 - Auto - LQ.dffp</file>
+        <file alias="MP4 - Auto - Normal">resources/presets/MP4 - Auto - Normal.dffp</file>
+    </qresource>
 </RCC>
