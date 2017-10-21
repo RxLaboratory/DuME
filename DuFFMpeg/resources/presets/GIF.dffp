@@ -1,0 +1,28 @@
+{
+    "duffmpeg": {
+        "hasAudio": false,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "gif"
+            ],
+            "isSequence": false,
+            "name": "gif",
+            "prettyName": "GIF Animation"
+        },
+        "options": [
+        ],
+        "version": "0.0.1-Alpha1",
+        "video": {
+            "bitrate": 0,
+            "codecName": "gif",
+            "codecPrettyName": "GIF ",
+            "framerate": 0,
+            "height": 0,
+            "loop": 0,
+            "profile": -1,
+            "quality": -1,
+            "width": 0
+        }
+    }
+}
