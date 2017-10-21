@@ -5,6 +5,7 @@
 
 #include <QFileDialog>
 #include <QSettings>
+#include <QStringList>
 
 #include "ffmpeg.h"
 
@@ -46,6 +47,11 @@ private slots:
     void on_audioCodecButton_toggled(bool checked);
     void on_audioBitrateButton_toggled(bool checked);
     void on_presetsBox_currentIndexChanged(int index);
+    void on_presetsFilterBox_activated(int index);
+    void on_videoCodecsBox_currentIndexChanged(int index);
+    void on_videoProfileButton_toggled(bool checked);
+    void on_videoLoopsButton_toggled(bool checked);
+    void on_videoLoopsEdit_valueChanged(int arg1);
 
 private:
     /**
@@ -54,7 +60,7 @@ private:
     void aspectRatio();
     void updateOutputExtension();
     void selectDefaultVideoCodec();
-    void videoOptionsUpdate();
+    void updateVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();
 

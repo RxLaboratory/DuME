@@ -29,14 +29,17 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     samplingBox->addItem("96,000 Hz",QVariant(96000));
     samplingBox->setCurrentIndex(6);
 
-    //hide/show supported/unsupported options
-    videoOptionsUpdate();
-
     ffmpeg_init();
 
     connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
 
     _freezeUI = false;
+
+    //Set defaults
+
+    on_presetsFilterBox_activated(0);
+    //hide/show supported/unsupported options
+    updateVideoOptions();
 }
 
 FFMediaInfo *OutputWidget::getMediaInfo()
@@ -52,7 +55,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
         if (videoCopyButton->isChecked()) _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder("copy"));
         else
         {
-            if (videoCodecButton->isChecked()) _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
+            _mediaInfo->setVideoCodec(_ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString()));
             if (resizeButton->isChecked())
             {
                 _mediaInfo->setVideoWidth(videoWidthButton->value());
@@ -66,6 +69,14 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
             }
+            if (videoQualityButton->isChecked())
+            {
+                _mediaInfo->setVideoQuality(videoQualitySlider->value());
+            }
+            if (videoProfileButton->isChecked())
+            {
+                _mediaInfo->setVideoProfile(videoProfileBox->currentData().toInt());
+            }
         }
     }
 
@@ -76,7 +87,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
         if (audioCopyButton->isChecked()) _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder("copy"));
         else
         {
-            if (audioCodecButton->isChecked())_mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
+            _mediaInfo->setAudioCodec(_ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString()));
             if (samplingButton->isChecked())
             {
                 _mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
@@ -88,6 +99,9 @@ FFMediaInfo *OutputWidget::getMediaInfo()
     //MUXER
     FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
     _mediaInfo->setMuxer(muxer);
+
+    //LOOP
+    if (videoLoopsButton->isChecked()) _mediaInfo->setLoop(videoLoopsEdit->value());
 
     //CUSTOM
     for (int i = 0 ; i < _customParamEdits.count() ; i++)
@@ -108,16 +122,12 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
-    qDebug() << "init";
     init();
-
-
 
     delete _mediaInfo;
     _mediaInfo = mediaInfo;
     mediaInfo->setParent(this);
 
-    qDebug() << "muxer";
 
     //MUXER
     FFMuxer *muxer = _mediaInfo->muxer();
@@ -132,8 +142,10 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
             }
         }
     }
-
-    qDebug() << "video";
+    //loop
+    int loop = _mediaInfo->loop();
+    videoLoopsEdit->setValue(loop);
+    if (loop > -1) videoLoopsButton->setChecked(true);
 
     //VIDEO
     if (_mediaInfo->hasVideo())
@@ -176,13 +188,16 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
             videoBitrateButton->setChecked(true);
             videoBitRateEdit->setValue(bitrate);
         }
+        int quality = _mediaInfo->videoQuality();
+        if (quality > -1) videoQualitySlider->setValue(quality);
+        int profile = _mediaInfo->videoProfile();
+        if (profile > -1) videoProfileBox->setCurrentIndex(profile);
     }
     else
     {
         noVideoButton->setChecked(true);
     }
 
-    qDebug() << "audio";
 
     //AUDIO
     if (_mediaInfo->hasAudio())
@@ -230,7 +245,6 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
         noAudioButton->setChecked(true);
     }
 
-    qDebug() << "custom";
 
     //CUSTOM
     foreach (QStringList option , _mediaInfo->ffmpegOptions())
@@ -241,7 +255,6 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
         addNewParam(name,value);
     }
 
-    qDebug() << "finished";
 }
 
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
@@ -393,14 +406,91 @@ void OutputWidget::selectDefaultVideoCodec()
     }
 }
 
-void OutputWidget::videoOptionsUpdate()
+void OutputWidget::updateVideoOptions()
 {
-    //TODO show/hide depending on codec
+    //hide all
 
+    //VIDEO
+    //codec
+    videoCodecButton->hide();
+    videoCodecWidget->hide();
+    //bitrate
+    videoBitrateButton->hide();
+    videoBitRateEdit->hide();
     //quality
-    videoQualityButton->setChecked(false);
     videoQualityButton->hide();
     videoQualityWidget->hide();
+    //profile
+    videoProfileButton->hide();
+    videoProfileBox->hide();
+    //loop
+    videoLoopsButton->hide();
+    videoLoopsEdit->hide();
+
+    //AUDIO
+    //codec
+    audioCodecButton->hide();
+    audioCodecWidget->hide();
+    //bitrate
+    audioBitrateButton->hide();
+    audioBitRateEdit->hide();
+
+
+    //show/hide codec and bitrate depending on muxer
+    FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+    if (muxer != nullptr)
+    {
+        if (!muxer->isSequence() && muxer->name() != "gif")
+        {
+            videoCodecButton->show();
+            videoCodecWidget->show();
+            videoBitrateButton->show();
+            videoBitRateEdit->show();
+            audioCodecButton->show();
+            audioCodecWidget->show();
+            audioBitrateButton->show();
+            audioBitRateEdit->show();
+        }
+    }
+
+    FFCodec *codec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
+    if (codec != nullptr)
+    {
+        //prores
+        if (codec->name() == "prores")
+        {
+            videoProfileBox->clear();
+            videoProfileBox->addItem("Proxy",0);
+            videoProfileBox->addItem("LT",1);
+            videoProfileBox->addItem("Normal",2);
+            videoProfileBox->addItem("HQ",3);
+            videoProfileButton->show();
+            videoProfileBox->show();
+        }
+        //h264
+        else if (codec->name() == "h264")
+        {
+            videoQualityButton->show();
+            videoQualityWidget->show();
+        }
+        //gif
+        else if (codec->name() == "gif")
+        {
+            videoLoopsButton->show();
+            videoLoopsEdit->show();
+        }
+    }
+
+
+    //uncheck what is hidden
+    if (videoCodecButton->isHidden()) videoCodecButton->setChecked(false);
+    if (videoBitrateButton->isHidden()) videoBitrateButton->setChecked(false);
+    if (videoQualityButton->isHidden()) videoQualityButton->setChecked(false);
+    if (videoProfileButton->isHidden()) videoProfileButton->setChecked(false);
+    if (videoLoopsButton->isHidden()) videoLoopsButton->setChecked(false);
+    if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
+    if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
+
 }
 
 void OutputWidget::addNewParam(QString name, QString value)
@@ -424,24 +514,14 @@ void OutputWidget::addNewParam(QString name, QString value)
 void OutputWidget::init()
 {
     //main
-    outputEdit->setText("");
     formatsFilterBox->setCurrentText(0);
-    formatsBox->setCurrentIndex(1);
-    presetsFilterBox->setCurrentIndex(0);
-    presetsBox->setCurrentIndex(0);
+    formatsBox->setCurrentIndex(0);
 
     //video
     videoTranscodeButton->setChecked(true);
-    resizeButton->setChecked(false);
-    frameRateButton->setChecked(false);
-    videoCodecButton->setChecked(false);
-    videoBitrateButton->setChecked(false);
 
     //audio
     audioTranscodeButton->setChecked(true);
-    samplingButton->setChecked(false);
-    audioCodecButton->setChecked(false);
-    audioBitrateButton->setChecked(false);
 
     //params
     qDeleteAll(_customParamEdits);
@@ -621,9 +701,12 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
         audioCopyButton->setEnabled(false);
     }
 
-    updateOutputExtension();
+
 
     _freezeUI = false;
+
+    updateOutputExtension();
+    updateVideoOptions();
 }
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
@@ -715,6 +798,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     _freezeUI = true;
+    if (index == 0) return;
     //save
     if (index == presetsBox->count()-1)
     {
@@ -753,5 +837,85 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         _freezeUI = false;
         setMediaInfo(mInfo);
     }
+    //load preset
+    else
+    {
+        //load
+        FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
+        //update
+        _freezeUI = false;
+        setMediaInfo(mInfo);
+    }
+
     _freezeUI = false;
+}
+
+void OutputWidget::on_presetsFilterBox_activated(int index)
+{
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    presetsBox->clear();
+
+    QStringList presets;
+    //list internal
+    if (index == 0 || index == 1)
+    {
+        foreach(QString preset, QDir(":/presets/").entryList())
+        {
+            presets << ":/presets/" + preset;
+        }
+    }
+    //TODO list user presets
+
+    presets.sort();
+    //add custom
+    presetsBox->addItem("Custom");
+    foreach(QString preset,presets)
+    {
+        presetsBox->addItem(QFileInfo(preset).completeBaseName(),preset);
+    }
+    //add load ans save
+    presetsBox->addItem("Load...");
+    presetsBox->addItem("Save as...");
+
+    _freezeUI = false;
+}
+
+void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
+{
+    updateVideoOptions();
+}
+
+void OutputWidget::on_videoProfileButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        videoProfileBox->setEnabled(true);
+    }
+    else
+    {
+        videoProfileBox->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_videoLoopsButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        videoLoopsEdit->setValue(0);
+        videoLoopsEdit->setEnabled(true);
+    }
+    else
+    {
+        videoLoopsEdit->setValue(-1);
+        videoLoopsEdit->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
+{
+    if (arg1 == -1) videoLoopsEdit->setSuffix(" No loop");
+    else if (arg1 == 0) videoLoopsEdit->setSuffix(" Infinite");
+    else videoLoopsEdit->setSuffix(" loops");
 }
