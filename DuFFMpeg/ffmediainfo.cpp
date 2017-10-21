@@ -2,14 +2,14 @@
 
 #include <QtDebug>
 
-FFMediaInfo::FFMediaInfo(QString ffmpegOutput, QObject *parent) : QObject(parent)
+FFMediaInfo::FFMediaInfo(QString ffmpegOutput, QObject *parent) : FFObject(parent)
 {
     updateInfo(ffmpegOutput);
 }
 
 void FFMediaInfo::updateInfo(QString ffmpegOutput)
 {
-    _container = QStringList();
+    _muxer = nullptr;
     _fileName = "";
     _duration = 0.0;
     _videoWidth = 0;
@@ -29,7 +29,6 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
 
     QStringList infos = ffmpegOutput.split("\n");
 
-
     //regexes to get infos
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
     QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,2}.?\\d{0,2}) fps");
@@ -45,7 +44,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
         if (match.hasMatch())
         {
             input = true;
-            _container = match.captured(1).split(",");
+            _extensions = match.captured(1).split(",");
             _fileName = match.captured(2);
             qDebug() << info;
         }
@@ -89,11 +88,6 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
             continue;
         }
     }
-}
-
-void FFMediaInfo::setContainer(QStringList container)
-{
-    _container = container;
 }
 
 void FFMediaInfo::setVideoWidth(int width)
@@ -173,6 +167,11 @@ void FFMediaInfo::setAudio(bool audio)
     _audio = audio;
 }
 
+void FFMediaInfo::setMuxer(FFMuxer *muxer)
+{
+    _muxer = muxer;
+}
+
 void FFMediaInfo::addFFmpegOption(QString option)
 {
     _ffmpegOptions << option;
@@ -186,11 +185,6 @@ void FFMediaInfo::removeFFmpegOpstion(QString option)
 void FFMediaInfo::clearFFmpegOptions()
 {
     _ffmpegOptions.clear();
-}
-
-QStringList FFMediaInfo::container()
-{
-    return _container;
 }
 
 int FFMediaInfo::videoWidth()
@@ -281,3 +275,42 @@ bool FFMediaInfo::isImageSequence()
 {
     return _imageSequence;
 }
+
+QStringList FFMediaInfo::extensions() const
+{
+    if (_muxer == nullptr) return _extensions;
+    if (_muxer->extensions().count() == 0) return _extensions;
+    return _muxer->extensions();
+}
+
+FFMuxer *FFMediaInfo::muxer() const
+{
+    return _muxer;
+}
+
+QJsonDocument FFMediaInfo::exportToJson()
+{
+    QJsonObject mediaObj;
+    mediaObj.insert("version",DUFFMPEG_VERSION);
+
+
+    QJsonDocument jsonDoc(mediaObj);
+    qDebug() << jsonDoc.toJson();
+    return jsonDoc;
+}
+
+void FFMediaInfo::exportToJson(QFile jsonFile)
+{
+
+}
+
+void FFMediaInfo::loadJson(QString json)
+{
+
+}
+
+void FFMediaInfo::loadJson(QFile jsonFile)
+{
+
+}
+

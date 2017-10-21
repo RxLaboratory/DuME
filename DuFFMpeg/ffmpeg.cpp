@@ -4,7 +4,7 @@
 #include <QDebug>
 #endif
 
-FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
+FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 {
     _status = Waiting;
 

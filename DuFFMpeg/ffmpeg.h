@@ -1,7 +1,7 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#include <QObject>
+#include "ffobject.h"
 
 #include <QProcess>
 #include <QTime>
@@ -13,7 +13,7 @@
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
 
-class FFmpeg : public QObject
+class FFmpeg : public FFObject
 {
     Q_OBJECT
 public:

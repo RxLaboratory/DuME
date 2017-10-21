@@ -1,11 +1,11 @@
 #ifndef FFMPEGCODEC_H
 #define FFMPEGCODEC_H
 
-#include <QObject>
+#include "ffobject.h"
 
 #include <QString>
 
-class FFCodec : public QObject
+class FFCodec : public FFObject
 {
     Q_OBJECT
 public:

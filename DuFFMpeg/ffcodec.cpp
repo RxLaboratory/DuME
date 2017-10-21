@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-FFCodec::FFCodec(QObject *parent)  : QObject(parent)
+FFCodec::FFCodec(QObject *parent)  : FFObject(parent)
 {
     _name = "";
     _prettyName = "";
@@ -12,7 +12,7 @@ FFCodec::FFCodec(QObject *parent)  : QObject(parent)
 }
 
 
-FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : QObject(parent)
+FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFObject(parent)
 {
     _name = name;
     _prettyName = prettyName;
@@ -20,7 +20,7 @@ FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : QObject(p
 }
 
 
-FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : QObject(parent)
+FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFObject(parent)
 {
     _name = name;
     _prettyName = prettyName;

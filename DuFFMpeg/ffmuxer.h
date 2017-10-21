@@ -1,11 +1,11 @@
 #ifndef FFMUXER_H
 #define FFMUXER_H
 
-#include <QObject>
+#include "ffobject.h"
 
 #include "ffcodec.h"
 
-class FFMuxer : public QObject
+class FFMuxer : public FFObject
 {
     Q_OBJECT
 public:

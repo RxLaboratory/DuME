@@ -1,6 +1,6 @@
 #include "ffmuxer.h"
 
-FFMuxer::FFMuxer(QObject *parent) : QObject(parent)
+FFMuxer::FFMuxer(QObject *parent) : FFObject(parent)
 {
     _defaultAudioCodec = nullptr;
     _defaultVideoCodec = nullptr;
@@ -9,7 +9,7 @@ FFMuxer::FFMuxer(QObject *parent) : QObject(parent)
     _type = AudioVideo;
 }
 
-FFMuxer::FFMuxer(QString name,QObject *parent) : QObject(parent)
+FFMuxer::FFMuxer(QString name,QObject *parent) : FFObject(parent)
 {
     _name = name;
     _prettyName = "";
@@ -18,7 +18,7 @@ FFMuxer::FFMuxer(QString name,QObject *parent) : QObject(parent)
     _type = AudioVideo;
 }
 
-FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : QObject(parent)
+FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFObject(parent)
 {
     _name = name;
     _prettyName = prettyName;
@@ -27,7 +27,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : QObject(pa
     _type = AudioVideo;
 }
 
-FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *parent)
+FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *parent) : FFObject(parent)
 {
     _name = name;
     _prettyName = prettyName;

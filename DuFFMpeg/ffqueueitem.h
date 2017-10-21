@@ -1,11 +1,11 @@
 #ifndef FFQUEUEITEM_H
 #define FFQUEUEITEM_H
 
-#include <QObject>
+#include "ffobject.h"
 
 #include "ffmediainfo.h"
 
-class FFQueueItem : public QObject
+class FFQueueItem : public FFObject
 {
         Q_OBJECT
 public:

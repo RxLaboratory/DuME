@@ -1,13 +1,17 @@
 #ifndef MEDIAINFO_H
 #define MEDIAINFO_H
 
-#include <QObject>
+#include "ffobject.h"
 
 #include <QRegularExpression>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "ffcodec.h"
+#include "ffmuxer.h"
 
-class FFMediaInfo : public QObject
+class FFMediaInfo : public FFObject
 {
     Q_OBJECT
 public:
@@ -25,6 +29,8 @@ public:
     enum SizeUnit { Bytes, KB, MB};
     Q_ENUM(SizeUnit)
 
+    //setters
+    void setMuxer(FFMuxer *muxer);
     void updateInfo(QString ffmpegOutput);
     void setContainer(QStringList container);
     void setVideoWidth(int width);
@@ -44,7 +50,8 @@ public:
     void addFFmpegOption(QString option);
     void removeFFmpegOpstion(QString option);
     void clearFFmpegOptions();
-    QStringList container();
+    //getters
+    FFMuxer *muxer() const;
     int videoWidth();
     int videoHeight();
     double videoFramerate();
@@ -61,13 +68,23 @@ public:
     bool hasVideo();
     bool hasAudio();
     bool isImageSequence();
+    QStringList extensions() const;
+
+    //utils
+    QJsonDocument exportToJson();
+    void exportToJson(QFile jsonFile);
+    void loadJson(QString json);
+    void loadJson(QFile jsonFile);
+
 
 signals:
 
 public slots:
 
 private:
-    QStringList _container;
+    QString _duFFmpegVersion;
+    QStringList _extensions;
+    FFMuxer *_muxer;
     double _duration;
     int _size;
     bool _video;
