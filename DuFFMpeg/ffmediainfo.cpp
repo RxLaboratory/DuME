@@ -152,7 +152,7 @@ void FFMediaInfo::setSize(double size, FFMediaInfo::SizeUnit unit)
     _size = size;
 }
 
-void FFMediaInfo::setFFmpegOptions(QStringList options)
+void FFMediaInfo::setFFmpegOptions(QList<QStringList> options)
 {
     _ffmpegOptions = options;
 }
@@ -172,14 +172,20 @@ void FFMediaInfo::setMuxer(FFMuxer *muxer)
     _muxer = muxer;
 }
 
-void FFMediaInfo::addFFmpegOption(QString option)
+void FFMediaInfo::addFFmpegOption(QStringList option)
 {
     _ffmpegOptions << option;
 }
 
-void FFMediaInfo::removeFFmpegOpstion(QString option)
+void FFMediaInfo::removeFFmpegOpstion(QString optionName)
 {
-    _ffmpegOptions.removeAll(option);
+    for(int i = _ffmpegOptions.count()-1 ; i >= 0 ; i--)
+    {
+        if (_ffmpegOptions[i][0] == optionName)
+        {
+            _ffmpegOptions.removeAt(i);
+        }
+    }
 }
 
 void FFMediaInfo::clearFFmpegOptions()
@@ -256,7 +262,7 @@ double FFMediaInfo::size(FFMediaInfo::SizeUnit unit)
     return s;
 }
 
-QStringList FFMediaInfo::ffmpegOptions()
+QList<QStringList> FFMediaInfo::ffmpegOptions()
 {
     return _ffmpegOptions;
 }
@@ -293,6 +299,103 @@ QJsonDocument FFMediaInfo::exportToJson()
     QJsonObject mediaObj;
     mediaObj.insert("version",DUFFMPEG_VERSION);
 
+    //muxer
+    QJsonObject muxerObj;
+    QString muxerName = "";
+    QString muxerPrettyName = "";
+    bool muxerIsSequence = false;
+    if (_muxer != nullptr)
+    {
+        muxerName = _muxer->name();
+        muxerPrettyName = _muxer->prettyName();
+        muxerIsSequence = _muxer->isSequence();
+    }
+    muxerObj.insert("name",muxerName);
+    muxerObj.insert("prettyName",muxerPrettyName);
+    muxerObj.insert("isSequence",muxerIsSequence);
+    QJsonArray muxerExtensions = QJsonArray::fromStringList(extensions());
+    muxerObj.insert("extensions",muxerExtensions);
+    //insert
+    mediaObj.insert("muxer",muxerObj);
+
+    //has video / audio
+    mediaObj.insert("hasVideo",hasVideo());
+    mediaObj.insert("hasAudio",hasAudio());
+
+    //video
+    if (hasVideo())
+    {
+        //name
+        QJsonObject videoObj;
+        QString videoCodecName = "default";
+        QString videoCodecPrettyName = "Default codec";
+        if (_videoCodec != nullptr)
+        {
+            videoCodecName = _videoCodec->name();
+            videoCodecPrettyName = _videoCodec->prettyName();
+        }
+        videoObj.insert("codecName",videoCodecName);
+        videoObj.insert("codecPrettyName",videoCodecPrettyName);
+        //resize
+        bool videoResize = false;
+        if (_videoWidth != 0 || _videoHeight != 0)
+        {
+            videoResize = true;
+            videoObj.insert("width",_videoWidth);
+            videoObj.insert("height",_videoHeight);
+        }
+        videoObj.insert("resize",videoResize);
+        //framerate
+        bool videoChangeFramerate = false;
+        if (_videoFramerate != 0)
+        {
+            videoChangeFramerate = true;
+            videoObj.insert("framerate",_videoFramerate);
+        }
+        videoObj.insert("changeFramerate",videoChangeFramerate);
+    }
+
+    //audio
+    if (hasAudio())
+    {
+        //name
+        QJsonObject audioObj;
+        QString audioCodecName = "default";
+        QString audioCodecPrettyName = "Default codec";
+        if (_audioCodec != nullptr)
+        {
+            audioCodecName = _audioCodec->name();
+            audioCodecPrettyName = _audioCodec->prettyName();
+        }
+        audioObj.insert("codecName",audioCodecName);
+        audioObj.insert("codecPrettyName",audioCodecPrettyName);
+        //resample
+        bool audioReSample = false;
+        if (_audioSamplingRate != 0)
+        {
+            audioReSample = true;
+            audioObj.insert("sampling",_audioSamplingRate);
+        }
+        audioObj.insert("resample",audioReSample);
+
+        mediaObj.insert("audio",audioObj);
+    }
+
+    //options
+    QJsonArray options;
+    foreach (QStringList option, _ffmpegOptions) {
+        QJsonObject optionObj;
+        optionObj.insert("name",option[0]);
+        QString optionValue = "";
+        if (option.count() > 1)
+        {
+            optionValue = option[1];
+        }
+        optionObj.insert("value",optionValue);
+        options.append(optionObj);
+    }
+    //insert
+    mediaObj.insert("options",options);
 
     QJsonDocument jsonDoc(mediaObj);
     qDebug() << jsonDoc.toJson();

@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
@@ -44,11 +45,11 @@ public:
     void setVideoBitrate(double bitrate, BitrateUnit unit = Bits);
     void setAudioBitrate(double bitrate, BitrateUnit unit = Bits);
     void setSize(double size, SizeUnit unit = Bytes);
-    void setFFmpegOptions(QStringList options);
+    void setFFmpegOptions(QList<QStringList> options);
     void setVideo(bool video = true);
     void setAudio(bool audio = true);
-    void addFFmpegOption(QString option);
-    void removeFFmpegOpstion(QString option);
+    void addFFmpegOption(QStringList option);
+    void removeFFmpegOpstion(QString optionName);
     void clearFFmpegOptions();
     //getters
     FFMuxer *muxer() const;
@@ -64,7 +65,7 @@ public:
     double audioBitrate(BitrateUnit unit = Bits);
     double videoBitrate(BitrateUnit unit = Bits);
     double size(SizeUnit unit = Bytes);
-    QStringList ffmpegOptions();
+    QList<QStringList> ffmpegOptions();
     bool hasVideo();
     bool hasAudio();
     bool isImageSequence();
@@ -100,7 +101,7 @@ private:
     int _audioBitrate;
     QString _ffmpegOutput;
     QString _fileName;
-    QStringList _ffmpegOptions;
+    QList<QStringList> _ffmpegOptions;
 
 };
 
