@@ -1,23 +1,14 @@
 #include "mainwindow.h"
 
-#ifdef QT_DEBUG
 #include <QtDebug>
-#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Init";
-#endif
-
     setupUi(this);
     debugLog("Initialization");
 
     // === SETTINGS ===
-#ifdef QT_DEBUG
-    qDebug() << "Init - Settings";
-#endif
     debugLog("Init - Settings");
     QCoreApplication::setOrganizationName("Duduf");
     QCoreApplication::setOrganizationDomain("duduf.com");
@@ -27,9 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
 
     // === FFMPEG INIT ===
-#ifdef QT_DEBUG
-    qDebug() << "Init - Create FFmpeg";
-#endif
     debugLog("Init - FFmpeg");
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
@@ -38,9 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // === UI SETUP ===
 
-#ifdef QT_DEBUG
-    qDebug() << "Init - UI";
-#endif
     debugLog("Init - UI");
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
@@ -96,9 +81,6 @@ MainWindow::MainWindow(QWidget *parent) :
     settings->endGroup();
 
     // === FFMPEG INIT ===
-#ifdef QT_DEBUG
-    qDebug() << "Init - FFmpeg";
-#endif
     debugLog("Init - FFmpeg (run test)");
     if (ffmpeg->getStatus() == FFmpeg::Error)
     {
@@ -254,6 +236,7 @@ void MainWindow::debugLog(QString log, ErrorType type)
     debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
     // put the slider at the bottom
     debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+    qDebug() << typeString << log;
 }
 
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()
