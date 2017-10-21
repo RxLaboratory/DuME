@@ -394,18 +394,9 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
 {
     if (jsonFile.open(QIODevice::WriteOnly))
     {
-        jsonFile.write(exportToJson());
+        jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
 }
 
-void FFMediaInfo::loadJson(QString json)
-{
-
-}
-
-void FFMediaInfo::loadJson(QFile jsonFile)
-{
-
-}
 
