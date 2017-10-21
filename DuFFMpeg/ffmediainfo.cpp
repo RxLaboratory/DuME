@@ -294,7 +294,7 @@ FFMuxer *FFMediaInfo::muxer() const
     return _muxer;
 }
 
-QJsonDocument FFMediaInfo::exportToJson()
+QString FFMediaInfo::exportToJson()
 {
     QJsonObject mediaObj;
     mediaObj.insert("version",DUFFMPEG_VERSION);
@@ -387,14 +387,14 @@ QJsonDocument FFMediaInfo::exportToJson()
     QJsonObject mainObj;
     mainObj.insert("duffmpeg",mediaObj);
     QJsonDocument jsonDoc(mainObj);
-    return jsonDoc;
+    return jsonDoc.toJson();
 }
 
 void FFMediaInfo::exportToJson(QFile jsonFile)
 {
     if (jsonFile.open(QIODevice::WriteOnly))
     {
-        jsonFile.write(exportToJson().toJson());
+        jsonFile.write(exportToJson());
         jsonFile.close();
     }
 }

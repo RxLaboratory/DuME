@@ -72,7 +72,7 @@ public:
     QStringList extensions() const;
 
     //utils
-    QJsonDocument exportToJson();
+    QString exportToJson();
     void exportToJson(QFile jsonFile);
     void loadJson(QString json);
     void loadJson(QFile jsonFile);
