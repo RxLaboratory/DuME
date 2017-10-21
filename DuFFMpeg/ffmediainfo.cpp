@@ -337,22 +337,10 @@ QJsonDocument FFMediaInfo::exportToJson()
         videoObj.insert("codecName",videoCodecName);
         videoObj.insert("codecPrettyName",videoCodecPrettyName);
         //resize
-        bool videoResize = false;
-        if (_videoWidth != 0 || _videoHeight != 0)
-        {
-            videoResize = true;
-            videoObj.insert("width",_videoWidth);
-            videoObj.insert("height",_videoHeight);
-        }
-        videoObj.insert("resize",videoResize);
+        videoObj.insert("width",_videoWidth);
+        videoObj.insert("height",_videoHeight);
         //framerate
-        bool videoChangeFramerate = false;
-        if (_videoFramerate != 0)
-        {
-            videoChangeFramerate = true;
-            videoObj.insert("framerate",_videoFramerate);
-        }
-        videoObj.insert("changeFramerate",videoChangeFramerate);
+        videoObj.insert("framerate",_videoFramerate);
     }
 
     //audio
@@ -370,13 +358,7 @@ QJsonDocument FFMediaInfo::exportToJson()
         audioObj.insert("codecName",audioCodecName);
         audioObj.insert("codecPrettyName",audioCodecPrettyName);
         //resample
-        bool audioReSample = false;
-        if (_audioSamplingRate != 0)
-        {
-            audioReSample = true;
-            audioObj.insert("sampling",_audioSamplingRate);
-        }
-        audioObj.insert("resample",audioReSample);
+        audioObj.insert("sampling",_audioSamplingRate);
 
         mediaObj.insert("audio",audioObj);
     }
@@ -398,7 +380,6 @@ QJsonDocument FFMediaInfo::exportToJson()
     mediaObj.insert("options",options);
 
     QJsonDocument jsonDoc(mediaObj);
-    qDebug() << jsonDoc.toJson();
     return jsonDoc;
 }
 

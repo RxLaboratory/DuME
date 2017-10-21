@@ -83,7 +83,6 @@ signals:
 public slots:
 
 private:
-    QString _duFFmpegVersion;
     QStringList _extensions;
     FFMuxer *_muxer;
     double _duration;
