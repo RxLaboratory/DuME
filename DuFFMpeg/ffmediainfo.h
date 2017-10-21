@@ -48,6 +48,9 @@ public:
     void setFFmpegOptions(QList<QStringList> options);
     void setVideo(bool video = true);
     void setAudio(bool audio = true);
+    void setVideoProfile(int profile);
+    void setVideoQuality(int quality);
+    void setLoop(int loop);
     void addFFmpegOption(QStringList option);
     void removeFFmpegOpstion(QString optionName);
     void clearFFmpegOptions();
@@ -70,6 +73,9 @@ public:
     bool hasAudio();
     bool isImageSequence();
     QStringList extensions() const;
+    int videoQuality() const;
+    int videoProfile() const;
+    int loop() const;
 
     //utils
     QString exportToJson();
@@ -98,6 +104,9 @@ private:
     QString _ffmpegOutput;
     QString _fileName;
     QList<QStringList> _ffmpegOptions;
+    int _videoQuality;
+    int _videoProfile;
+    int _loop;
 
 };
 

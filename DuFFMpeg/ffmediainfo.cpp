@@ -26,6 +26,9 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _audio = false;
     _ffmpegOptions.clear();
     _ffmpegOutput = ffmpegOutput;
+    _videoQuality = -1;
+    _loop = -1;
+    _videoProfile = -1;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -343,6 +346,13 @@ QString FFMediaInfo::exportToJson()
         videoObj.insert("framerate",_videoFramerate);
         //bitrate
         videoObj.insert("bitrate",_videoBitrate);
+        //quality
+        videoObj.insert("quality",_videoQuality);
+        //loop
+        videoObj.insert("loop",_loop);
+        //profile
+        videoObj.insert("profile",_videoProfile);
+
         mediaObj.insert("video",videoObj);
     }
 
@@ -397,6 +407,36 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+int FFMediaInfo::videoQuality() const
+{
+    return _videoQuality;
+}
+
+void FFMediaInfo::setVideoQuality(int quality)
+{
+    _videoQuality = quality;
+}
+
+int FFMediaInfo::videoProfile() const
+{
+    return _videoProfile;
+}
+
+void FFMediaInfo::setVideoProfile(int profile)
+{
+    _videoProfile = profile;
+}
+
+int FFMediaInfo::loop() const
+{
+    return _loop;
+}
+
+void FFMediaInfo::setLoop(int loop)
+{
+    _loop = loop;
 }
 
 
