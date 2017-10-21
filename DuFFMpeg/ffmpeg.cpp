@@ -678,7 +678,7 @@ void FFmpeg::gotCodecs(QString output)
     //add copy
     FFCodec *copyVideo = new FFCodec("copy","Copy video stream",FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _videoEncoders << copyVideo;
-    FFCodec *copyAudio = new FFCodec("copy","Copy video stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
+    FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
     //get codecs
