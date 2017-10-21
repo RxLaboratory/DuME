@@ -61,7 +61,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setVideoFramerate(frameRateEdit->value());
             }
-            if (videoBitrateButton->isChecked()) _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
+            if (videoBitrateButton->isChecked())
+            {
+                _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),FFMediaInfo::Mbps);
+            }
         }
     }
 
