@@ -19,7 +19,7 @@ All the information is stored in a `duffmpeg` object, this and mandatory and use
     1. __extension__ \<string>
     1. __extension__ \<string>
 - __hasVideo__ \<bool> _Does this preset outputs video_
-- __hasAudi__ \<bool> _Does this preset outputs audio_
+- __hasAudio__ \<bool> _Does this preset outputs audio_
 - __video__ \<object>
   * __codecName__ \<string> _`"default"` to let app select default codec_
   * __codecPrettyName__ \<string>
