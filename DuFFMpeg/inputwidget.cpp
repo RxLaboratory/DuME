@@ -23,8 +23,9 @@ FFMediaInfo *InputWidget::getMediaInfo()
         QString param = _customParamEdits[i]->text();
         if (param != "")
         {
-            _mediaInfo->addFFmpegOption(param);
-            _mediaInfo->addFFmpegOption(_customValueEdits[0]->text());
+            QStringList option(param);
+            option << _customValueEdits[i]->text();
+            _mediaInfo->addFFmpegOption(option);
         }
     }
 

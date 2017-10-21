@@ -87,17 +87,19 @@ FFMediaInfo *OutputWidget::getMediaInfo()
         QString param = _customVideoParamEdits[i]->text();
         if (param != "")
         {
-            _mediaInfo->addFFmpegOption(param);
-            _mediaInfo->addFFmpegOption(_customVideoValueEdits[0]->text());
+            QStringList option(param);
+            option << _customVideoValueEdits[i]->text();
+            _mediaInfo->addFFmpegOption(option);
         }
     }
     for (int i = 0 ; i < _customAudioParamEdits.count() ; i++)
-    {
+    {       
         QString param = _customAudioParamEdits[i]->text();
         if (param != "")
         {
-            _mediaInfo->addFFmpegOption(param);
-            _mediaInfo->addFFmpegOption(_customAudioValueEdits[0]->text());
+            QStringList option(param);
+            option << _customAudioValueEdits[i]->text();
+            _mediaInfo->addFFmpegOption(option);
         }
     }
 
@@ -552,4 +554,17 @@ void OutputWidget::on_audioBitrateButton_clicked(bool checked)
         audioBitRateEdit->setSuffix(" Auto");
         audioBitRateEdit->setEnabled(false);
     }
+}
+
+void OutputWidget::on_presetsBox_currentIndexChanged(int index)
+{
+    if (_freezeUI) return;
+    _freezeUI = true;
+    if (index == presetsBox->count()-1)
+    {
+        getMediaInfo();
+        _mediaInfo->exportToJson();
+        presetsBox->setCurrentIndex(0);
+    }
+    _freezeUI = false;
 }

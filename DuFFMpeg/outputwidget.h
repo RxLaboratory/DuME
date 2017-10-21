@@ -47,6 +47,8 @@ private slots:
 
     void on_audioBitrateButton_clicked(bool checked);
 
+    void on_presetsBox_currentIndexChanged(int index);
+
 private:
     /**
      * @brief aspectRatio Computes the aspect ratio of the video

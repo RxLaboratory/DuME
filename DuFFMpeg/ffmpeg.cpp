@@ -435,7 +435,14 @@ void FFmpeg::encodeNextItem()
     foreach(FFMediaInfo *input,_currentItem->getInputMedias())
     {
         //add custom options
-        arguments.append(input->ffmpegOptions());
+        foreach(QStringList option,input->ffmpegOptions())
+        {
+            arguments << option[0];
+            if (option.count() > 1)
+            {
+                if (option[1] != "") arguments << option[1];
+            }
+        }
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(input->fileName());
     }
@@ -443,7 +450,14 @@ void FFmpeg::encodeNextItem()
     foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
     {
         //add custom options
-        arguments.append(output->ffmpegOptions());
+        foreach(QStringList option,output->ffmpegOptions())
+        {
+            arguments << option[0];
+            if (option.count() > 1)
+            {
+                if (option[1] != "") arguments << option[1];
+            }
+        }
 
         //video
         QString codec = "";
