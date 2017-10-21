@@ -89,23 +89,13 @@ FFMediaInfo *OutputWidget::getMediaInfo()
     _mediaInfo->setMuxer(muxer);
 
     //CUSTOM
-    for (int i = 0 ; i < _customVideoParamEdits.count() ; i++)
+    for (int i = 0 ; i < _customParamEdits.count() ; i++)
     {
-        QString param = _customVideoParamEdits[i]->text();
+        QString param = _customParamEdits[i]->text();
         if (param != "")
         {
             QStringList option(param);
-            option << _customVideoValueEdits[i]->text();
-            _mediaInfo->addFFmpegOption(option);
-        }
-    }
-    for (int i = 0 ; i < _customAudioParamEdits.count() ; i++)
-    {       
-        QString param = _customAudioParamEdits[i]->text();
-        if (param != "")
-        {
-            QStringList option(param);
-            option << _customAudioValueEdits[i]->text();
+            option << _customValueEdits[i]->text();
             _mediaInfo->addFFmpegOption(option);
         }
     }
@@ -387,7 +377,7 @@ void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
     ffmpeg_loadCodecs();
 }
 
-void OutputWidget::on_addVideoParam_clicked()
+void OutputWidget::on_addParam_clicked()
 {
     //add a param and a value
     QLineEdit *customParam = new QLineEdit(this);
@@ -398,26 +388,9 @@ void OutputWidget::on_addVideoParam_clicked()
     QLineEdit *customValue = new QLineEdit(this);
     customValue->setPlaceholderText("Value");
     //add to layout and lists
-    videoTranscodeLayout->insertRow(videoTranscodeLayout->rowCount()-2,customParam,customValue);
-    _customVideoParamEdits << customParam;
-    _customVideoValueEdits << customValue;
-}
-
-void OutputWidget::on_addAudioParam_clicked()
-{
-    //add a param and a value
-    QLineEdit *customParam = new QLineEdit(this);
-    customParam->setPlaceholderText("-param");
-    customParam->setMinimumWidth(100);
-    customParam->setMaximumWidth(100);
-    //the value edit
-    QLineEdit *customValue = new QLineEdit(this);
-    customValue->setPlaceholderText("Value");
-    //add to layout and lists
-    audioTranscodeLayout->insertRow(audioTranscodeLayout->rowCount()-1,customParam,customValue);
-    _customAudioParamEdits << customParam;
-    _customAudioValueEdits << customValue;
-
+    customOptionsLayout->insertRow(1,customParam,customValue);
+    _customParamEdits << customParam;
+    _customValueEdits << customValue;
 }
 
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)

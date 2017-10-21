@@ -36,8 +36,7 @@ private slots:
     void on_videoHeightButton_valueChanged(int val);
     void on_videoCodecsFilterBox_currentIndexChanged(int index);
     void on_audioCodecsFilterBox_currentIndexChanged(int index);
-    void on_addVideoParam_clicked();
-    void on_addAudioParam_clicked();
+    void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
     void on_videoCodecButton_clicked(bool checked);
@@ -59,10 +58,8 @@ private:
     QSettings _settings;
     FFmpeg *_ffmpeg;
     FFMediaInfo *_mediaInfo;
-    QList<QLineEdit *> _customVideoParamEdits;
-    QList<QLineEdit *> _customVideoValueEdits;
-    QList<QLineEdit *> _customAudioParamEdits;
-    QList<QLineEdit *> _customAudioValueEdits;
+    QList<QLineEdit *> _customParamEdits;
+    QList<QLineEdit *> _customValueEdits;
     FFMuxer *_currentMuxer;
 
     bool _freezeUI;
