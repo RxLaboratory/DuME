@@ -769,3 +769,102 @@ void FFmpeg::readyRead(QString output)
     }
 
 }
+
+FFMediaInfo *FFmpeg::loadJson(QString json)
+{
+    FFMediaInfo *mediaInfo = nullptr;
+
+    emit debugInfo("Loading preset");
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
+
+    //validate file
+    if (!jsonDoc.isObject())
+    {
+        emit debugInfo("Invalid preset file");
+        return mediaInfo;
+    }
+    QJsonObject mainObj = jsonDoc.object();
+    if (mainObj.value("duffmpeg") == QJsonValue::Undefined)
+    {
+        emit debugInfo("Invalid preset file - Cannot find Duffmpeg object");
+        return mediaInfo;
+    }
+
+    //load and create mediaInfo
+    QJsonObject mediaObj = mainObj.value("duffmpeg").toObject();
+    QString version = mediaObj.value("version").toString();
+    //TODO Check version
+    emit debugInfo("Preset version: " + version);
+
+
+    emit debugInfo("Getting media info...");
+    mediaInfo = new FFMediaInfo();
+
+    //muxer
+    QJsonObject muxerObj = mediaObj.value("muxer").toObject();
+    QString muxerName = muxerObj.value("name").toString();
+    emit debugInfo("Muxer: " + muxerName);
+    mediaInfo->setMuxer(getMuxer(muxerName));
+
+    //video
+    if (mediaObj.value("hasVideo").toBool())
+    {
+        mediaInfo->setVideo(true);
+        QJsonObject videoObj = mediaObj.value("video").toObject();
+        QString codecName = videoObj.value("codecName").toString();
+        emit debugInfo("Video codec: " + codecName);
+        if (codecName != "default")
+        {
+            mediaInfo->setVideoCodec(getVideoEncoder(codecName));
+        }
+        mediaInfo->setVideoWidth(videoObj.value("width").toInt());
+        mediaInfo->setVideoHeight(videoObj.value("height").toInt());
+        mediaInfo->setVideoFramerate(videoObj.value("framerate").toDouble());
+        mediaInfo->setVideoBitrate(videoObj.value("bitrate").toInt());
+    }
+
+    //audio
+    if (mediaObj.value("hasAudio").toBool())
+    {
+        mediaInfo->setAudio(true);
+        QJsonObject audioObj = mediaObj.value("audio").toObject();
+        QString codecName = audioObj.value("codecName").toString();
+        emit debugInfo("Audio codec: " + codecName);
+        if (codecName != "default")
+        {
+            mediaInfo->setAudioCodec(getAudioEncoder(codecName));
+        }
+        mediaInfo->setAudioSamplingRate(audioObj.value("sampling").toInt());
+        mediaInfo->setAudioBitrate(audioObj.value("bitrate").toInt());
+    }
+
+    //options
+    QJsonArray options = mediaObj.value("options").toArray();
+    emit debugInfo("Custom options");
+    foreach(QJsonValue option,options)
+    {
+        QJsonObject optionObj = option.toObject();
+        QStringList opt(optionObj.value("name").toString());
+        opt << optionObj.value("value").toString();
+        mediaInfo->addFFmpegOption(opt);
+    }
+
+    emit debugInfo("FFmpeg preset loaded");
+
+    return mediaInfo;
+}
+
+FFMediaInfo *FFmpeg::loadJsonFromFile(QString jsonFileName)
+{
+    FFMediaInfo *mediaInfo = nullptr;
+    QFile jsonFile(jsonFileName);
+    emit debugInfo("Opening preset file: " + jsonFileName);
+    if (jsonFile.open(QIODevice::ReadOnly))
+    {
+        emit debugInfo("File opened");
+        mediaInfo = loadJson(jsonFile.readAll());
+        jsonFile.close();
+    }
+    return mediaInfo;
+}

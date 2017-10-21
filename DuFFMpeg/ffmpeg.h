@@ -193,6 +193,8 @@ public:
      * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
      */
     void stop(int timeout = 10000);
+    FFMediaInfo *loadJson(QString json);
+    FFMediaInfo *loadJsonFromFile(QString jsonFileName);
 
 signals:
     /**
