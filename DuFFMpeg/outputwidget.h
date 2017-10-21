@@ -15,6 +15,7 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
 public:
     explicit OutputWidget(FFmpeg *ff,QWidget *parent = 0);
     FFMediaInfo *getMediaInfo();
+    void setMediaInfo(FFMediaInfo *mediaInfo);
 
 public slots:
     void ffmpeg_init();
@@ -39,11 +40,11 @@ private slots:
     void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
-    void on_videoCodecButton_clicked(bool checked);
-    void on_videoBitrateButton_clicked(bool checked);
-    void on_videoQualityButton_clicked(bool checked);
-    void on_audioCodecButton_clicked(bool checked);
-    void on_audioBitrateButton_clicked(bool checked);
+    void on_videoCodecButton_toggled(bool checked);
+    void on_videoBitrateButton_toggled(bool checked);
+    void on_videoQualityButton_toggled(bool checked);
+    void on_audioCodecButton_toggled(bool checked);
+    void on_audioBitrateButton_toggled(bool checked);
     void on_presetsBox_currentIndexChanged(int index);
 
 private:
@@ -54,6 +55,8 @@ private:
     void updateOutputExtension();
     void selectDefaultVideoCodec();
     void videoOptionsUpdate();
+    void addNewParam(QString name = "",QString value = "");
+    void init();
 
     QSettings _settings;
     FFmpeg *_ffmpeg;

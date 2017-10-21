@@ -172,7 +172,7 @@
        <widget class="QComboBox" name="formatsBox"/>
       </item>
       <item row="1" column="0">
-       <widget class="QComboBox" name="formatsFilterBox_2">
+       <widget class="QComboBox" name="presetsFilterBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
