@@ -577,8 +577,8 @@ void FFmpeg::gotMuxers(QString output)
         QRegularExpressionMatch match = re.match(muxer);
         if (match.hasMatch())
         {
-            QString name = match.captured(1);
-            QString prettyName = match.captured(2);
+            QString name = match.captured(1).trimmed();
+            QString prettyName = match.captured(2).trimmed();
             // skip image sequence
             // TODO complete the sequences custom muxers built just after
             if (name == "image2") continue;
