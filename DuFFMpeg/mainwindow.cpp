@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setOrganizationName("Duduf");
     QCoreApplication::setOrganizationDomain("duduf.com");
     QCoreApplication::setApplicationName("DuFFmpeg");
-    QCoreApplication::setApplicationVersion("0.0.1-alpha1");
+    QCoreApplication::setApplicationVersion(APPVERSION);
     settings = new QSettings(this);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
 
