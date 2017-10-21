@@ -341,6 +341,8 @@ QJsonDocument FFMediaInfo::exportToJson()
         videoObj.insert("height",_videoHeight);
         //framerate
         videoObj.insert("framerate",_videoFramerate);
+        //bitrate
+        videoObj.insert("bitrate",_videoBitrate);
     }
 
     //audio
@@ -359,6 +361,8 @@ QJsonDocument FFMediaInfo::exportToJson()
         audioObj.insert("codecPrettyName",audioCodecPrettyName);
         //resample
         audioObj.insert("sampling",_audioSamplingRate);
+        //bitrate
+        audioObj.insert("bitrate",_audioBitrate);
 
         mediaObj.insert("audio",audioObj);
     }
@@ -385,7 +389,11 @@ QJsonDocument FFMediaInfo::exportToJson()
 
 void FFMediaInfo::exportToJson(QFile jsonFile)
 {
-
+    if (jsonFile.open(QIODevice::WriteOnly))
+    {
+        jsonFile.write(exportToJson().toJson());
+        jsonFile.close();
+    }
 }
 
 void FFMediaInfo::loadJson(QString json)
