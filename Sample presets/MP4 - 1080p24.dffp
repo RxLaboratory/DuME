@@ -1,0 +1,31 @@
+{
+    "duffmpeg": {
+        "audio": {
+            "bitrate": 0,
+            "codecName": "default",
+            "codecPrettyName": "Default codec",
+            "sampling": 48000
+        },
+        "hasAudio": true,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "mp4"
+            ],
+            "isSequence": false,
+            "name": "mp4",
+            "prettyName": "MP4 (MPEG-4 Part 14)"
+        },
+        "options": [
+        ],
+        "version": "0.0.1-Alpha1",
+        "video": {
+            "bitrate": 0,
+            "codecName": "default",
+            "codecPrettyName": "Default codec",
+            "framerate": 24,
+            "height": 1080,
+            "width": 1920
+        }
+    }
+}
