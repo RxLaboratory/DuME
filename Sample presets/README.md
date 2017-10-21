@@ -20,6 +20,7 @@ All the information is stored in a `duffmpeg` object, this and mandatory and use
     1. __extension__ \<string>
 - __hasVideo__ \<bool> _Does this preset outputs video_
 - __hasAudio__ \<bool> _Does this preset outputs audio_
+- __loop__ \<int> _`-1` for no loop, `0` for infinite loops, maximum is `65535`_
 - __video__ \<object>
   * __codecName__ \<string> _`"default"` to let app select default codec_
   * __codecPrettyName__ \<string>
@@ -27,6 +28,8 @@ All the information is stored in a `duffmpeg` object, this and mandatory and use
   * __height__ \<int> _`0` for auto_
   * __framerate__ \<float> _in Hz, `0` for auto_
   * __bitrate__ \<int> _in bps, `0` for auto_
+  * __quality__ \<int> _from `0` (worst) to `100` (best), `-1` to ignore_
+  * __profile__ \<int> _`-1` to ignore, depends on the codec used, see FFmpeg codec documentation_
 - __audio__ \<object>
   * __codecName__ \<string> _`"default"` to let app select default codec_
   * __codecPrettyName__ \<string>
