@@ -35,6 +35,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
 bool FFmpeg::setBinaryFileName(QString path)
 {
+
     if(QFile(path).exists())
     {
         _ffmpeg->setProgram(path);
@@ -74,7 +75,9 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {
+    qDebug() << "Init FFmpeg";
     //get codecs
+    qDebug() << "Loading Codecs";
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -83,11 +86,32 @@ void FFmpeg::init()
     }
 
     //get muxers
+    qDebug() << "Loading Muxers";
     _ffmpeg->setArguments(QStringList("-formats"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
     {
         gotMuxers(_ffmpegOutput);
+    }
+
+    //get long help
+    qDebug() << "Loading long help";
+    QStringList args("-h");
+    args << "long";
+    _ffmpeg->setArguments(args);
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _longHelp = _ffmpegOutput;
+    }
+
+    //get help
+    qDebug() << "Loading help";
+    _ffmpeg->setArguments(QStringList("-h"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _help = _ffmpegOutput;
     }
 }
 
@@ -161,33 +185,11 @@ FFCodec *FFmpeg::getAudioEncoder(QString name)
 
 QString FFmpeg::getHelp()
 {
-    if (_help != "") return _help;
-
-    //if first run, get the help
-    //TODO use signals instead of waiting? it's very quick maybe not needed
-    _ffmpeg->setArguments(QStringList("-h"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
-    {
-        _help = _ffmpegOutput;
-    }
     return _help;
 }
 
 QString FFmpeg::getLongHelp()
 {
-    if (_longHelp != "") return _longHelp;
-
-    //if first run, get the long help
-    //TODO use signals instead of waiting? it's very quick maybe not needed
-    QStringList args("-h");
-    args << "long";
-    _ffmpeg->setArguments(args);
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
-    {
-        _longHelp = _ffmpegOutput;
-    }
     return _longHelp;
 }
 
