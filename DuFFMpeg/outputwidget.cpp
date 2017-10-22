@@ -673,34 +673,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
 
 void OutputWidget::on_presetsFilterBox_activated(int index)
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    presetsBox->clear();
-
-    QStringList presets;
-    //list internal
-    if (index == 0 || index == 1)
-    {
-        foreach(QString preset, QDir(":/presets/").entryList())
-        {
-            presets << ":/presets/" + preset;
-        }
-    }
-    //TODO list user presets
-
-    presets.sort();
-    //add custom
-    presetsBox->addItem("Custom");
-    foreach(QString preset,presets)
-    {
-        presetsBox->addItem(QFileInfo(preset).completeBaseName(),preset);
-    }
-    //add load ans save
-    presetsBox->addItem("Load...");
-    presetsBox->addItem("Save as...");
-
-    _freezeUI = false;
+    loadPresets(QSettings().value("presets/path","").toString());
 }
 
 void OutputWidget::aspectRatio()
@@ -968,4 +941,43 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
         else if (sampling == 88200) samplingBox->setCurrentIndex(7);
         else if (sampling == 96000) samplingBox->setCurrentIndex(8);
     }
+}
+
+void OutputWidget::loadPresets(QString userPath)
+{
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    presetsBox->clear();
+    int index = presetsFilterBox->currentIndex();
+
+    QStringList presets;
+    //list internal
+    if (index == 0 || index == 1)
+    {
+        foreach(QString preset, QDir(":/presets/").entryList(QDir::Files))
+        {
+            presets << ":/presets/" + preset;
+        }
+    }
+    //list users
+    if (index == 0 || index == 2)
+    {
+        foreach (QString preset, QDir(userPath).entryList(QDir::Files)) {
+            presets << userPath + "/" + preset;
+        }
+    }
+
+    presets.sort();
+    //add custom
+    presetsBox->addItem("Custom");
+    foreach(QString preset,presets)
+    {
+        presetsBox->addItem(QFileInfo(preset).completeBaseName(),preset);
+    }
+    //add load ans save
+    presetsBox->addItem("Load...");
+    presetsBox->addItem("Save as...");
+
+    _freezeUI = false;
 }

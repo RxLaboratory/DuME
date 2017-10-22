@@ -16,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setApplicationVersion(APPVERSION);
     settings = new QSettings(this);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
+    //create user presets folder if it does not exist yet
+    QDir home = QDir::home();
+    home.mkdir("DuFFmpeg Presets");
+    settings->setValue("presets/path",home.path() + "/DuFFmpeg Presets/");
+
 
     // === FFMPEG INIT ===
     debugLog("Init - FFmpeg");
@@ -115,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ffmpeg,SIGNAL(debugInfo(QString)),this,SLOT(ffmpeg_debugLog(QString)));
     //settings
     connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
+    connect(settingsWidget,SIGNAL(presetsPathChanged(QString)),queueWidget,SLOT(presetsPathChanged(QString)));
 }
 
 void MainWindow::ffmpeg_init()

@@ -23,6 +23,7 @@ public slots:
     void ffmpeg_loadCodecs();
     void ffmpeg_loadMuxers();
     void newInputMedia(FFMediaInfo *input);
+    void loadPresets(QString userPath);
 
 private slots:
     void on_videoTranscodeButton_toggled(bool checked);

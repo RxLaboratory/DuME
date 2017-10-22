@@ -12,15 +12,18 @@ class SettingsWidget : public QWidget, private Ui::SettingsWidget
 
 public:
     explicit SettingsWidget(QSettings *s, QWidget *parent = 0);
-    void changeFFmpegPath(QString path);
 
 signals:
     void ffmpegPathChanged(QString);
+    void presetsPathChanged(QString);
 
 private slots:
     void on_ffmpegBrowseButton_clicked();
     void on_ffmpegPathEdit_editingFinished();
 
+    void on_userPresetsBrowseButton_clicked();
+
+    void on_userPresetsPathEdit_editingFinished();
 private:
     QSettings *settings;
 

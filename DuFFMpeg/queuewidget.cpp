@@ -39,6 +39,11 @@ void QueueWidget::ffmpeg_init()
 
 }
 
+void QueueWidget::presetsPathChanged(QString path)
+{
+    outputWidget->loadPresets(path);
+}
+
 void QueueWidget::saveSettings()
 {
 

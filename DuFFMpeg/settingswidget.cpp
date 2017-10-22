@@ -8,12 +8,7 @@ SettingsWidget::SettingsWidget(QSettings *s,QWidget *parent) :
     settings = s;
 
     ffmpegPathEdit->setText(settings->value("ffmpeg/path","ffmpeg.exe").toString());
-}
-
-void SettingsWidget::changeFFmpegPath(QString path)
-{
-    settings->setValue("ffmpeg/path",ffmpegPathEdit->text());
-    emit ffmpegPathChanged(path);
+    userPresetsPathEdit->setText(settings->value("presets/path","").toString());
 }
 
 void SettingsWidget::on_ffmpegBrowseButton_clicked()
@@ -21,10 +16,27 @@ void SettingsWidget::on_ffmpegBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
     ffmpegPathEdit->setText(path);
-    changeFFmpegPath(path);
+    settings->setValue("ffmpeg/path",ffmpegPathEdit->text());
+    emit ffmpegPathChanged(path);
 }
 
 void SettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
-    changeFFmpegPath(ffmpegPathEdit->text());
+    settings->setValue("ffmpeg/path",ffmpegPathEdit->text());
+    emit ffmpegPathChanged(ffmpegPathEdit->text());
+}
+
+void SettingsWidget::on_userPresetsBrowseButton_clicked()
+{
+    QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings->value("presets/path").toString());
+    if (path == "") return;
+    userPresetsPathEdit->setText(path);
+    settings->setValue("presets/path",userPresetsPathEdit->text());
+    emit presetsPathChanged(path);
+}
+
+void SettingsWidget::on_userPresetsPathEdit_editingFinished()
+{
+    settings->setValue("presets/path",userPresetsPathEdit->text());
+    emit presetsPathChanged(userPresetsPathEdit->text());
 }

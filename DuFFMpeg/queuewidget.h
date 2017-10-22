@@ -18,6 +18,7 @@ public:
 
 public slots:
     void ffmpeg_init();
+    void presetsPathChanged(QString path);
 
 private:
     InputWidget *inputWidget;
