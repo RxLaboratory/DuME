@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 
+#ifdef QT_DEBUG
 #include <QtDebug>
+#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -241,7 +243,9 @@ void MainWindow::debugLog(QString log, ErrorType type)
     debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
     // put the slider at the bottom
     debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+#ifdef QT_DEBUG
     qDebug() << typeString << log;
+#endif
 }
 
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()

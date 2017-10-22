@@ -75,9 +75,7 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {
-    qDebug() << "Init FFmpeg";
     //get codecs
-    qDebug() << "Loading Codecs";
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -86,7 +84,6 @@ void FFmpeg::init()
     }
 
     //get muxers
-    qDebug() << "Loading Muxers";
     _ffmpeg->setArguments(QStringList("-formats"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -95,7 +92,6 @@ void FFmpeg::init()
     }
 
     //get long help
-    qDebug() << "Loading long help";
     QStringList args("-h");
     args << "long";
     _ffmpeg->setArguments(args);
@@ -106,7 +102,6 @@ void FFmpeg::init()
     }
 
     //get help
-    qDebug() << "Loading help";
     _ffmpeg->setArguments(QStringList("-h"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(3000))
