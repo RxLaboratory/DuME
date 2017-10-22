@@ -1,0 +1,34 @@
+{
+    "duffmpeg": {
+        "audio": {
+            "bitrate": 0,
+            "codecName": "aac",
+            "codecPrettyName": "AAC ",
+            "sampling": 0
+        },
+        "hasAudio": true,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "mp4"
+            ],
+            "isSequence": false,
+            "name": "mp4",
+            "prettyName": "MP4 (MPEG-4 Part 14)"
+        },
+        "options": [
+        ],
+        "version": "0.0.1-Alpha1",
+        "video": {
+            "bitrate": 0,
+            "codecName": "h264",
+            "codecPrettyName": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 ",
+            "framerate": 0,
+            "height": 1080,
+            "loop": -1,
+            "profile": -1,
+            "quality": -1,
+            "width": 1920
+        }
+    }
+}
