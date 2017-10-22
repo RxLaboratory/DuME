@@ -588,9 +588,10 @@ void OutputWidget::on_audioBitrateButton_toggled(bool checked)
 
 void OutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
+    if (index == 0) return;
     if (_freezeUI) return;
     _freezeUI = true;
-    if (index == 0) return;
+
     //save
     if (index == presetsBox->count()-1)
     {
