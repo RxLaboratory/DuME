@@ -50,9 +50,19 @@ void OutputWidget::init()
 
     //video
     videoTranscodeButton->setChecked(true);
+    resizeButton->setChecked(false);
+    frameRateButton->setChecked(false);
+    videoCodecButton->setChecked(false);
+    videoBitrateButton->setChecked(false);
+    videoLoopsButton->setChecked(false);
+    videoProfileButton->setChecked(false);
+    videoQualityButton->setChecked(false);
 
     //audio
     audioTranscodeButton->setChecked(true);
+    samplingButton->setChecked(false);
+    audioCodecButton->setChecked(false);
+    audioBitrateButton->setChecked(false);
 
     //params
     qDeleteAll(_customParamEdits);
@@ -208,9 +218,17 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
             videoBitRateEdit->setValue(bitrate);
         }
         int quality = _mediaInfo->videoQuality();
-        if (quality > -1) videoQualitySlider->setValue(quality);
+        if (quality > -1)
+        {
+            videoQualityButton->setChecked(true);
+            videoQualitySlider->setValue(quality);
+        }
         int profile = _mediaInfo->videoProfile();
-        if (profile > -1) videoProfileBox->setCurrentIndex(profile);
+        if (profile > -1)
+        {
+            videoProfileButton->setChecked(true);
+            videoProfileBox->setCurrentIndex(profile);
+        }
     }
     else
     {
