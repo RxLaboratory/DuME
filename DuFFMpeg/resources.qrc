@@ -31,5 +31,8 @@
         <file alias="MP4 - Auto - HQ">resources/presets/MP4 - Auto - HQ.dffp</file>
         <file alias="MP4 - Auto - LQ">resources/presets/MP4 - Auto - LQ.dffp</file>
         <file alias="MP4 - Auto - Normal">resources/presets/MP4 - Auto - Normal.dffp</file>
+        <file alias="GIF - 800x600">resources/presets/GIF - 800x600.dffp</file>
+        <file alias="MP4 - Auto - 720p">resources/presets/MP4 - Auto - 720p.dffp</file>
+        <file alias="MP4 - Auto - 1080p">resources/presets/MP4 - Auto - 1080p.dffp</file>
     </qresource>
 </RCC>
