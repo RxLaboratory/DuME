@@ -1,10 +1,10 @@
 {
     "duffmpeg": {
         "audio": {
-            "bitrate": 0,
-            "codecName": "default",
-            "codecPrettyName": "Default codec",
-            "sampling": 48000
+            "bitrate": 327680,
+            "codecName": "aac",
+            "codecPrettyName": "AAC ",
+            "sampling": 0
         },
         "hasAudio": true,
         "hasVideo": true,
@@ -21,11 +21,14 @@
         "version": "0.0.1-Alpha1",
         "video": {
             "bitrate": 0,
-            "codecName": "default",
-            "codecPrettyName": "Default codec",
-            "framerate": 29.97,
-            "height": 1080,
-            "width": 1920
+            "codecName": "h264",
+            "codecPrettyName": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 ",
+            "framerate": 0,
+            "height": 0,
+            "loop": -1,
+            "profile": -1,
+            "quality": 95,
+            "width": 0
         }
     }
 }

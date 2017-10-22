@@ -17,10 +17,6 @@
             "prettyName": "QuickTime / MOV"
         },
         "options": [
-            {
-                "name": "-profile",
-                "value": "2"
-            }
         ],
         "version": "0.0.1-Alpha1",
         "video": {
@@ -29,6 +25,9 @@
             "codecPrettyName": "Apple ProRes ",
             "framerate": 0,
             "height": 0,
+            "loop": -1,
+            "profile": 2,
+            "quality": -1,
             "width": 0
         }
     }

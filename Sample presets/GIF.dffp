@@ -1,31 +1,25 @@
 {
     "duffmpeg": {
-        "audio": {
-            "bitrate": 0,
-            "codecName": "copy",
-            "codecPrettyName": "Copy audio stream",
-            "sampling": 0
-        },
-        "hasAudio": true,
+        "hasAudio": false,
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "mp4"
+                "gif"
             ],
             "isSequence": false,
-            "name": "mp4",
-            "prettyName": "MP4 (MPEG-4 Part 14)"
+            "name": "gif",
+            "prettyName": "GIF Animation"
         },
         "options": [
         ],
         "version": "0.0.1-Alpha1",
         "video": {
             "bitrate": 0,
-            "codecName": "copy",
-            "codecPrettyName": "Copy video stream",
+            "codecName": "gif",
+            "codecPrettyName": "GIF ",
             "framerate": 0,
             "height": 0,
-            "loop": -1,
+            "loop": 0,
             "profile": -1,
             "quality": -1,
             "width": 0
