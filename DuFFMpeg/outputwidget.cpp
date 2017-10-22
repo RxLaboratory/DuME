@@ -8,6 +8,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     QWidget(parent)
 {
     _freezeUI = true;
+    _loadingPreset = false;
     setupUi(this);
 
     outputTabs->setCurrentIndex(0);
@@ -297,11 +298,13 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
     videoTranscodeWidget->setEnabled(checked);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_audioTranscodeButton_toggled(bool checked)
 {
     audioTranscodeWidget->setEnabled(checked);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_resizeButton_toggled(bool checked)
@@ -311,17 +314,20 @@ void OutputWidget::on_resizeButton_toggled(bool checked)
     widthLabel->setEnabled(checked);
     heightLabel->setEnabled(checked);
     aspectRatioLabel->setEnabled(checked);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_frameRateButton_toggled(bool checked)
 {
     frameRateBox->setEnabled(checked);
     frameRateEdit->setEnabled(checked);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_samplingButton_toggled(bool checked)
 {
     samplingBox->setEnabled(checked);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_outputBrowseButton_clicked()
@@ -338,6 +344,7 @@ void OutputWidget::on_frameRateBox_activated(const QString &arg1)
         QString num = frameRateBox->currentText().replace(" fps","");
         frameRateEdit->setValue(num.toDouble());
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_frameRateEdit_valueChanged(double arg1)
@@ -353,6 +360,7 @@ void OutputWidget::on_frameRateEdit_valueChanged(double arg1)
         }
     }
     frameRateBox->setCurrentIndex(0);
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoQualitySlider_valueChanged(int value)
@@ -377,21 +385,25 @@ void OutputWidget::on_videoQualitySlider_valueChanged(int value)
     {
         qualityLabel->setText("Very bad | " + QString::number(value) + "%");
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoWidthButton_valueChanged(int val)
 {
     aspectRatio();
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoHeightButton_valueChanged(int val)
 {
     aspectRatio();
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
 {
     updateVideoOptions();
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoProfileButton_toggled(bool checked)
@@ -404,6 +416,7 @@ void OutputWidget::on_videoProfileButton_toggled(bool checked)
     {
         videoProfileBox->setEnabled(false);
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoLoopsButton_toggled(bool checked)
@@ -418,6 +431,7 @@ void OutputWidget::on_videoLoopsButton_toggled(bool checked)
         videoLoopsEdit->setValue(-1);
         videoLoopsEdit->setEnabled(false);
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
@@ -425,6 +439,7 @@ void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
     if (arg1 == -1) videoLoopsEdit->setSuffix(" No loop");
     else if (arg1 == 0) videoLoopsEdit->setSuffix(" Infinite");
     else videoLoopsEdit->setSuffix(" loops");
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
@@ -440,6 +455,7 @@ void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
 void OutputWidget::on_addParam_clicked()
 {
     addNewParam();
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)
@@ -499,6 +515,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 
     updateOutputExtension();
     updateVideoOptions();
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
@@ -537,6 +554,7 @@ void OutputWidget::on_videoBitrateButton_toggled(bool checked)
         videoBitRateEdit->setSuffix(" Auto");
         videoBitRateEdit->setEnabled(false);
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_videoQualityButton_toggled(bool checked)
@@ -552,6 +570,7 @@ void OutputWidget::on_videoQualityButton_toggled(bool checked)
         videoQualityWidget->setEnabled(false);
         qualityLabel->setText("Excellent");
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_audioCodecButton_toggled(bool checked)
@@ -568,6 +587,7 @@ void OutputWidget::on_audioCodecButton_toggled(bool checked)
         audioCodecsFilterBox->setItemText(0,"Default");
         audioCodecWidget->setEnabled(false);
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_audioBitrateButton_toggled(bool checked)
@@ -584,6 +604,7 @@ void OutputWidget::on_audioBitrateButton_toggled(bool checked)
         audioBitRateEdit->setSuffix(" Auto");
         audioBitRateEdit->setEnabled(false);
     }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_presetsBox_currentIndexChanged(int index)
@@ -633,6 +654,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     //load preset
     else
     {
+        _loadingPreset = true;
         //load
         FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
         //update
@@ -643,6 +665,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         audioCodecsFilterBox->setCurrentIndex(0);
         //and display
         setMediaInfo(mInfo);
+        _loadingPreset = false;
     }
 
     _freezeUI = false;

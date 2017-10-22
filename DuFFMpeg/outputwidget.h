@@ -72,6 +72,7 @@ private:
     FFMuxer *_currentMuxer;
 
     bool _freezeUI;
+    bool _loadingPreset;
 };
 
 #endif // OUTPUTWIDGET_H
