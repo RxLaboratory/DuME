@@ -618,6 +618,11 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
         //update
         _freezeUI = false;
+        //set filters to all
+        formatsFilterBox->setCurrentIndex(0);
+        videoCodecsFilterBox->setCurrentIndex(0);
+        audioCodecsFilterBox->setCurrentIndex(0);
+        //and display
         setMediaInfo(mInfo);
     }
 
