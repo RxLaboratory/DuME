@@ -619,7 +619,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         presetsBox->setCurrentIndex(0);
 
         //ask for file
-        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",_settings.value("output/presetsDir",QVariant("user presets/")).toString(),"DuFFmpeg preset (*.dffp *.json);;All Files (*.*)");
+        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",_settings.value("presets/path").toString(),"DuFFmpeg preset (*.dffp *.json);;All Files (*.*)");
         if (saveFileName == "")
         {
             _freezeUI = false;
@@ -638,7 +638,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     {
         presetsBox->setCurrentIndex(0);
 
-        QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",_settings.value("output/presetsDir",QVariant("user presets/")).toString(),"DuFFmpeg preset (*.dffp *.json);;All Files (*.*)");
+        QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",_settings.value("presets/path").toString(),"DuFFmpeg preset (*.dffp *.json);;All Files (*.*)");
         if (openFileName == "")
         {
             _freezeUI = false;
