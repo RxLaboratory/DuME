@@ -865,6 +865,9 @@ void OutputWidget::addNewParam(QString name, QString value)
 void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
+    _currentMuxer = nullptr;
+    delete _mediaInfo;
+    _mediaInfo = new FFMediaInfo();
     ffmpeg_loadCodecs();
     ffmpeg_loadMuxers();
     _freezeUI = false;
