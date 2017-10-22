@@ -630,8 +630,9 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         getMediaInfo();
         //export
         _mediaInfo->exportToJson(saveFileName);
-        //add to box and select
-
+        //add to box
+        _freezeUI = false;
+        loadPresets();
     }
     //load
     else if (index == presetsBox->count()-2)
@@ -964,9 +965,11 @@ void OutputWidget::loadPresets(QString userPath)
     if (index == 0 || index == 2)
     {
         QString userPresetsPath = _settings.value("presets/path",QDir::homePath() + "/DuFFmpeg Presets/").toString();
-        foreach (QString preset, QDir(userPresetsPath).entryList(QDir::Files))
+        QStringList filters("*.dffp");
+        filters << "*.json";
+        foreach (QString preset, QDir(userPresetsPath).entryList(filters,QDir::Files))
         {
-            presets << userPath + "/" + preset;
+            presets << userPresetsPath + "/" + preset;
         }
     }
 
