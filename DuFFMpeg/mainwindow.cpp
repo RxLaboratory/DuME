@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
     home.mkdir("DuFFmpeg Presets");
-    settings->setValue("presets/path",home.path() + "/DuFFmpeg Presets/");
 
 
     // === FFMPEG INIT ===

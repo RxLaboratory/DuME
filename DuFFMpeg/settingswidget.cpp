@@ -31,7 +31,7 @@ void SettingsWidget::on_userPresetsBrowseButton_clicked()
     QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings->value("presets/path").toString());
     if (path == "") return;
     userPresetsPathEdit->setText(path);
-    settings->setValue("presets/path",userPresetsPathEdit->text());
+    settings->setValue("presets/path",path);
     emit presetsPathChanged(path);
 }
 
