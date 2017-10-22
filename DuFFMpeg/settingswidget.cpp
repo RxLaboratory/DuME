@@ -15,6 +15,7 @@ void SettingsWidget::on_ffmpegBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
+    if (settings->value("ffmpeg/path").toString() ==  path) return;
     ffmpegPathEdit->setText(path);
     settings->setValue("ffmpeg/path",ffmpegPathEdit->text());
     emit ffmpegPathChanged(path);
@@ -22,6 +23,7 @@ void SettingsWidget::on_ffmpegBrowseButton_clicked()
 
 void SettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
+    if (settings->value("ffmpeg/path").toString() == ffmpegPathEdit->text()) return;
     settings->setValue("ffmpeg/path",ffmpegPathEdit->text());
     emit ffmpegPathChanged(ffmpegPathEdit->text());
 }
