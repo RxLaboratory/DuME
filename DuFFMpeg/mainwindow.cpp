@@ -92,6 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         debugLog("FFmpeg error",Warning);
         debugLog(ffmpeg->getLastErrorMessage());
+        queuePage->setEnabled(false);
     }
     else
     {
@@ -128,6 +129,7 @@ void MainWindow::ffmpeg_init()
 {
     //get help
     helpEdit->setText(ffmpeg->getLongHelp());
+    queuePage->setEnabled(true);
 }
 
 void MainWindow::ffmpeg_debugLog(QString log)

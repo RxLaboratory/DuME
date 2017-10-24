@@ -854,6 +854,7 @@ void OutputWidget::ffmpeg_loadCodecs()
     videoCodecsBox->clear();
     audioCodecsBox->clear();
     QList<FFCodec *> encoders = _ffmpeg->getEncoders();
+    if (encoders.count() == 0) return;
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
@@ -889,6 +890,7 @@ void OutputWidget::ffmpeg_loadMuxers()
     formatsBox->clear();
 
     QList<FFMuxer *> muxers = _ffmpeg->getMuxers();
+    if (muxers.count() == 0) return;
 
     int formatsFilter = formatsFilterBox->currentIndex();
 
