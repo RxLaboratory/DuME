@@ -7,7 +7,6 @@
 FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 {
     _status = Waiting;
-
     _lastErrorMessage = "";
     _lastError = QProcess::UnknownError;
 
@@ -35,7 +34,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
 bool FFmpeg::setBinaryFileName(QString path)
 {
-
     if(QFile(path).exists())
     {
         _ffmpeg->setProgram(path);
@@ -45,7 +43,7 @@ bool FFmpeg::setBinaryFileName(QString path)
     }
     else
     {
-        _status = Error;
+        setStatus(Error);
         emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
         return false;
@@ -74,7 +72,7 @@ void FFmpeg::runCommand(QStringList commands)
 }
 
 void FFmpeg::init()
-{
+{   
     //get codecs
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
@@ -409,7 +407,6 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
 
     setStatus(Error);
-    _lastErrorMessage = error;
     _lastError = e;
     emit processError(error);
 }
