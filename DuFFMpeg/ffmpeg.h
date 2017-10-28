@@ -19,7 +19,6 @@ class FFmpeg : public FFObject
 public:
     /**
      * @brief FFmpeg Constructs the FFmpeg manager
-     * Don't forget to call init() later to initialize it
      * @param path The path to the FFmpeg binary executable
      * @param parent The parent QObject
      */
@@ -28,7 +27,7 @@ public:
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
      */
-    enum Status { Waiting, Encoding, Error, LoadingCodecs, LoadingMuxers, LoadingMuxerDetails, LoadingHelp, LoadingLongHelp, Other };
+    enum Status { Waiting, Encoding, Error, Other };
     Q_ENUM(Status)
 
     QList<FFMuxer *> getMuxers();
@@ -232,26 +231,14 @@ signals:
      * @param log
      */
     void debugInfo(QString log);
-    /**
-     * @brief initializing Emitted when FFmpeg starts its initialization
-     * Should be used to disable the UI until initialized is emitted
-     */
-    void initializing();
-    /**
-     * @brief intialized Emitted when FFmpeg ends its initialization
-     * If intialization is OK, ffmpeg status is Waiting, else status is Error
-     * you can get FFmpeg status using getStatus()
-     */
-    void intialized();
 
 public slots:   
     /**
      * @brief setBinaryFileName Sets the path to the FFmpeg binary
      * @param path The path to the binary executable file
-     * @param ini Wether to initialize FFmpeg with the new binary
      * @return true if the exe is found
      */
-    bool setBinaryFileName(QString path, bool ini = true);
+    bool setBinaryFileName(QString path);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
@@ -319,7 +306,6 @@ private:
      * @brief lastErrorMessage The human readable description of the last error
      */
     QString _lastErrorMessage;
-    bool _initializing;
     //=== Current Encoding ===
     int _currentFrame;
     QTime _startTime;
@@ -340,34 +326,23 @@ private:
      * @brief currentItem The item currently being encoded
      */
     FFQueueItem *_currentItem;
-    /**
-     * @brief _muxersToInitialize The list of muxers which have not yet been initialized
-     * Used only during FFmpeg initialization, otherwise it's an empty list
-     */
-    QStringList _muxersToInitialize;
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotCodecs Parses the muxers list
+     * @param output The output of the FFmpeg process with the muxers list
      */
-    void gotMuxers();
-    /**
-     * @brief initNextMuxer Called during initialization to init all muxers one after each other
-     * Gets the last muxer in _muxersToIntialize, computes it, then remove it from the list
-     */
-    void initNextMuxer();
-    /**
-     * @brief gorMuxerDetails Parses the muxer details
-     */
-    void gotMuxerDetails();
+    void gotMuxers(QString output);
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
+     * @param output The output of the FFmpeg process with the codecs list
      */
-    void gotCodecs();
+    void gotCodecs(QString output);
     /**
      * @brief readyRead Called when FFmpeg outputs somehting on stdError or stdOutput
      * @param The output from FFmpeg
      */
     void readyRead(QString output);
+    //bool codecSorter(FFCodec *c1, FFCodec *c2);
 };
 
 #endif // FFMPEG_H

@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QDir home = QDir::home();
     home.mkdir("DuFFmpeg Presets");
 
+
+    // === FFMPEG INIT ===
+    debugLog("Init - FFmpeg");
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
     ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
@@ -83,6 +86,19 @@ MainWindow::MainWindow(QWidget *parent) :
     consoleSplitter->setSizes(sizes);
     settings->endGroup();
 
+    // === FFMPEG INIT ===
+    debugLog("Init - FFmpeg (run test)");
+    if (ffmpeg->getStatus() == FFmpeg::Error)
+    {
+        debugLog("FFmpeg error",Warning);
+        debugLog(ffmpeg->getLastErrorMessage());
+        queuePage->setEnabled(false);
+    }
+    else
+    {
+        ffmpeg_init();
+    }
+
     // === MAP EVENTS ===
 #ifdef QT_DEBUG
     qDebug() << "Init - Map Events";
@@ -104,37 +120,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
     connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
     connect(ffmpeg,SIGNAL(debugInfo(QString)),this,SLOT(ffmpeg_debugLog(QString)));
-    connect(ffmpeg,SIGNAL(initializing()),this,SLOT(ffmpeg_initiliazation()));
-    connect(ffmpeg,SIGNAL(intialized()),this,SLOT(ffmpeg_init()));
     //settings
     connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
     connect(settingsWidget,SIGNAL(presetsPathChanged(QString)),queueWidget,SLOT(presetsPathChanged(QString)));
-
-
-    // === FFMPEG INIT ===
-    debugLog("Init - FFmpeg");
-    ffmpeg->init();
 }
 
 void MainWindow::ffmpeg_init()
 {
-    if (ffmpeg->getStatus() == FFmpeg::Error)
-    {
-        debugLog("FFmpeg error",Warning);
-        debugLog(ffmpeg->getLastErrorMessage());
-        return;
-    }
-
     //get help
-    debugLog("FFmpeg correctly initialized");
     helpEdit->setText(ffmpeg->getLongHelp());
     queuePage->setEnabled(true);
-}
-
-void MainWindow::ffmpeg_initiliazation()
-{
-    debugLog("Init - FFmpeg (run test)");
-    queuePage->setEnabled(false);
 }
 
 void MainWindow::ffmpeg_debugLog(QString log)

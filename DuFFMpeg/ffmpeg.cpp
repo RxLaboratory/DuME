@@ -6,13 +6,12 @@
 
 FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 {
-    _initializing = true;
     _status = Waiting;
     _lastErrorMessage = "";
     _lastError = QProcess::UnknownError;
 
     _ffmpeg = new QProcess(this);
-    setBinaryFileName(path,false);
+    setBinaryFileName(path);
 
     _currentFrame = 0;
     _startTime = QTime(0,0,0);
@@ -30,14 +29,15 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 #ifdef QT_DEBUG
     qDebug() << "FFmpeg - Initialization";
 #endif
+    init();
 }
 
-bool FFmpeg::setBinaryFileName(QString path,bool ini)
+bool FFmpeg::setBinaryFileName(QString path)
 {
     if(QFile(path).exists())
     {
         _ffmpeg->setProgram(path);
-        if (ini) init();
+        init();
         emit binaryChanged();
         return true;
     }
@@ -73,12 +73,39 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {   
-    _initializing = true;
-    emit initializing();
     //get codecs
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
-    setStatus(LoadingCodecs);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotCodecs(_ffmpegOutput);
+    }
+
+    //get muxers
+    _ffmpeg->setArguments(QStringList("-formats"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotMuxers(_ffmpegOutput);
+    }
+
+    //get long help
+    QStringList args("-h");
+    args << "long";
+    _ffmpeg->setArguments(args);
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _longHelp = _ffmpegOutput;
+    }
+
+    //get help
+    _ffmpeg->setArguments(QStringList("-h"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _help = _ffmpegOutput;
+    }
 }
 
 QList<FFMuxer *> FFmpeg::getMuxers()
@@ -329,14 +356,6 @@ void FFmpeg::started()
     _ffmpegOutput = "";
 }
 
-bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
-{
-    if (m1->extensions().count() == 0 && m2->extensions().count() == 0) return m1->prettyName().toLower() < m2->prettyName().toLower();
-    if (m1->extensions().count() == 0) return true;
-    if (m2->extensions().count() == 0) return false;
-    return m1->extensions()[0] < m2->extensions()[0];
-}
-
 void FFmpeg::finished()
 {
     if (_status == Encoding)
@@ -346,53 +365,6 @@ void FFmpeg::finished()
         //move to history
         _encodingHistory << _currentItem;
         encodeNextItem();
-    }
-    else if (_status == LoadingCodecs)
-    {
-        gotCodecs();
-        //get muxers
-        setStatus(LoadingMuxers);
-        _ffmpeg->setArguments(QStringList("-formats"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-    }
-    else if (_status == LoadingMuxers)
-    {
-        gotMuxers();
-        initNextMuxer();
-    }
-    else if (_status == LoadingMuxerDetails)
-    {
-        gotMuxerDetails();
-        if (!_muxersToInitialize.isEmpty())
-        {
-            initNextMuxer();
-        }
-        // if the last muxer has been initialized
-        if (_muxersToInitialize.isEmpty())
-        {
-            //sort muxers
-            std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
-            //get long help
-            setStatus(LoadingLongHelp);
-            QStringList args("-h");
-            args << "long";
-            _ffmpeg->setArguments(args);
-            _ffmpeg->start(QIODevice::ReadOnly);
-        }
-    }
-    else if (_status == LoadingLongHelp)
-    {
-        _longHelp = _ffmpegOutput;
-        //get help
-        setStatus(LoadingHelp);
-        _ffmpeg->setArguments(QStringList("-h"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-    }
-    else if (_status == LoadingHelp)
-    {
-        _help = _ffmpegOutput;
-        emit intialized();
-        _initializing = false;
     }
     else
     {
@@ -640,14 +612,75 @@ void FFmpeg::setStatus(Status st)
     emit statusChanged(_status);
 }
 
-void FFmpeg::gotMuxers()
+bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
+{
+    if (m1->extensions().count() == 0 && m2->extensions().count() == 0) return m1->prettyName().toLower() < m2->prettyName().toLower();
+    if (m1->extensions().count() == 0) return true;
+    if (m2->extensions().count() == 0) return false;
+    return m1->extensions()[0] < m2->extensions()[0];
+}
+
+void FFmpeg::gotMuxers(QString output)
 {
     //delete all
     qDeleteAll(_muxers);
     _muxers.clear();
 
     //get Muxers
-    _muxersToInitialize = _ffmpegOutput.split("\n");
+    QStringList muxers = output.split("\n");
+    QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
+
+    foreach(QString muxer,muxers)
+    {
+        QRegularExpressionMatch match = re.match(muxer);
+        if (match.hasMatch())
+        {
+            QString name = match.captured(1).trimmed();
+            QString prettyName = match.captured(2).trimmed();
+            // skip image sequence
+            // TODO complete the sequences custom muxers built just after
+            if (name == "image2") continue;
+            FFMuxer *m = new FFMuxer(name,prettyName,this);
+            _muxers << m;
+            //get default codecs
+            QStringList args("-h");
+            args << "muxer=" + m->name();
+            _ffmpeg->setArguments(args);
+            _ffmpeg->start(QIODevice::ReadOnly);
+            if (_ffmpeg->waitForFinished(10000))
+            {
+                QStringList lines = _ffmpegOutput.split("\n");
+
+                QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
+                QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
+                QRegularExpression reExtensions("Common extensions:\\s*(.+)\\.");
+
+                foreach(QString line,lines)
+                {
+                    //video codec
+                    QRegularExpressionMatch videoMatch = reVideo.match(line);
+                    if (videoMatch.hasMatch())
+                    {
+                        m->setDefaultVideoCodec(getVideoEncoder(videoMatch.captured(1)));
+                    }
+
+                    //audio codec
+                    QRegularExpressionMatch audioMatch = reAudio.match(line);
+                    if (audioMatch.hasMatch())
+                    {
+                        m->setDefaultAudioCodec(getAudioEncoder(audioMatch.captured(1)));
+                    }
+
+                    //extensions
+                    QRegularExpressionMatch extensionsMatch = reExtensions.match(line);
+                    if (extensionsMatch.hasMatch())
+                    {
+                        m->setExtensions(extensionsMatch.captured(1).split(","));
+                    }
+                }
+            }
+        }
+    }
 
     //add image sequences
     FFMuxer *muxer = new FFMuxer("image2","Bitmap Sequence");
@@ -678,75 +711,9 @@ void FFmpeg::gotMuxers()
     muxer->setType(FFMuxer::Sequence);
     muxer->setExtensions(QStringList("tga"));
     _muxers << muxer;
-}
 
-void FFmpeg::initNextMuxer()
-{
-    if (_muxersToInitialize.isEmpty()) return;
-    QString muxer = _muxersToInitialize.last();
-    QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
-    QRegularExpressionMatch match = re.match(muxer);
-    if (match.hasMatch())
-    {
-        QString name = match.captured(1).trimmed();
-        QString prettyName = match.captured(2).trimmed();
-        // skip image sequence
-        // TODO complete the sequences custom muxers built just after
-        if (name == "image2")
-        {
-            _muxersToInitialize.removeLast();
-            initNextMuxer();
-        }
-        FFMuxer *m = new FFMuxer(name,prettyName,this);
-        _muxers << m;
-        //get default codecs
-        setStatus(LoadingMuxerDetails);
-        QStringList args("-h");
-        args << "muxer=" + m->name();
-        _ffmpeg->setArguments(args);
-        _ffmpeg->start(QIODevice::ReadOnly);
-    }
-    else
-    {
-        _muxersToInitialize.removeLast();
-        initNextMuxer();
-    }
-}
 
-void FFmpeg::gotMuxerDetails()
-{
-    FFMuxer *m = _muxers.last();
-    QStringList lines = _ffmpegOutput.split("\n");
-
-    QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
-    QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
-    QRegularExpression reExtensions("Common extensions:\\s*(.+)\\.");
-
-    foreach(QString line,lines)
-    {
-        //video codec
-        QRegularExpressionMatch videoMatch = reVideo.match(line);
-        if (videoMatch.hasMatch())
-        {
-            m->setDefaultVideoCodec(getVideoEncoder(videoMatch.captured(1)));
-        }
-
-        //audio codec
-        QRegularExpressionMatch audioMatch = reAudio.match(line);
-        if (audioMatch.hasMatch())
-        {
-            m->setDefaultAudioCodec(getAudioEncoder(audioMatch.captured(1)));
-        }
-
-        //extensions
-        QRegularExpressionMatch extensionsMatch = reExtensions.match(line);
-        if (extensionsMatch.hasMatch())
-        {
-            m->setExtensions(extensionsMatch.captured(1).split(","));
-        }
-    }
-
-    _muxersToInitialize.removeLast();
+    std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
 }
 
 bool codecSorter(FFCodec *c1,FFCodec *c2)
@@ -754,7 +721,7 @@ bool codecSorter(FFCodec *c1,FFCodec *c2)
     return c1->prettyName().toLower() < c2->prettyName().toLower();
 }
 
-void FFmpeg::gotCodecs()
+void FFmpeg::gotCodecs(QString output)
 {
     //delete all
     qDeleteAll(_videoEncoders);
@@ -773,7 +740,7 @@ void FFmpeg::gotCodecs()
     _audioEncoders << copyAudio;
 
     //get codecs
-    QStringList codecs = _ffmpegOutput.split("\n");
+    QStringList codecs = output.split("\n");
     QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
     for (int i = 0 ; i < codecs.count() ; i++)
     {
