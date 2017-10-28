@@ -1,4 +1,4 @@
-#define DUFFMPEG_VERSION "0.0.1-Alpha1"
+#define DUFFMPEG_VERSION "0.0.2-Alpha2"
 
 #ifndef FFOBJECT_H
 #define FFOBJECT_H
