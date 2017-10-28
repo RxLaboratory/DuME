@@ -39,9 +39,14 @@ private slots:
     void ffmpeg_statusChanged(FFmpeg::Status status);
     void ffmpeg_progress();
     /**
-     * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
+     * @brief ffmpeg_init Gets needed FFmpeg informations (help, version...)
+     * And enables UI
      */
     void ffmpeg_init();
+    /**
+     * @brief ffmpeg_initiliazation Disables UI while FFmpeg is initializing
+     */
+    void ffmpeg_initiliazation();
     void ffmpeg_debugLog(QString log);
 
     // UI EVENTS
