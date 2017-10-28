@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(FFmpeg *ff,QWidget *parent = 0);
 
     /**
      * @brief The ErrorType enum Error level for printing the debug log

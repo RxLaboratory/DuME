@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     debugLog("Init - FFmpeg");
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
-    ffmpeg = new FFmpeg(settings->value("ffmpeg/path","ffmpeg.exe").toString());
+    ffmpeg = ff;
 
 
     // === UI SETUP ===
