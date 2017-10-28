@@ -549,21 +549,19 @@ QTabWidget::pane { /* The tab widget frame */
 }
 
 QTabBar {
-        background-color: @color-dark;
+        background-color: @color-very-dark;
 }
 
 QTabBar::tab {
-        background-color: @color-dark;
+        background-color: @color-very-dark;
 	color: @color-light;
-	border: @border-size solid @color-dark;
+	border: @border-size solid @color-very-dark;
 	padding: @button-padding;
-	margin-bottom: @margin;
-	border-radius: @border-radius;
 }
 
 QTabBar::tab:selected {
-        background-color: @color-very-dark;
-	border-color: @color-very-dark;
+        background-color: @color-dark;
+	border-color: @color-dark;
 	color: @color-light;
 }
 

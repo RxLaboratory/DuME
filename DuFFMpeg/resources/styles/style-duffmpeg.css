@@ -5,3 +5,40 @@ QSplitter::handle:vertical {
 QSplitter::handle:horizontal {
     image: url(:/icons/hsplitter);
 }
+
+#progressWidget, #consoleTabs, #progressWidget QWidget {
+    background-color: @color-dark-alternate;
+}
+
+#progressWidget QLabel {
+        color: @color-medium;
+}
+
+#progressWidget QProgressBar {
+        color: @color-medium;
+	border: none;
+	background-color: @color-very-dark;
+	border-radius: 0;
+	text-align: center;
+}
+
+#progressWidget QProgressBar::chunk {
+        background-color: @color-medium;
+	width: 1px;
+}
+
+#consoleTabs QPlainTextEdit, #consoleTabs QTextBrowser, #consoleTabs QTextEdit {
+    background-color: @color-dark-alternate;
+    border: none;
+    border-radius: 0px;
+}
+
+
+#consoleTabs QTabWidget,  #consoleTabs QTabWidget::pane, #consoleTabs QTabBar::tab:selected {
+    background-color: @color-dark-alternate;
+    border: none;
+}
+
+#consoleSplitter {
+    background-color: @color-very-dark;
+}

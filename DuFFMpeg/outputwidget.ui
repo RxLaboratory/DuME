@@ -234,7 +234,7 @@
         <x>0</x>
         <y>0</y>
         <width>564</width>
-        <height>397</height>
+        <height>395</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -265,7 +265,7 @@
           <enum>QTabWidget::North</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_7">
           <property name="sizePolicy">
@@ -382,7 +382,7 @@
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>3</number>
+               <number>0</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -1039,7 +1039,7 @@
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>3</number>
+               <number>0</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
