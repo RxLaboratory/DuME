@@ -1,0 +1,38 @@
+{
+    "duffmpeg": {
+        "audio": {
+            "bitrate": 0,
+            "codecName": "aac",
+            "codecPrettyName": "AAC ",
+            "sampling": 0
+        },
+        "hasAudio": true,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "mov"
+            ],
+            "isSequence": false,
+            "name": "mov",
+            "prettyName": "QuickTime / MOV"
+        },
+        "options": [
+            {
+                "name": "-format",
+                "value": "hap_q"
+            }
+        ],
+        "version": "0.0.2-Alpha2",
+        "video": {
+            "bitrate": 0,
+            "codecName": "hap",
+            "codecPrettyName": "Vidvox Hap\r",
+            "framerate": 0,
+            "height": 0,
+            "loop": -1,
+            "profile": -1,
+            "quality": -1,
+            "width": 0
+        }
+    }
+}
