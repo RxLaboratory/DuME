@@ -30,6 +30,7 @@ All the information is stored in a `duffmpeg` object, this and mandatory and use
   * __bitrate__ \<int> _in bps, `0` for auto_
   * __quality__ \<int> _from `0` (worst) to `100` (best), `-1` to ignore_
   * __profile__ \<int> _`-1` to ignore, depends on the codec used, see FFmpeg codec documentation_
+  * __startNumber__ \<int> _The first frame number for image sequences_
 - __audio__ \<object>
   * __codecName__ \<string> _`"default"` to let app select default codec_
   * __codecPrettyName__ \<string>
