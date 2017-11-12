@@ -54,6 +54,8 @@ private slots:
     void on_videoLoopsButton_toggled(bool checked);
     void on_videoLoopsEdit_valueChanged(int arg1);
 
+    void on_startNumberButton_clicked(bool checked);
+
 private:
     /**
      * @brief aspectRatio Computes the aspect ratio of the video

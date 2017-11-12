@@ -442,6 +442,22 @@ void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
+void OutputWidget::on_startNumberButton_clicked(bool checked)
+{
+    if (checked)
+    {
+        startNumberEdit->setValue(0);
+        startNumberEdit->setEnabled(true);
+    }
+    else
+    {
+        startNumberEdit->setValue(0);
+        startNumberEdit->setEnabled(false);
+    }
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+}
+
+
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadCodecs();
@@ -648,7 +664,9 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     {
         _loadingPreset = true;
         //load
+        qDebug() << index;
         FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
+        qDebug() << mInfo->ffmpegOutput();
         //update
         _freezeUI = false;
         //set filters to all
@@ -684,20 +702,32 @@ void OutputWidget::updateOutputExtension()
 {
     if (outputEdit->text() == "") return;
     QFileInfo output(outputEdit->text());
+
+    //remove existing {#####}
+    QString outputName = output.completeBaseName();
+    outputName = outputName.replace(QRegularExpression("_?{#+}"),"");
+
     QString newExt = "";
+
     if (_currentMuxer != nullptr)
     {
-        qDebug() << _currentMuxer->extensions()[0];
+        //add {#####}
+        if (_currentMuxer->isSequence())
+        {
+            newExt = "_{#####}";
+        }
+
         if (_currentMuxer->extensions().count() > 0)
         {
-            newExt = "." + _currentMuxer->extensions()[0];
+            newExt += "." + _currentMuxer->extensions()[0];
         }
+
     }
-    QString outputPath = output.path() + "/" + output.completeBaseName() + newExt;
+    QString outputPath = output.path() + "/" + outputName + newExt;
     //check if file exists
     if (QFile(outputPath).exists())
     {
-        outputPath = output.path() + "/" + output.completeBaseName() + "_transcoded" + newExt;
+        outputPath = output.path() + "/" + outputName + "_transcoded" + newExt;
     }
 
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
@@ -761,6 +791,14 @@ void OutputWidget::updateVideoOptions()
     //loop
     videoLoopsButton->hide();
     videoLoopsEdit->hide();
+    //start number
+    startNumberButton->hide();
+    startNumberEdit->hide();
+    //frame rate
+    frameRateButton->hide();
+    frameRateBox->hide();
+    frameRateEdit->hide();
+
 
     //AUDIO
     //codec
@@ -785,6 +823,17 @@ void OutputWidget::updateVideoOptions()
             audioCodecWidget->show();
             audioBitrateButton->show();
             audioBitRateEdit->show();
+        }
+        if (muxer->isSequence())
+        {
+            startNumberButton->show();
+            startNumberEdit->show();
+        }
+        else
+        {
+            frameRateBox->show();
+            frameRateButton->show();
+            frameRateEdit->show();
         }
     }
 
@@ -907,9 +956,6 @@ void OutputWidget::ffmpeg_loadMuxers()
 
     foreach(FFMuxer *muxer,muxers)
     {
-        qDebug() << muxer->prettyName();
-        qDebug() << muxer->isSequence();
-
         //skip muxers without extension
         if ((formatsFilter != 0 && formatsFilter != 5) && muxer->extensions().count() == 0) continue;
         else if (formatsFilter == 5 && muxer->extensions().count() == 0) formatsBox->addItem(muxer->prettyName(),QVariant(muxer->name()));
@@ -920,7 +966,6 @@ void OutputWidget::ffmpeg_loadMuxers()
                 (formatsFilter == 3 && muxer->isAudio() && !muxer->isVideo() )  ||
                 (formatsFilter == 4 && muxer->isVideo() && !muxer->isAudio() ))
         {
-            qDebug() << "ADD" << muxer->prettyName();
             formatsBox->addItem("." + muxer->extensions().join(", .") + " | " + muxer->prettyName(),QVariant(muxer->name()));
         }
     }

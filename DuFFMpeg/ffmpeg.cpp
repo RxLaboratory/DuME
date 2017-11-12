@@ -445,8 +445,11 @@ void FFmpeg::encodeNextItem()
     {
         //muxer
         QString muxer = "";
-        if (output->muxer() != nullptr) muxer = output->muxer()->name();
-        if (output->muxer()->isSequence()) muxer = "image2";
+        if (output->muxer() != nullptr)
+        {
+            muxer = output->muxer()->name();
+            if (output->muxer()->isSequence()) muxer = "image2";
+        }
         if (muxer != "")
         {
             arguments << "-f" << muxer;
@@ -593,7 +596,29 @@ void FFmpeg::encodeNextItem()
         }
 
         //file
-        arguments << QDir::toNativeSeparators(output->fileName());
+        QString outputPath = QDir::toNativeSeparators(output->fileName());
+
+        //if sequence, digits
+        if (output->muxer() != nullptr)
+        {
+            if (output->muxer()->isSequence())
+            {
+                //detects all {###}
+                QRegularExpression regExDigits("{(#+)}");
+                QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(outputPath);
+                while (regExDigitsMatch.hasNext())
+                {
+                     QRegularExpressionMatch match = regExDigitsMatch.next();
+                     //count the ###
+                     QString digits = match.captured(1);
+                     int numDigits = digits.count();
+                     //replace
+                     outputPath.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
+                }
+            }
+        }
+
+        arguments << outputPath;
     }
 
     emit debugInfo("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
@@ -858,7 +883,7 @@ void FFmpeg::readyRead(QString output)
 
     _ffmpegOutput = _ffmpegOutput + output;
 
-    QRegularExpression reProgress("frame= *(\\d+) fps= *(\\d+).+ L?size= *(\\d+)kB time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d) bitrate= *(\\d+).\\d+kbits\\/s.* speed= *(\\d+.\\d*)x");
+    QRegularExpression reProgress("(?:frame= *(\\d+).*fps= *(\\d+).*)?size= *(?:(\\d+)kB)?.*time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d).*bitrate= *(?:(\\d+).\\d+kbits)?.*speed= *(\\d+.\\d*)x");
     QRegularExpressionMatch match = reProgress.match(output);
     //if progress, update UI
     if (match.hasMatch())
