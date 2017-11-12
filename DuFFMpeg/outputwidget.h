@@ -61,6 +61,7 @@ private:
     void aspectRatio();
     void updateOutputExtension();
     void selectDefaultVideoCodec();
+    void selectDefaultAudioCodec();
     void updateVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();

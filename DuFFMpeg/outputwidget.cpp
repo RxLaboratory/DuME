@@ -460,6 +460,7 @@ void OutputWidget::on_addParam_clicked()
 
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
+    if (index == -1) return;
     _currentMuxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
 
     if (_freezeUI) return;
@@ -467,23 +468,12 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 
     selectDefaultVideoCodec();
 
-    FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Audio);
-
-    if (audioCodec != nullptr)
-    {
-        for (int a = 0; a < audioCodecsBox->count() ; a++)
-        {
-            if (audioCodecsBox->itemData(a).toString() == audioCodec->name())
-            {
-                audioCodecsBox->setCurrentIndex(a);
-            }
-        }
-    }
+    selectDefaultAudioCodec();
 
     //UI
 
     //video
-    if (_currentMuxer->isVideo() || _currentMuxer->isSequence())
+    if (_currentMuxer->isVideo())
     {
         if (noVideoButton->isChecked()) videoTranscodeButton->setChecked(true);
         videoTranscodeButton->setEnabled(true);
@@ -495,6 +485,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
         videoTranscodeButton->setEnabled(false);
         videoCopyButton->setEnabled(false);
     }
+
     //audio
     if (_currentMuxer->isAudio())
     {
@@ -696,6 +687,7 @@ void OutputWidget::updateOutputExtension()
     QString newExt = "";
     if (_currentMuxer != nullptr)
     {
+        qDebug() << _currentMuxer->extensions()[0];
         if (_currentMuxer->extensions().count() > 0)
         {
             newExt = "." + _currentMuxer->extensions()[0];
@@ -726,6 +718,24 @@ void OutputWidget::selectDefaultVideoCodec()
             if (videoCodecsBox->itemData(v).toString() == videoCodec->name())
             {
                 videoCodecsBox->setCurrentIndex(v);
+            }
+        }
+    }
+}
+
+void OutputWidget::selectDefaultAudioCodec()
+{
+    if (_currentMuxer == nullptr) return;
+
+    FFCodec *audioCodec = _ffmpeg->getMuxerDefaultCodec(_currentMuxer, FFCodec::Audio);
+
+    if (audioCodec != nullptr)
+    {
+        for (int a = 0; a < audioCodecsBox->count() ; a++)
+        {
+            if (audioCodecsBox->itemData(a).toString() == audioCodec->name())
+            {
+                audioCodecsBox->setCurrentIndex(a);
             }
         }
     }
@@ -896,6 +906,9 @@ void OutputWidget::ffmpeg_loadMuxers()
 
     foreach(FFMuxer *muxer,muxers)
     {
+        qDebug() << muxer->prettyName();
+        qDebug() << muxer->isSequence();
+
         //skip muxers without extension
         if ((formatsFilter != 0 && formatsFilter != 5) && muxer->extensions().count() == 0) continue;
         else if (formatsFilter == 5 && muxer->extensions().count() == 0) formatsBox->addItem(muxer->prettyName(),QVariant(muxer->name()));
@@ -906,6 +919,7 @@ void OutputWidget::ffmpeg_loadMuxers()
                 (formatsFilter == 3 && muxer->isAudio() && !muxer->isVideo() )  ||
                 (formatsFilter == 4 && muxer->isVideo() && !muxer->isAudio() ))
         {
+            qDebug() << "ADD" << muxer->prettyName();
             formatsBox->addItem("." + muxer->extensions().join(", .") + " | " + muxer->prettyName(),QVariant(muxer->name()));
         }
     }

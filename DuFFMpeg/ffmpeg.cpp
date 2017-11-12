@@ -446,6 +446,7 @@ void FFmpeg::encodeNextItem()
         //muxer
         QString muxer = "";
         if (output->muxer() != nullptr) muxer = output->muxer()->name();
+        if (output->muxer()->isSequence()) muxer = "image2";
         if (muxer != "")
         {
             arguments << "-f" << muxer;
@@ -638,7 +639,6 @@ void FFmpeg::gotMuxers(QString output)
             QString name = match.captured(1).trimmed();
             QString prettyName = match.captured(2).trimmed();
             // skip image sequence
-            // TODO complete the sequences custom muxers built just after
             if (name == "image2") continue;
             FFMuxer *m = new FFMuxer(name,prettyName,this);
             _muxers << m;
@@ -683,35 +683,115 @@ void FFmpeg::gotMuxers(QString output)
     }
 
     //add image sequences
-    FFMuxer *muxer = new FFMuxer("image2","Bitmap Sequence");
-    muxer->setType(FFMuxer::Sequence);
+    QStringList extensions;
+
+    FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
+    muxer->setSequence(true);
     muxer->setExtensions(QStringList("bmp"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","DPX Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("dpx"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","JPEG 2000 Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("jpeg2000"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","JPEG Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("jpg"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","PNG Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("png"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","TIFF Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("tif"));
-    _muxers << muxer;
-    muxer = new FFMuxer("image2","TARGA Sequence");
-    muxer->setType(FFMuxer::Sequence);
-    muxer->setExtensions(QStringList("tga"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("bmp"));
     _muxers << muxer;
 
+    muxer = new FFMuxer("dpx","DPX Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("dpx"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("dpx"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("jpegls","JPEG Sequence");
+    muxer->setSequence(true);
+    extensions << "jpg" << "jpeg" << "jls";
+    muxer->setExtensions(extensions);
+    extensions.clear();
+    muxer->setDefaultVideoCodec(getVideoEncoder("jpegls"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("ljpeg","Lossless JPEG Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("ljpg"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("ljpeg"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("pam","PAM (Portable AnyMap) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("pam"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("pam"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("pbm","PBM (Portable BitMap) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("pbm"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("pbm"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("pcx","PC Paintbrush PCX Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("pcx"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("pcx"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("pgm","PGM (Portable GrayMap) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("pgm"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("pgm"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("pgmyuv","PGMYUV (Portable GrayMap YUV) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("pgmyuv"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("pgmyuv"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("png","PNG (Portable Network Graphics) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("png"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("png"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("ppm","PPM (Portable PixelMap) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("ppm"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("ppm"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("sgi","SGI Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("sgi"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("sgi"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("targa","TARGA (Truevision Targa) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("tga"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("targa"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("tiff","TIFF Sequence");
+    muxer->setSequence(true);
+    extensions << "tif" << "tiff";
+    muxer->setExtensions(extensions);
+    extensions.clear();
+    muxer->setDefaultVideoCodec(getVideoEncoder("tiff"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("jpeg2000","JPEG 2000 Sequence");
+    muxer->setSequence(true);
+    extensions << "jp2" << "j2k";
+    muxer->setExtensions(extensions);
+    extensions.clear();
+    muxer->setDefaultVideoCodec(getVideoEncoder("jpeg2000"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("xwd","XWD (X Window Dump) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("xwd"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("xwd"));
+    _muxers << muxer;
+
+    muxer = new FFMuxer("xbm","XBM (X BitMap) Sequence");
+    muxer->setSequence(true);
+    muxer->setExtensions(QStringList("xbm"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("xbm"));
+    _muxers << muxer;
 
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
 }

@@ -13,7 +13,7 @@ public:
     /**
      * @brief The muxer type
      */
-    enum Type { AudioOnly, VideoOnly, AudioVideo, Sequence};
+    enum Type { AudioOnly, VideoOnly, AudioVideo };
     Q_ENUM(Type)
 
     explicit FFMuxer(QObject *parent = nullptr);
@@ -45,9 +45,11 @@ public:
     bool isVideo();
     bool isSequence();
     void setType(const Type &type);
+    void setSequence(bool sequence = true);
 
     QStringList extensions() const;
     void setExtensions(const QStringList &extensions);
+
 
 signals:
 
@@ -60,6 +62,7 @@ private:
     QString _prettyName;
     Type _type;
     QStringList _extensions;
+    bool _sequence;
 
     void checkType();
 };

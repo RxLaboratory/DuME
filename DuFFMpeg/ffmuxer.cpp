@@ -7,6 +7,7 @@ FFMuxer::FFMuxer(QObject *parent) : FFObject(parent)
     _name = "";
     _prettyName = "";
     _type = AudioVideo;
+
 }
 
 FFMuxer::FFMuxer(QString name,QObject *parent) : FFObject(parent)
@@ -16,6 +17,7 @@ FFMuxer::FFMuxer(QString name,QObject *parent) : FFObject(parent)
     _defaultAudioCodec = nullptr;
     _defaultVideoCodec = nullptr;
     _type = AudioVideo;
+     _sequence = false;
 }
 
 FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFObject(parent)
@@ -25,6 +27,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFObject(p
     _defaultAudioCodec = nullptr;
     _defaultVideoCodec = nullptr;
     _type = AudioVideo;
+     _sequence = false;
 }
 
 FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *parent) : FFObject(parent)
@@ -34,6 +37,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *
     _defaultAudioCodec = nullptr;
     _defaultVideoCodec = nullptr;
     _type = type;
+     _sequence = false;
 }
 
 FFCodec *FFMuxer::defaultVideoCodec() const
@@ -90,7 +94,7 @@ bool FFMuxer::isVideo()
 
 bool FFMuxer::isSequence()
 {
-    return _type == Sequence;
+    return _sequence;
 }
 
 void FFMuxer::setType(const Type &type)
@@ -106,6 +110,11 @@ QStringList FFMuxer::extensions() const
 void FFMuxer::setExtensions(const QStringList &extensions)
 {
     _extensions = extensions;
+}
+
+void FFMuxer::setSequence(bool sequence)
+{
+    _sequence = sequence;
 }
 
 void FFMuxer::checkType()
