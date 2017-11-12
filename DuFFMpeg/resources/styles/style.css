@@ -554,7 +554,7 @@ QTabBar {
 
 QTabBar::tab {
         background-color: @color-very-dark;
-	color: @color-light;
+	color: @color-medium;
 	border: @border-size solid @color-very-dark;
 	padding: @button-padding;
 }
@@ -575,6 +575,16 @@ QTabBar::tab:selected:hover {
         background-color: @color-very-dark;
 	border-color: @color-very-dark;
 	color: @color-medium;
+}
+
+QTabBar::close-button {
+    /*background-color: @color-very-dark;*/
+    border-radius: @border-radius;
+    image: url(:/icons/close-thin);
+}
+
+QTabBar::close-button:hover {
+    background-color: @color-light;
 }
 
 /* TOOLBOX */
