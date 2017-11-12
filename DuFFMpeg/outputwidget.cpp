@@ -890,6 +890,7 @@ void OutputWidget::ffmpeg_loadCodecs()
     }
 
     selectDefaultVideoCodec();
+    selectDefaultAudioCodec();
     _freezeUI = false;
 }
 
