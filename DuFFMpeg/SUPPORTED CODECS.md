@@ -4,11 +4,11 @@ When it's checked, it's already supported, if not, it's planned ;)
 - [ ] H.265
 - [x] __Prores__
 - [ ] DnxHD
-- [x] PNG (output only)
-- [x] JPG (Partial: needs a quality setting, using only ffmpeg default for now)
+- [x] __PNG__ (output only)
+- [x] __JPG__ (Partial: needs a quality setting, using only ffmpeg default for now)
 - [ ] MJpeg
-- [x] TGA
+- [x] __TGA__
 - [ ] JPEG2000 (and DCP)
 - [x] __GIF__
 - [ ] Quicktime Animation
-- [x] HAP
+- [x] __HAP__
