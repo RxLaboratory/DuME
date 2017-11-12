@@ -1,0 +1,29 @@
+{
+    "duffmpeg": {
+        "hasAudio": false,
+        "hasVideo": true,
+        "muxer": {
+            "extensions": [
+                "png"
+            ],
+            "isSequence": true,
+            "name": "png",
+            "prettyName": "PNG (Portable Network Graphics) Sequence"
+        },
+        "options": [
+        ],
+        "version": "0.0.2-Alpha2",
+        "video": {
+            "bitrate": 0,
+            "codecName": "png",
+            "codecPrettyName": "PNG ",
+            "framerate": 0,
+            "height": 0,
+            "loop": -1,
+            "profile": -1,
+            "quality": -1,
+            "startNumber": 0,
+            "width": 0
+        }
+    }
+}

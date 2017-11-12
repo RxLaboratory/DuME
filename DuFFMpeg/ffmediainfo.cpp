@@ -353,6 +353,8 @@ QString FFMediaInfo::exportToJson()
         videoObj.insert("loop",_loop);
         //profile
         videoObj.insert("profile",_videoProfile);
+        //start number
+        videoObj.insert("startNumber",_startNumber);
 
         mediaObj.insert("video",videoObj);
     }

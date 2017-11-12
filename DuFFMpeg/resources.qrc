@@ -37,6 +37,8 @@
         <file alias="MOV - HAP - Alpha">resources/presets/MOV - HAP - Alpha.dffp</file>
         <file alias="MOV - HAP - Q">resources/presets/MOV - HAP - Q.dffp</file>
         <file alias="MOV - HAP - Standard">resources/presets/MOV - HAP - Standard.dffp</file>
+        <file alias="PNG">resources/presets/PNG.dffp</file>
+        <file alias="TGA">resources/presets/TGA.dffp</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>

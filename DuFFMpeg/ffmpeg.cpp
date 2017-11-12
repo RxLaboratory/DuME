@@ -729,12 +729,12 @@ void FFmpeg::gotMuxers(QString output)
     muxer->setDefaultVideoCodec(getVideoEncoder("dpx"));
     _muxers << muxer;
 
-    muxer = new FFMuxer("jpegls","JPEG Sequence");
+    muxer = new FFMuxer("mjpeg","JPEG Sequence");
     muxer->setSequence(true);
-    extensions << "jpg" << "jpeg" << "jls";
+    extensions << "jpg" << "jpeg";
     muxer->setExtensions(extensions);
     extensions.clear();
-    muxer->setDefaultVideoCodec(getVideoEncoder("jpegls"));
+    muxer->setDefaultVideoCodec(getVideoEncoder("mjpeg"));
     _muxers << muxer;
 
     muxer = new FFMuxer("ljpeg","Lossless JPEG Sequence");
@@ -995,6 +995,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->setVideoBitrate(videoObj.value("bitrate").toInt());
         mediaInfo->setVideoProfile(videoObj.value("profile").toInt());
         mediaInfo->setVideoQuality(videoObj.value("quality").toInt());
+        mediaInfo->setStartNumber(videoObj.value("startNumber").toInt());
     }
 
     //audio
