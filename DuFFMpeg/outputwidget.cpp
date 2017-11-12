@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
+OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
     _freezeUI = true;
@@ -14,6 +14,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, QWidget *parent) :
     outputTabs->setCurrentIndex(0);
 
     _ffmpeg = ff;
+    _index = id;
     _mediaInfo = new FFMediaInfo("",this);
     _currentMuxer = nullptr;
 
@@ -299,6 +300,11 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
 
 }
 
+QString OutputWidget::getOutputPath()
+{
+    return outputEdit->text();
+}
+
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
     videoTranscodeWidget->setEnabled(checked);
@@ -338,7 +344,7 @@ void OutputWidget::on_outputBrowseButton_clicked()
 {
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
-    outputEdit->setText(outputPath);
+    updateOutputExtension(outputPath);
 }
 
 void OutputWidget::on_frameRateBox_activated(const QString &arg1)
@@ -523,7 +529,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 
     _freezeUI = false;
 
-    updateOutputExtension();
+    updateOutputExtension(outputEdit->text());
     updateVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
@@ -667,9 +673,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     {
         _loadingPreset = true;
         //load
-        qDebug() << index;
         FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
-        qDebug() << mInfo->ffmpegOutput();
         //update
         _freezeUI = false;
         //set filters to all
@@ -701,10 +705,10 @@ void OutputWidget::aspectRatio()
     aspectRatioLabel->setText(QString::number(ratio) + ":1");
 }
 
-void OutputWidget::updateOutputExtension()
+void OutputWidget::updateOutputExtension(QString outputPath)
 {
-    if (outputEdit->text() == "") return;
-    QFileInfo output(outputEdit->text());
+    if (outputPath == "") return;
+    QFileInfo output(outputPath);
 
     //remove existing {#####}
     QString outputName = output.completeBaseName();
@@ -726,11 +730,14 @@ void OutputWidget::updateOutputExtension()
         }
 
     }
-    QString outputPath = output.path() + "/" + outputName + newExt;
+    QString num = "";
+    if (_index > 1) num = "_" + QString::number(_index);
+    outputName.replace(QRegularExpression(num + "$"),"");
+    outputPath = output.path() + "/" + outputName + num + newExt;
     //check if file exists
     if (QFile(outputPath).exists())
     {
-        outputPath = output.path() + "/" + outputName + "_transcoded" + newExt;
+        outputPath = output.path() + "/" + outputName + "_transcoded" + num + newExt;
     }
 
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
@@ -983,8 +990,7 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
     //set output fileName
     QFileInfo inputFile(input->fileName());
     QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
-    outputEdit->setText(outputPath);
-    updateOutputExtension();
+    updateOutputExtension(outputPath);
 
     //if not checked, update fields
     if (!resizeButton->isChecked())
@@ -1053,3 +1059,4 @@ void OutputWidget::loadPresets(QString userPath)
 
     _freezeUI = false;
 }
+

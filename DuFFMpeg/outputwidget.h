@@ -14,9 +14,13 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
     Q_OBJECT
 
 public:
-    explicit OutputWidget(FFmpeg *ff,QWidget *parent = 0);
+    explicit OutputWidget(FFmpeg *ff,int id,QWidget *parent = 0);
     FFMediaInfo *getMediaInfo();
     void setMediaInfo(FFMediaInfo *mediaInfo);
+    QString getOutputPath();
+
+signals:
+    void checkSaveOutputPath(QString, OutputWidget*);
 
 public slots:
     void ffmpeg_init();
@@ -53,7 +57,6 @@ private slots:
     void on_videoProfileButton_toggled(bool checked);
     void on_videoLoopsButton_toggled(bool checked);
     void on_videoLoopsEdit_valueChanged(int arg1);
-
     void on_startNumberButton_clicked(bool checked);
 
 private:
@@ -61,7 +64,7 @@ private:
      * @brief aspectRatio Computes the aspect ratio of the video
      */
     void aspectRatio();
-    void updateOutputExtension();
+    void updateOutputExtension(QString outputPath);
     void selectDefaultVideoCodec();
     void selectDefaultAudioCodec();
     void updateVideoOptions();
@@ -77,6 +80,8 @@ private:
 
     bool _freezeUI;
     bool _loadingPreset;
+
+    int _index;
 };
 
 #endif // OUTPUTWIDGET_H

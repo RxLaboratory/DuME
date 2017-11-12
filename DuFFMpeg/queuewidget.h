@@ -3,6 +3,9 @@
 
 #include "ui_queuewidget.h"
 
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+
 #include "inputwidget.h"
 #include "outputwidget.h"
 
@@ -13,19 +16,23 @@ class QueueWidget : public QWidget, private Ui::QueueWidget
 public:
     explicit QueueWidget(FFmpeg *ff, QWidget *parent = 0);
     FFMediaInfo *getInputMedia();
-    FFMediaInfo *getOutputMedia();
-    void saveSettings();
+    QList<FFMediaInfo *> getOutputMedia();
 
 public slots:
-    void ffmpeg_init();
     void presetsPathChanged(QString path);
 
+private slots:
+    void on_outputTab_tabCloseRequested(int index);
+    void on_outputTab_tabBarClicked(int index);
+
 private:
-    InputWidget *inputWidget;
-    OutputWidget *outputWidget;
     FFmpeg *ffmpeg;
     QSettings _settings;
 
+    QList<OutputWidget*> outputWidgets;
+    QList<InputWidget*> inputWidgets;
+
+    void addOutput();
 
 };
 

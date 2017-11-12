@@ -266,7 +266,7 @@ void MainWindow::on_actionGo_triggered()
 {
     //generate input and output
     FFMediaInfo *input = queueWidget->getInputMedia();
-    FFMediaInfo *output = queueWidget->getOutputMedia();
+    QList<FFMediaInfo *> output = queueWidget->getOutputMedia();
 
     //Launch!
     debugLog("=== Beginning encoding ===");
@@ -353,8 +353,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings->setValue("queuesize",consoleSplitter->sizes()[1]);
     settings->endGroup();
     settings->sync();
-
-    queueWidget->saveSettings();
 
     event->accept();
 }
