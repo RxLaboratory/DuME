@@ -555,6 +555,13 @@ void FFmpeg::encodeNextItem()
                     }
                     arguments << "-crf" << QString::number(quality);
                 }
+
+                //start number (sequences)
+                if (muxer == "image2")
+                {
+                    int startNumber = output->startNumber();
+                    arguments << "-start_number" << QString::number(startNumber);
+                }
             }
         }
         else

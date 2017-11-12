@@ -107,6 +107,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setVideoProfile(videoProfileBox->currentData().toInt());
             }
+            if (startNumberButton->isChecked())
+            {
+                _mediaInfo->setStartNumber(startNumberEdit->value());
+            }
         }
     }
 
@@ -456,7 +460,6 @@ void OutputWidget::on_startNumberButton_clicked(bool checked)
     }
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
-
 
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
@@ -874,6 +877,8 @@ void OutputWidget::updateVideoOptions()
     if (videoLoopsButton->isHidden()) videoLoopsButton->setChecked(false);
     if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
+    if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
+    if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
 
 }
 

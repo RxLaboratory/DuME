@@ -29,6 +29,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _videoQuality = -1;
     _loop = -1;
     _videoProfile = -1;
+    _startNumber = 0;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -407,6 +408,16 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+int FFMediaInfo::startNumber() const
+{
+    return _startNumber;
+}
+
+void FFMediaInfo::setStartNumber(int startNumber)
+{
+    _startNumber = startNumber;
 }
 
 int FFMediaInfo::videoQuality() const

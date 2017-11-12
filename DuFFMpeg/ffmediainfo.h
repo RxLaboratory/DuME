@@ -54,6 +54,7 @@ public:
     void addFFmpegOption(QStringList option);
     void removeFFmpegOpstion(QString optionName);
     void clearFFmpegOptions();
+    void setStartNumber(int startNumber);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -76,6 +77,7 @@ public:
     int videoQuality() const;
     int videoProfile() const;
     int loop() const;
+    int startNumber() const;
 
     //utils
     QString exportToJson();
@@ -107,6 +109,7 @@ private:
     int _videoQuality;
     int _videoProfile;
     int _loop;
+    int _startNumber;
 
 };
 
