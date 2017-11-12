@@ -12,6 +12,7 @@
         <file alias="hsplitter_light">resources/icons/doublearrows-light.png</file>
         <file alias="microkeyboard">resources/icons/microkeyboard-dark.png</file>
         <file alias="microkeyboard_light">resources/icons/microkeyboard-light.png</file>
+        <file alias="close-thin">resources/icons/icones-57.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
@@ -39,6 +40,7 @@
         <file alias="MOV - HAP - Standard">resources/presets/MOV - HAP - Standard.dffp</file>
         <file alias="PNG">resources/presets/PNG.dffp</file>
         <file alias="TGA">resources/presets/TGA.dffp</file>
+        <file alias="WAV">resources/presets/WAV.dffp</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>

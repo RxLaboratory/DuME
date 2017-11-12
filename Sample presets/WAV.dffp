@@ -1,0 +1,23 @@
+{
+    "duffmpeg": {
+        "audio": {
+            "bitrate": 0,
+            "codecName": "pcm_s16le",
+            "codecPrettyName": "PCM signed 16-bit little-endian\r",
+            "sampling": 0
+        },
+        "hasAudio": true,
+        "hasVideo": false,
+        "muxer": {
+            "extensions": [
+                "wav"
+            ],
+            "isSequence": false,
+            "name": "wav",
+            "prettyName": "WAV / WAVE (Waveform Audio)"
+        },
+        "options": [
+        ],
+        "version": "0.0.2-Alpha2"
+    }
+}
