@@ -8,6 +8,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFileInfo>
+#include <QDir>
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
@@ -55,6 +57,7 @@ public:
     void removeFFmpegOpstion(QString optionName);
     void clearFFmpegOptions();
     void setStartNumber(int startNumber);
+    void setFrames(const QStringList &frames);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -78,10 +81,12 @@ public:
     int videoProfile() const;
     int loop() const;
     int startNumber() const;
+    QStringList frames() const;
 
     //utils
     QString exportToJson();
     void exportToJson(QFile jsonFile);
+
 
 signals:
 
@@ -105,11 +110,14 @@ private:
     int _audioBitrate;
     QString _ffmpegOutput;
     QString _fileName;
+    QStringList _frames;
     QList<QStringList> _ffmpegOptions;
     int _videoQuality;
     int _videoProfile;
     int _loop;
     int _startNumber;
+
+    void loadSequence();
 
 };
 

@@ -35,9 +35,10 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
 
     //regexes to get infos
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
-    QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,2}.?\\d{0,2}) fps");
+    QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,3}(?:\\.\\d{0,3})?) fps");
+    QRegularExpression reSequenceStream("Stream #.+Video: .+, (\\d+)x(\\d+)");
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
-    QRegularExpression reDuration("  Duration: (\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), ");
+    QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), )?(?:(N\\/A), )?");
 
 
     bool input = false;
@@ -60,12 +61,20 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
         if (match.hasMatch())
         {
             qDebug() << info;
-            //set duration
-            double h = match.captured(1).toDouble();
-            double m = match.captured(2).toDouble();
-            double s = match.captured(3).toDouble();
-            _duration = h*60*60+m*60+s;
-            qDebug() << "Duration" << _duration;
+            if (match.captured(4) != "N/A")
+            {
+                //set duration
+                double h = match.captured(1).toDouble();
+                double m = match.captured(2).toDouble();
+                double s = match.captured(3).toDouble();
+                _duration = h*60*60+m*60+s;
+                qDebug() << "Duration" << _duration;
+            }
+            else
+            {
+                _imageSequence = true;
+                _videoFramerate = 24;
+            }
         }
 
         //test video stream
@@ -77,6 +86,20 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
             _videoWidth = match.captured(1).toInt();
             _videoHeight = match.captured(2).toInt();
             _videoFramerate = match.captured(3).toDouble();
+            if (_videoFramerate == 0) _videoFramerate = 24;
+            _video = true;
+            continue;
+        }
+
+        //test image sequence
+        match = reSequenceStream.match(info);
+        if (match.hasMatch())
+        {
+            qDebug() << info;
+            //set size
+            _videoWidth = match.captured(1).toInt();
+            _videoHeight = match.captured(2).toInt();
+            _videoFramerate = 24;
             _video = true;
             continue;
         }
@@ -92,6 +115,8 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
             continue;
         }
     }
+
+    if (_imageSequence) loadSequence();
 }
 
 void FFMediaInfo::setVideoWidth(int width)
@@ -409,6 +434,133 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
     {
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
+    }
+}
+
+QStringList FFMediaInfo::frames() const
+{
+    return _frames;
+}
+
+void FFMediaInfo::setFrames(const QStringList &frames)
+{
+    _frames = frames;
+}
+
+void FFMediaInfo::loadSequence()
+{
+    _frames.clear();
+    _startNumber = 0;
+
+    if (_fileName == "") return;
+
+    //base file info
+    QFileInfo baseFileInfo(_fileName);
+    QString extension = baseFileInfo.suffix();
+    QString baseName = baseFileInfo.completeBaseName();
+    QString dirPath = baseFileInfo.path();
+
+
+    //find digits in the name
+    QRegularExpression reDigits("(\\d+)");
+    QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
+
+    //if we didn't find any digit in the name, nothing to do
+    if (!reDigitsMatch.hasNext()) return;
+
+    //get all files of same type in folder
+    QDir containingDir(dirPath);
+    QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
+
+    //find where is the base file
+    int baseIndex = 0;
+    for (int i = 0 ; i < files.count() ; i++)
+    {
+        QFileInfo file = files[i];
+        if (file.completeBaseName() == baseName)
+        {
+            baseIndex = i;
+            break;
+        }
+    }
+
+    //check for each block of digits the one where we have a next and previous file
+    while(reDigitsMatch.hasNext())
+    {
+        QRegularExpressionMatch match = reDigitsMatch.next();
+        QString digits = match.captured(0);
+        int num = digits.toInt();
+        bool ok = false;
+        //test next file
+        if (baseIndex < files.count()-1)
+        {
+            QString nextName = files[baseIndex+1].completeBaseName();
+            //check if num+1 is at the same place
+            int nextNum = num+1;
+            QString nextDigits = QString::number(nextNum);
+            while(nextDigits.count() < digits.count())
+            {
+                nextDigits = "0" + nextDigits;
+            }
+            if (nextName.indexOf(nextDigits) == match.capturedStart(0)) ok = true;
+        }
+        else
+        {
+            ok = true;
+        }
+
+        //test previous file
+        if (ok)
+        {
+            ok = false;
+            if (baseIndex > 0)
+            {
+                QString prevName = files[baseIndex-1].completeBaseName();
+                //check if num-1 is at the same place
+                int prevNum = num-1;
+                QString prevDigits = QString::number(prevNum);
+                while(prevDigits.count() < digits.count())
+                {
+                    prevDigits = "0" + prevDigits;
+                }
+                if (prevName.indexOf(prevDigits) == match.capturedStart(0)) ok = true;
+            }
+            else
+            {
+                ok = true;
+            }
+        }
+
+        //if next and previous file are ok, we found the digits block
+        if (ok)
+        {
+            //list all files in the sequence matching the pattern, and compute size
+            QString left = baseName.left(match.capturedStart(0));
+            QString right = baseName.right(baseName.count() - match.capturedEnd(0));
+            QString pattern = left + "(\\d+)" + right;
+            QRegularExpression re(pattern);
+            _startNumber = 999999999;
+            foreach(QFileInfo f,files)
+            {
+                QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
+                if (reMatch.hasMatch())
+                {
+                    //get start frame
+                    int currentNumber = reMatch.captured(1).toInt();
+                    if (currentNumber < _startNumber) _startNumber = currentNumber;
+                    _frames << f.filePath();
+                    _size += f.size();
+                }
+            }
+            if (_startNumber == 999999999) _startNumber = 0;
+            //update filename with ffmpeg convention
+            QString digitsBlock = "";
+            while(digitsBlock.count() < digits.count())
+            {
+                digitsBlock += "#";
+            }
+            _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
+        }
     }
 }
 

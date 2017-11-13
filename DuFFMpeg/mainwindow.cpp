@@ -12,10 +12,6 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
 
     // === SETTINGS ===
     debugLog("Init - Settings");
-    QCoreApplication::setOrganizationName("Duduf");
-    QCoreApplication::setOrganizationDomain("duduf.com");
-    QCoreApplication::setApplicationName("DuFFmpeg");
-    QCoreApplication::setApplicationVersion(APPVERSION);
     settings = new QSettings(this);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
     //create user presets folder if it does not exist yet
@@ -159,7 +155,10 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
 
             //adjust progress
             currentEncodingNameLabel->setText(inputFile.fileName());
-            progressBar->setMaximum(input->duration() * input->videoFramerate());
+            float duration = 0.0;
+            if (input->duration() > 0) progressBar->setMaximum(input->duration() * input->videoFramerate());
+            else if (input->isImageSequence()) progressBar->setMaximum(input->frames().count());
+
             break;
         }
     }

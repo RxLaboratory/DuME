@@ -428,6 +428,7 @@ void FFmpeg::encodeNextItem()
     //add inputs
     foreach(FFMediaInfo *input,_currentItem->getInputMedias())
     {
+        QString inputFileName = input->fileName();
         //add custom options
         foreach(QStringList option,input->ffmpegOptions())
         {
@@ -437,8 +438,15 @@ void FFmpeg::encodeNextItem()
                 if (option[1] != "") arguments << option[1];
             }
         }
+        //add sequence options
+        if (input->isImageSequence())
+        {
+            arguments << "-framerate" << QString::number(input->videoFramerate());
+            arguments << "-start_number" << QString::number(input->startNumber());
+            inputFileName = convertSequenceName(inputFileName);
+        }
         //add input file
-        arguments << "-i" << QDir::toNativeSeparators(input->fileName());
+        arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }
     //add outputs
     foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
@@ -610,18 +618,7 @@ void FFmpeg::encodeNextItem()
         {
             if (output->muxer()->isSequence())
             {
-                //detects all {###}
-                QRegularExpression regExDigits("{(#+)}");
-                QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(outputPath);
-                while (regExDigitsMatch.hasNext())
-                {
-                     QRegularExpressionMatch match = regExDigitsMatch.next();
-                     //count the ###
-                     QString digits = match.captured(1);
-                     int numDigits = digits.count();
-                     //replace
-                     outputPath.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
-                }
+                outputPath = convertSequenceName(outputPath);
             }
         }
 
@@ -938,6 +935,23 @@ void FFmpeg::readyRead(QString output)
         emit progress();
     }
 
+}
+
+QString FFmpeg::convertSequenceName(QString name)
+{
+    //detects all {###}
+    QRegularExpression regExDigits("{(#+)}");
+    QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(name);
+    while (regExDigitsMatch.hasNext())
+    {
+         QRegularExpressionMatch match = regExDigitsMatch.next();
+         //count the ###
+         QString digits = match.captured(1);
+         int numDigits = digits.count();
+         //replace
+         name.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
+    }
+    return name;
 }
 
 FFMediaInfo *FFmpeg::loadJson(QString json)

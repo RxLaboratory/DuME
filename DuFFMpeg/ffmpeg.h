@@ -342,7 +342,13 @@ private:
      * @param The output from FFmpeg
      */
     void readyRead(QString output);
-    //bool codecSorter(FFCodec *c1, FFCodec *c2);
+    //=== Misc. ===
+    /**
+     * @brief convertSequenceName Converts a filename with {####} to ffmpeg %4d
+     * @param name
+     * @return
+     */
+    QString convertSequenceName(QString name);
 };
 
 #endif // FFMPEG_H
