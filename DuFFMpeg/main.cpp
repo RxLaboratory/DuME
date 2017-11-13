@@ -20,7 +20,10 @@ int main(int argc, char *argv[])
     splash.show();
 
     //load settings
-    splash.showMessage("Loading settings...");
+    QString message = "DuFFmpeg v";
+    message += APPVERSION;
+    message += " | ";
+    splash.showMessage(message + "Loading settings...");
     QCoreApplication::setOrganizationName("Duduf");
     QCoreApplication::setOrganizationDomain("duduf.com");
     QCoreApplication::setApplicationName("DuFFmpeg");
@@ -28,14 +31,14 @@ int main(int argc, char *argv[])
     QSettings settings;
 
     //load FFmpeg
-    splash.showMessage("Initializing FFmpeg...");
+    splash.showMessage(message + "Initializing FFmpeg...");
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
     FFmpeg *ffmpeg = new FFmpeg(settings.value("ffmpeg/path","ffmpeg.exe").toString());
 
 
     //build UI and show
-    splash.showMessage("Building UI");
+    splash.showMessage(message + "Building UI");
     MainWindow *w = new MainWindow(ffmpeg);
     FrameLess f(w);
     w->show();
