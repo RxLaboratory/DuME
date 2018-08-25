@@ -89,9 +89,13 @@ public:
     QList<FFPixFormat *> pixFormats() const;
     void addPixFormat(FFPixFormat *pixFormat);
 
+    FFPixFormat *defaultPixFormat() const;
+    void setDefaultPixFormat(FFPixFormat *defaultPixFormat);
+
 private:
     Abilities _abilities;
     QList<FFPixFormat *> _pixFormats;
+    FFPixFormat *_defaultPixFormat;
 
 protected:
 

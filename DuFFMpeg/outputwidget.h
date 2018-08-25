@@ -26,6 +26,7 @@ public slots:
     void ffmpeg_init();
     void ffmpeg_loadCodecs();
     void ffmpeg_loadMuxers();
+    void ffmpeg_loadPixFmts(bool init = false);
     void newInputMedia(FFMediaInfo *input);
     void loadPresets(QString userPath = "");
 
@@ -58,6 +59,11 @@ private slots:
     void on_videoLoopsButton_toggled(bool checked);
     void on_videoLoopsEdit_valueChanged(int arg1);
     void on_startNumberButton_clicked(bool checked);
+    void on_pixFmtButton_toggled(bool checked);
+
+    void on_audioCodecsBox_currentIndexChanged(int index);
+
+    void on_pixFmtFilterBox_currentIndexChanged(int index);
 
 private:
     /**
@@ -67,6 +73,7 @@ private:
     void updateOutputExtension(QString outputPath);
     void selectDefaultVideoCodec();
     void selectDefaultAudioCodec();
+    void selectDefaultPixFmt();
     void updateVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();
@@ -77,6 +84,8 @@ private:
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
     FFMuxer *_currentMuxer;
+    FFCodec *_currentVideoCodec;
+    FFCodec *_currentAudioCodec;
 
     bool _freezeUI;
     bool _loadingPreset;

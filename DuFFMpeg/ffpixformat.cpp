@@ -6,9 +6,9 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    int bpc = _bitsPerPixel;
-    if (_numComponents > 0) bpc = _bitsPerPixel / _numComponents;
-    this->setPrettyName(this->prettyName() + "(" + QString::number(_numComponents) + "c. @" + QString::number(bpc) + "bpc)");
+    _bitsPerComponent = _bitsPerPixel;
+    if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
+    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
 }
 
 FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, int bitsPerPixel, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
@@ -17,9 +17,9 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    int bpc = _bitsPerPixel;
-    if (_numComponents > 0) bpc = _bitsPerPixel / _numComponents;
-    this->setPrettyName(this->prettyName() + "(" + QString::number(_numComponents) + "c. @" + QString::number(bpc) + "bpc)");
+    _bitsPerComponent = _bitsPerPixel;
+    if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
+    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
 }
 
 void FFPixFormat::setAbilities(Abilities &abilities)
@@ -70,4 +70,9 @@ int FFPixFormat::bitsPerPixel() const
 int FFPixFormat::numComponents() const
 {
     return _numComponents;
+}
+
+int FFPixFormat::bitsPerComponent() const
+{
+    return _bitsPerComponent;
 }

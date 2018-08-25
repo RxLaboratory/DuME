@@ -8,11 +8,13 @@
 FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities =  Abilities(0);
+    _defaultPixFormat = nullptr;
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities = abilities;
+    _defaultPixFormat = nullptr;
 }
 
 bool FFCodec::isVideo() const
@@ -98,4 +100,14 @@ QList<FFPixFormat *> FFCodec::pixFormats() const
 void FFCodec::addPixFormat(FFPixFormat *pixFormat)
 {
     _pixFormats << pixFormat;
+}
+
+FFPixFormat *FFCodec::defaultPixFormat() const
+{
+    return _defaultPixFormat;
+}
+
+void FFCodec::setDefaultPixFormat(FFPixFormat *defaultPixFormat)
+{
+    _defaultPixFormat = defaultPixFormat;
 }

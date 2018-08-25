@@ -17,6 +17,8 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     _index = id;
     _mediaInfo = new FFMediaInfo("",this);
     _currentMuxer = nullptr;
+    _currentAudioCodec = nullptr;
+    _currentVideoCodec = nullptr;
 
     //populate sampling box
     //TODO Get from ffmpeg
@@ -414,6 +416,14 @@ void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
 {
     updateVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+    _currentVideoCodec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
+    pixFmtFilterBox->setCurrentIndex(0);
+    ffmpeg_loadPixFmts(true);
+}
+
+void OutputWidget::on_audioCodecsBox_currentIndexChanged(int index)
+{
+    _currentAudioCodec = _ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString());
 }
 
 void OutputWidget::on_videoProfileButton_toggled(bool checked)
@@ -470,6 +480,11 @@ void OutputWidget::on_startNumberButton_clicked(bool checked)
 void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadCodecs();
+}
+
+void OutputWidget::on_pixFmtFilterBox_currentIndexChanged(int index)
+{
+    ffmpeg_loadPixFmts();
 }
 
 void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
@@ -552,6 +567,22 @@ void OutputWidget::on_videoCodecButton_toggled(bool checked)
         ffmpeg_loadCodecs();
         videoCodecsFilterBox->setItemText(0,"Default");
         videoCodecWidget->setEnabled(false);
+    }
+}
+
+void OutputWidget::on_pixFmtButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        pixFmtFilterBox->setItemText(0,"All bit depths");
+        pixFmtWidget->setEnabled(true);
+    }
+    else
+    {
+        pixFmtFilterBox->setCurrentIndex(0);
+        ffmpeg_loadPixFmts();
+        pixFmtFilterBox->setItemText(0,"Default");
+        pixFmtWidget->setEnabled(false);
     }
 }
 
@@ -781,6 +812,26 @@ void OutputWidget::selectDefaultAudioCodec()
     }
 }
 
+void OutputWidget::selectDefaultPixFmt()
+{
+    if (_currentVideoCodec == nullptr) return;
+
+    FFPixFormat *pixFmt = _currentVideoCodec->defaultPixFormat();
+
+    //Select Default Pix Format
+
+    if (pixFmt != nullptr)
+    {
+        for (int i = 0; i < pixFmtBox->count() ; i++)
+        {
+            if (pixFmtBox->itemData(i).toString() == pixFmt->name())
+            {
+                pixFmtBox->setCurrentIndex(i);
+            }
+        }
+    }
+}
+
 void OutputWidget::updateVideoOptions()
 {
     //hide all
@@ -925,7 +976,11 @@ void OutputWidget::ffmpeg_loadCodecs()
     videoCodecsBox->clear();
     audioCodecsBox->clear();
     QList<FFCodec *> encoders = _ffmpeg->getEncoders();
-    if (encoders.count() == 0) return;
+    if (encoders.count() == 0)
+    {
+        _freezeUI = false;
+        return;
+    }
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
     int audioFilter = audioCodecsFilterBox->currentIndex();
@@ -983,6 +1038,54 @@ void OutputWidget::ffmpeg_loadMuxers()
     }
     _freezeUI = false;
     on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
+}
+
+void OutputWidget::ffmpeg_loadPixFmts(bool init)
+{
+    _freezeUI = true;
+    //get pixFmts
+    pixFmtBox->clear();
+    if (_currentVideoCodec == nullptr)
+    {
+        _freezeUI = false;
+        return;
+    }
+    QList<FFPixFormat *> pixFmts = _currentVideoCodec->pixFormats();
+    if (pixFmts.count() == 0)
+    {
+        _freezeUI = false;
+        return;
+    }
+
+    QStringList filters = QStringList();
+
+    foreach (FFPixFormat *pixFmt, pixFmts)
+    {
+        //add pix fmt in list
+        if (pixFmt->prettyName().indexOf(pixFmtFilterBox->currentText()) > 0 || pixFmtFilterBox->currentIndex() == 0)
+        {
+            pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
+        }
+        QString filter = QString::number(pixFmt->bitsPerPixel()) + "bits (" + QString::number(pixFmt->numComponents()) + " channels @" + QString::number(pixFmt->bitsPerComponent()) + "bpc)" ;
+        if (!filters.contains(filter)) filters << filter;
+    }
+
+    if (init)
+    {
+        filters.sort();
+        //remove old
+        pixFmtFilterBox->clear();
+        pixFmtFilterBox->addItem("All bit depths",QVariant(0));
+        foreach(QString filter,filters)
+        {
+            pixFmtFilterBox->addItem(filter);
+        }
+    }
+
+
+
+    selectDefaultPixFmt();
+    _freezeUI = false;
 }
 
 void OutputWidget::newInputMedia(FFMediaInfo *input)

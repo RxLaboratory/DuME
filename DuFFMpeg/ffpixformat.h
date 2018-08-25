@@ -49,12 +49,13 @@ public:
 
     int bitsPerPixel() const;
     int numComponents() const;
+    int bitsPerComponent() const;
 
 private:
     Abilities _abilities;
     int _numComponents;
     int _bitsPerPixel;
-
+    int _bitsPerComponent;
 
 };
 
