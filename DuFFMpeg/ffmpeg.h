@@ -12,6 +12,7 @@
 #include "ffmediainfo.h"
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
+#include "ffpixformat.h"
 
 class FFmpeg : public FFObject
 {
@@ -50,6 +51,11 @@ public:
      */
     QList<FFCodec *> getAudioEncoders();
     /**
+     * @brief getInputPixFormats Gets the list of input pixel formats supported by the current version of FFmpeg
+     * @return The pixel formats list
+     */
+    QList<FFPixFormat *> getPixFormats();
+    /**
      * @brief getCodec Gets a video encoder using its name
      * @param name The name of the codec
      * @return A pointer to the codec
@@ -61,6 +67,12 @@ public:
      * @return A pointer to the codec
      */
     FFCodec *getAudioEncoder(QString name);
+    /**
+     * @brief getPixFormat Gets a pixel format using its name
+     * @param name The name of the pixel format
+     * @return A pointer to the pixel format
+     */
+    FFPixFormat *getPixFormat(QString name);
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -282,6 +294,7 @@ private:
     QList<FFCodec *> _videoDecoders;
     QList<FFCodec *> _audioDecoders;
     QList<FFMuxer *> _muxers;
+    QList<FFPixFormat *> _pixFormats;
     /**
      * @brief help The FFmpeg help returned by the -h command
      */
@@ -337,6 +350,11 @@ private:
      * @param output The output of the FFmpeg process with the codecs list
      */
     void gotCodecs(QString output);
+    /**
+     * @brief ffmpeg_gotPixFormats Parses the pix formats list
+     * @param output The output of the FFmpeg process with the codecs list
+     */
+    void gotPixFormats(QString output);
     /**
      * @brief readyRead Called when FFmpeg outputs somehting on stdError or stdOutput
      * @param The output from FFmpeg

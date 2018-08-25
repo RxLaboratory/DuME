@@ -73,6 +73,14 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {   
+    //get pixFormats
+    _ffmpeg->setArguments(QStringList("-pix_fmts"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotPixFormats(_ffmpegOutput);
+    }
+
     //get codecs
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
@@ -133,6 +141,8 @@ FFCodec *FFmpeg::getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
     //return
     if (ability == FFCodec::Video) return videoCodec;
     if (ability == FFCodec::Audio) return audioCodec;
+
+    return nullptr;
 }
 
 FFCodec *FFmpeg::getMuxerDefaultCodec(QString name, FFCodec::Ability ability)
@@ -172,6 +182,15 @@ FFCodec *FFmpeg::getAudioEncoder(QString name)
     foreach(FFCodec *codec,_audioEncoders)
     {
         if (codec->name() == name) return codec;
+    }
+    return nullptr;
+}
+
+FFPixFormat *FFmpeg::getPixFormat(QString name)
+{
+    foreach(FFPixFormat *pf,_pixFormats)
+    {
+        if (pf->name() == name) return pf;
     }
     return nullptr;
 }
@@ -642,6 +661,11 @@ void FFmpeg::setStatus(Status st)
     emit statusChanged(_status);
 }
 
+QList<FFPixFormat *> FFmpeg::getPixFormats()
+{
+    return _pixFormats;
+}
+
 bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
 {
     if (m1->extensions().count() == 0 && m2->extensions().count() == 0) return m1->prettyName().toLower() < m2->prettyName().toLower();
@@ -676,7 +700,7 @@ void FFmpeg::gotMuxers(QString output)
             args << "muxer=" + m->name();
             _ffmpeg->setArguments(args);
             _ffmpeg->start(QIODevice::ReadOnly);
-            if (_ffmpeg->waitForFinished(10000))
+            if (_ffmpeg->waitForFinished(3000))
             {
                 QStringList lines = _ffmpegOutput.split("\n");
 
@@ -825,7 +849,7 @@ void FFmpeg::gotMuxers(QString output)
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
 }
 
-bool codecSorter(FFCodec *c1,FFCodec *c2)
+bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)
 {
     return c1->prettyName().toLower() < c2->prettyName().toLower();
 }
@@ -870,6 +894,34 @@ void FFmpeg::gotCodecs(QString output)
             co->setLossy(match.captured(5) == "L");
             co->setLossless(match.captured(6) == "S");
 
+            //get pixel formats
+            //get default codecs
+            QStringList args("-h");
+            if (co->isEncoder()) args << "encoder=" + co->name();
+            else args << "decoder=" + co->name();
+            _ffmpeg->setArguments(args);
+            _ffmpeg->start(QIODevice::ReadOnly);
+            if (_ffmpeg->waitForFinished(3000))
+            {
+                QStringList lines = _ffmpegOutput.split("\n");
+
+                QRegularExpression rePixFmt("Supported pixel formats: (.+)");
+
+                foreach(QString line,lines)
+                {
+                    QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
+                    if (pixFmtMatch.hasMatch())
+                    {
+                        QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
+                        foreach(QString pixFmt, pixFmts)
+                        {
+                            co->addPixFormat(getPixFormat(pixFmt));
+                        }
+                        break;
+                    }
+                }
+            }
+
             if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
             else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
             else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
@@ -877,8 +929,43 @@ void FFmpeg::gotCodecs(QString output)
         }
     }
 
-    std::sort(_videoEncoders.begin(),_videoEncoders.end(),codecSorter);
-    std::sort(_audioEncoders.begin(),_audioEncoders.end(),codecSorter);
+    std::sort(_videoEncoders.begin(),_videoEncoders.end(),ffSorter);
+    std::sort(_audioEncoders.begin(),_audioEncoders.end(),ffSorter);
+}
+
+void FFmpeg::gotPixFormats(QString output)
+{
+    //delete all
+    qDeleteAll(_pixFormats);
+    _pixFormats.clear();
+
+    //get pixfmts
+    QStringList pixFmts = output.split("\n");
+    QRegularExpression re("([I.])([O.])([H.])([P.])([B.]) (\\w+) +(\\d+) +(\\d+)");
+    for (int i = 0 ; i < pixFmts.count() ; i++)
+    {
+        QString pixFmt = pixFmts[i];
+
+        QRegularExpressionMatch match = re.match(pixFmt);
+        if (match.hasMatch())
+        {
+            QString name = match.captured(6);
+            QString numComponents = match.captured(7);
+            QString bpp = match.captured(8);
+            FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
+
+            pf->setInput(match.captured(1) == "I");
+            pf->setOutput(match.captured(2) == "O");
+            pf->setHardware(match.captured(3) == "H");
+            pf->setPaletted(match.captured(4) == "P");
+            pf->setBitstream(match.captured(5) == "B");
+
+            _pixFormats << pf;
+        }
+    }
+
+    std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
+
 }
 
 void FFmpeg::readyRead(QString output)

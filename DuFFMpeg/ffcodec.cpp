@@ -4,37 +4,15 @@
 #include <QtDebug>
 #endif
 
-FFCodec::FFCodec(QObject *parent)  : FFObject(parent)
+
+FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
-    _name = "";
-    _prettyName = "";
     _abilities =  Abilities(0);
 }
 
-
-FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFObject(parent)
+FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
-    _name = name;
-    _prettyName = prettyName;
-    _abilities =  Abilities(0);
-}
-
-
-FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFObject(parent)
-{
-    _name = name;
-    _prettyName = prettyName;
     _abilities = abilities;
-}
-
-const QString FFCodec::name()
-{
-    return _name;
-}
-
-const QString FFCodec::prettyName()
-{
-    return _prettyName;
 }
 
 bool FFCodec::isVideo() const
@@ -70,16 +48,6 @@ bool FFCodec::isLossless() const
 bool FFCodec::isIframe() const
 {
     return _abilities.testFlag(IFrame);
-}
-
-void FFCodec::setName(const QString &name)
-{
-    _name = name;
-}
-
-void FFCodec::setPrettyName(const QString &prettyName)
-{
-    _prettyName = prettyName;
 }
 
 void FFCodec::setDecoder(bool decoder)
@@ -120,4 +88,14 @@ void FFCodec::setIframe(bool iframe)
 void FFCodec::setAbilities(const Abilities &abilities)
 {
     _abilities = abilities;
+}
+
+QList<FFPixFormat *> FFCodec::pixFormats() const
+{
+    return _pixFormats;
+}
+
+void FFCodec::addPixFormat(FFPixFormat *pixFormat)
+{
+    _pixFormats << pixFormat;
 }

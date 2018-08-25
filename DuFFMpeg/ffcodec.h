@@ -1,11 +1,12 @@
 #ifndef FFMPEGCODEC_H
 #define FFMPEGCODEC_H
 
-#include "ffobject.h"
+#include "ffbaseobject.h"
+#include "ffpixformat.h"
 
 #include <QString>
 
-class FFCodec : public FFObject
+class FFCodec : public FFBaseObject
 {
     Q_OBJECT
 public:
@@ -24,11 +25,6 @@ public:
                  };
     Q_DECLARE_FLAGS(Abilities, Ability)
 
-    /**
-     * @brief FFmpegCodec Constructs a codec instance for FFmpeg
-     * @param name The internal name used by FFmpeg
-     */
-    FFCodec(QObject *parent = nullptr);
 
     /**
      * @brief FFmpegCodec Constructs a codec instance for FFmpeg
@@ -45,16 +41,6 @@ public:
      */
     FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent = nullptr);
 
-    /**
-     * @brief name Gets the internal name
-     * @return The internal name
-     */
-    const QString name();
-    /**
-     * @brief prettyName Gets the pretty name
-     * @return The pretty name
-     */
-    const QString prettyName();
     /**
      * @brief isVideo Is this a video codec
      * @return
@@ -91,8 +77,6 @@ public:
      */
     bool isIframe() const;
 
-    void setName(const QString &name);
-    void setPrettyName(const QString &prettyName);
     void setDecoder(bool decoder = true);
     void setEncoder(bool encoder = true);
     void setAudio(bool audio = true);
@@ -102,13 +86,12 @@ public:
     void setIframe(bool iframe = true);
     void setAbilities(const Abilities &abilities);
 
-
-
+    QList<FFPixFormat *> pixFormats() const;
+    void addPixFormat(FFPixFormat *pixFormat);
 
 private:
-    QString _name;
-    QString _prettyName;
     Abilities _abilities;
+    QList<FFPixFormat *> _pixFormats;
 
 protected:
 

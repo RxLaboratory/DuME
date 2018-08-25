@@ -1,11 +1,11 @@
 #ifndef FFMUXER_H
 #define FFMUXER_H
 
-#include "ffobject.h"
+#include "ffbaseobject.h"
 
 #include "ffcodec.h"
 
-class FFMuxer : public FFObject
+class FFMuxer : public FFBaseObject
 {
     Q_OBJECT
 public:
@@ -16,9 +16,7 @@ public:
     enum Type { AudioOnly, VideoOnly, AudioVideo };
     Q_ENUM(Type)
 
-    explicit FFMuxer(QObject *parent = nullptr);
-    explicit FFMuxer(QString name, QObject *parent = nullptr);
-    explicit FFMuxer(QString name, QString prettyName,QObject *parent = nullptr);
+    explicit FFMuxer(QString name, QString prettyName = "",QObject *parent = nullptr);
     explicit FFMuxer(QString name, QString prettyName,Type type, QObject *parent = nullptr);
 
     /**
@@ -34,12 +32,6 @@ public:
      */
     FFCodec * defaultAudioCodec() const;
     void setDefaultAudioCodec(FFCodec *defaultAudioCodec);
-
-    QString name() const;
-    void setName(const QString &name);
-
-    QString prettyName() const;
-    void setPrettyName(const QString &prettyName);
 
     bool isAudio();
     bool isVideo();
@@ -58,8 +50,6 @@ public slots:
 private:
     FFCodec *_defaultVideoCodec;
     FFCodec *_defaultAudioCodec;
-    QString _name;
-    QString _prettyName;
     Type _type;
     QStringList _extensions;
     bool _sequence;

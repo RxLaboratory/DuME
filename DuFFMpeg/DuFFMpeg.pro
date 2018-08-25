@@ -39,7 +39,9 @@ SOURCES += \
     rainboxui.cpp \
     frameless.cpp \
     ffmuxer.cpp \
-    ffobject.cpp
+    ffobject.cpp \
+    ffpixformat.cpp \
+    ffbaseobject.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -55,7 +57,9 @@ HEADERS += \
     rainboxui.h \
     frameless.h \
     ffmuxer.h \
-    ffobject.h
+    ffobject.h \
+    ffpixformat.h \
+    ffbaseobject.h
 
 FORMS += \
     mainwindow.ui \
