@@ -907,6 +907,7 @@ void FFmpeg::gotCodecs(QString output)
 
                 QRegularExpression rePixFmt("Supported pixel formats: (.+)");
 
+
                 foreach(QString line,lines)
                 {
                     QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
@@ -915,7 +916,11 @@ void FFmpeg::gotCodecs(QString output)
                         QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
                         foreach(QString pixFmt, pixFmts)
                         {
-                            co->addPixFormat(getPixFormat(pixFmt));
+                            pixFmt = pixFmt.trimmed();
+                            FFPixFormat *pf = getPixFormat(pixFmt);
+                            if (pf == nullptr) continue;
+                            co->addPixFormat(pf);
+                            if (co->defaultPixFormat() == nullptr) co->setDefaultPixFormat(pf);
                         }
                         break;
                     }
