@@ -589,6 +589,13 @@ void FFmpeg::encodeNextItem()
                     int startNumber = output->startNumber();
                     arguments << "-start_number" << QString::number(startNumber);
                 }
+
+                //pixel format
+                QString pixFmt = "";
+                if (output->pixFormat() != nullptr) pixFmt = output->pixFormat()->name();
+                //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
+                if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
+                if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
             }
         }
         else

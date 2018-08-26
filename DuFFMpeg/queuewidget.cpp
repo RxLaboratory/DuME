@@ -35,7 +35,6 @@ FFMediaInfo *QueueWidget::getInputMedia()
 
 QList<FFMediaInfo *> QueueWidget::getOutputMedia()
 {
-    //TODO build list
     QList<FFMediaInfo *> output;
     foreach(OutputWidget *ow,outputWidgets)
     {
