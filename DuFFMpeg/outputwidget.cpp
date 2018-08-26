@@ -114,6 +114,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setStartNumber(startNumberEdit->value());
             }
+            if (pixFmtButton->isChecked())
+            {
+                _mediaInfo->setPixFormat(_ffmpeg->getPixFormat(pixFmtBox->currentData().toString()));
+            }
         }
     }
 
@@ -187,20 +191,35 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
     //VIDEO
     if (_mediaInfo->hasVideo())
     {
-        FFCodec *codec = _mediaInfo->videoCodec();
-        if (codec != nullptr)
+        _currentVideoCodec = _mediaInfo->videoCodec();
+        if (_currentVideoCodec != nullptr)
         {
-            if (codec->name() == "copy") videoCopyButton->setChecked(true);
+            if (_currentVideoCodec->name() == "copy") videoCopyButton->setChecked(true);
             else
             {
                 videoTranscodeButton->setChecked(true);
                 videoCodecButton->setChecked(true);
                 for(int i = 0 ; i  < videoCodecsBox->count() ; i++)
                 {
-                    if (videoCodecsBox->itemData(i).toString() == codec->name())
+                    if (videoCodecsBox->itemData(i).toString() == _currentVideoCodec->name())
                     {
                         videoCodecsBox->setCurrentIndex(i);
                         break;
+                    }
+                }
+                //set pixFmt
+                FFPixFormat *pf = _mediaInfo->pixFormat();
+                if (pf != nullptr)
+                {
+                    pixFmtButton->setChecked(true);
+                    for(int i = 0 ; i  < pixFmtBox->count() ; i++)
+                    {
+                        qDebug() << pixFmtBox->itemData(i).toString();
+                        if (pixFmtBox->itemData(i).toString() == pf->name())
+                        {
+                            pixFmtBox->setCurrentIndex(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -237,6 +256,7 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
             videoProfileButton->setChecked(true);
             videoProfileBox->setCurrentIndex(profile);
         }
+
     }
     else
     {
@@ -247,17 +267,17 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
     //AUDIO
     if (_mediaInfo->hasAudio())
     {
-        FFCodec *codec = _mediaInfo->audioCodec();
-        if (codec != nullptr)
+        _currentAudioCodec = _mediaInfo->audioCodec();
+        if (_currentAudioCodec != nullptr)
         {
-            if (codec->name() == "copy") audioCopyButton->setChecked(true);
+            if (_currentAudioCodec->name() == "copy") audioCopyButton->setChecked(true);
             else
             {
                 audioTranscodeButton->setChecked(true);
                 audioCodecButton->setChecked(true);
                 for(int i = 0 ; i  < audioCodecsBox->count() ; i++)
                 {
-                    if (audioCodecsBox->itemData(i).toString() == codec->name())
+                    if (audioCodecsBox->itemData(i).toString() == _currentAudioCodec->name())
                     {
                         audioCodecsBox->setCurrentIndex(i);
                         break;

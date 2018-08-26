@@ -894,38 +894,44 @@ void FFmpeg::gotCodecs(QString output)
             co->setLossy(match.captured(5) == "L");
             co->setLossless(match.captured(6) == "S");
 
-            //get pixel formats
-            //get default codecs
-            QStringList args("-h");
-            if (co->isEncoder()) args << "encoder=" + co->name();
-            else args << "decoder=" + co->name();
-            _ffmpeg->setArguments(args);
-            _ffmpeg->start(QIODevice::ReadOnly);
-            if (_ffmpeg->waitForFinished(3000))
+            if (co->isVideo())
             {
-                QStringList lines = _ffmpegOutput.split("\n");
-
-                QRegularExpression rePixFmt("Supported pixel formats: (.+)");
-
-
-                foreach(QString line,lines)
+                //get pixel formats
+                QStringList args("-h");
+                if (co->isEncoder()) args << "encoder=" + co->name();
+                else args << "decoder=" + co->name();
+                _ffmpeg->setArguments(args);
+                _ffmpeg->start(QIODevice::ReadOnly);
+                if (_ffmpeg->waitForFinished(3000))
                 {
-                    QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
-                    if (pixFmtMatch.hasMatch())
+                    QStringList lines = _ffmpegOutput.split("\n");
+                    if (lines.count() > 0)
                     {
-                        QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
-                        foreach(QString pixFmt, pixFmts)
+                        QRegularExpression rePixFmt("Supported pixel formats: (.+)");
+
+                        foreach(QString line,lines)
                         {
-                            pixFmt = pixFmt.trimmed();
-                            FFPixFormat *pf = getPixFormat(pixFmt);
-                            if (pf == nullptr) continue;
-                            co->addPixFormat(pf);
-                            if (co->defaultPixFormat() == nullptr) co->setDefaultPixFormat(pf);
+                            QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
+                            if (pixFmtMatch.hasMatch())
+                            {
+                                QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
+                                QString defaultPF = pixFmts[0];
+                                pixFmts.sort();
+                                foreach(QString pixFmt, pixFmts)
+                                {
+                                    pixFmt = pixFmt.trimmed();
+                                    FFPixFormat *pf = getPixFormat(pixFmt);
+                                    if (pf == nullptr) continue;
+                                    co->addPixFormat(pf);
+                                    if (pixFmt == defaultPF) co->setDefaultPixFormat(pf);
+                                }
+                                break;
+                            }
                         }
-                        break;
                     }
                 }
             }
+
 
             if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
             else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;

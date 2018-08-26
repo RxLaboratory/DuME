@@ -18,6 +18,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _audioSamplingRate = 0;
     _size = 0;
     _videoCodec = nullptr;
+    _pixFormat = nullptr;
     _audioCodec = nullptr;
     _audioBitrate = 0;
     _videoBitrate = 0;
@@ -435,6 +436,16 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+FFPixFormat *FFMediaInfo::pixFormat()
+{
+    return _pixFormat;
+}
+
+void FFMediaInfo::setPixFormat(FFPixFormat *pixFormat)
+{
+    _pixFormat = pixFormat;
 }
 
 QStringList FFMediaInfo::frames() const

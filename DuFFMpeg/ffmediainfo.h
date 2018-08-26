@@ -58,6 +58,7 @@ public:
     void clearFFmpegOptions();
     void setStartNumber(int startNumber);
     void setFrames(const QStringList &frames);
+    void setPixFormat(FFPixFormat *pixFormat);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -69,6 +70,7 @@ public:
     QString fileName();
     FFCodec *videoCodec();
     FFCodec *audioCodec();
+    FFPixFormat *pixFormat();
     double audioBitrate(BitrateUnit unit = Bits);
     double videoBitrate(BitrateUnit unit = Bits);
     double size(SizeUnit unit = Bytes);
@@ -87,7 +89,6 @@ public:
     QString exportToJson();
     void exportToJson(QFile jsonFile);
 
-
 signals:
 
 public slots:
@@ -105,6 +106,7 @@ private:
     int _videoHeight;
     double _videoFramerate;
     int _videoBitrate;
+    FFPixFormat *_pixFormat;
     FFCodec *_audioCodec;
     int _audioSamplingRate;
     int _audioBitrate;
