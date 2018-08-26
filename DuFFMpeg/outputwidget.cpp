@@ -214,7 +214,6 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
                     pixFmtButton->setChecked(true);
                     for(int i = 0 ; i  < pixFmtBox->count() ; i++)
                     {
-                        qDebug() << pixFmtBox->itemData(i).toString();
                         if (pixFmtBox->itemData(i).toString() == pf->name())
                         {
                             pixFmtBox->setCurrentIndex(i);
