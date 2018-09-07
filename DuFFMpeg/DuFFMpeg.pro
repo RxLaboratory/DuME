@@ -71,3 +71,8 @@ FORMS += \
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    ico.rc
+
+RC_FILE = ico.rc
