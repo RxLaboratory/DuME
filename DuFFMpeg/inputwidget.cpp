@@ -12,6 +12,26 @@ InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
     ffmpeg = ff;
     _mediaInfo = new FFMediaInfo("",this);
 
+    //populate color transfer
+    trcBox->addItem("BT.709", QVariant("bt709"));
+    trcBox->addItem("Gamma", QVariant("gamma"));
+    trcBox->addItem("BT.470 M (Gamma 2.2)", QVariant("gamma22"));
+    trcBox->addItem("BT.470 BG (Gamma 2.8)", QVariant("gamma28"));
+    trcBox->addItem("SMPTE 170 M", QVariant("smpte170m"));
+    trcBox->addItem("SMPTE 240 M", QVariant("smpte240m"));
+    trcBox->addItem("Linear", QVariant("linear"));
+    trcBox->addItem("Log", QVariant("log"));
+    trcBox->addItem("Log square root", QVariant("log_sqrt"));
+    trcBox->addItem("IEC 61966-2-4", QVariant("iec61966_2_4"));
+    trcBox->addItem("BT.1361", QVariant("bt1361"));
+    trcBox->addItem("IEC 61966-2-1", QVariant("iec61966_2_1"));
+    trcBox->addItem("bt2020_10bit", QVariant("bt2020_10bit"));
+    trcBox->addItem("bt2020_12bit", QVariant("BT.2020 - 12 bit"));
+    trcBox->addItem("smpte2084", QVariant("SMPTE ST 2084"));
+    trcBox->addItem("smpte428_1", QVariant("SMPTE ST 428-1"));
+
+    trcBox->setCurrentIndex(0);
+
     updateOptions();
 }
 
@@ -148,6 +168,20 @@ void InputWidget::on_frameRateButton_toggled(bool checked)
     frameRateEdit->setEnabled(checked);
 }
 
+void InputWidget::on_trcButton_toggled(bool checked)
+{
+    trcBox->setEnabled(checked);
+    if (checked)
+    {
+        _mediaInfo->setTrc(trcBox->currentData().toString());
+    }
+    else
+    {
+        _mediaInfo->setTrc("");
+    }
+    emit newMediaLoaded(_mediaInfo);
+}
+
 void InputWidget::on_frameRateBox_activated(const QString &arg1)
 {
     if (arg1 != "Custom")
@@ -176,6 +210,15 @@ void InputWidget::on_frameRateEdit_valueChanged(double arg1)
 
 }
 
+void InputWidget::on_trcBox_currentIndexChanged(int index)
+{
+    if (trcButton->isChecked())
+    {
+        _mediaInfo->setTrc(trcBox->itemData(index).toString());
+    }
+    emit newMediaLoaded(_mediaInfo);
+}
+
 void InputWidget::updateOptions()
 {
     //frame rate
@@ -193,3 +236,6 @@ void InputWidget::updateOptions()
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
+
+
+

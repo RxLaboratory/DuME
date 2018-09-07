@@ -22,10 +22,12 @@ signals:
 private slots:
     void on_inputBrowseButton_clicked();
     void on_addParamButton_clicked();
-
     void on_frameRateButton_toggled(bool checked);
     void on_frameRateBox_activated(const QString &arg1);
     void on_frameRateEdit_valueChanged(double arg1);
+    void on_trcButton_toggled(bool checked);
+    void on_trcBox_currentIndexChanged(int index);
+
 private:
     FFmpeg *ffmpeg;
     FFMediaInfo *_mediaInfo;

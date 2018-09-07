@@ -464,6 +464,11 @@ void FFmpeg::encodeNextItem()
             arguments << "-start_number" << QString::number(input->startNumber());
             inputFileName = convertSequenceName(inputFileName);
         }
+        //add crt
+        if (input->trc() != "")
+        {
+            arguments << "-apply_trc" << input->trc();
+        }
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }

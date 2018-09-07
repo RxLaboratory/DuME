@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>451</width>
+    <width>404</width>
     <height>443</height>
    </rect>
   </property>
@@ -75,8 +75,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>451</width>
-        <height>417</height>
+        <width>404</width>
+        <height>415</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -216,7 +216,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QPushButton" name="addParamButton">
            <property name="minimumSize">
             <size>
@@ -251,6 +251,44 @@
            </property>
            <property name="text">
             <string>Frame rate</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="trcButton">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Color transfer (Gamma)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="trcBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="currentIndex">
+            <number>-1</number>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
            </property>
           </widget>
          </item>

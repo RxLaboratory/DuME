@@ -32,6 +32,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _videoProfile = -1;
     _startNumber = 0;
     _premultipliedAlpha = false;
+    _trc = "";
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -444,6 +445,16 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+QString FFMediaInfo::trc() const
+{
+    return _trc;
+}
+
+void FFMediaInfo::setTrc(const QString &crt)
+{
+    _trc = crt;
 }
 
 bool FFMediaInfo::premultipliedAlpha() const
