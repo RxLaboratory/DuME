@@ -1128,6 +1128,9 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->setVideoProfile(videoObj.value("profile").toInt());
         mediaInfo->setVideoQuality(videoObj.value("quality").toInt());
         mediaInfo->setStartNumber(videoObj.value("startNumber").toInt());
+        if (!videoObj.value("premultipliedAlpha").isUndefined()) mediaInfo->setPremultipliedAlpha(videoObj.value("premultipliedAlpha").toBool());
+        else mediaInfo->setPremultipliedAlpha(true);
+        mediaInfo->setPixFormat(getPixFormat(videoObj.value("pixelFormat").toString()));
     }
 
     //audio

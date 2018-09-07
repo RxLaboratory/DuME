@@ -31,7 +31,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _loop = -1;
     _videoProfile = -1;
     _startNumber = 0;
-    _premultipliedAlpha = false;
+    _premultipliedAlpha = true;
     _trc = "";
 
     QStringList infos = ffmpegOutput.split("\n");
@@ -390,6 +390,10 @@ QString FFMediaInfo::exportToJson()
         videoObj.insert("profile",_videoProfile);
         //start number
         videoObj.insert("startNumber",_startNumber);
+        //pixel format
+        videoObj.insert("pixelFormat",_pixFormat->name());
+        //unmult
+        videoObj.insert("premultipliedAlpha",_premultipliedAlpha);
 
         mediaObj.insert("video",videoObj);
     }
@@ -438,8 +442,9 @@ QString FFMediaInfo::exportToJson()
     return jsonDoc.toJson();
 }
 
-void FFMediaInfo::exportToJson(QFile jsonFile)
+void FFMediaInfo::exportToJson(QString jsonPath)
 {
+    QFile jsonFile(jsonPath);
     if (jsonFile.open(QIODevice::WriteOnly))
     {
         jsonFile.write(exportToJson().toUtf8());

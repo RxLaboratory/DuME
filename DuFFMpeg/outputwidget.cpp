@@ -122,6 +122,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setPremultipliedAlpha(true);
             }
+            else
+            {
+                _mediaInfo->setPremultipliedAlpha(false);
+            }
         }
     }
 
@@ -259,6 +263,7 @@ void OutputWidget::setMediaInfo(FFMediaInfo *mediaInfo)
             videoProfileButton->setChecked(true);
             videoProfileBox->setCurrentIndex(profile);
         }
+        unmultButton->setChecked(!_mediaInfo->premultipliedAlpha());
 
     }
     else
@@ -714,7 +719,6 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
             _freezeUI = false;
             return;
         }
-        QFile saveFile(saveFileName);
         //update infos
         getMediaInfo();
         //export
@@ -736,7 +740,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         }
 
         //load
-        FFMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(openFileName);
+        FFMediaInfo *mInfo = _ffmpeg->loadJsonFromFile(openFileName);
         //update
         _freezeUI = false;
         setMediaInfo(mInfo);

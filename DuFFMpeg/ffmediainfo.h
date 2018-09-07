@@ -91,7 +91,7 @@ public:
 
     //utils
     QString exportToJson();
-    void exportToJson(QFile jsonFile);
+    void exportToJson(QString jsonPath);
 
 signals:
 
