@@ -49,7 +49,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 void OutputWidget::init()
 {
     //main
-    formatsFilterBox->setCurrentText(0);
+    formatsFilterBox->setCurrentText("");
     formatsBox->setCurrentIndex(0);
 
     //video
@@ -117,6 +117,10 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             if (pixFmtButton->isChecked())
             {
                 _mediaInfo->setPixFormat(_ffmpeg->getPixFormat(pixFmtBox->currentData().toString()));
+            }
+            if (!unmultButton->isChecked())
+            {
+                _mediaInfo->setPremultipliedAlpha(true);
             }
         }
     }

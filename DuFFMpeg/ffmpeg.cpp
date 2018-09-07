@@ -596,6 +596,14 @@ void FFmpeg::encodeNextItem()
                 //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
                 if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
+
+                //b-pyramids
+                //set as none to h264: not really useful (only on very static footage), but has compatibility issues
+                if (codec == "h264") arguments << "-x264opts" << "b_pyramid=0";
+
+                //unpremultiply
+                bool unpremultiply = !output->premultipliedAlpha();
+                if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
             }
         }
         else

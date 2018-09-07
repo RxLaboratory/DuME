@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>564</width>
-    <height>469</height>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -234,7 +234,7 @@
         <x>0</x>
         <y>0</y>
         <width>564</width>
-        <height>395</height>
+        <height>516</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -1038,6 +1038,25 @@
                   </widget>
                  </item>
                 </layout>
+               </widget>
+              </item>
+              <item row="12" column="0">
+               <widget class="QCheckBox" name="unmultButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Unmultiply Alpha</string>
+                </property>
                </widget>
               </item>
              </layout>
