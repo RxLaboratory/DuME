@@ -33,6 +33,9 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _startNumber = 0;
     _premultipliedAlpha = true;
     _trc = "";
+    _isAep = false;
+    _aepCompName = "";
+    _aepNumThreads = 1;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -452,14 +455,44 @@ void FFMediaInfo::exportToJson(QString jsonPath)
     }
 }
 
+int FFMediaInfo::aepNumThreads() const
+{
+    return _aepNumThreads;
+}
+
+void FFMediaInfo::setAepNumThreads(int aepNumThreads)
+{
+    _aepNumThreads = aepNumThreads;
+}
+
+QString FFMediaInfo::aepCompName() const
+{
+    return _aepCompName;
+}
+
+void FFMediaInfo::setAepCompName(const QString &aepCompName)
+{
+    _aepCompName = aepCompName;
+}
+
+bool FFMediaInfo::isAep() const
+{
+    return _isAep;
+}
+
+void FFMediaInfo::setAep(bool isAep)
+{
+    _isAep = isAep;
+}
+
 QString FFMediaInfo::trc() const
 {
     return _trc;
 }
 
-void FFMediaInfo::setTrc(const QString &crt)
+void FFMediaInfo::setTrc(const QString &trc)
 {
-    _trc = crt;
+    _trc = trc;
 }
 
 bool FFMediaInfo::premultipliedAlpha() const

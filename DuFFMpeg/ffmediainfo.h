@@ -61,6 +61,9 @@ public:
     void setPixFormat(FFPixFormat *pixFormat);
     void setPremultipliedAlpha(bool premultipliedAlpha);
     void setTrc(const QString &trc);
+    void setAep(bool isAep);
+    void setAepNumThreads(int aepNumThreads);
+    void setAepCompName(const QString &aepCompName);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -88,6 +91,9 @@ public:
     QStringList frames() const;
     bool premultipliedAlpha() const;
     QString trc() const;
+    bool isAep() const;
+    QString aepCompName() const;
+    int aepNumThreads() const;
 
     //utils
     QString exportToJson();
@@ -124,6 +130,9 @@ private:
     int _startNumber;
     bool _premultipliedAlpha;
     QString _trc;
+    bool _isAep;
+    int _aepNumThreads;
+    QString _aepCompName;
 
     void loadSequence();
 
