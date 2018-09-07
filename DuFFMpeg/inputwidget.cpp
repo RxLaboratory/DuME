@@ -59,86 +59,100 @@ void InputWidget::openFile(QString file)
     QSettings settings;
     if (file == "") return;
 
-    _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(file));
-
     //Text
     QString mediaInfoString = "Media information";
 
-    mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+    QFileInfo fileInfo(file);
+    //update UI
+    inputEdit->setText(QDir::toNativeSeparators(file));
+    //keep in settings
+    settings.setValue("input/path",QVariant(fileInfo.path()));
 
-    if (_mediaInfo->duration() != 0.0)
+    if (fileInfo.suffix() == "aep" || fileInfo.suffix() == "aet" || fileInfo.suffix() == "aepx")
     {
-        QTime duration(0,0,0);
-        duration = duration.addSecs(_mediaInfo->duration());
-        mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+        _mediaInfo->updateInfo("");
+        _mediaInfo->setAep(true);
+        _mediaInfo->setAepNumThreads(threadsBox->value());
+        _mediaInfo->setFileName(file);
+
+        if (fileInfo.suffix() == "aep") mediaInfoString += "\n\nAfter Effects project.";
+        if (fileInfo.suffix() == "aet") mediaInfoString += "\n\nAfter Effects template.";
+        if (fileInfo.suffix() == "aepx") mediaInfoString += "\n\nAfter Effects XML project.";
     }
-    else if (_mediaInfo->isImageSequence())
+    else
     {
-        mediaInfoString += "\nDuration: " + QString::number(_mediaInfo->frames().count()) + " frames";
-        mediaInfoString += "\nStart Frame Number: " + QString::number(_mediaInfo->startNumber());
+        _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(file));
+
+        mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+
+        if (_mediaInfo->duration() != 0.0)
+        {
+            QTime duration(0,0,0);
+            duration = duration.addSecs(_mediaInfo->duration());
+            mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+        }
+        else if (_mediaInfo->isImageSequence())
+        {
+            mediaInfoString += "\nDuration: " + QString::number(_mediaInfo->frames().count()) + " frames";
+            mediaInfoString += "\nStart Frame Number: " + QString::number(_mediaInfo->startNumber());
+        }
+
+
+        double size = _mediaInfo->size(FFMediaInfo::MB);
+        int roundedSize = size*1000+0.5;
+        size = roundedSize/1000;
+        mediaInfoString += "\nSize: " + QString::number(size) + " MB";
+
+        mediaInfoString += "\nContains video: ";
+        if (_mediaInfo->hasVideo()) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+        mediaInfoString += "\nContains audio: ";
+        if (_mediaInfo->hasAudio()) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+        mediaInfoString += "\nImage sequence: ";
+        if (_mediaInfo->isImageSequence()) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+
+        if (_mediaInfo->hasVideo())
+        {
+            mediaInfoString += "\n\nVideo codec: ";
+            if(_mediaInfo->videoCodec() != nullptr)
+            {
+                mediaInfoString += _mediaInfo->videoCodec()->prettyName();
+            }
+            mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
+            mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
+            int bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Mbps);
+            if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
+            else
+            {
+                bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Kbps);
+                if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
+            }
+            if (_mediaInfo->pixFormat() != nullptr)
+            {
+                mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->name();
+                if (_mediaInfo->pixFormat()->hasAlpha()) mediaInfoString += "\nAlpha: yes";
+                else mediaInfoString += "\nAlpha: no";
+            }
+        }
+
+        if (_mediaInfo->hasAudio())
+        {
+            mediaInfoString += "\n\nAudio codec: ";
+            if(_mediaInfo->audioCodec() != nullptr)
+            {
+                mediaInfoString += _mediaInfo->audioCodec()->prettyName();
+            }
+            mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
+            int abitrate = _mediaInfo->audioBitrate(FFMediaInfo::Kbps);
+            if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
+        }
+
+        //mediaInfoString += "\n\nFFmpeg analysis:\n" + _mediaInfo->ffmpegOutput();
     }
-
-
-    double size = _mediaInfo->size(FFMediaInfo::MB);
-    int roundedSize = size*1000+0.5;
-    size = roundedSize/1000;
-    mediaInfoString += "\nSize: " + QString::number(size) + " MB";
-
-    mediaInfoString += "\nContains video: ";
-    if (_mediaInfo->hasVideo()) mediaInfoString += "yes";
-    else mediaInfoString += "no";
-    mediaInfoString += "\nContains audio: ";
-    if (_mediaInfo->hasAudio()) mediaInfoString += "yes";
-    else mediaInfoString += "no";
-    mediaInfoString += "\nImage sequence: ";
-    if (_mediaInfo->isImageSequence()) mediaInfoString += "yes";
-    else mediaInfoString += "no";
-
-    if (_mediaInfo->hasVideo())
-    {
-        mediaInfoString += "\n\nVideo codec: ";
-        if(_mediaInfo->videoCodec() != nullptr)
-        {
-            mediaInfoString += _mediaInfo->videoCodec()->prettyName();
-        }
-        mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
-        mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
-        int bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Mbps);
-        if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
-        else
-        {
-            bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Kbps);
-            if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
-        }
-        if (_mediaInfo->pixFormat() != nullptr)
-        {
-            mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->name();
-            if (_mediaInfo->pixFormat()->hasAlpha()) mediaInfoString += "\nAlpha: yes";
-            else mediaInfoString += "\nAlpha: no";
-        }
-    }
-
-    if (_mediaInfo->hasAudio())
-    {
-        mediaInfoString += "\n\nAudio codec: ";
-        if(_mediaInfo->audioCodec() != nullptr)
-        {
-            mediaInfoString += _mediaInfo->audioCodec()->prettyName();
-        }
-        mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
-        int abitrate = _mediaInfo->audioBitrate(FFMediaInfo::Kbps);
-        if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
-    }
-
-    //mediaInfoString += "\n\nFFmpeg analysis:\n" + _mediaInfo->ffmpegOutput();
 
     mediaInfosText->setText(mediaInfoString);
-
-    //update UI
-    inputEdit->setText(QDir::toNativeSeparators(_mediaInfo->fileName()));
-    //keep in settings
-    QFileInfo fi(file);
-    settings.setValue("input/path",QVariant(fi.path()));
 
     updateOptions();
 
@@ -246,12 +260,28 @@ void InputWidget::on_trcBox_currentIndexChanged(int index)
     emit newMediaLoaded(_mediaInfo);
 }
 
+void InputWidget::on_compButton_toggled(bool checked)
+{
+    compEdit->setEnabled(checked);
+}
+
+void InputWidget::on_threadsButton_toggled(bool checked)
+{
+    threadsBox->setEnabled(checked);
+}
+
 void InputWidget::updateOptions()
 {
     //frame rate
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
+    //Aep
+    aeLabel->hide();
+    compButton->hide();
+    compEdit->hide();
+    threadsBox->hide();
+    threadsButton->hide();
 
     if (_mediaInfo->isImageSequence())
     {
@@ -260,6 +290,17 @@ void InputWidget::updateOptions()
         frameRateEdit->show();
     }
 
+    if (_mediaInfo->isAep())
+    {
+        aeLabel->show();
+        compButton->show();
+        compEdit->show();
+        threadsBox->show();
+        threadsButton->show();
+        threadsBox->setValue(QThread::idealThreadCount());
+    }
+
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
+

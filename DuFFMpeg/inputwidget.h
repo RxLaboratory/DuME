@@ -5,6 +5,7 @@
 
 #include <QFileDialog>
 #include <QSettings>
+#include <QThread>
 
 #include "ffmpeg.h"
 
@@ -31,6 +32,10 @@ private slots:
     void on_trcBox_currentIndexChanged(int index);
 
     void on_inputEdit_editingFinished();
+
+    void on_compButton_toggled(bool checked);
+
+    void on_threadsButton_toggled(bool checked);
 
 private:
     FFmpeg *ffmpeg;
