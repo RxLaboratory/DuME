@@ -5,7 +5,7 @@
     set output path
 - [ ] In finishedAE()
     update currentitem to be the rendered frames, set as non ae and relaunch
-- [ ] In readyReadAE() process aerender output
+- [X] In readyReadAE() process aerender output
 
 # AE Installation
 
@@ -24,8 +24,7 @@
 # Output widget
 
 - [ ] No copy stream with aep
-- [ ] No transcode with aep & renderqueue option
 
 # Mainwindow
 
-- [ ] update stop button
+- [ ] update stop button to stop aerender
