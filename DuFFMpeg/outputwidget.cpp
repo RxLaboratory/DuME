@@ -114,7 +114,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setStartNumber(startNumberEdit->value());
             }
-            if (pixFmtButton->isChecked() || alphaButton->isChecked())
+            if (pixFmtButton->isChecked() || (alphaButton->isChecked() && alphaButton->isVisible()) )
             {
                 _mediaInfo->setPixFormat(_ffmpeg->getPixFormat(pixFmtBox->currentData().toString()));
             }
@@ -922,9 +922,6 @@ void OutputWidget::updateVideoOptions()
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
-    //alpha
-    //alphaButton->hide();
-    unmultButton->hide();
 
     //AUDIO
     //codec
@@ -1010,10 +1007,7 @@ void OutputWidget::updateVideoOptions()
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
     if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
-    if (unmultButton->isHidden()) unmultButton->setChecked(false);
-    if (alphaButton->isHidden()) alphaButton->setChecked(false);
     if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
-
 }
 
 void OutputWidget::addNewParam(QString name, QString value)
@@ -1211,6 +1205,9 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
         else if (sampling == 88200) samplingBox->setCurrentIndex(7);
         else if (sampling == 96000) samplingBox->setCurrentIndex(8);
     }
+
+    if (input->pixFormat()->hasAlpha()) unmultButton->show();
+    else unmultButton->hide();
 }
 
 void OutputWidget::loadPresets(QString userPath)
