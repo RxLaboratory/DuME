@@ -114,7 +114,7 @@ FFMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setStartNumber(startNumberEdit->value());
             }
-            if (pixFmtButton->isChecked())
+            if (pixFmtButton->isChecked() || alphaButton->isChecked())
             {
                 _mediaInfo->setPixFormat(_ffmpeg->getPixFormat(pixFmtBox->currentData().toString()));
             }
@@ -332,13 +332,13 @@ QString OutputWidget::getOutputPath()
 
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
-    videoTranscodeWidget->setEnabled(checked);
+    videoTranscodeWidget->setVisible(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_audioTranscodeButton_toggled(bool checked)
 {
-    audioTranscodeWidget->setEnabled(checked);
+    audioTranscodeWidget->setVisible(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
@@ -441,6 +441,25 @@ void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
     _currentVideoCodec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
     pixFmtFilterBox->setCurrentIndex(0);
+
+    //check if there is alpha in one of the pixel formats to display button
+    int numAlpha = 0;
+    int numNoAlpha = 0;
+
+    if (_currentVideoCodec == nullptr) return;
+
+    QList<FFPixFormat *> pixFmts = _currentVideoCodec->pixFormats();
+    if (pixFmts.count() == 0) return;
+
+    foreach(FFPixFormat *pf, _currentVideoCodec->pixFormats())
+    {
+        if (pf->hasAlpha()) numAlpha++;
+        else numNoAlpha++;
+        if (numAlpha > 0 && numNoAlpha > 0) break;
+    }
+    if (numAlpha > 0 && numNoAlpha > 0) alphaButton->show();
+    else alphaButton->hide();
+
     ffmpeg_loadPixFmts(true);
 }
 
@@ -747,6 +766,11 @@ void OutputWidget::on_presetsFilterBox_activated(int index)
     loadPresets(QSettings().value("presets/path","").toString());
 }
 
+void OutputWidget::on_alphaButton_toggled(bool checked)
+{
+    ffmpeg_loadPixFmts(true);
+}
+
 void OutputWidget::aspectRatio()
 {
     double width = videoWidthButton->value();
@@ -843,6 +867,7 @@ void OutputWidget::selectDefaultPixFmt()
 
     //Select Default Pix Format
 
+    bool ok = false;
     if (pixFmt != nullptr)
     {
         for (int i = 0; i < pixFmtBox->count() ; i++)
@@ -850,7 +875,22 @@ void OutputWidget::selectDefaultPixFmt()
             if (pixFmtBox->itemData(i).toString() == pixFmt->name())
             {
                 pixFmtBox->setCurrentIndex(i);
+                ok = true;
+                break;
             }
+        }
+        if (!ok)
+        {
+            int bpc = pixFmt->bitsPerComponent();
+            for (int i = 0; i < pixFmtBox->count() ; i++)
+            {
+                if (pixFmtBox->itemText(i).indexOf("@" + QString::number(bpc) + "bpc") > 0)
+                {
+                    pixFmtBox->setCurrentIndex(i);
+                    break;
+                }
+            }
+
         }
     }
 }
@@ -882,7 +922,9 @@ void OutputWidget::updateVideoOptions()
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
-
+    //alpha
+    //alphaButton->hide();
+    unmultButton->hide();
 
     //AUDIO
     //codec
@@ -908,6 +950,7 @@ void OutputWidget::updateVideoOptions()
             audioBitrateButton->show();
             audioBitRateEdit->show();
         }
+
         if (muxer->isSequence())
         {
             startNumberButton->show();
@@ -949,6 +992,13 @@ void OutputWidget::updateVideoOptions()
         }
     }
 
+    //Labels
+    if (!videoCodecButton->isVisible()) videoCodecLabel->hide();
+    else videoCodecLabel->show();
+    if (startNumberButton->isVisible() || videoLoopsButton->isVisible()) sequenceLabel->show();
+    else sequenceLabel->hide();
+    if (audioCodecButton->isVisible()) audioCodecLabel->show();
+    else audioCodecLabel->hide();
 
     //uncheck what is hidden
     if (videoCodecButton->isHidden()) videoCodecButton->setChecked(false);
@@ -960,6 +1010,9 @@ void OutputWidget::updateVideoOptions()
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
     if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
+    if (unmultButton->isHidden()) unmultButton->setChecked(false);
+    if (alphaButton->isHidden()) alphaButton->setChecked(false);
+    if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
 
 }
 
@@ -1066,6 +1119,7 @@ void OutputWidget::ffmpeg_loadMuxers()
 void OutputWidget::ffmpeg_loadPixFmts(bool init)
 {
     _freezeUI = true;
+
     //get pixFmts
     pixFmtBox->clear();
     if (_currentVideoCodec == nullptr)
@@ -1084,13 +1138,31 @@ void OutputWidget::ffmpeg_loadPixFmts(bool init)
 
     foreach (FFPixFormat *pixFmt, pixFmts)
     {
-        //add pix fmt in list
-        if (pixFmt->prettyName().indexOf(pixFmtFilterBox->currentText()) > 0 || pixFmtFilterBox->currentIndex() == 0)
-        {
-            pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
-        }
+
         QString filter = QString::number(pixFmt->bitsPerPixel()) + "bits (" + QString::number(pixFmt->numComponents()) + " channels @" + QString::number(pixFmt->bitsPerComponent()) + "bpc)" ;
-        if (!filters.contains(filter)) filters << filter;
+        bool addToList = pixFmt->prettyName().indexOf(pixFmtFilterBox->currentText()) > 0 || pixFmtFilterBox->currentIndex() == 0;
+
+        //check if there is alpha
+        if (alphaButton->isVisible())
+        {
+            if (pixFmt->hasAlpha() && alphaButton->isChecked())
+            {
+                //add pix fmt in list
+                if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
+                if (!filters.contains(filter)) filters << filter;
+            }
+            else if (!pixFmt->hasAlpha() && !alphaButton->isChecked())
+            {
+                //add pix fmt in list
+                if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
+                if (!filters.contains(filter)) filters << filter;
+            }
+        }
+        else
+        {
+            if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
+            if (!filters.contains(filter)) filters << filter;
+        }
     }
 
     if (init)
@@ -1104,8 +1176,6 @@ void OutputWidget::ffmpeg_loadPixFmts(bool init)
             pixFmtFilterBox->addItem(filter);
         }
     }
-
-
 
     selectDefaultPixFmt();
     _freezeUI = false;

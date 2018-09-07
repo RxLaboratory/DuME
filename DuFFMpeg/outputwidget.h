@@ -65,6 +65,8 @@ private slots:
 
     void on_pixFmtFilterBox_currentIndexChanged(int index);
 
+    void on_alphaButton_toggled(bool checked);
+
 private:
     /**
      * @brief aspectRatio Computes the aspect ratio of the video

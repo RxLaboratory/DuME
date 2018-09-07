@@ -615,6 +615,20 @@
                </widget>
               </item>
               <item row="5" column="0">
+               <widget class="QLabel" name="videoCodecLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Codec:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
                <widget class="QCheckBox" name="videoCodecButton">
                 <property name="minimumSize">
                  <size>
@@ -633,7 +647,7 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
+              <item row="6" column="1">
                <widget class="QWidget" name="videoCodecWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -715,7 +729,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="6" column="0">
+              <item row="7" column="0">
                <widget class="QCheckBox" name="videoBitrateButton">
                 <property name="minimumSize">
                  <size>
@@ -734,7 +748,7 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
+              <item row="7" column="1">
                <widget class="QDoubleSpinBox" name="videoBitRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -759,7 +773,7 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="0">
+              <item row="8" column="0">
                <widget class="QCheckBox" name="videoQualityButton">
                 <property name="minimumSize">
                  <size>
@@ -778,7 +792,7 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="8" column="1">
                <widget class="QWidget" name="videoQualityWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -837,7 +851,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="8" column="0">
+              <item row="9" column="0">
                <widget class="QCheckBox" name="videoProfileButton">
                 <property name="minimumSize">
                  <size>
@@ -856,7 +870,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
+              <item row="9" column="1">
                <widget class="QComboBox" name="videoProfileBox">
                 <property name="enabled">
                  <bool>false</bool>
@@ -872,7 +886,21 @@
                 </property>
                </widget>
               </item>
-              <item row="9" column="0">
+              <item row="10" column="0">
+               <widget class="QLabel" name="sequenceLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Sequence:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
                <widget class="QCheckBox" name="videoLoopsButton">
                 <property name="minimumSize">
                  <size>
@@ -891,7 +919,7 @@
                 </property>
                </widget>
               </item>
-              <item row="9" column="1">
+              <item row="11" column="1">
                <widget class="QSpinBox" name="videoLoopsEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -913,7 +941,7 @@
                 </property>
                </widget>
               </item>
-              <item row="10" column="0">
+              <item row="12" column="0">
                <widget class="QCheckBox" name="startNumberButton">
                 <property name="minimumSize">
                  <size>
@@ -932,7 +960,7 @@
                 </property>
                </widget>
               </item>
-              <item row="10" column="1">
+              <item row="12" column="1">
                <widget class="QSpinBox" name="startNumberEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -954,7 +982,40 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="0">
+              <item row="13" column="0">
+               <widget class="QLabel" name="componentsLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Components:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="0">
+               <widget class="QCheckBox" name="alphaButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Alpha</string>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="0">
                <widget class="QCheckBox" name="pixFmtButton">
                 <property name="minimumSize">
                  <size>
@@ -973,7 +1034,7 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="1">
+              <item row="15" column="1">
                <widget class="QWidget" name="pixFmtWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1040,11 +1101,11 @@
                 </layout>
                </widget>
               </item>
-              <item row="12" column="0">
+              <item row="16" column="0">
                <widget class="QCheckBox" name="unmultButton">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>120</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -1062,6 +1123,19 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="tab_8">
@@ -1074,7 +1148,7 @@
           <attribute name="title">
            <string>Audio</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
+          <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1,0">
            <property name="spacing">
             <number>3</number>
            </property>
@@ -1222,7 +1296,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QCheckBox" name="audioCodecButton">
                 <property name="minimumSize">
                  <size>
@@ -1241,7 +1315,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="2" column="1">
                <widget class="QWidget" name="audioCodecWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1312,7 +1386,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QCheckBox" name="audioBitrateButton">
                 <property name="minimumSize">
                  <size>
@@ -1331,7 +1405,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QSpinBox" name="audioBitRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1356,8 +1430,35 @@
                 </property>
                </widget>
               </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="audioCodecLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Codec:</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

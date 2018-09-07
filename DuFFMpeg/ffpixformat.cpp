@@ -2,7 +2,7 @@
 
 FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, int bitsPerPixel, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
-    _abilities =  Abilities(0);
+    _abilities =  Abilities(nullptr);
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
@@ -10,7 +10,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
     this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
 
-    if (this->name().indexOf("a") >= 0) _hasAlpha = true;
+    if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
 }
 
@@ -24,7 +24,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
     this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
 
-    if (this->name().indexOf("a") >= 0) _hasAlpha = true;
+    if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
 }
 
