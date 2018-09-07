@@ -1196,6 +1196,7 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
     {
         frameRateEdit->setValue(input->videoFramerate());
     }
+
     if (!samplingButton->isChecked())
     {
         int sampling = input->audioSamplingRate();
@@ -1210,8 +1211,17 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
         else if (sampling == 96000) samplingBox->setCurrentIndex(8);
     }
 
-    if (input->pixFormat()->hasAlpha()) unmultButton->show();
-    else unmultButton->hide();
+    if (input->pixFormat() != nullptr)
+    {
+        if (input->pixFormat()->hasAlpha()) unmultButton->show();
+        else unmultButton->hide();
+    }
+    else
+    {
+        unmultButton->hide();
+    }
+
+
 }
 
 void OutputWidget::loadPresets(QString userPath)
