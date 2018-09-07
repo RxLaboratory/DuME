@@ -95,6 +95,9 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
         ffmpeg_init();
     }
 
+    //accept drops
+    setAcceptDrops(true);
+
     // === MAP EVENTS ===
 #ifdef QT_DEBUG
     qDebug() << "Init - Map Events";
@@ -400,3 +403,68 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
   }
 }
 
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+        if (urlList.count() == 1)
+        {
+            QString f = urlList[0].toLocalFile();
+            if (QFile(f).exists())
+            {
+                queueWidget->addInputFile(f);
+            }
+        }
+
+    }
+    else if (mimeData->hasText())
+    {
+        QString f = mimeData->text();
+        if (QFile(f).exists())
+        {
+            queueWidget->addInputFile(f);
+        }
+    }
+
+    setCursor(Qt::ArrowCursor);
+    event->acceptProposedAction();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    bool ok = false;
+
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+        if (urlList.count() > 0)
+        {
+            ok = QFile(urlList[0].toLocalFile()).exists();
+        }
+
+    }
+    else if (mimeData->hasText())
+    {
+        ok = QFile(mimeData->text()).exists();
+    }
+
+    if (ok) setCursor(Qt::DragMoveCursor);
+    else setCursor(Qt::ForbiddenCursor);
+
+    event->acceptProposedAction();
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent *event)
+{
+     event->acceptProposedAction();
+}
+
+void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}

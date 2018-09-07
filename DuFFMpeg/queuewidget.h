@@ -14,9 +14,11 @@ class QueueWidget : public QWidget, private Ui::QueueWidget
     Q_OBJECT
 
 public:
-    explicit QueueWidget(FFmpeg *ff, QWidget *parent = 0);
+    explicit QueueWidget(FFmpeg *ff, QWidget *parent = nullptr);
     FFMediaInfo *getInputMedia();
     QList<FFMediaInfo *> getOutputMedia();
+    void addInputFile(QString file);
+    void addInputFile(QUrl file);
 
 public slots:
     void presetsPathChanged(QString path);

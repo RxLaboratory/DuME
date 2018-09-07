@@ -43,6 +43,16 @@ QList<FFMediaInfo *> QueueWidget::getOutputMedia()
     return output;
 }
 
+void QueueWidget::addInputFile(QString file)
+{
+    inputWidgets[0]->openFile(file);
+}
+
+void QueueWidget::addInputFile(QUrl file)
+{
+    inputWidgets[0]->openFile(file);
+}
+
 void QueueWidget::presetsPathChanged(QString path)
 {
     foreach(OutputWidget *ow,outputWidgets)

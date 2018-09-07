@@ -54,13 +54,12 @@ FFMediaInfo *InputWidget::getMediaInfo()
     return _mediaInfo;
 }
 
-void InputWidget::on_inputBrowseButton_clicked()
+void InputWidget::openFile(QString file)
 {
     QSettings settings;
-    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path",QVariant("")).toString());
-    if (inputPath == "") return;
+    if (file == "") return;
 
-    _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(inputPath));
+    _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(file));
 
     //Text
     QString mediaInfoString = "Media information";
@@ -138,12 +137,40 @@ void InputWidget::on_inputBrowseButton_clicked()
     //update UI
     inputEdit->setText(QDir::toNativeSeparators(_mediaInfo->fileName()));
     //keep in settings
-    QFileInfo fi(inputPath);
+    QFileInfo fi(file);
     settings.setValue("input/path",QVariant(fi.path()));
 
     updateOptions();
 
     emit newMediaLoaded(_mediaInfo);
+}
+
+void InputWidget::openFile(QUrl file)
+{
+    openFile(file.toLocalFile());
+}
+
+void InputWidget::on_inputBrowseButton_clicked()
+{
+    QSettings settings;
+    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path",QVariant("")).toString());
+    if (inputPath == "") return;
+    openFile(inputPath);
+}
+
+void InputWidget::on_inputEdit_editingFinished()
+{
+    //check if file exists, try to read url
+    QUrl test(inputEdit->text());
+    if (!test.isEmpty())
+    {
+        if (test.isValid())
+        {
+            inputEdit->setText(test.toLocalFile());
+        }
+    }
+
+    openFile(inputEdit->text());
 }
 
 void InputWidget::on_addParamButton_clicked()
@@ -236,6 +263,3 @@ void InputWidget::updateOptions()
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
-
-
-

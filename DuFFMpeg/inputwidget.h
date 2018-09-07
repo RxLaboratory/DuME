@@ -15,6 +15,8 @@ class InputWidget : public QWidget, private Ui::InputWidget
 public:
     explicit InputWidget(FFmpeg *ff,QWidget *parent = nullptr);
     FFMediaInfo *getMediaInfo();
+    void openFile(QString file);
+    void openFile(QUrl file);
 
 signals:
     void newMediaLoaded(FFMediaInfo *);
@@ -27,6 +29,8 @@ private slots:
     void on_frameRateEdit_valueChanged(double arg1);
     void on_trcButton_toggled(bool checked);
     void on_trcBox_currentIndexChanged(int index);
+
+    void on_inputEdit_editingFinished();
 
 private:
     FFmpeg *ffmpeg;
