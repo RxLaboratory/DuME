@@ -31,12 +31,13 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _loop = -1;
     _videoProfile = -1;
     _startNumber = 0;
+    _premultipliedAlpha = false;
 
     QStringList infos = ffmpegOutput.split("\n");
 
     //regexes to get infos
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
-    QRegularExpression reVideoStream("Stream #.+Video: .+, (\\d+)x(\\d+).+, (\\d{1,3}(?:\\.\\d{0,3})?) fps");
+    QRegularExpression reVideoStream("Stream #.+Video: (.+)");
     QRegularExpression reSequenceStream("Stream #.+Video: .+, (\\d+)x(\\d+)");
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
     QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), )?(?:(N\\/A), )?");
@@ -61,7 +62,6 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
         match = reDuration.match(info);
         if (match.hasMatch())
         {
-            qDebug() << info;
             if (match.captured(4) != "N/A")
             {
                 //set duration
@@ -69,7 +69,6 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
                 double m = match.captured(2).toDouble();
                 double s = match.captured(3).toDouble();
                 _duration = h*60*60+m*60+s;
-                qDebug() << "Duration" << _duration;
             }
             else
             {
@@ -82,11 +81,20 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
         match = reVideoStream.match(info);
         if (match.hasMatch())
         {
-            qDebug() << info;
-            //set size
-            _videoWidth = match.captured(1).toInt();
-            _videoHeight = match.captured(2).toInt();
-            _videoFramerate = match.captured(3).toDouble();
+            QString details = match.captured(1);
+            QStringList detailsList = details.split(", ");
+            qDebug() << details;
+            QRegularExpression reVideoSize(", (\\d+)x(\\d+).*, ");
+            QRegularExpression reVideoFrameRate(", (\\d{1,3}(?:\\.\\d{0,3})?) fps");
+            QString codec = detailsList[0].split(" ")[0];
+            _videoCodec = new FFCodec(codec);
+            QString pf = detailsList[1];
+            _pixFormat = new FFPixFormat(pf);
+            QRegularExpressionMatch videoSizeMatch = reVideoSize.match(details);
+            _videoWidth = videoSizeMatch.captured(1).toInt();
+            _videoHeight = videoSizeMatch.captured(2).toInt();
+            QRegularExpressionMatch videoFrameRateMatch = reVideoFrameRate.match(details);
+            _videoFramerate = videoFrameRateMatch.captured(1).toDouble();
             if (_videoFramerate == 0) _videoFramerate = 24;
             _video = true;
             continue;
@@ -436,6 +444,16 @@ void FFMediaInfo::exportToJson(QFile jsonFile)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+bool FFMediaInfo::premultipliedAlpha() const
+{
+    return _premultipliedAlpha;
+}
+
+void FFMediaInfo::setPremultipliedAlpha(bool premultipliedAlpha)
+{
+    _premultipliedAlpha = premultipliedAlpha;
 }
 
 FFPixFormat *FFMediaInfo::pixFormat()

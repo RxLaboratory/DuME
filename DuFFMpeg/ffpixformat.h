@@ -43,6 +43,7 @@ public:
     void setHardware(bool hardware);
     void setPaletted(bool paletted);
     void setBitstream(bool bitstream);
+    void setAlpha(bool hasAlpha);
 
     bool isInput();
     bool isOutput();
@@ -50,12 +51,17 @@ public:
     int bitsPerPixel() const;
     int numComponents() const;
     int bitsPerComponent() const;
+    bool hasAlpha() const;
+
+
+
 
 private:
     Abilities _abilities;
     int _numComponents;
     int _bitsPerPixel;
     int _bitsPerComponent;
+    bool _hasAlpha;
 
 };
 

@@ -86,6 +86,17 @@ void InputWidget::on_inputBrowseButton_clicked()
         mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
         int bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Mbps);
         if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
+        else
+        {
+            bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Kbps);
+            if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
+        }
+        if (_mediaInfo->pixFormat() != nullptr)
+        {
+            mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->name();
+            if (_mediaInfo->pixFormat()->hasAlpha()) mediaInfoString += "\nAlpha: yes";
+            else mediaInfoString += "\nAlpha: no";
+        }
     }
 
     if (_mediaInfo->hasAudio())
@@ -97,7 +108,7 @@ void InputWidget::on_inputBrowseButton_clicked()
         }
         mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
         int abitrate = _mediaInfo->audioBitrate(FFMediaInfo::Kbps);
-        if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " Kbps";
+        if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
     }
 
     //mediaInfoString += "\n\nFFmpeg analysis:\n" + _mediaInfo->ffmpegOutput();

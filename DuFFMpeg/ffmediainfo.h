@@ -59,6 +59,7 @@ public:
     void setStartNumber(int startNumber);
     void setFrames(const QStringList &frames);
     void setPixFormat(FFPixFormat *pixFormat);
+    void setPremultipliedAlpha(bool premultipliedAlpha);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -84,6 +85,7 @@ public:
     int loop() const;
     int startNumber() const;
     QStringList frames() const;
+    bool premultipliedAlpha() const;
 
     //utils
     QString exportToJson();
@@ -118,6 +120,7 @@ private:
     int _videoProfile;
     int _loop;
     int _startNumber;
+    bool _premultipliedAlpha;
 
     void loadSequence();
 

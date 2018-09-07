@@ -13,7 +13,7 @@ class InputWidget : public QWidget, private Ui::InputWidget
     Q_OBJECT
 
 public:
-    explicit InputWidget(FFmpeg *ff,QWidget *parent = 0);
+    explicit InputWidget(FFmpeg *ff,QWidget *parent = nullptr);
     FFMediaInfo *getMediaInfo();
 
 signals:
