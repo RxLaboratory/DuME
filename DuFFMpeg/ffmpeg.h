@@ -28,7 +28,7 @@ public:
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
      */
-    enum Status { Waiting, Encoding, Error, Other };
+    enum Status { Waiting, Encoding, Error, Other, AERendering };
     Q_ENUM(Status)
 
     QList<FFMuxer *> getMuxers();
@@ -252,6 +252,12 @@ public slots:
      */
     bool setBinaryFileName(QString path);
     /**
+     * @brief setAERenderFileName Sets the path to the AErender binary
+     * @param path The path to the binary executable file
+     * @return true if the exe is found
+     */
+    bool setAERenderFileName(QString path);
+    /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
      */
@@ -271,6 +277,12 @@ private slots:
     void finished();
     void errorOccurred(QProcess::ProcessError e);
 
+    void stdErrorAE();
+    void stdOutputAE();
+    void startedAE();
+    void finishedAE();
+    void errorOccurredAE(QProcess::ProcessError e);
+
     //Queue
     void encodeNextItem();
 
@@ -283,6 +295,10 @@ private:
      * @brief ffmpeg The process used to handle the binary
      */
     QProcess *_ffmpeg;
+    /**
+     * @brief aerender The process used to handle the binary
+     */
+    QProcess *_aerender;
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */
@@ -307,6 +323,10 @@ private:
      * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
      */
     QString _ffmpegOutput;
+    /**
+     * @brief aerenderOutput The complete output of the latest aerender process until it has finished
+     */
+    QString _aerenderOutput;
     /**
      * @brief status FFmpeg current status
      */
@@ -360,6 +380,11 @@ private:
      * @param The output from FFmpeg
      */
     void readyRead(QString output);
+    /**
+     * @brief readyReadAE Called when AERender outputs something on stdError or stdOutput
+     * @param The output from AERender
+     */
+    void readyReadAE(QString output);
     //=== Misc. ===
     /**
      * @brief convertSequenceName Converts a filename with {####} to ffmpeg %4d

@@ -36,6 +36,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _isAep = false;
     _aepCompName = "";
     _aepNumThreads = 1;
+    _aepRqindex = 1;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -69,10 +70,10 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
             if (match.captured(4) != "N/A")
             {
                 //set duration
-                double h = match.captured(1).toDouble();
-                double m = match.captured(2).toDouble();
-                double s = match.captured(3).toDouble();
-                _duration = h*60*60+m*60+s;
+                _durationH = match.captured(1).toInt();
+                _durationM = match.captured(2).toInt();
+                _durationS = match.captured(3).toDouble();
+                _duration = _durationH*60*60+_durationM*60+_durationS;
             }
             else
             {
@@ -453,6 +454,56 @@ void FFMediaInfo::exportToJson(QString jsonPath)
         jsonFile.write(exportToJson().toUtf8());
         jsonFile.close();
     }
+}
+
+int FFMediaInfo::durationH() const
+{
+    return _durationH;
+}
+
+void FFMediaInfo::setDurationH(int durationH)
+{
+    _durationH = durationH;
+}
+
+int FFMediaInfo::durationM() const
+{
+    return _durationM;
+}
+
+void FFMediaInfo::setDurationM(int durationM)
+{
+    _durationM = durationM;
+}
+
+double FFMediaInfo::durationS() const
+{
+    return _durationS;
+}
+
+void FFMediaInfo::setDurationS(double durationS)
+{
+    _durationS = durationS;
+}
+
+int FFMediaInfo::durationI() const
+{
+    return _durationI;
+}
+
+void FFMediaInfo::setDurationI(int durationI)
+{
+    _durationI = durationI;
+}
+
+int FFMediaInfo::aepRqindex() const
+{
+    return _aepRqindex;
+}
+
+void FFMediaInfo::setAepRqindex(int aepRqindex)
+{
+    _aepRqindex = aepRqindex;
 }
 
 int FFMediaInfo::aepNumThreads() const

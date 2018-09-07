@@ -64,6 +64,7 @@ public:
     void setAep(bool isAep);
     void setAepNumThreads(int aepNumThreads);
     void setAepCompName(const QString &aepCompName);
+    void setAepRqindex(int aepRqindex);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -94,10 +95,23 @@ public:
     bool isAep() const;
     QString aepCompName() const;
     int aepNumThreads() const;
+    int aepRqindex() const;
 
     //utils
     QString exportToJson();
     void exportToJson(QString jsonPath);
+
+    int durationH() const;
+    void setDurationH(int durationH);
+
+    int durationM() const;
+    void setDurationM(int durationM);
+
+    double durationS() const;
+    void setDurationS(double durationS);
+
+    int durationI() const;
+    void setDurationI(int durationI);
 
 signals:
 
@@ -107,6 +121,10 @@ private:
     QStringList _extensions;
     FFMuxer *_muxer;
     double _duration;
+    int _durationH;
+    int _durationM;
+    double _durationS;
+    int _durationI;
     int _size;
     bool _video;
     bool _audio;
@@ -133,6 +151,7 @@ private:
     bool _isAep;
     int _aepNumThreads;
     QString _aepCompName;
+    int _aepRqindex;
 
     void loadSequence();
 

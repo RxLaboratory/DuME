@@ -13,11 +13,16 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     _ffmpeg = new QProcess(this);
     setBinaryFileName(path);
 
+    _aerender = new QProcess(this);
+
     _currentFrame = 0;
     _startTime = QTime(0,0,0);
     _outputSize = 0.0;
     _outputBitrate = 0;
     _encodingSpeed = 0.0;
+
+    _aerenderOutput = "";
+    _ffmpegOutput = "";
 
     //Connect process
     connect(_ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
@@ -25,6 +30,12 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     connect(_ffmpeg,SIGNAL(started()),this,SLOT(started()));
     connect(_ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
     connect(_ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
+
+    connect(_aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
+    connect(_aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
+    connect(_aerender,SIGNAL(started()),this,SLOT(startedAE()));
+    connect(_aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
+    connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
 
 #ifdef QT_DEBUG
     qDebug() << "FFmpeg - Initialization";
@@ -46,6 +57,22 @@ bool FFmpeg::setBinaryFileName(QString path)
         setStatus(Error);
         emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
+        return false;
+    }
+}
+
+bool FFmpeg::setAERenderFileName(QString path)
+{
+    if(QFile(path).exists())
+    {
+        _aerender->setProgram(path);
+        return true;
+    }
+    else
+    {
+        setStatus(Error);
+        emit newOutput("AERender executable binary not found.\nYou have to install Adobe After Effects to be able to render After Effects compositions.");
+        _lastErrorMessage = "AERender executable binary not found.\nYou have to install Adobe After Effects to be able to render After Effects compositions.";
         return false;
     }
 }
@@ -370,6 +397,18 @@ void FFmpeg::stdOutput()
     readyRead(output);
 }
 
+void FFmpeg::stdErrorAE()
+{
+    QString output = _aerender->readAllStandardError();
+    readyReadAE(output);
+}
+
+void FFmpeg::stdOutputAE()
+{
+    QString output = _aerender->readAllStandardOutput();
+    readyReadAE(output);
+}
+
 void FFmpeg::started()
 {
     _ffmpegOutput = "";
@@ -391,6 +430,25 @@ void FFmpeg::finished()
     }
 }
 
+void FFmpeg::startedAE()
+{
+    _aerenderOutput = "";
+}
+
+void FFmpeg::finishedAE()
+{
+    if (_status == AERendering)
+    {
+        //TODO update currentitem with rendered frames, and set it to render
+        //re-launch item
+        qDebug() << "aerender finished";
+    }
+    else
+    {
+        setStatus(Waiting);
+    }
+}
+
 void FFmpeg::errorOccurred(QProcess::ProcessError e)
 {
     QString error;
@@ -404,11 +462,11 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
     else if (e == QProcess::Timedout)
     {
-        error = "Operation timed out.";
+        error = "FFmpeg operation timed out.";
     }
     else if (e == QProcess::WriteError)
     {
-        error = "Write Error.";
+        error = "FFmpeg write Error.";
     }
     else if (e == QProcess::ReadError)
     {
@@ -416,7 +474,46 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
     else if (e == QProcess::UnknownError)
     {
-        error = "An unknown error occured.";
+        error = "An unknown FFmpeg error occured.";
+    }
+
+    if (_status == Encoding)
+    {
+        _currentItem->setStatus(FFQueueItem::Stopped);
+        _encodingHistory << _currentItem;
+    }
+
+    setStatus(Error);
+    _lastError = e;
+    emit processError(error);
+}
+
+void FFmpeg::errorOccurredAE(QProcess::ProcessError e)
+{
+    QString error;
+    if (e == QProcess::FailedToStart)
+    {
+        error = "Failed to start AERender.";
+    }
+    else if (e == QProcess::Crashed)
+    {
+        error = "AERender just crashed.";
+    }
+    else if (e == QProcess::Timedout)
+    {
+        error = "AERender operation timed out.";
+    }
+    else if (e == QProcess::WriteError)
+    {
+        error = "AERender write Error.";
+    }
+    else if (e == QProcess::ReadError)
+    {
+        error = "Cannot read AERender output.";
+    }
+    else if (e == QProcess::UnknownError)
+    {
+        error = "An unknown AERender error occured.";
     }
 
     if (_status == Encoding)
@@ -439,6 +536,44 @@ void FFmpeg::encodeNextItem()
     }
 
     _currentItem = _encodingQueue.takeAt(0);
+
+    //Check if there are AEP to render
+    foreach(FFMediaInfo *input,_currentItem->getInputMedias())
+    {
+        if (input->isAep())
+        {
+            QStringList arguments("-project");
+            arguments <<  QDir::toNativeSeparators(input->fileName());
+            if (input->aepCompName() != "")
+            {
+                arguments << "-comp" << input->aepCompName();
+            }
+            else if (input->aepRqindex() > 0)
+            {
+                arguments << "-rqindex" << QString::number(input->aepRqindex());
+            }
+            else
+            {
+                arguments << "-rqindex" << "1";
+            }
+
+            arguments << "-OMtemplate" << "# EXR";
+
+            emit debugInfo("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
+
+            //launch
+            _aerender->setArguments(arguments);
+            _aerender->start(QIODevice::ReadWrite);
+
+            _currentItem->setStatus(FFQueueItem::InProgress);
+            _startTime = QTime::currentTime();
+            emit encodingStarted(_currentItem);
+
+            return;
+        }
+    }
+
+    //if all aep are rendered, launch ffmpeg process
 
     //generate arguments
     QStringList arguments("-stats");
@@ -464,7 +599,7 @@ void FFmpeg::encodeNextItem()
             arguments << "-start_number" << QString::number(input->startNumber());
             inputFileName = convertSequenceName(inputFileName);
         }
-        //add crt
+        //add trc
         if (input->trc() != "")
         {
             arguments << "-apply_trc" << input->trc();
@@ -1001,7 +1136,7 @@ void FFmpeg::gotPixFormats(QString output)
 
 void FFmpeg::readyRead(QString output)
 {
-    emit newOutput(output);
+    emit newOutput("FFmpeg output: " + output);
 
     _ffmpegOutput = _ffmpegOutput + output;
 
@@ -1032,7 +1167,7 @@ void FFmpeg::readyRead(QString output)
         //time remaining
         //get current input duration
         //gets the current item duration
-        int duration = 0;
+        double duration = 0;
         foreach(FFMediaInfo *input,_currentItem->getInputMedias())
         {
             if (input->hasVideo())
@@ -1046,12 +1181,86 @@ void FFmpeg::readyRead(QString output)
             if (_currentFrame > 0)
             {
                 int elapsed = _startTime.elapsed() / 1000;
-                int remaining = elapsed*duration/_currentFrame - elapsed;
-                _timeRemaining = QTime(0,0,0).addSecs(remaining);
+                double remaining = elapsed*duration/_currentFrame - elapsed;
+                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
             }
         }
         emit progress();
     }
+
+}
+
+void FFmpeg::readyReadAE(QString output)
+{
+    emit newOutput("AERender output: " + output);
+
+    _aerenderOutput = _aerenderOutput + output;
+
+    //parse
+
+    //get current input
+    FFMediaInfo *input = _currentItem->getInputMedias().at(0);
+
+    //Duration
+    QRegularExpression reDuration("PROGRESS:  Duration: (\\d):(\\d\\d):(\\d\\d):(\\d\\d)");
+    QRegularExpressionMatch match = reDuration.match(output);
+    if (match.hasMatch())
+    {
+        int h = match.captured(1).toInt();
+        int m = match.captured(2).toInt();
+        int s = match.captured(3).toInt();
+        int i = match.captured(4).toInt();
+
+        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
+
+        input->setDurationH(h);
+        input->setDurationM(m);
+        input->setDurationS(s);
+        input->setDurationI(i);
+        input->setDuration(duration);
+    }
+
+    QRegularExpression reFrameRate("PROGRESS:  Frame Rate: (\\d+,\\d\\d)");
+    match = reFrameRate.match(output);
+    if (match.hasMatch())
+    {
+        double fr = match.captured(1).toDouble();
+
+        input->setVideoFramerate(fr);
+
+        int h = input->durationH();
+        int m = input->durationM();
+        double s = input->durationS();
+        int i = input->durationI();
+
+        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
+        input->setDuration(duration);
+    }
+
+    QRegularExpression reProgress("PROGRESS:  \\d:\\d\\d:\\d\\d:\\d\\d \\((\\d+)\\)");
+    match = reProgress.match(output);
+    if (match.hasMatch())
+    {
+        _currentFrame = match.captured(1).toInt();
+        //time remaining
+        //get current input duration
+        //gets the current item duration
+        double duration = input->duration() * input->videoFramerate();
+        if (duration > 0)
+        {
+            if (_currentFrame > 0)
+            {
+                int elapsed = _startTime.elapsed() / 1000;
+                double remaining = elapsed*duration/_currentFrame - elapsed;
+                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
+            }
+        }
+    }
+
+    //TODO get size and bitrate
+
+
+    emit progress();
 
 }
 

@@ -35,7 +35,9 @@ int main(int argc, char *argv[])
     //TODO auto find ffmpeg if no settings or path invalid
     //then save to settings
     FFmpeg *ffmpeg = new FFmpeg(settings.value("ffmpeg/path","ffmpeg.exe").toString());
-
+    splash.showMessage(message + "Loading After Effects Renderer");
+    //TODO autodetect
+    ffmpeg->setAERenderFileName(settings.value("aerender/path","C:\\Program Files\\Adobe\\Adobe After Effects CC 2018\\Support Files\\aerender.exe").toString());
 
     //build UI and show
     splash.showMessage(message + "Building UI");

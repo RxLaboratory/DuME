@@ -260,9 +260,34 @@ void InputWidget::on_trcBox_currentIndexChanged(int index)
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_compButton_toggled(bool checked)
+void InputWidget::on_compButton_clicked()
 {
-    compEdit->setEnabled(checked);
+    compEdit->setEnabled(true);
+    rqindexButton->setChecked(false);
+    compButton->setChecked(true);
+    rqindexBox->setEnabled(false);
+    _mediaInfo->setAepCompName(compEdit->text());
+}
+
+void InputWidget::on_compEdit_textEdited(const QString &arg1)
+{
+    _mediaInfo->setAepCompName(arg1);
+}
+
+void InputWidget::on_rqindexButton_clicked()
+{
+    rqindexBox->setEnabled(true);
+    compEdit->setEnabled(false);
+    compButton->setChecked(false);
+    rqindexButton->setChecked(true);
+    _mediaInfo->setAepRqindex(rqindexBox->value());
+    _mediaInfo->setAepCompName("");
+}
+
+void InputWidget::on_rqindexBox_valueChanged(int arg1)
+{
+    _mediaInfo->setAepRqindex(arg1);
+    _mediaInfo->setAepCompName("");
 }
 
 void InputWidget::on_threadsButton_toggled(bool checked)
@@ -282,6 +307,8 @@ void InputWidget::updateOptions()
     compEdit->hide();
     threadsBox->hide();
     threadsButton->hide();
+    rqindexButton->hide();
+    rqindexBox->hide();
 
     if (_mediaInfo->isImageSequence())
     {
@@ -297,10 +324,18 @@ void InputWidget::updateOptions()
         compEdit->show();
         threadsBox->show();
         threadsButton->show();
+        rqindexButton->show();
+        rqindexBox->show();
+        rqindexButton->setChecked(true);
+        compButton->setChecked(false);
+        rqindexBox->setEnabled(true);
+        compEdit->setEnabled(false);
         threadsBox->setValue(QThread::idealThreadCount());
     }
 
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
+
+
 

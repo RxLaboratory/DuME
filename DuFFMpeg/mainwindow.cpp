@@ -158,9 +158,9 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
 
             //adjust progress
             currentEncodingNameLabel->setText(inputFile.fileName());
-            float duration = 0.0;
             if (input->duration() > 0) progressBar->setMaximum(input->duration() * input->videoFramerate());
             else if (input->isImageSequence()) progressBar->setMaximum(input->frames().count());
+            else progressBar->setMaximum(0);
 
             break;
         }
@@ -170,6 +170,7 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
 void MainWindow::ffmpeg_finished(FFQueueItem *item)
 {
     progressBar->setValue(0);
+    progressBar->setMaximum(1);
     //TODO add item to history
 }
 
@@ -211,6 +212,7 @@ void MainWindow::ffmpeg_progress()
     //time elapsed
     QTime elapsed = ffmpeg->getElapsedTime();
     timeLabel->setText(elapsed.toString("hh:mm:ss"));
+
 #ifdef QT_DEBUG
     qDebug() << elapsed.toString("hh:mm:ss") << QString::number(outputSize) + " MB";
 #endif
