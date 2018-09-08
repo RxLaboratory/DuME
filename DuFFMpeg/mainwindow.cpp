@@ -234,6 +234,8 @@ void MainWindow::console(QString log)
     consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
     // put the slider at the bottom
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
+    //status bar
+    mainStatusBar->showMessage(log);
 }
 
 void MainWindow::debugLog(QString log, ErrorType type)
