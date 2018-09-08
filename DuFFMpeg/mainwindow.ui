@@ -513,7 +513,6 @@ p, li { white-space: pre-wrap; }
     <bool>false</bool>
    </attribute>
    <addaction name="actionSettings"/>
-   <addaction name="separator"/>
    <addaction name="actionGo"/>
    <addaction name="actionStop"/>
   </widget>

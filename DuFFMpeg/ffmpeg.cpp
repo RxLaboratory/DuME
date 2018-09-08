@@ -9,11 +9,13 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     _status = Waiting;
     _lastErrorMessage = "";
     _lastError = QProcess::UnknownError;
+    _debugBaseMessage = "";
 
     _ffmpeg = new QProcess(this);
-    setBinaryFileName(path);
 
     _aerender = new QProcess(this);
+
+    _aeInfo = new AERender(this);
 
     _currentFrame = 0;
     _startTime = QTime(0,0,0);
@@ -37,18 +39,20 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     connect(_aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
     connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
 
-#ifdef QT_DEBUG
-    qDebug() << "FFmpeg - Initialization";
-#endif
-    init();
+    //TODO auto find ffmpeg if no settings or path invalid
+    QSettings settings;
+
+    if (path == "") setBinaryFileName(settings.value("ffmpeg/path","ffmpeg.exe").toString(), false);
+    else setBinaryFileName(path, false);
+
 }
 
-bool FFmpeg::setBinaryFileName(QString path)
+bool FFmpeg::setBinaryFileName(QString path, bool initialize)
 {
     if(QFile(path).exists())
     {
         _ffmpeg->setProgram(path);
-        init();
+        if (initialize) init();
         emit binaryChanged();
         return true;
     }
@@ -57,6 +61,7 @@ bool FFmpeg::setBinaryFileName(QString path)
         setStatus(Error);
         emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
+        debug("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         return false;
     }
 }
@@ -100,7 +105,11 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {   
+
+
     //get pixFormats
+    _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
+    debug();
     _ffmpeg->setArguments(QStringList("-pix_fmts"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -109,6 +118,8 @@ void FFmpeg::init()
     }
 
     //get codecs
+    _debugBaseMessage = "FFmpeg initialization | Loading codecs";
+    debug();
     _ffmpeg->setArguments(QStringList("-codecs"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -117,6 +128,8 @@ void FFmpeg::init()
     }
 
     //get muxers
+    _debugBaseMessage = "FFmpeg initialization | Loading muxers";
+    debug();
     _ffmpeg->setArguments(QStringList("-formats"));
     _ffmpeg->start(QIODevice::ReadOnly);
     if (_ffmpeg->waitForFinished(10000))
@@ -125,6 +138,8 @@ void FFmpeg::init()
     }
 
     //get long help
+    _debugBaseMessage = "FFmpeg initialization | Loading documentation";
+    debug();
     QStringList args("-h");
     args << "long";
     _ffmpeg->setArguments(args);
@@ -140,6 +155,61 @@ void FFmpeg::init()
     if (_ffmpeg->waitForFinished(3000))
     {
         _help = _ffmpegOutput;
+    }
+
+    //After Effects
+    initAe();
+}
+
+void FFmpeg::initAe()
+{
+    QSettings settings;
+    //get AERender
+    _debugBaseMessage = "";
+    debug("Adobe After Effects Renderer initialization...");
+
+    _aeInfo->init();
+
+    //load After Effects
+    QList<AERenderObject *> aeRenders = _aeInfo->versions();
+    if (aeRenders.count() > 0)
+    {
+        if (settings.value("aerender/useLatest",true).toBool())
+        {
+            settings.setValue("aerender/path",QVariant(aeRenders.last()->path()));
+        }
+        else
+        {
+            QString preferredVersion = settings.value("aerender/version","Custom").toString();
+            bool found = false;
+            if (preferredVersion != "Custom")
+            {
+                for (int i = 0; i < aeRenders.count(); i++)
+                {
+                    if (aeRenders[i]->name() == preferredVersion)
+                    {
+                        settings.setValue("aerender/path",QVariant(aeRenders[i]->path()));
+                        found = true;
+                        break;
+                    }
+                }
+                //if not found, use latest
+                if (!found)
+                {
+                    settings.setValue("aerender/path",QVariant(aeRenders.last()->path()));
+                }
+            }
+        }
+        if (settings.value("aerender/path","") == "")
+        {
+            debug("Adobe After Effects Renderer not found. You may have to install Adobe After Effects to render After Effects compositions.");
+        }
+        else
+        {
+            debug("Adobe After Effects Renderer found at \n" + settings.value("aerender/path","").toString());
+        }
+
+        setAERenderFileName(settings.value("aerender/path","").toString());
     }
 }
 
@@ -441,7 +511,9 @@ void FFmpeg::finishedAE()
     {
         //TODO update currentitem with rendered frames, and set it to render
         //re-launch item
+#ifdef QT_DEBUG
         qDebug() << "aerender finished";
+#endif
     }
     else
     {
@@ -559,7 +631,7 @@ void FFmpeg::encodeNextItem()
 
             arguments << "-OMtemplate" << "# EXR";
 
-            emit debugInfo("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
+            debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
 
             //launch
             _aerender->setArguments(arguments);
@@ -799,7 +871,7 @@ void FFmpeg::encodeNextItem()
         arguments << outputPath;
     }
 
-    emit debugInfo("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
+    debug("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
 
     //launch
     _ffmpeg->setArguments(arguments);
@@ -814,6 +886,11 @@ void FFmpeg::setStatus(Status st)
 {
     _status = st;
     emit statusChanged(_status);
+}
+
+AERender *FFmpeg::getAeRender() const
+{
+    return _aeInfo;
 }
 
 QList<FFPixFormat *> FFmpeg::getPixFormats()
@@ -846,6 +923,9 @@ void FFmpeg::gotMuxers(QString output)
         {
             QString name = match.captured(1).trimmed();
             QString prettyName = match.captured(2).trimmed();
+
+            debug(" | " + name);
+
             // skip image sequence
             if (name == "image2") continue;
             FFMuxer *m = new FFMuxer(name,prettyName,this);
@@ -892,6 +972,8 @@ void FFmpeg::gotMuxers(QString output)
 
     //add image sequences
     QStringList extensions;
+
+    debug(" | Image sequences...");
 
     FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
     muxer->setSequence(true);
@@ -1001,6 +1083,8 @@ void FFmpeg::gotMuxers(QString output)
     muxer->setDefaultVideoCodec(getVideoEncoder("xbm"));
     _muxers << muxer;
 
+
+    debug(" | Sorting...");
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
 }
 
@@ -1022,8 +1106,10 @@ void FFmpeg::gotCodecs(QString output)
     _audioDecoders.clear();
 
     //add copy
+    debug(" | video copy");
     FFCodec *copyVideo = new FFCodec("copy","Copy video stream",FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _videoEncoders << copyVideo;
+    debug(" | audio copy");
     FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
@@ -1040,6 +1126,8 @@ void FFmpeg::gotCodecs(QString output)
             QString codecName = match.captured(7);
             QString codecPrettyName = match.captured(8);
             FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
+
+            debug(" | " + codecName);
 
             co->setDecoder(match.captured(1) == "D");
             co->setEncoder(match.captured(2) == "E");
@@ -1095,6 +1183,7 @@ void FFmpeg::gotCodecs(QString output)
         }
     }
 
+    debug(" | Sorting...");
     std::sort(_videoEncoders.begin(),_videoEncoders.end(),ffSorter);
     std::sort(_audioEncoders.begin(),_audioEncoders.end(),ffSorter);
 }
@@ -1120,6 +1209,8 @@ void FFmpeg::gotPixFormats(QString output)
             QString bpp = match.captured(8);
             FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
 
+            debug(" | " + name);
+
             pf->setInput(match.captured(1) == "I");
             pf->setOutput(match.captured(2) == "O");
             pf->setHardware(match.captured(3) == "H");
@@ -1130,6 +1221,7 @@ void FFmpeg::gotPixFormats(QString output)
         }
     }
 
+    debug(" | Sorting...");
     std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
 
 }
@@ -1193,6 +1285,8 @@ void FFmpeg::readyRead(QString output)
 void FFmpeg::readyReadAE(QString output)
 {
     emit newOutput("AERender output: " + output);
+
+    debug("AERender output: " + output);
 
     _aerenderOutput = _aerenderOutput + output;
 
@@ -1281,24 +1375,33 @@ QString FFmpeg::convertSequenceName(QString name)
     return name;
 }
 
+void FFmpeg::debug(QString message)
+{
+    message = _debugBaseMessage + message;
+#ifdef QT_DEBUG
+qDebug() << message;
+#endif
+emit debugInfo(message);
+}
+
 FFMediaInfo *FFmpeg::loadJson(QString json)
 {
     FFMediaInfo *mediaInfo = nullptr;
 
-    emit debugInfo("Loading preset");
+    debug("Loading preset");
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
 
     //validate file
     if (!jsonDoc.isObject())
     {
-        emit debugInfo("Invalid preset file");
+        debug("Invalid preset file");
         return mediaInfo;
     }
     QJsonObject mainObj = jsonDoc.object();
     if (mainObj.value("duffmpeg") == QJsonValue::Undefined)
     {
-        emit debugInfo("Invalid preset file - Cannot find Duffmpeg object");
+        debug("Invalid preset file - Cannot find Duffmpeg object");
         return mediaInfo;
     }
 
@@ -1306,16 +1409,16 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
     QJsonObject mediaObj = mainObj.value("duffmpeg").toObject();
     QString version = mediaObj.value("version").toString();
     //TODO Check version
-    emit debugInfo("Preset version: " + version);
+    debug("Preset version: " + version);
 
 
-    emit debugInfo("Getting media info...");
+    debug("Getting media info...");
     mediaInfo = new FFMediaInfo();
 
     //muxer
     QJsonObject muxerObj = mediaObj.value("muxer").toObject();
     QString muxerName = muxerObj.value("name").toString();
-    emit debugInfo("Muxer: " + muxerName);
+    debug("Muxer: " + muxerName);
     mediaInfo->setMuxer(getMuxer(muxerName));
     mediaInfo->setLoop(mediaObj.value("loop").toInt());
 
@@ -1325,7 +1428,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->setVideo(true);
         QJsonObject videoObj = mediaObj.value("video").toObject();
         QString codecName = videoObj.value("codecName").toString();
-        emit debugInfo("Video codec: " + codecName);
+        debug("Video codec: " + codecName);
         if (codecName != "default")
         {
             mediaInfo->setVideoCodec(getVideoEncoder(codecName));
@@ -1348,7 +1451,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->setAudio(true);
         QJsonObject audioObj = mediaObj.value("audio").toObject();
         QString codecName = audioObj.value("codecName").toString();
-        emit debugInfo("Audio codec: " + codecName);
+        debug("Audio codec: " + codecName);
         if (codecName != "default")
         {
             mediaInfo->setAudioCodec(getAudioEncoder(codecName));
@@ -1359,7 +1462,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
 
     //options
     QJsonArray options = mediaObj.value("options").toArray();
-    emit debugInfo("Custom options");
+    debug("Custom options");
     foreach(QJsonValue option,options)
     {
         QJsonObject optionObj = option.toObject();
@@ -1368,7 +1471,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
         mediaInfo->addFFmpegOption(opt);
     }
 
-    emit debugInfo("FFmpeg preset loaded");
+    debug("FFmpeg preset loaded");
 
     return mediaInfo;
 }
@@ -1377,10 +1480,10 @@ FFMediaInfo *FFmpeg::loadJsonFromFile(QString jsonFileName)
 {
     FFMediaInfo *mediaInfo = nullptr;
     QFile jsonFile(jsonFileName);
-    emit debugInfo("Opening preset file: " + jsonFileName);
+    debug("Opening preset file: " + jsonFileName);
     if (jsonFile.open(QIODevice::ReadOnly))
     {
-        emit debugInfo("File opened");
+        debug("File opened");
         mediaInfo = loadJson(jsonFile.readAll());
         jsonFile.close();
     }

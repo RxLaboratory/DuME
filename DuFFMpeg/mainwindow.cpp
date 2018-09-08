@@ -51,7 +51,7 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->installEventFilter(this);
 
     //settings widget
-    settingsWidget = new SettingsWidget(settings,this);
+    settingsWidget = new SettingsWidget(ffmpeg,this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     //queue widget

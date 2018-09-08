@@ -41,7 +41,10 @@ SOURCES += \
     ffmuxer.cpp \
     ffobject.cpp \
     ffpixformat.cpp \
-    ffbaseobject.cpp
+    ffbaseobject.cpp \
+    aerender.cpp \
+    aerenderobject.cpp \
+    splashscreen.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -59,7 +62,10 @@ HEADERS += \
     ffmuxer.h \
     ffobject.h \
     ffpixformat.h \
-    ffbaseobject.h
+    ffbaseobject.h \
+    aerender.h \
+    aerenderobject.h \
+    splashscreen.h
 
 FORMS += \
     mainwindow.ui \

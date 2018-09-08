@@ -7,12 +7,14 @@
 #include <QTime>
 #include <QDir>
 #include <algorithm>
+#include <QSettings>
 
 #include "ffcodec.h"
 #include "ffmediainfo.h"
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
+#include "aerender.h"
 
 class FFmpeg : public FFObject
 {
@@ -23,7 +25,7 @@ public:
      * @param path The path to the FFmpeg binary executable
      * @param parent The parent QObject
      */
-    explicit FFmpeg(QString path, QObject *parent = nullptr);
+    explicit FFmpeg(QString path = "", QObject *parent = nullptr);
 
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
@@ -208,6 +210,8 @@ public:
     FFMediaInfo *loadJson(QString json);
     FFMediaInfo *loadJsonFromFile(QString jsonFileName);
 
+    AERender *getAeRender() const;
+
 signals:
     /**
      * @brief newOutput Emitteed when FFmpeg outputs on stderr or stdoutput
@@ -250,7 +254,7 @@ public slots:
      * @param path The path to the binary executable file
      * @return true if the exe is found
      */
-    bool setBinaryFileName(QString path);
+    bool setBinaryFileName(QString path, bool initialize = true);
     /**
      * @brief setAERenderFileName Sets the path to the AErender binary
      * @param path The path to the binary executable file
@@ -289,12 +293,18 @@ private slots:
     //self
     void setStatus(Status st);
 
+    void initAe();
+
 private:
     //=== About FFmpeg ===
     /**
      * @brief ffmpeg The process used to handle the binary
      */
     QProcess *_ffmpeg;
+    /**
+     * @brief aeRender Info about the Ae renderer
+     */
+    AERender *_aeInfo;
     /**
      * @brief aerender The process used to handle the binary
      */
@@ -392,6 +402,9 @@ private:
      * @return
      */
     QString convertSequenceName(QString name);
+
+    QString _debugBaseMessage;
+    void debug(QString message = "");
 };
 
 #endif // FFMPEG_H
