@@ -3,8 +3,10 @@
 - [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)
     set output to temp EXR (done)
     set output path
+    if ae render queue, just render project
 - [ ] In finishedAE()
     update currentitem to be the rendered frames, set as non ae and relaunch
+    or if render queue, go to next item
 - [X] In readyReadAE() process aerender output
 
 # AE Installation
@@ -19,11 +21,16 @@
 
 # in main.cpp
 
-- [ ] Autodetect AE installation (latest) if set to always latest, or specified version
+- [X] Autodetect AE installation (latest) if set to always latest, or specified version
 
 # Output widget
 
 - [ ] No copy stream with aep
+- [ ] Disable everything if use ae render queue is checked
+
+# Input Widget
+
+- [ ] add "Use Ae Render Queue" option
 
 # Mainwindow
 
