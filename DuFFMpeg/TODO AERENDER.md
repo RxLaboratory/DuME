@@ -14,8 +14,8 @@
 # in settingswidget.cpp
 
 - [X] List installed AE (dropdown) with option for 'always use latest'
-- [ ] Custom aerender.exe path
-- [ ] Temp folder for ae render
+- [X] Custom aerender.exe path
+- [X] Temp folder for ae render
 
 # in main.cpp
 
