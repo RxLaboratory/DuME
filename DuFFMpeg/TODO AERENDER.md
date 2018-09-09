@@ -1,12 +1,12 @@
 # in ffmpeg.cpp
 
-- [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)
-    set output to temp EXR (done)
-    set output path (done)
-    launch audio process too
-    if ae render queue, just render project
-- [ ] In finishedAE()
-    update currentitem to be the rendered frames, set as non ae and relaunch
+- [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)  
+    set output to temp EXR _done_  
+    set output path _done_  
+    launch audio process too  
+    if ae render queue, just render project _done_
+- [ ] In finishedAE()  
+    update currentitem to be the rendered frames, set as non ae and relaunch  
     or if render queue, go to next item
 - [X] In readyReadAE() process aerender output
 - [ ] Implement multithreading (keep a 'QList<QProcess \*>')
@@ -28,11 +28,11 @@
 # Output widget
 
 - [ ] No copy stream with aep
-- [ ] Disable everything if use ae render queue is checked
+- [X] Disable everything if use ae render queue is checked
 
 # Input Widget
 
-- [ ] add "Use Ae Render Queue" option
+- [X] add "Use Ae Render Queue" option
 
 # Mainwindow
 
