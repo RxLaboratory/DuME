@@ -39,6 +39,7 @@ void FFMediaInfo::updateInfo(QString ffmpegOutput)
     _aepCompName = "";
     _aepNumThreads = 1;
     _aepRqindex = 1;
+    _aeUseRQueue = false;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -506,6 +507,16 @@ QTemporaryDir *FFMediaInfo::aepTempDir() const
 void FFMediaInfo::setAepTempDir(QTemporaryDir *aepTempDir)
 {
     _aepTempDir = aepTempDir;
+}
+
+bool FFMediaInfo::aeUseRQueue() const
+{
+    return _aeUseRQueue;
+}
+
+void FFMediaInfo::setAeUseRQueue(bool aeUseRQueue)
+{
+    _aeUseRQueue = aeUseRQueue;
 }
 
 int FFMediaInfo::aepRqindex() const

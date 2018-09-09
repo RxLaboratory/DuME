@@ -39,6 +39,8 @@ private slots:
 
     void on_rqindexBox_valueChanged(int arg1);
 
+    void on_aeRenderQueueButton_clicked();
+
 private:
     FFmpeg *ffmpeg;
     FFMediaInfo *_mediaInfo;

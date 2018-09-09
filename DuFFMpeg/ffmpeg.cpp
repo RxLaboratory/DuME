@@ -627,33 +627,37 @@ void FFmpeg::encodeNextItem()
     {
         if (input->isAep())
         {
-            QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
-            input->setAepTempDir(aeTempDir);
-
             QStringList arguments("-project");
             arguments <<  QDir::toNativeSeparators(input->fileName());
-            if (input->aepCompName() != "")
-            {
-                arguments << "-comp" << input->aepCompName();
-            }
-            else if (input->aepRqindex() > 0)
-            {
-                arguments << "-rqindex" << QString::number(input->aepRqindex());
-            }
-            else
-            {
-                arguments << "-rqindex" << "1";
-            }
 
-            arguments << "-OMtemplate" << "DuFFmpeg";
-            arguments << "-RStemplate" << "DuFFmpeg";
+            //if not using the existing render queue
+            if (!input->aeUseRQueue())
+            {
+                QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
+                input->setAepTempDir(aeTempDir);
 
-            QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
+                if (input->aepCompName() != "")
+                {
+                    arguments << "-comp" << input->aepCompName();
+                }
+                else if (input->aepRqindex() > 0)
+                {
+                    arguments << "-rqindex" << QString::number(input->aepRqindex());
+                }
+                else
+                {
+                    arguments << "-rqindex" << "1";
+                }
 
-            arguments << "-output" << tempPath;
+                arguments << "-OMtemplate" << "DuFFmpeg";
+                arguments << "-RStemplate" << "DuFFmpeg";
+
+                QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
+
+                arguments << "-output" << tempPath;
+            }
 
             debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
-            debug("After Effects outputs to " + tempPath);
 
             //launch
             _aerender->setArguments(arguments);

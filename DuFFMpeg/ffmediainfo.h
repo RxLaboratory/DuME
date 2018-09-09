@@ -117,6 +117,9 @@ public:
     QTemporaryDir *aepTempDir() const;
     void setAepTempDir(QTemporaryDir *aepTempDir);
 
+    bool aeUseRQueue() const;
+    void setAeUseRQueue(bool aeUseRQueue);
+
 signals:
 
 public slots:
@@ -157,6 +160,7 @@ private:
     QString _aepCompName;
     int _aepRqindex;
     QTemporaryDir *_aepTempDir;
+    bool _aeUseRQueue;
 
     void loadSequence();
 

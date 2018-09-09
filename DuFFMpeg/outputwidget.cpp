@@ -1221,7 +1221,15 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
         unmultButton->hide();
     }
 
-
+    //If ae render queue
+    if (input->isAep() && input->aeUseRQueue())
+    {
+        this->hide();
+    }
+    else
+    {
+        this->show();
+    }
 }
 
 void OutputWidget::loadPresets(QString userPath)

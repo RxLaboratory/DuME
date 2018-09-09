@@ -3,6 +3,7 @@
 - [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)
     set output to temp EXR (done)
     set output path (done)
+    launch audio process too
     if ae render queue, just render project
 - [ ] In finishedAE()
     update currentitem to be the rendered frames, set as non ae and relaunch

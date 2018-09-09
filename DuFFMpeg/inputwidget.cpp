@@ -266,7 +266,11 @@ void InputWidget::on_compButton_clicked()
     rqindexButton->setChecked(false);
     compButton->setChecked(true);
     rqindexBox->setEnabled(false);
+    aeRenderQueueButton->setChecked(false);
     _mediaInfo->setAepCompName(compEdit->text());
+    _mediaInfo->setAepRqindex(0);
+    _mediaInfo->setAeUseRQueue(false);
+    emit newMediaLoaded(_mediaInfo);
 }
 
 void InputWidget::on_compEdit_textEdited(const QString &arg1)
@@ -280,8 +284,11 @@ void InputWidget::on_rqindexButton_clicked()
     compEdit->setEnabled(false);
     compButton->setChecked(false);
     rqindexButton->setChecked(true);
+    aeRenderQueueButton->setChecked(false);
     _mediaInfo->setAepRqindex(rqindexBox->value());
     _mediaInfo->setAepCompName("");
+    _mediaInfo->setAeUseRQueue(false);
+    emit newMediaLoaded(_mediaInfo);
 }
 
 void InputWidget::on_rqindexBox_valueChanged(int arg1)
@@ -289,6 +296,18 @@ void InputWidget::on_rqindexBox_valueChanged(int arg1)
     _mediaInfo->setAepRqindex(arg1);
     _mediaInfo->setAepCompName("");
 }
+
+void InputWidget::on_aeRenderQueueButton_clicked()
+{
+    compEdit->setEnabled(false);
+    rqindexButton->setChecked(false);
+    compButton->setChecked(false);
+    rqindexBox->setEnabled(false);
+    aeRenderQueueButton->setChecked(true);
+    _mediaInfo->setAeUseRQueue(true);
+    emit newMediaLoaded(_mediaInfo);
+}
+
 
 void InputWidget::on_threadsButton_toggled(bool checked)
 {
@@ -309,6 +328,7 @@ void InputWidget::updateOptions()
     threadsButton->hide();
     rqindexButton->hide();
     rqindexBox->hide();
+    aeRenderQueueButton->hide();
 
     if (_mediaInfo->isImageSequence())
     {
@@ -331,11 +351,14 @@ void InputWidget::updateOptions()
         rqindexBox->setEnabled(true);
         compEdit->setEnabled(false);
         threadsBox->setValue(QThread::idealThreadCount());
+        aeRenderQueueButton->show();
+        aeRenderQueueButton->setChecked(false);
     }
 
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
+
 
 
 
