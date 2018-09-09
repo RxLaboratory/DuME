@@ -41,6 +41,10 @@ private slots:
 
     void on_aeRenderQueueButton_clicked();
 
+    void on_threadsBox_valueChanged(int arg1);
+
+    void on_aeRenderQueueButton_toggled(bool checked);
+
 private:
     FFmpeg *ffmpeg;
     FFMediaInfo *_mediaInfo;

@@ -308,10 +308,29 @@ void InputWidget::on_aeRenderQueueButton_clicked()
     emit newMediaLoaded(_mediaInfo);
 }
 
+void InputWidget::on_aeRenderQueueButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        threadsButton->setChecked(false);
+        threadsBox->setValue(1);
+    }
+    else if (!threadsButton->isChecked())
+    {
+        threadsBox->setValue(QThread::idealThreadCount());
+    }
+}
 
 void InputWidget::on_threadsButton_toggled(bool checked)
 {
     threadsBox->setEnabled(checked);
+    if (!checked && aeRenderQueueButton->isChecked()) threadsBox->setValue(1);
+    else threadsBox->setValue(QThread::idealThreadCount());
+}
+
+void InputWidget::on_threadsBox_valueChanged(int arg1)
+{
+    _mediaInfo->setAepNumThreads(arg1);
 }
 
 void InputWidget::updateOptions()
@@ -350,6 +369,7 @@ void InputWidget::updateOptions()
         compButton->setChecked(false);
         rqindexBox->setEnabled(true);
         compEdit->setEnabled(false);
+        threadsButton->setChecked(false);
         threadsBox->setValue(QThread::idealThreadCount());
         aeRenderQueueButton->show();
         aeRenderQueueButton->setChecked(false);
@@ -358,7 +378,3 @@ void InputWidget::updateOptions()
     //uncheck what is hidden
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
 }
-
-
-
-
