@@ -28,11 +28,11 @@
 # Output widget
 
 - [ ] No copy stream with aep
-- [ ] Disable everything if use ae render queue is checked
+- [X] Disable everything if use ae render queue is checked
 
 # Input Widget
 
-- [ ] add "Use Ae Render Queue" option
+- [X] add "Use Ae Render Queue" option
 
 # Mainwindow
 
