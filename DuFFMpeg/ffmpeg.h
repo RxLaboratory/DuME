@@ -312,7 +312,11 @@ private:
     /**
      * @brief aerender The process used to handle the binary
      */
-    QProcess *_aerender;
+    QList<QProcess *> _aerenders;
+    /**
+     * @brief _aerenderPath The path to aerender
+     */
+    QString _aerenderPath;
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */

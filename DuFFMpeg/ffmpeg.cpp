@@ -14,9 +14,9 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
     _ffmpeg = new QProcess(this);
 
-    _aerender = new QProcess(this);
-
     _aeInfo = new AERender(this);
+
+    _aerenderPath = "";
 
     _currentFrame = 0;
     _startTime = QTime(0,0,0);
@@ -33,12 +33,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     connect(_ffmpeg,SIGNAL(started()),this,SLOT(started()));
     connect(_ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
     connect(_ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
-
-    connect(_aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
-    connect(_aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
-    connect(_aerender,SIGNAL(started()),this,SLOT(startedAE()));
-    connect(_aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
-    connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
 
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
@@ -71,7 +65,7 @@ bool FFmpeg::setAERenderFileName(QString path)
 {
     if(QFile(path).exists())
     {
-        _aerender->setProgram(path);
+        _aerenderPath = path;
         return true;
     }
     else
@@ -476,13 +470,15 @@ void FFmpeg::stdOutput()
 
 void FFmpeg::stdErrorAE()
 {
-    QString output = _aerender->readAllStandardError();
+    QProcess* aerender = qobject_cast<QProcess*>(sender());
+    QString output = aerender->readAllStandardError();
     readyReadAE(output);
 }
 
 void FFmpeg::stdOutputAE()
 {
-    QString output = _aerender->readAllStandardOutput();
+    QProcess* aerender = qobject_cast<QProcess*>(sender());
+    QString output = aerender->readAllStandardOutput();
     readyReadAE(output);
 }
 
@@ -516,15 +512,51 @@ void FFmpeg::finishedAE()
 {
     if (_status == AERendering)
     {
-        //TODO update currentitem with rendered frames, and set it to render
-        //re-launch item
+        //check which processes have finished
+        QList<int> finishedProcesses;
+        QString debugFinishedProcesses = "Finished After Effects renderer threads: ";
+        for(int i = 0; i < _aerenders.count(); i++)
+        {
+            if(_aerenders[i]->state() == QProcess::NotRunning)
+            {
+                finishedProcesses << i;
+                if (i > 0) debugFinishedProcesses += ", ";
+                debugFinishedProcesses += QString::number(i);
+            }
+        }
 
-       FFMediaInfo *input = _currentItem->getInputMedias()[0];
-       QTemporaryDir *aeTempDir = input->aepTempDir();
-       input->setAepTempDir(nullptr);
-       delete aeTempDir;
+        debug(debugFinishedProcesses);
 
-       debug("After Effects Render process successfully finished");
+        //if all processes have finished
+        if (finishedProcesses.count() == _aerenders.count())
+        {
+            //remove all processes
+            qDebug() << _aerenders.count();
+            while(_aerenders.count() > 0)
+            {
+                QProcess *aerender = _aerenders.takeLast();
+                aerender->deleteLater();
+            }
+
+            //TODO update currentitem with rendered frames, and set it to render
+            //re-launch item
+
+           FFMediaInfo *input = _currentItem->getInputMedias()[0];
+           if (!input->aeUseRQueue())
+           {
+               QTemporaryDir *aeTempDir = input->aepTempDir();
+               input->setAepTempDir(nullptr);
+               delete aeTempDir;
+           }
+
+           debug("After Effects Render process successfully finished");
+
+           _currentItem->setStatus(FFQueueItem::Finished);
+           emit encodingFinished(_currentItem);
+           //move to history
+           _encodingHistory << _currentItem;
+           encodeNextItem();
+        }
     }
     else
     {
@@ -659,9 +691,26 @@ void FFmpeg::encodeNextItem()
 
             debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
 
-            //launch
-            _aerender->setArguments(arguments);
-            _aerender->start(QIODevice::ReadWrite);
+            //launch processes
+            for (int i = 0; i < input->aepNumThreads(); i++)
+            {
+                //create process
+                QProcess *aerender = new QProcess(this);
+                connect(aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
+                connect(aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
+                connect(aerender,SIGNAL(started()),this,SLOT(startedAE()));
+                connect(aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
+                connect(aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
+
+                //launch
+                aerender->setProgram(_aerenderPath);
+                aerender->setArguments(arguments);
+                aerender->start(QIODevice::ReadWrite);
+
+                //TODO check processor affinity
+
+                _aerenders << aerender;
+            }
 
             _currentItem->setStatus(FFQueueItem::InProgress);
             _startTime = QTime::currentTime();
@@ -1406,10 +1455,7 @@ QString FFmpeg::convertSequenceName(QString name)
 void FFmpeg::debug(QString message)
 {
     message = _debugBaseMessage + message;
-#ifdef QT_DEBUG
-qDebug() << message;
-#endif
-emit debugInfo(message);
+    emit debugInfo(message);
 }
 
 FFMediaInfo *FFmpeg::loadJson(QString json)
