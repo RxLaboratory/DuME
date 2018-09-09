@@ -1,7 +1,7 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#define INIT_FFMPEG false
+#define INIT_FFMPEG true
 #define INIT_AE true
 
 #include "ffobject.h"

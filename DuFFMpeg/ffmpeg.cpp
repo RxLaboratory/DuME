@@ -491,6 +491,13 @@ void FFmpeg::finished()
 {
     if (_status == Encoding)
     {
+        //TODO remove ae cache
+        /*
+               QTemporaryDir *aeTempDir = input->aepTempDir();
+               input->setAepTempDir(nullptr);
+               delete aeTempDir;
+               */
+
         _currentItem->setStatus(FFQueueItem::Finished);
         emit encodingFinished(_currentItem);
         //move to history
@@ -531,31 +538,54 @@ void FFmpeg::finishedAE()
         if (finishedProcesses.count() == _aerenders.count())
         {
             //remove all processes
-            qDebug() << _aerenders.count();
             while(_aerenders.count() > 0)
             {
                 QProcess *aerender = _aerenders.takeLast();
                 aerender->deleteLater();
             }
 
-            //TODO update currentitem with rendered frames, and set it to render
-            //re-launch item
 
            FFMediaInfo *input = _currentItem->getInputMedias()[0];
+           //encode rendered EXR
            if (!input->aeUseRQueue())
            {
-               QTemporaryDir *aeTempDir = input->aepTempDir();
-               input->setAepTempDir(nullptr);
-               delete aeTempDir;
+               debug("After Effects Render process successfully finished");
+
+               //set exr
+               //get one file
+               QString aeTempPath = input->aepTempDir()->path();
+               QDir aeTempDir(aeTempPath);
+               QStringList filters("Duffmpeg_*.exr");
+               QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
+               if (files.count() == 0)
+               {
+                   _currentItem->setStatus(FFQueueItem::AEError);
+                   emit encodingFinished(_currentItem);
+                   //move to history
+                   _encodingHistory << _currentItem;
+                   encodeNextItem();
+                   return;
+               }
+               //set file and relaunch
+               QString prevTrc = input->trc();
+               double frameRate = input->videoFramerate();
+               input->updateInfo(getMediaInfoString(aeTempPath + "/" + files[0]));
+               if (prevTrc == "") input->setTrc("gamma22");
+               else input->setTrc(prevTrc);
+               input->setVideoFramerate(frameRate);
+               //reInsert at first place in renderqueue
+               _encodingQueue.insert(0,_currentItem);
+               encodeNextItem();
            }
-
-           debug("After Effects Render process successfully finished");
-
-           _currentItem->setStatus(FFQueueItem::Finished);
-           emit encodingFinished(_currentItem);
-           //move to history
-           _encodingHistory << _currentItem;
-           encodeNextItem();
+           //finished
+           else
+           {
+               _currentItem->setStatus(FFQueueItem::Finished);
+               emit encodingFinished(_currentItem);
+               //move to history
+               _encodingHistory << _currentItem;
+               encodeNextItem();
+           }
         }
     }
     else

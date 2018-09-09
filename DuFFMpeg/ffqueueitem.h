@@ -16,7 +16,7 @@ public:
     /**
      * @brief The Status enum Used to describe the current status of the item
      */
-    enum Status { Waiting, InProgress, Finished, Stopped };
+    enum Status { Waiting, InProgress, Finished, Stopped, AEError, Error };
     Q_ENUM(Status)
 
     QList<FFMediaInfo*> getInputMedias();

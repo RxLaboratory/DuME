@@ -88,6 +88,7 @@ private:
     FFMuxer *_currentMuxer;
     FFCodec *_currentVideoCodec;
     FFCodec *_currentAudioCodec;
+    bool _inputHasAlpha;
 
     bool _freezeUI;
     bool _loadingPreset;

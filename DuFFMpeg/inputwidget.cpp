@@ -373,6 +373,10 @@ void InputWidget::updateOptions()
         threadsBox->setValue(QThread::idealThreadCount());
         aeRenderQueueButton->show();
         aeRenderQueueButton->setChecked(false);
+
+        frameRateButton->show();
+        frameRateBox->show();
+        frameRateEdit->show();
     }
 
     //uncheck what is hidden

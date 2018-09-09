@@ -19,6 +19,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     _currentMuxer = nullptr;
     _currentAudioCodec = nullptr;
     _currentVideoCodec = nullptr;
+    _inputHasAlpha = false;
 
     //populate sampling box
     //TODO Get from ffmpeg
@@ -773,6 +774,14 @@ void OutputWidget::on_presetsFilterBox_activated(int index)
 void OutputWidget::on_alphaButton_toggled(bool checked)
 {
     ffmpeg_loadPixFmts(true);
+    if (_inputHasAlpha && checked)
+    {
+        unmultButton->show();
+    }
+    else
+    {
+        unmultButton->hide();
+    }
 }
 
 void OutputWidget::aspectRatio()
@@ -926,6 +935,8 @@ void OutputWidget::updateVideoOptions()
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
+    //unmult
+    unmultButton->hide();
 
     //AUDIO
     //codec
@@ -1012,6 +1023,7 @@ void OutputWidget::updateVideoOptions()
     if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
     if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
     if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
+    if (unmultButton->isHidden()) unmultButton->setChecked(false);
 }
 
 void OutputWidget::addNewParam(QString name, QString value)
@@ -1213,12 +1225,29 @@ void OutputWidget::newInputMedia(FFMediaInfo *input)
 
     if (input->pixFormat() != nullptr)
     {
-        if (input->pixFormat()->hasAlpha()) unmultButton->show();
-        else unmultButton->hide();
+        if (input->pixFormat()->hasAlpha())
+        {
+            _inputHasAlpha = true;
+            if (alphaButton->isChecked()) unmultButton->show();
+            else unmultButton->hide();
+        }
+        else
+        {
+            _inputHasAlpha = false;
+            unmultButton->hide();
+        }
     }
     else
     {
+        _inputHasAlpha = false;
         unmultButton->hide();
+    }
+
+    if (input->isAep())
+    {
+        _inputHasAlpha = true;
+        if (alphaButton->isChecked()) unmultButton->show();
+        else unmultButton->hide();
     }
 
     //If ae render queue

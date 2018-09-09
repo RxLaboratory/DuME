@@ -88,6 +88,6 @@ void FFQueueItem::setStatus(Status st)
     emit statusChanged(_status);
     if (_status == InProgress) emit encodingStarted();
     else if (_status == Finished) emit encodingFinished();
-    else if (_status == Stopped) emit encodingStopped();
+    else if (_status == Stopped || _status == Error || _status == AEError) emit encodingStopped();
     else if (_status == Waiting) emit queued();
 }
