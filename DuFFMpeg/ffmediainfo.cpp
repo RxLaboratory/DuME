@@ -4,6 +4,8 @@
 
 FFMediaInfo::FFMediaInfo(QString ffmpegOutput, QObject *parent) : FFObject(parent)
 {
+
+    _aepTempDir = nullptr;
     updateInfo(ffmpegOutput);
 }
 
@@ -494,6 +496,16 @@ int FFMediaInfo::durationI() const
 void FFMediaInfo::setDurationI(int durationI)
 {
     _durationI = durationI;
+}
+
+QTemporaryDir *FFMediaInfo::aepTempDir() const
+{
+    return _aepTempDir;
+}
+
+void FFMediaInfo::setAepTempDir(QTemporaryDir *aepTempDir)
+{
+    _aepTempDir = aepTempDir;
 }
 
 int FFMediaInfo::aepRqindex() const

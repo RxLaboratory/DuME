@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QFileInfo>
 #include <QDir>
+#include <QTemporaryDir>
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
@@ -113,6 +114,9 @@ public:
     int durationI() const;
     void setDurationI(int durationI);
 
+    QTemporaryDir *aepTempDir() const;
+    void setAepTempDir(QTemporaryDir *aepTempDir);
+
 signals:
 
 public slots:
@@ -152,6 +156,7 @@ private:
     int _aepNumThreads;
     QString _aepCompName;
     int _aepRqindex;
+    QTemporaryDir *_aepTempDir;
 
     void loadSequence();
 

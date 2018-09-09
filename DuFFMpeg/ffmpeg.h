@@ -1,6 +1,9 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
+#define INIT_FFMPEG false
+#define INIT_AE true
+
 #include "ffobject.h"
 
 #include <QProcess>
@@ -8,6 +11,7 @@
 #include <QDir>
 #include <algorithm>
 #include <QSettings>
+#include <QTemporaryDir>
 
 #include "ffcodec.h"
 #include "ffmediainfo.h"

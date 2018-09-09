@@ -4,6 +4,7 @@
 #include <QDebug>
 #endif
 
+
 FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 {
     _status = Waiting;
@@ -105,7 +106,7 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {   
-
+#if INIT_FFMPEG
 
     //get pixFormats
     _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
@@ -157,12 +158,16 @@ void FFmpeg::init()
         _help = _ffmpegOutput;
     }
 
+#endif
+
     //After Effects
     initAe();
 }
 
 void FFmpeg::initAe()
 {
+#if INIT_AE
+
     QSettings settings;
     //get AERender
     _debugBaseMessage = "";
@@ -211,6 +216,8 @@ void FFmpeg::initAe()
 
         setAERenderFileName(settings.value("aerender/path","").toString());
     }
+
+#endif
 }
 
 QList<FFMuxer *> FFmpeg::getMuxers()
@@ -511,9 +518,13 @@ void FFmpeg::finishedAE()
     {
         //TODO update currentitem with rendered frames, and set it to render
         //re-launch item
-#ifdef QT_DEBUG
-        qDebug() << "aerender finished";
-#endif
+
+       FFMediaInfo *input = _currentItem->getInputMedias()[0];
+       QTemporaryDir *aeTempDir = input->aepTempDir();
+       input->setAepTempDir(nullptr);
+       delete aeTempDir;
+
+       debug("After Effects Render process successfully finished");
     }
     else
     {
@@ -601,6 +612,8 @@ void FFmpeg::errorOccurredAE(QProcess::ProcessError e)
 
 void FFmpeg::encodeNextItem()
 {
+    QSettings settings;
+
     if (_encodingQueue.count() == 0)
     {
         setStatus(Waiting);
@@ -614,6 +627,9 @@ void FFmpeg::encodeNextItem()
     {
         if (input->isAep())
         {
+            QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
+            input->setAepTempDir(aeTempDir);
+
             QStringList arguments("-project");
             arguments <<  QDir::toNativeSeparators(input->fileName());
             if (input->aepCompName() != "")
@@ -629,9 +645,15 @@ void FFmpeg::encodeNextItem()
                 arguments << "-rqindex" << "1";
             }
 
-            arguments << "-OMtemplate" << "# EXR";
+            arguments << "-OMtemplate" << "DuFFmpeg";
+            arguments << "-RStemplate" << "DuFFmpeg";
+
+            QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
+
+            arguments << "-output" << tempPath;
 
             debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
+            debug("After Effects outputs to " + tempPath);
 
             //launch
             _aerender->setArguments(arguments);
@@ -639,6 +661,8 @@ void FFmpeg::encodeNextItem()
 
             _currentItem->setStatus(FFQueueItem::InProgress);
             _startTime = QTime::currentTime();
+
+            setStatus(AERendering);
             emit encodingStarted(_currentItem);
 
             return;

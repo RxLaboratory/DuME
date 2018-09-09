@@ -16,9 +16,11 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
 
-    QString defaultTemp = QDir::toNativeSeparators(QDir::tempPath() + "/" + qApp->applicationName());
+    QString defaultTemp = QDir::tempPath() + "/" + qApp->applicationName() + "/";
     defaultTemp = QDir::toNativeSeparators(defaultTemp);
-    aeCacheEdit->setText(settings.value("aerender/cache",defaultTemp).toString());
+    QString settingsTemp = settings.value("aerender/cache",defaultTemp).toString();
+    if (QDir(settingsTemp).exists() && settingsTemp != "") aeCacheEdit->setText(settingsTemp);
+    else aeCacheEdit->setText(defaultTemp);
     QString aerenderPath = settings.value("aerender/path","").toString();
     if (aerenderPath == "") aerenderPath = "Not Found! You may need to install Adobe After Effects.";
     aerenderPath = QDir::toNativeSeparators(aerenderPath);
@@ -161,13 +163,18 @@ void SettingsWidget::newAePath()
 
 void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 {
-    QString path = QDir::toNativeSeparators(arg1);
+    if (_freezeUI) return;
+    _freezeUI = true;
+    QString path = arg1;
+    if (!path.endsWith("/") || !path.endsWith("\\")) path = path + "/";
+    path = QDir::toNativeSeparators(path);
 
     if (QDir(arg1).exists())
     {
         settings.setValue("aerender/cache",QVariant(path));
         aeCacheEdit->setText(path);
     }
+    _freezeUI = false;
 }
 
 void SettingsWidget::on_aeCacheBrowseButton_clicked()
