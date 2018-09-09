@@ -1,8 +1,8 @@
 # in ffmpeg.cpp
 
 - [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)  
-    set output to temp EXR (done)  
-    set output path (done)  
+    set output to temp EXR _done_  
+    set output path _done_  
     launch audio process too  
     if ae render queue, just render project
 - [ ] In finishedAE()  
