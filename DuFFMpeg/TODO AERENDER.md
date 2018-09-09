@@ -4,7 +4,7 @@
     set output to temp EXR _done_  
     set output path _done_  
     launch audio process too  
-    if ae render queue, just render project
+    if ae render queue, just render project _done_
 - [ ] In finishedAE()  
     update currentitem to be the rendered frames, set as non ae and relaunch  
     or if render queue, go to next item
