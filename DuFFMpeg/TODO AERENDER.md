@@ -2,12 +2,13 @@
 
 - [ ] In encodeNextItem(), if is AE, launch AE render (ignore if ae not installed)
     set output to temp EXR (done)
-    set output path
+    set output path (done)
     if ae render queue, just render project
 - [ ] In finishedAE()
     update currentitem to be the rendered frames, set as non ae and relaunch
     or if render queue, go to next item
 - [X] In readyReadAE() process aerender output
+- [ ] Implement multithreading (keep a 'QList<QProcess \*>')
 
 # AE Installation
 
