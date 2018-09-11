@@ -89,6 +89,7 @@ public:
      * @return The longer version of the documentation
      */
     QString getLongHelp();
+    AERenderObject *getAERenderObject(QString aeRenderFileName);
     /**
      * @brief getMediaInfo Gets the information for the media
      * @param mediaPath The path to the media file
@@ -158,6 +159,8 @@ public:
      * @return The status
      */
     Status getStatus();
+    AERenderObject *getCurrentAeRender() const;
+    AERender *getAeRender() const;
     /**
      * @brief encode Launches the encoding of the current queue
      */
@@ -214,7 +217,6 @@ public:
     FFMediaInfo *loadJson(QString json);
     FFMediaInfo *loadJsonFromFile(QString jsonFileName);
 
-    AERender *getAeRender() const;
 
 signals:
     /**
@@ -265,6 +267,7 @@ public slots:
      * @return true if the exe is found
      */
     bool setAERenderFileName(QString path);
+    void setCurrentAeRender(AERenderObject *currentAeRender);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
@@ -317,6 +320,9 @@ private:
      * @brief _aerenderPath The path to aerender
      */
     QString _aerenderPath;
+    AERenderObject *_currentAeRender;
+    QFileInfoList _aeRenderSettings;
+    QFileInfoList _aeOutputModules;
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */

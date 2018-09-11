@@ -23,13 +23,9 @@ public slots:
     void init();
 
 private slots:
-    void stdErrorAE();
-    void stdOutputAE();
-    void errorOccurredAE(QProcess::ProcessError e);
+
 private:
     QList<AERenderObject *> _versions;
-    QProcess *_aerender;
-    QString _aeOutput;
 
     void findAeVersions(QString dir);
 };

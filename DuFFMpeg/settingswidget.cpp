@@ -158,6 +158,8 @@ void SettingsWidget::on_aerenderBrowseButton_clicked()
 
 void SettingsWidget::newAePath()
 {
+    //check version and set
+
     _ffmpeg->setAERenderFileName(aerenderPathEdit->text());
 }
 

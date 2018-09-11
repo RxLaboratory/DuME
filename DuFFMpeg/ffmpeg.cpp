@@ -66,6 +66,8 @@ bool FFmpeg::setAERenderFileName(QString path)
     if(QFile(path).exists())
     {
         _aerenderPath = path;
+        //get AERenderObject
+        _currentAeRender = getAERenderObject(path);
         return true;
     }
     else
@@ -214,6 +216,16 @@ void FFmpeg::initAe()
 #endif
 }
 
+AERenderObject *FFmpeg::getCurrentAeRender() const
+{
+    return _currentAeRender;
+}
+
+void FFmpeg::setCurrentAeRender(AERenderObject *currentAeRender)
+{
+    _currentAeRender = currentAeRender;
+}
+
 QList<FFMuxer *> FFmpeg::getMuxers()
 {
     return _muxers;
@@ -301,6 +313,20 @@ QString FFmpeg::getHelp()
 QString FFmpeg::getLongHelp()
 {
     return _longHelp;
+}
+
+AERenderObject *FFmpeg::getAERenderObject(QString aeRenderFileName)
+{
+    foreach(AERenderObject *ae, _aeInfo->versions())
+    {
+        if (ae->path() == aeRenderFileName)
+        {
+            return ae;
+        }
+    }
+    AERenderObject *ae = new AERenderObject(aeRenderFileName);
+    ae->init();
+    return ae;
 }
 
 FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
@@ -555,7 +581,7 @@ void FFmpeg::finishedAE()
                //get one file
                QString aeTempPath = input->aepTempDir()->path();
                QDir aeTempDir(aeTempPath);
-               QStringList filters("Duffmpeg_*.exr");
+               QStringList filters("Duffmpeg_*.psd");
                QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
                if (files.count() == 0)
                {
@@ -692,9 +718,24 @@ void FFmpeg::encodeNextItem()
             QStringList arguments("-project");
             arguments <<  QDir::toNativeSeparators(input->fileName());
 
+            bool removeForceEnglish = false;
+#ifdef Q_OS_WIN
+            QFile aeForceEnglish(QDir::homePath() + "/Documents/ae_force_english.txt");
+#elif Q_OS_MAC
+
+#endif
+
             //if not using the existing render queue
             if (!input->aeUseRQueue())
             {
+                //set Ae in Engish to be able to use output modules templates
+                removeForceEnglish = !aeForceEnglish.exists();
+                if (!aeForceEnglish.exists())
+                {
+                    aeForceEnglish.open(QIODevice::Text | QIODevice::WriteOnly);
+                    aeForceEnglish.close();
+                }
+
                 QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
                 input->setAepTempDir(aeTempDir);
 
@@ -711,8 +752,8 @@ void FFmpeg::encodeNextItem()
                     arguments << "-rqindex" << "1";
                 }
 
-                arguments << "-OMtemplate" << "DuFFmpeg";
-                arguments << "-RStemplate" << "DuFFmpeg";
+                arguments << "-OMtemplate" << "Multi-Machine Sequence";
+                arguments << "-RStemplate" << "Multi-Machine Settings";
 
                 QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
 
@@ -747,6 +788,8 @@ void FFmpeg::encodeNextItem()
 
             setStatus(AERendering);
             emit encodingStarted(_currentItem);
+
+            //if (removeForceEnglish) aeForceEnglish.remove();
 
             return;
         }
