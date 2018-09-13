@@ -182,6 +182,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         actionStop->setEnabled(false);
         mainStatusBar->clearMessage();
         statusLabel->setText("Ready.");
+        actionStatus->setText("Ready");
+        debugLog("== WAITING ==");
     }
     else if (status == FFmpeg::Encoding)
     {
@@ -189,12 +191,32 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         actionStop->setEnabled(true);
         mainStatusBar->clearMessage();
         statusLabel->setText("Transcoding...");
+        actionStatus->setText("Transcoding...");
+        debugLog("== TRANSCODING ==");
     }
     else if (status == FFmpeg::Error)
     {
         actionGo->setEnabled(true);
         actionStop->setEnabled(false);
         statusLabel->setText("Ready.");
+        actionStatus->setText("An error occured");
+        debugLog("== AN ERROR OCCURED ==");
+    }
+    else if (status == FFmpeg::AERendering)
+    {
+        actionGo->setEnabled(false);
+        actionStop->setEnabled(true);
+        statusLabel->setText("Rendering.");
+        actionStatus->setText("Rendering (Ae)...");
+        debugLog("== RENDERING (Ae) ==");
+    }
+    else if (status == FFmpeg::Cleaning)
+    {
+        actionGo->setEnabled(false);
+        actionStop->setEnabled(true);
+        statusLabel->setText("Cleaning.");
+        actionStatus->setText("Cleaning...");
+        debugLog("== CLEANING ==");
     }
 }
 
