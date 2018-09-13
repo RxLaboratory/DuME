@@ -18,6 +18,7 @@ public:
     AERender(QObject *parent = nullptr);
 
     QList<AERenderObject *> versions() const;
+    AERenderObject *getAERenderObject(QString aeRenderFileName);
 
 public slots:
     void init();

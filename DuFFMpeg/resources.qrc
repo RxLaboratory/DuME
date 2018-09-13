@@ -45,4 +45,9 @@
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>
     </qresource>
+    <qresource prefix="/after-effects">
+        <file alias="output">resources/after-effects/-indep-output</file>
+        <file alias="render">resources/after-effects/-indep-render</file>
+        <file alias="cs6-prefs">resources/after-effects/Adobe After Effects 11.0-x64 Prefs</file>
+    </qresource>
 </RCC>

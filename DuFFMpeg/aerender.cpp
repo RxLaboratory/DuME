@@ -34,6 +34,28 @@ bool aeVersionSorter(AERenderObject *v1, AERenderObject *v2)
     return true;
 }
 
+AERenderObject *AERender::getAERenderObject(QString aeRenderFileName)
+{
+    foreach(AERenderObject *ae, _versions)
+    {
+        if (ae->path() == aeRenderFileName)
+        {
+            return ae;
+        }
+    }
+
+    AERenderObject *ae = new AERenderObject(aeRenderFileName);
+    ae->init();
+    if (ae->isValid())
+    {
+        _versions << ae;
+        //sort
+        std::sort(_versions.begin(),_versions.end(),aeVersionSorter);
+    }
+
+    return ae;
+}
+
 void AERender::init()
 {
     //get aerender paths
@@ -54,7 +76,6 @@ void AERender::init()
     //sort
     std::sort(_versions.begin(),_versions.end(),aeVersionSorter);
 }
-
 
 void AERender::findAeVersions(QString dir)
 {

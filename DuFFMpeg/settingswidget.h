@@ -25,26 +25,20 @@ signals:
 private slots:
     void on_ffmpegBrowseButton_clicked();
     void on_ffmpegPathEdit_editingFinished();
-
     void on_userPresetsBrowseButton_clicked();
-
     void on_userPresetsPathEdit_editingFinished();
     void on_aeVersionBox_currentIndexChanged(int index);
-
     void on_aerenderPathEdit_textChanged(const QString &arg1);
-
     void on_aerenderBrowseButton_clicked();
-
-    void newAePath();
-
     void on_aeCacheEdit_textChanged(const QString &arg1);
-
     void on_aeCacheBrowseButton_clicked();
 
 private:
     QSettings settings;
     FFmpeg *_ffmpeg;
     bool _freezeUI;
+
+    void refreshAeVersionBox();
 
 };
 

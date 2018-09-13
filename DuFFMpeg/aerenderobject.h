@@ -6,6 +6,8 @@
 #include <QRegularExpressionMatch>
 #include <QFile>
 #include <QProcess>
+#include <QDir>
+#include <QStandardPaths>
 
 class AERenderObject : public QObject
 {
@@ -14,23 +16,20 @@ public:
     AERenderObject(QString path = "", QObject *parent = nullptr);
 
     QString name() const;
-
     QString path() const;
-
     int mainVersion() const;
-
     int primaryVersion() const;
-
     int secondaryVersion() const;
-
     int buildNumber() const;
-
     bool isValid() const;
+    QString dataPath() const;
 
 signals:
 
 public slots:
     void init();
+    bool setDuFFmpegTemplates();
+    void restoreOriginalTemplates();
 
 private slots:
     void errorOccurredAE(QProcess::ProcessError e);
@@ -44,11 +43,14 @@ private:
     int _primaryVersion;
     int _secondaryVersion;
     int _buildNumber;
+    QString _dataPath;
 
     bool _isValid;
 
     QProcess *_aerender;
     QString _aeOutput;
+
+    void findDataPath();
 };
 
 #endif // AERENDEROBJECT_H

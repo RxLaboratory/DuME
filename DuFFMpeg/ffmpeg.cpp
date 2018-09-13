@@ -16,8 +16,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
     _aeInfo = new AERender(this);
 
-    _aerenderPath = "";
-
     _currentFrame = 0;
     _startTime = QTime(0,0,0);
     _outputSize = 0.0;
@@ -26,6 +24,10 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
     _aerenderOutput = "";
     _ffmpegOutput = "";
+
+    restoreAETemplates = false;
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
 
     //Connect process
     connect(_ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
@@ -57,24 +59,6 @@ bool FFmpeg::setBinaryFileName(QString path, bool initialize)
         emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
         debug("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
-        return false;
-    }
-}
-
-bool FFmpeg::setAERenderFileName(QString path)
-{
-    if(QFile(path).exists())
-    {
-        _aerenderPath = path;
-        //get AERenderObject
-        _currentAeRender = getAERenderObject(path);
-        return true;
-    }
-    else
-    {
-        setStatus(Error);
-        emit newOutput("AERender executable binary not found.\nYou have to install Adobe After Effects to be able to render After Effects compositions.");
-        _lastErrorMessage = "AERender executable binary not found.\nYou have to install Adobe After Effects to be able to render After Effects compositions.";
         return false;
     }
 }
@@ -201,6 +185,7 @@ void FFmpeg::initAe()
                 }
             }
         }
+
         if (settings.value("aerender/path","") == "")
         {
             debug("Adobe After Effects Renderer not found. You may have to install Adobe After Effects to render After Effects compositions.");
@@ -210,7 +195,7 @@ void FFmpeg::initAe()
             debug("Adobe After Effects Renderer found at \n" + settings.value("aerender/path","").toString());
         }
 
-        setAERenderFileName(settings.value("aerender/path","").toString());
+        setCurrentAeRender(_aeInfo->getAERenderObject(settings.value("aerender/path","").toString()));
     }
 
 #endif
@@ -313,20 +298,6 @@ QString FFmpeg::getHelp()
 QString FFmpeg::getLongHelp()
 {
     return _longHelp;
-}
-
-AERenderObject *FFmpeg::getAERenderObject(QString aeRenderFileName)
-{
-    foreach(AERenderObject *ae, _aeInfo->versions())
-    {
-        if (ae->path() == aeRenderFileName)
-        {
-            return ae;
-        }
-    }
-    AERenderObject *ae = new AERenderObject(aeRenderFileName);
-    ae->init();
-    return ae;
 }
 
 FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
@@ -517,18 +488,17 @@ void FFmpeg::finished()
 {
     if (_status == Encoding)
     {
-        //TODO remove ae cache
-        /*
-               QTemporaryDir *aeTempDir = input->aepTempDir();
-               input->setAepTempDir(nullptr);
-               delete aeTempDir;
-               */
-
         _currentItem->setStatus(FFQueueItem::Finished);
         emit encodingFinished(_currentItem);
         //move to history
         _encodingHistory << _currentItem;
-        encodeNextItem();
+
+        setStatus(Cleaning);
+
+        disconnect(timer, SIGNAL(timeout()), nullptr, nullptr);
+        connect(timer,SIGNAL(timeout()), this, SLOT(postRenderCleanUp()));
+        connect(timer,SIGNAL(timeout()), _currentItem, SLOT(postRenderCleanUp()));
+        timer->start(3000);
     }
     else
     {
@@ -570,7 +540,6 @@ void FFmpeg::finishedAE()
                 aerender->deleteLater();
             }
 
-
            FFMediaInfo *input = _currentItem->getInputMedias()[0];
            //encode rendered EXR
            if (!input->aeUseRQueue())
@@ -581,8 +550,10 @@ void FFmpeg::finishedAE()
                //get one file
                QString aeTempPath = input->aepTempDir()->path();
                QDir aeTempDir(aeTempPath);
-               QStringList filters("Duffmpeg_*.psd");
+               QStringList filters("Duffmpeg_*.exr");
                QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
+
+               //if nothing has been rendered, set to error and go on with next queue item
                if (files.count() == 0)
                {
                    _currentItem->setStatus(FFQueueItem::AEError);
@@ -592,15 +563,18 @@ void FFmpeg::finishedAE()
                    encodeNextItem();
                    return;
                }
+
                //set file and relaunch
                QString prevTrc = input->trc();
                double frameRate = input->videoFramerate();
                input->updateInfo(getMediaInfoString(aeTempPath + "/" + files[0]));
                if (prevTrc == "") input->setTrc("gamma22");
                else input->setTrc(prevTrc);
-               input->setVideoFramerate(frameRate);
+               if (frameRate != 0) input->setVideoFramerate(frameRate);
+
                //reInsert at first place in renderqueue
                _encodingQueue.insert(0,_currentItem);
+               setStatus(Encoding);
                encodeNextItem();
            }
            //finished
@@ -718,41 +692,30 @@ void FFmpeg::encodeNextItem()
             QStringList arguments("-project");
             arguments <<  QDir::toNativeSeparators(input->fileName());
 
-            bool removeForceEnglish = false;
-#ifdef Q_OS_WIN
-            QFile aeForceEnglish(QDir::homePath() + "/Documents/ae_force_english.txt");
-#elif Q_OS_MAC
-
-#endif
+            //if we have to replace render templates, we will have to restore the original ones
+            restoreAETemplates = false;
+            //the path containing the template files
+            QString aeDataPath = "";
 
             //if not using the existing render queue
             if (!input->aeUseRQueue())
             {
-                //set Ae in Engish to be able to use output modules templates
-                removeForceEnglish = !aeForceEnglish.exists();
-                if (!aeForceEnglish.exists())
-                {
-                    aeForceEnglish.open(QIODevice::Text | QIODevice::WriteOnly);
-                    aeForceEnglish.close();
-                }
-
+                //get the cache dir
                 QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
                 input->setAepTempDir(aeTempDir);
 
-                if (input->aepCompName() != "")
-                {
-                    arguments << "-comp" << input->aepCompName();
-                }
-                else if (input->aepRqindex() > 0)
-                {
-                    arguments << "-rqindex" << QString::number(input->aepRqindex());
-                }
-                else
-                {
-                    arguments << "-rqindex" << "1";
-                }
+                //if a comp name is specified, render this comp
+                if (input->aepCompName() != "") arguments << "-comp" << input->aepCompName();
+                //else use the sepecified renderqueue item
+                else if (input->aepRqindex() > 0) arguments << "-rqindex" << QString::number(input->aepRqindex());
+                //or the first one if not specified
+                else arguments << "-rqindex" << "1";
 
-                arguments << "-OMtemplate" << "Multi-Machine Sequence";
+                //add duffmpeg templates to the output modules of After Effects
+                restoreAETemplates = _currentAeRender->setDuFFmpegTemplates();
+
+                //and finally, append arguments
+                arguments << "-OMtemplate" << "DuFFmpegEXR";
                 arguments << "-RStemplate" << "Multi-Machine Settings";
 
                 QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
@@ -774,7 +737,7 @@ void FFmpeg::encodeNextItem()
                 connect(aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
 
                 //launch
-                aerender->setProgram(_aerenderPath);
+                aerender->setProgram(_currentAeRender->path());
                 aerender->setArguments(arguments);
                 aerender->start(QIODevice::ReadWrite);
 
@@ -788,8 +751,6 @@ void FFmpeg::encodeNextItem()
 
             setStatus(AERendering);
             emit encodingStarted(_currentItem);
-
-            //if (removeForceEnglish) aeForceEnglish.remove();
 
             return;
         }
@@ -1036,6 +997,20 @@ void FFmpeg::setStatus(Status st)
 {
     _status = st;
     emit statusChanged(_status);
+}
+
+void FFmpeg::postRenderCleanUp()
+{
+    //restore templates if they have been changed (remove Duffmpeg templates)
+    if (restoreAETemplates)
+    {
+        _currentAeRender->restoreOriginalTemplates();
+        restoreAETemplates = false;
+    }
+
+    setStatus(Encoding);
+
+    encodeNextItem();
 }
 
 AERender *FFmpeg::getAeRender() const

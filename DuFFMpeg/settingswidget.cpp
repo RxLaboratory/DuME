@@ -26,12 +26,7 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
     aerenderPath = QDir::toNativeSeparators(aerenderPath);
     aerenderPathEdit->setText(aerenderPath);
     //ae versions
-    foreach(AERenderObject *ae, ffmpeg->getAeRender()->versions())
-    {
-        aeVersionBox->addItem(ae->name(),QVariant(ae->path()));
-    }
-    aeVersionBox->addItem("Use latest",QVariant("Latest"));
-    aeVersionBox->addItem("Custom...",QVariant("Custom"));
+    refreshAeVersionBox();
     //select the right item
     if (settings.value("aerender/useLatest",true).toBool()) aeVersionBox->setCurrentIndex(aeVersionBox->count()-2);
     else if (settings.value("aerender/version","Latest").toString() == "Latest") aeVersionBox->setCurrentIndex(aeVersionBox->count()-2);
@@ -96,9 +91,11 @@ void SettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     path = QDir::toNativeSeparators(path);
     if (path == "Latest")
     {
-        path =_ffmpeg->getAeRender()->versions().last()->path();
+        AERenderObject *ae = _ffmpeg->getAeRender()->versions().last();
+        path = ae->path();
         settings.setValue("aerender/version","Latest");
         settings.setValue("aerender/useLatest",true);
+        _ffmpeg->setCurrentAeRender(ae);
     }
     else if (path == "Custom")
     {
@@ -108,13 +105,14 @@ void SettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     }
     else
     {
-        settings.setValue("aerender/version",QVariant(aeVersionBox->itemText(index)));
+        AERenderObject *ae = _ffmpeg->getAeRender()->versions().at(index);
+        settings.setValue("aerender/version",QVariant());
         settings.setValue("aerender/useLatest",false);
+        _ffmpeg->setCurrentAeRender(ae);
     }
 
     aerenderPathEdit->setText(path);
     settings.setValue("aerender/path",QVariant(path));
-    newAePath();
 
     aerenderBrowseButton->setEnabled(index == aeVersionBox->count()-1);
     aerenderPathEdit->setEnabled(index == aeVersionBox->count()-1);
@@ -129,20 +127,18 @@ void SettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
 
     QString path = QDir::toNativeSeparators(arg1);
 
-    for (int i = 0; i < aeVersionBox->count(); i++)
+    AERenderObject *ae = _ffmpeg->getAeRender()->getAERenderObject(path);
+    if (ae->isValid())
     {
-        if (aeVersionBox->itemData(i).toString() == path)
-        {
-            aeVersionBox->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    if (QFile(arg1).exists())
-    {
-        settings.setValue("aerender/path",QVariant(path));
-        newAePath();
         aerenderPathEdit->setText(path);
+        _ffmpeg->setCurrentAeRender(ae);
+        for( int i = 0; i < aeVersionBox->count(); i++)
+        {
+            if (aeVersionBox->itemData(i).toString() == ae->path())
+            {
+                aeVersionBox->setCurrentIndex(i);
+            }
+        }
     }
 
     _freezeUI = false;
@@ -154,13 +150,6 @@ void SettingsWidget::on_aerenderBrowseButton_clicked()
     if (path == "") return;
     if (settings.value("aerender/path").toString() == path) return;
     aerenderPathEdit->setText(path);
-}
-
-void SettingsWidget::newAePath()
-{
-    //check version and set
-
-    _ffmpeg->setAERenderFileName(aerenderPathEdit->text());
 }
 
 void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
@@ -185,4 +174,18 @@ void SettingsWidget::on_aeCacheBrowseButton_clicked()
     if (path == "") return;
     if (settings.value("aerender/cache").toString() == path) return;
     aeCacheEdit->setText(path);
+}
+
+void SettingsWidget::refreshAeVersionBox()
+{
+    _freezeUI = true;
+
+    foreach(AERenderObject *ae, _ffmpeg->getAeRender()->versions())
+    {
+        aeVersionBox->addItem(ae->name(),QVariant(ae->path()));
+    }
+    aeVersionBox->addItem("Use latest",QVariant("Latest"));
+    aeVersionBox->addItem("Custom...",QVariant("Custom"));
+
+    _freezeUI = false;
 }

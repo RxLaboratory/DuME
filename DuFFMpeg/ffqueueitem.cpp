@@ -91,3 +91,14 @@ void FFQueueItem::setStatus(Status st)
     else if (_status == Stopped || _status == Error || _status == AEError) emit encodingStopped();
     else if (_status == Waiting) emit queued();
 }
+
+void FFQueueItem::postRenderCleanUp()
+{
+    //remove ae cache
+    FFMediaInfo *input = _inputMedias[0];
+    if (input->aepTempDir() == nullptr) return;
+    QTemporaryDir *aeTempDir = input->aepTempDir();
+    aeTempDir->remove();
+    input->setAepTempDir(nullptr);
+    delete aeTempDir;
+}

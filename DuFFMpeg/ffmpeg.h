@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <QSettings>
 #include <QTemporaryDir>
+#include <QStandardPaths>
+#include <QTimer>
 
 #include "ffcodec.h"
 #include "ffmediainfo.h"
@@ -34,7 +36,7 @@ public:
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
      */
-    enum Status { Waiting, Encoding, Error, Other, AERendering };
+    enum Status { Waiting, Encoding, Error, Other, AERendering, Cleaning };
     Q_ENUM(Status)
 
     QList<FFMuxer *> getMuxers();
@@ -89,7 +91,6 @@ public:
      * @return The longer version of the documentation
      */
     QString getLongHelp();
-    AERenderObject *getAERenderObject(QString aeRenderFileName);
     /**
      * @brief getMediaInfo Gets the information for the media
      * @param mediaPath The path to the media file
@@ -266,7 +267,6 @@ public slots:
      * @param path The path to the binary executable file
      * @return true if the exe is found
      */
-    bool setAERenderFileName(QString path);
     void setCurrentAeRender(AERenderObject *currentAeRender);
     /**
      * @brief runCommand Runs FFmpeg with the commands
@@ -279,6 +279,7 @@ public slots:
      */
     void runCommand(QStringList commands);
     void init();
+    void initAe();
 
 private slots:
     //FFmpeg signals
@@ -300,7 +301,7 @@ private slots:
     //self
     void setStatus(Status st);
 
-    void initAe();
+    void postRenderCleanUp();
 
 private:
     //=== About FFmpeg ===
@@ -316,13 +317,11 @@ private:
      * @brief aerender The process used to handle the binary
      */
     QList<QProcess *> _aerenders;
-    /**
-     * @brief _aerenderPath The path to aerender
-     */
-    QString _aerenderPath;
     AERenderObject *_currentAeRender;
     QFileInfoList _aeRenderSettings;
     QFileInfoList _aeOutputModules;
+    bool restoreAETemplates;
+    QTimer *timer;
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */

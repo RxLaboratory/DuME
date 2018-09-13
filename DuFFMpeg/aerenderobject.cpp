@@ -1,5 +1,9 @@
 #include "aerenderobject.h"
 
+#ifdef QT_DEBUG
+ #include <QtDebug>
+#endif
+
 AERenderObject::AERenderObject(QString path, QObject *parent) : QObject(parent)
 {
     _aerender = new QProcess(this);
@@ -24,10 +28,48 @@ void AERenderObject::stdErrorAE()
     _aeOutput += _aerender->readAllStandardError();
 }
 
+void AERenderObject::findDataPath()
+{
+    //try to find templates (the Ae data dir)
+    QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+
+#ifdef Q_OS_WIN
+    //search the right one
+    foreach(QString dataPath, dataPaths)
+    {
+        dataPath = dataPath.replace("/Duduf/DuFFmpeg","");
+
+#ifdef QT_DEBUG
+qDebug() << "Searching Ae Data in: " + dataPath;
+#endif
+
+        QDir test(dataPath);
+        if (QDir(test.absolutePath() + "/Adobe/After Effects").exists())
+        {
+            _dataPath = test.absolutePath() + "/Adobe/After Effects";
+            break;
+        }
+    }
+
+    //if found, append version
+    if (_dataPath != "") _dataPath += "/" + QString::number(_mainVersion) + "." + QString::number(_primaryVersion);
+#else
+
+#endif
+
+#ifdef QT_DEBUG
+qDebug() << "AE Data Location: " + _dataPath;
+#endif
+}
+
+QString AERenderObject::dataPath() const
+{
+    return _dataPath;
+}
+
 void AERenderObject::init()
 {
     QFile aerenderFile(_path);
-
 
     if (aerenderFile.exists())
     {
@@ -76,7 +118,139 @@ qDebug() << "Found Ae version: " + version;
                 _primaryVersion = match.captured(2).toInt();
                 _secondaryVersion = match.captured(3).toInt();
                 _buildNumber = match.captured(4).toInt();
+
+                findDataPath();
             }
+        }
+    }
+}
+
+bool AERenderObject::setDuFFmpegTemplates()
+{
+    //load render settings and output modules
+
+    //if found, replace templates
+    if (_dataPath == "") return false;
+
+    QDir aeDataDir(_dataPath);
+    if (!aeDataDir.exists()) return false;
+
+
+    //TODO if CS6 and before (<= 11.0), prefs file
+    if (_mainVersion <= 11)
+    {
+
+    }
+    //if higher than CS6
+    else
+    {
+        QStringList settingsFilter("*-indep-render*");
+        QStringList outputFilter("*-indep-output*");
+
+        QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
+        QStringList outputFilePaths = aeDataDir.entryList(outputFilter);
+
+#ifdef QT_DEBUG
+qDebug() << settingsFilePaths;
+qDebug() << outputFilePaths;
+#endif
+
+        //write our own settings
+        foreach(QString settingsFilePath, settingsFilePaths)
+        {
+            if (!settingsFilePath.endsWith(".bak"))
+            {
+                //rename original file
+                QFile settingsFile(_dataPath + "/" + settingsFilePath);
+                settingsFile.rename(_dataPath + "/" + settingsFilePath + ".bak");
+
+                //copy our own
+                QFile newSettingsFile(":/after-effects/render");
+                newSettingsFile.copy(_dataPath + "/" + settingsFilePath);
+            }
+        }
+
+        //write our own modules
+        foreach(QString outputFilePath, outputFilePaths)
+        {
+            if (!outputFilePath.endsWith(".bak"))
+            {
+                //rename original file
+                QFile outputFile(_dataPath + "/" + outputFilePath);
+                outputFile.rename(_dataPath + "/" + outputFilePath + ".bak");
+
+                //copy our own
+                QFile newOutputFile(":/after-effects/output");
+                newOutputFile.copy(_dataPath + "/" + outputFilePath);
+            }
+        }
+
+    }
+    return true;
+}
+
+void AERenderObject::restoreOriginalTemplates()
+{
+    //if found, replace templates
+    if (_dataPath == "") return;
+
+    QDir aeDataDir(_dataPath);
+    if (!aeDataDir.exists()) return;
+
+    //TODO if CS6 and before (<= 11.0), prefs file
+    if (_mainVersion <= 11)
+    {
+
+    }
+    //if higher than CS6
+    else
+    {
+        QStringList settingsFilter("*-indep-render*.bak");
+        QStringList outputFilter("*-indep-output*.bak");
+
+        QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
+        QStringList outputFilePaths = aeDataDir.entryList(outputFilter);
+
+        //remove our own settings
+        foreach(QString settingsFilePath, settingsFilePaths)
+        {
+            QString bakPath = _dataPath + "/" + settingsFilePath;
+            QString txtPath = _dataPath + "/" + settingsFilePath.replace(".bak","");
+
+#ifdef QT_DEBUG
+qDebug() << "Restoring " + bakPath;
+#endif
+
+            //remove our own
+            QFile newSettingsFile(txtPath);
+            newSettingsFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            newSettingsFile.remove();
+
+            //rename original file
+            QFile settingsFile(bakPath);
+            settingsFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            settingsFile.rename(txtPath);
+        }
+
+        //remove our own modules
+        foreach(QString outputFilePath, outputFilePaths)
+        {
+            QString bakPath = _dataPath + "/" + outputFilePath;
+            QString txtPath = _dataPath + "/" + outputFilePath.replace(".bak","");
+
+#ifdef QT_DEBUG
+qDebug() << "Restoring " + bakPath;
+#endif
+
+            //remove our own
+            QFile newOutputFile(txtPath);
+            newOutputFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            newOutputFile.remove();
+
+            //rename original file
+            QFile outputFile(bakPath);
+            outputFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            outputFile.rename(txtPath);
         }
     }
 }
@@ -130,7 +304,7 @@ QString AERenderObject::name() const
 
 QString AERenderObject::path() const
 {
-    return _path;
+    return QDir::toNativeSeparators(_path);
 }
 
 int AERenderObject::mainVersion() const

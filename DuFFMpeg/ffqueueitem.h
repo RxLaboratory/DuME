@@ -35,6 +35,7 @@ public slots:
      * @param st The status
      */
     void setStatus(Status st);
+    void postRenderCleanUp();
 
 signals:
     void encodingStarted();
