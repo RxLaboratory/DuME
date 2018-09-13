@@ -184,6 +184,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         statusLabel->setText("Ready.");
         actionStatus->setText("Ready");
         debugLog("== WAITING ==");
+        queueWidget->setEnabled(true);
+        setCursor(Qt::ArrowCursor);
     }
     else if (status == FFmpeg::Encoding)
     {
@@ -193,6 +195,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         statusLabel->setText("Transcoding...");
         actionStatus->setText("Transcoding...");
         debugLog("== TRANSCODING ==");
+        queueWidget->setEnabled(false);
+        setCursor(Qt::BusyCursor);
     }
     else if (status == FFmpeg::Error)
     {
@@ -201,6 +205,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         statusLabel->setText("Ready.");
         actionStatus->setText("An error occured");
         debugLog("== AN ERROR OCCURED ==");
+        queueWidget->setEnabled(true);
+        setCursor(Qt::ArrowCursor);
     }
     else if (status == FFmpeg::AERendering)
     {
@@ -209,6 +215,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         statusLabel->setText("Rendering.");
         actionStatus->setText("Rendering (Ae)...");
         debugLog("== RENDERING (Ae) ==");
+        queueWidget->setEnabled(false);
+        setCursor(Qt::BusyCursor);
     }
     else if (status == FFmpeg::Cleaning)
     {
@@ -217,6 +225,8 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         statusLabel->setText("Cleaning.");
         actionStatus->setText("Cleaning...");
         debugLog("== CLEANING ==");
+        queueWidget->setEnabled(true);
+        setCursor(Qt::ArrowCursor);
     }
 }
 
