@@ -47,7 +47,10 @@
     </qresource>
     <qresource prefix="/after-effects">
         <file alias="output">resources/after-effects/-indep-output</file>
-        <file alias="render">resources/after-effects/-indep-render</file>
+        <file alias="render12">resources/after-effects/-indep-render-12</file>
         <file alias="cs6-prefs">resources/after-effects/Adobe After Effects 11.0-x64 Prefs</file>
+        <file alias="render15">resources/after-effects/-indep-render-15</file>
+        <file alias="render13">resources/after-effects/-indep-render-13</file>
+        <file alias="render14">resources/after-effects/-indep-render-14</file>
     </qresource>
 </RCC>

@@ -22,7 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-DEFINES += APPVERSION=\\\"0.0.6-Alpha\\\"
+DEFINES += APPVERSION=\\\"0.0.7-Alpha\\\"
 
 SOURCES += \
     main.cpp \
@@ -44,7 +44,8 @@ SOURCES += \
     ffbaseobject.cpp \
     aerender.cpp \
     aerenderobject.cpp \
-    splashscreen.cpp
+    splashscreen.cpp \
+    utils.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -65,7 +66,8 @@ HEADERS += \
     ffbaseobject.h \
     aerender.h \
     aerenderobject.h \
-    splashscreen.h
+    splashscreen.h \
+    utils.h
 
 FORMS += \
     mainwindow.ui \

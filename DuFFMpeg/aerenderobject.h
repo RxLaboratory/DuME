@@ -9,11 +9,14 @@
 #include <QDir>
 #include <QStandardPaths>
 
+#include "utils.h"
+
 class AERenderObject : public QObject
 {
     Q_OBJECT
 public:
     AERenderObject(QString path = "", QObject *parent = nullptr);
+    ~AERenderObject();
 
     QString name() const;
     QString path() const;

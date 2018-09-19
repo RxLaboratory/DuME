@@ -23,6 +23,11 @@ AERenderObject::AERenderObject(QString path, QObject *parent) : QObject(parent)
     _isValid = false;
 }
 
+AERenderObject::~AERenderObject()
+{
+    restoreOriginalTemplates();
+}
+
 void AERenderObject::stdErrorAE()
 {
     _aeOutput += _aerender->readAllStandardError();
@@ -160,13 +165,14 @@ qDebug() << outputFilePaths;
         {
             if (!settingsFilePath.endsWith(".bak"))
             {
+                QString bakPath = _dataPath + "/" + settingsFilePath + ".bak";
+                QString origPath = _dataPath + "/" + settingsFilePath;
+
                 //rename original file
-                QFile settingsFile(_dataPath + "/" + settingsFilePath);
-                settingsFile.rename(_dataPath + "/" + settingsFilePath + ".bak");
+                FileUtils::move(origPath,bakPath);
 
                 //copy our own
-                QFile newSettingsFile(":/after-effects/render");
-                newSettingsFile.copy(_dataPath + "/" + settingsFilePath);
+                FileUtils::copy(":/after-effects/render" + QString::number(_mainVersion), origPath);
             }
         }
 
@@ -175,13 +181,14 @@ qDebug() << outputFilePaths;
         {
             if (!outputFilePath.endsWith(".bak"))
             {
+                QString bakPath = _dataPath + "/" + outputFilePath + ".bak";
+                QString origPath = _dataPath + "/" + outputFilePath;
+
                 //rename original file
-                QFile outputFile(_dataPath + "/" + outputFilePath);
-                outputFile.rename(_dataPath + "/" + outputFilePath + ".bak");
+                FileUtils::move(origPath,bakPath);
 
                 //copy our own
-                QFile newOutputFile(":/after-effects/output");
-                newOutputFile.copy(_dataPath + "/" + outputFilePath);
+                FileUtils::copy(":/after-effects/output", origPath);
             }
         }
 
@@ -222,14 +229,10 @@ qDebug() << "Restoring " + bakPath;
 #endif
 
             //remove our own
-            QFile newSettingsFile(txtPath);
-            newSettingsFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
-            newSettingsFile.remove();
+            FileUtils::remove(txtPath);
 
             //rename original file
-            QFile settingsFile(bakPath);
-            settingsFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
-            settingsFile.rename(txtPath);
+            FileUtils::move(bakPath, txtPath);
         }
 
         //remove our own modules

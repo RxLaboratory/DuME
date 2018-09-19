@@ -716,7 +716,7 @@ void FFmpeg::encodeNextItem()
 
                 //and finally, append arguments
                 arguments << "-OMtemplate" << "DuFFmpegEXR";
-                arguments << "-RStemplate" << "Multi-Machine Settings";
+                arguments << "-RStemplate" << "DuFFmpegMultiMachine";
 
                 QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
 
