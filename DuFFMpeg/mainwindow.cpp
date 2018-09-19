@@ -72,7 +72,7 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     //size
     resize(settings->value("size", QSize(850, 850)).toSize());
     //position
-    move(settings->value("pos", QPoint(200, 200)).toPoint());
+    //move(settings->value("pos", QPoint(200, 200)).toPoint());
     settings->endGroup();
     //console splitter sizes
     settings->beginGroup("consolesplitter");
