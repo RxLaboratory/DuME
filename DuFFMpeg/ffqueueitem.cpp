@@ -22,6 +22,11 @@ FFQueueItem::FFQueueItem(FFMediaInfo *input, FFMediaInfo *output, QObject *paren
     _status = Waiting;
 }
 
+FFQueueItem::~FFQueueItem()
+{
+    postRenderCleanUp();
+}
+
 QList<FFMediaInfo *> FFQueueItem::getInputMedias()
 {
     return _inputMedias;

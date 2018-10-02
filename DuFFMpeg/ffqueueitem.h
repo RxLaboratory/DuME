@@ -12,6 +12,7 @@ public:
     FFQueueItem(QList<FFMediaInfo*> inputs,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
     FFQueueItem(FFMediaInfo *input,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
     FFQueueItem(FFMediaInfo *input,FFMediaInfo *output,QObject *parent = nullptr);
+    ~FFQueueItem();
 
     /**
      * @brief The Status enum Used to describe the current status of the item
