@@ -370,7 +370,9 @@ void InputWidget::updateOptions()
         rqindexBox->setEnabled(true);
         compEdit->setEnabled(false);
         threadsButton->setChecked(false);
-        threadsBox->setValue(QThread::idealThreadCount());
+        //for now, using half the threads.
+        //TODO: count depending on RAM (3Go per thread)
+        threadsBox->setValue(QThread::idealThreadCount()/2);
         aeRenderQueueButton->show();
         aeRenderQueueButton->setChecked(false);
 
