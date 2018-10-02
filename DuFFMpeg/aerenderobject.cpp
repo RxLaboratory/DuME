@@ -144,7 +144,28 @@ bool AERenderObject::setDuFFmpegTemplates()
     //TODO if CS6 and before (<= 11.0), prefs file
     if (_mainVersion <= 11)
     {
+        QStringList settingsFilter("*-x64*");
+        QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
 
+#ifdef QT_DEBUG
+qDebug() << settingsFilePaths;
+#endif
+
+        //write our own settings
+        foreach(QString settingsFilePath, settingsFilePaths)
+        {
+            if (!settingsFilePath.endsWith(".bak"))
+            {
+                QString bakPath = _dataPath + "/" + settingsFilePath + ".bak";
+                QString origPath = _dataPath + "/" + settingsFilePath;
+
+                //rename original file
+                FileUtils::move(origPath,bakPath);
+
+                //copy our own
+                FileUtils::copy(":/after-effects/cs6-prefs", origPath);
+            }
+        }
     }
     //if higher than CS6
     else
@@ -207,7 +228,25 @@ void AERenderObject::restoreOriginalTemplates()
     //TODO if CS6 and before (<= 11.0), prefs file
     if (_mainVersion <= 11)
     {
+        QStringList settingsFilter("*-x64*");
+        QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
 
+        //remove our own settings
+        foreach(QString settingsFilePath, settingsFilePaths)
+        {
+            QString bakPath = _dataPath + "/" + settingsFilePath;
+            QString txtPath = _dataPath + "/" + settingsFilePath.replace(".bak","");
+
+#ifdef QT_DEBUG
+qDebug() << "Restoring " + bakPath;
+#endif
+
+            //remove our own
+            FileUtils::remove(txtPath);
+
+            //rename original file
+            FileUtils::move(bakPath, txtPath);
+        }
     }
     //if higher than CS6
     else
