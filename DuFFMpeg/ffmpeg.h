@@ -14,6 +14,7 @@
 #include <QTemporaryDir>
 #include <QStandardPaths>
 #include <QTimer>
+#include <QThread>
 
 #include "ffcodec.h"
 #include "ffmediainfo.h"
@@ -32,6 +33,7 @@ public:
      * @param parent The parent QObject
      */
     explicit FFmpeg(QString path = "", QObject *parent = nullptr);
+    ~FFmpeg();
 
     /**
      * @brief The Status enum Used to describe the current status of ffmpeg
@@ -297,6 +299,7 @@ private slots:
 
     //Queue
     void encodeNextItem();
+    void renderAep(FFMediaInfo *input, bool audio = true);
 
     //self
     void setStatus(Status st);
@@ -304,6 +307,7 @@ private slots:
     void postRenderCleanUp();
 
 private:
+    QSettings settings;
     //=== About FFmpeg ===
     /**
      * @brief ffmpeg The process used to handle the binary
@@ -415,6 +419,7 @@ private:
      * @return
      */
     QString convertSequenceName(QString name);
+    void launchAeRenderProcess(QStringList args);
 
     QString _debugBaseMessage;
     void debug(QString message = "");

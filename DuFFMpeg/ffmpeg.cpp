@@ -44,6 +44,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 
 }
 
+FFmpeg::~FFmpeg()
+{
+    postRenderCleanUp();
+}
+
 bool FFmpeg::setBinaryFileName(QString path, bool initialize)
 {
     if(QFile(path).exists())
@@ -674,8 +679,6 @@ void FFmpeg::errorOccurredAE(QProcess::ProcessError e)
 
 void FFmpeg::encodeNextItem()
 {
-    QSettings settings;
-
     if (_encodingQueue.count() == 0)
     {
         setStatus(Waiting);
@@ -689,69 +692,18 @@ void FFmpeg::encodeNextItem()
     {
         if (input->isAep())
         {
-            QStringList arguments("-project");
-            arguments <<  QDir::toNativeSeparators(input->fileName());
-
-            //if we have to replace render templates, we will have to restore the original ones
-            restoreAETemplates = false;
-            //the path containing the template files
-            QString aeDataPath = "";
-
-            //if not using the existing render queue
-            if (!input->aeUseRQueue())
+            //check if we need audio
+            bool needAudio = false;
+            foreach(FFMediaInfo *output, _currentItem->getOutputMedias())
             {
-                //get the cache dir
-                QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
-                input->setAepTempDir(aeTempDir);
-
-                //if a comp name is specified, render this comp
-                if (input->aepCompName() != "") arguments << "-comp" << input->aepCompName();
-                //else use the sepecified renderqueue item
-                else if (input->aepRqindex() > 0) arguments << "-rqindex" << QString::number(input->aepRqindex());
-                //or the first one if not specified
-                else arguments << "-rqindex" << "1";
-
-                //add duffmpeg templates to the output modules of After Effects
-                restoreAETemplates = _currentAeRender->setDuFFmpegTemplates();
-
-                //and finally, append arguments
-                arguments << "-OMtemplate" << "DuFFmpegEXR";
-                arguments << "-RStemplate" << "DuFFmpegMultiMachine";
-
-                QString tempPath = QDir::toNativeSeparators(aeTempDir->path()) + "\\" + "Duffmpeg_[#####]";
-
-                arguments << "-output" << tempPath;
+                if (output->hasAudio())
+                {
+                    needAudio = true;
+                    break;
+                }
             }
 
-            debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
-
-            //launch processes
-            for (int i = 0; i < input->aepNumThreads(); i++)
-            {
-                //create process
-                QProcess *aerender = new QProcess(this);
-                connect(aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
-                connect(aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
-                connect(aerender,SIGNAL(started()),this,SLOT(startedAE()));
-                connect(aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
-                connect(aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
-
-                //launch
-                aerender->setProgram(_currentAeRender->path());
-                aerender->setArguments(arguments);
-                aerender->start(QIODevice::ReadWrite);
-
-                //TODO check processor affinity
-
-                _aerenders << aerender;
-            }
-
-            _currentItem->setStatus(FFQueueItem::InProgress);
-            _startTime = QTime::currentTime();
-
-            setStatus(AERendering);
-            emit encodingStarted(_currentItem);
-
+            renderAep(input, needAudio);
             return;
         }
     }
@@ -991,6 +943,75 @@ void FFmpeg::encodeNextItem()
     _currentItem->setStatus(FFQueueItem::InProgress);
     _startTime = QTime::currentTime();
     emit  encodingStarted(_currentItem);
+}
+
+void FFmpeg::renderAep(FFMediaInfo *input, bool audio)
+{
+    QStringList arguments("-project");
+    QStringList audioArguments;
+    arguments <<  QDir::toNativeSeparators(input->fileName());
+
+    //if we have to replace render templates, we will have to restore the original ones
+    restoreAETemplates = false;
+    //the path containing the template files
+    QString aeDataPath = "";
+
+    //if not using the existing render queue
+    if (!input->aeUseRQueue())
+    {
+        //get the cache dir
+        QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
+        input->setAepTempDir(aeTempDir);
+
+        //if a comp name is specified, render this comp
+        if (input->aepCompName() != "") arguments << "-comp" << input->aepCompName();
+        //else use the sepecified renderqueue item
+        else if (input->aepRqindex() > 0) arguments << "-rqindex" << QString::number(input->aepRqindex());
+        //or the first one if not specified
+        else arguments << "-rqindex" << "1";
+
+        //add duffmpeg templates to the output modules of After Effects
+        restoreAETemplates = _currentAeRender->setDuFFmpegTemplates();
+
+        //and finally, append arguments
+        audioArguments = arguments;
+
+        arguments << "-RStemplate" << "DuFFmpegMultiMachine";
+        audioArguments << "-RStemplate" << "DuFFmpegBest";
+        arguments << "-OMtemplate" << "DuFFmpegEXR";
+        audioArguments << "-OMtemplate" << "DuFFmpegWAV";
+
+        QString tempPath = QDir::toNativeSeparators(aeTempDir->path() + "/" + "Duffmpeg_[#####]");
+        QString audioTempPath = QDir::toNativeSeparators(aeTempDir->path() + "/" + "Duffmpeg");
+
+        arguments << "-output" << tempPath;
+        audioArguments << "-output" << audioTempPath;
+    }
+
+    debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
+
+    //adjust the number of threads
+    //keep one available for exporting the audio
+    int numThreads = input->aepNumThreads();
+    if (audio && input->aepNumThreads() >= QThread::idealThreadCount()  && !input->aeUseRQueue()) numThreads--;
+
+    //launch processes
+    for (int i = 0; i < numThreads; i++)
+    {
+        launchAeRenderProcess(arguments);
+    }
+
+    //launch another process for the sound
+    if (audio && !input->aeUseRQueue())
+    {
+        launchAeRenderProcess(audioArguments);
+    }
+
+    _currentItem->setStatus(FFQueueItem::InProgress);
+    _startTime = QTime::currentTime();
+
+    setStatus(AERendering);
+    emit encodingStarted(_currentItem);
 }
 
 void FFmpeg::setStatus(Status st)
@@ -1498,6 +1519,26 @@ QString FFmpeg::convertSequenceName(QString name)
          name.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
     }
     return name;
+}
+
+void FFmpeg::launchAeRenderProcess(QStringList args)
+{
+    //create process
+    QProcess *aerender = new QProcess(this);
+    connect(aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
+    connect(aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
+    connect(aerender,SIGNAL(started()),this,SLOT(startedAE()));
+    connect(aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
+    connect(aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
+
+    //launch
+    aerender->setProgram(_currentAeRender->path());
+    aerender->setArguments(args);
+    aerender->start(QIODevice::ReadWrite);
+
+    //TODO check processor affinity?
+
+    _aerenders << aerender;
 }
 
 void FFmpeg::debug(QString message)
