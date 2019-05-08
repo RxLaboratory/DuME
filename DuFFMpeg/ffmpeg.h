@@ -221,6 +221,8 @@ public:
     FFMediaInfo *loadJsonFromFile(QString jsonFileName);
 
 
+    QString getVersion() const;
+
 signals:
     /**
      * @brief newOutput Emitteed when FFmpeg outputs on stderr or stdoutput
@@ -314,6 +316,10 @@ private:
      */
     QProcess *_ffmpeg;
     /**
+     * @brief version The version of ffmpeg used
+     */
+    QString _version;
+    /**
      * @brief aeRender Info about the Ae renderer
      */
     AERender *_aeInfo;
@@ -387,6 +393,11 @@ private:
      */
     FFQueueItem *_currentItem;
     //=== Process outputs ===
+    /**
+     * @brief ffmpeg_gotVersion Parses the version
+     * @param output The output of the FFmpeg process with the muxers list
+     */
+    QString gotVersion(QString output);
     /**
      * @brief ffmpeg_gotCodecs Parses the muxers list
      * @param output The output of the FFmpeg process with the muxers list

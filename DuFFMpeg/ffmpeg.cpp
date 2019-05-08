@@ -42,6 +42,8 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     if (path == "") setBinaryFileName(settings.value("ffmpeg/path","ffmpeg.exe").toString(), false);
     else setBinaryFileName(path, false);
 
+    _version = settings.value("ffmpeg/version","").toString();
+
 }
 
 FFmpeg::~FFmpeg()
@@ -93,54 +95,71 @@ void FFmpeg::init()
 {   
 #if INIT_FFMPEG
 
-    //get pixFormats
-    _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
+    //get version
+    _debugBaseMessage = "FFmpeg initialization | Checking version";
     debug();
-    _ffmpeg->setArguments(QStringList("-pix_fmts"));
+    _ffmpeg->setArguments(QStringList());
     _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
+    QString v = "";
+    if (_ffmpeg->waitForFinished(1000))
     {
-        gotPixFormats(_ffmpegOutput);
+        v = gotVersion(_ffmpegOutput);
     }
 
-    //get codecs
-    _debugBaseMessage = "FFmpeg initialization | Loading codecs";
-    debug();
-    _ffmpeg->setArguments(QStringList("-codecs"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
+    if (v != _version)
     {
-        gotCodecs(_ffmpegOutput);
-    }
+        _version = v;
+        settings.setValue("ffmpeg/version",_version);
 
-    //get muxers
-    _debugBaseMessage = "FFmpeg initialization | Loading muxers";
-    debug();
-    _ffmpeg->setArguments(QStringList("-formats"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
-    {
-        gotMuxers(_ffmpegOutput);
-    }
+        //get pixFormats
+        _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
+        debug();
+        _ffmpeg->setArguments(QStringList("-pix_fmts"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(10000))
+        {
+            gotPixFormats(_ffmpegOutput);
+        }
 
-    //get long help
-    _debugBaseMessage = "FFmpeg initialization | Loading documentation";
-    debug();
-    QStringList args("-h");
-    args << "long";
-    _ffmpeg->setArguments(args);
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
-    {
-        _longHelp = _ffmpegOutput;
-    }
+        //get codecs
+        _debugBaseMessage = "FFmpeg initialization | Loading codecs";
+        debug();
+        _ffmpeg->setArguments(QStringList("-codecs"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(10000))
+        {
+            gotCodecs(_ffmpegOutput);
+        }
 
-    //get help
-    _ffmpeg->setArguments(QStringList("-h"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
-    {
-        _help = _ffmpegOutput;
+        //get muxers
+        _debugBaseMessage = "FFmpeg initialization | Loading muxers";
+        debug();
+        _ffmpeg->setArguments(QStringList("-formats"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(10000))
+        {
+            gotMuxers(_ffmpegOutput);
+        }
+
+        //get long help
+        _debugBaseMessage = "FFmpeg initialization | Loading documentation";
+        debug();
+        QStringList args("-h");
+        args << "long";
+        _ffmpeg->setArguments(args);
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(3000))
+        {
+            _longHelp = _ffmpegOutput;
+        }
+
+        //get help
+        _ffmpeg->setArguments(QStringList("-h"));
+        _ffmpeg->start(QIODevice::ReadOnly);
+        if (_ffmpeg->waitForFinished(3000))
+        {
+            _help = _ffmpegOutput;
+        }
     }
 
 #endif
@@ -1034,6 +1053,11 @@ void FFmpeg::postRenderCleanUp()
     encodeNextItem();
 }
 
+QString FFmpeg::getVersion() const
+{
+    return _version;
+}
+
 AERender *FFmpeg::getAeRender() const
 {
     return _aeInfo;
@@ -1237,6 +1261,26 @@ void FFmpeg::gotMuxers(QString output)
 bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)
 {
     return c1->prettyName().toLower() < c2->prettyName().toLower();
+}
+
+QString FFmpeg::gotVersion(QString output)
+{
+    QString v = "";
+
+    //ffmpeg version (\S+)
+    QRegularExpression re("ffmpeg version (\\S+)");
+    QRegularExpressionMatch match = re.match(output);
+    if (match.hasMatch())
+    {
+        v = match.captured(1);
+        debug(" | FFmpeg versoion: " + v);
+    }
+
+#ifdef QT_DEBUG
+    qDebug() << v;
+#endif
+
+    return v;
 }
 
 void FFmpeg::gotCodecs(QString output)
