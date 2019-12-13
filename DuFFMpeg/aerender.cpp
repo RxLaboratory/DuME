@@ -96,7 +96,9 @@ void AERender::findAeVersions(QString dir)
 #ifdef Q_OS_MAC
         QString aerenderFile(path.absoluteFilePath() + "/aerender");
 #endif
-
+#ifdef Q_OS_LINUX
+        QString aerenderFile("");
+#endif
         AERenderObject *ae = new AERenderObject(aerenderFile);
         ae->init();
         if (ae->isValid()) _versions << ae;

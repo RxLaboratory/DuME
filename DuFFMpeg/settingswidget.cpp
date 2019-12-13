@@ -12,15 +12,23 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
     _ffmpeg = ffmpeg;
     _freezeUI = true;
 
-    ffmpegPathEdit->setText(settings.value("ffmpeg/path","ffmpeg.exe").toString());
+#ifdef Q_OS_LINUX
+    QString defaultFfmpegPath = "ffmpeg";
+#endif
+#ifdef Q_OS_WIN
+    QString defaultFfmpegPath = "ffmpeg.exe";
+#endif
+    ffmpegPathEdit->setText(settings.value("ffmpeg/path",defaultFfmpegPath).toString());
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
-
+    //Temp path
     QString defaultTemp = QDir::tempPath() + "/" + qApp->applicationName() + "/";
     defaultTemp = QDir::toNativeSeparators(defaultTemp);
     QString settingsTemp = settings.value("aerender/cache",defaultTemp).toString();
     if (QDir(settingsTemp).exists() && settingsTemp != "") aeCacheEdit->setText(settingsTemp);
     else aeCacheEdit->setText(defaultTemp);
+
+    //aerender path
     QString aerenderPath = settings.value("aerender/path","").toString();
     if (aerenderPath == "") aerenderPath = "Not Found! You may need to install Adobe After Effects.";
     aerenderPath = QDir::toNativeSeparators(aerenderPath);
