@@ -258,11 +258,12 @@ QComboBox::drop-down {
 }
 
 QComboBox QAbstractItemView {
-        background-color: @color-light;
-	selection-background-color: @color-dark;
-	selection-color: @color-light;
-	border: @border-size solid @color-light;
-	padding:@button-padding;
+        background-color: @color-dark;
+        selection-background-color: @color-dark;
+        selection-color: @color-light;
+        border: @border-size solid @color-dark;
+        padding:@button-padding;
+        color: @color-light;
 }
 
 /* TOOLBAR */
