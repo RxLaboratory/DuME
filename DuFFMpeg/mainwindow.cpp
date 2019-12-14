@@ -99,16 +99,15 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     setAcceptDrops(true);
 
     // === MAP EVENTS ===
-#ifdef QT_DEBUG
-    qDebug() << "Init - Map Events";
-#endif
     debugLog("Init - Map events");
     // Window management
+
 #ifndef Q_OS_MAC
     // Windows and linux
     connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
 #endif
+
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
     //FFmpeg
     connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));

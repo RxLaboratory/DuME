@@ -39,7 +39,14 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
 
-    if (path == "") setBinaryFileName(settings.value("ffmpeg/path","ffmpeg.exe").toString(), false);
+#ifdef Q_OS_LINUX
+    QString defaultFFmpegPath = "ffmpeg";
+#endif
+#ifdef Q_OS_WIN
+    QString defaultFFmpegPath = "ffmpeg.exe";
+#endif
+
+    if (path == "") setBinaryFileName(settings.value("ffmpeg/path",defaultFFmpegPath).toString(), false);
     else setBinaryFileName(path, false);
 
     _version = settings.value("ffmpeg/version","").toString();
@@ -53,7 +60,13 @@ FFmpeg::~FFmpeg()
 
 bool FFmpeg::setBinaryFileName(QString path, bool initialize)
 {
-    if(QFile(path).exists())
+    bool fileExists = true;
+
+#ifdef Q_OS_WIN
+    fileExists = QFile(path).exists();
+#endif
+
+    if(fileExists)
     {
         _ffmpeg->setProgram(path);
         if (initialize) init();

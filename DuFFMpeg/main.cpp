@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
 
     //load settings
     splash.newMessage("Loading settings...");
-    QCoreApplication::setOrganizationName("Duduf");
-    QCoreApplication::setOrganizationDomain("duduf.com");
+    QCoreApplication::setOrganizationName("Rainbox Laboratory");
+    QCoreApplication::setOrganizationDomain("rainboxlab.org");
     QCoreApplication::setApplicationName("DuFFmpeg");
     QCoreApplication::setApplicationVersion(APPVERSION);
 
