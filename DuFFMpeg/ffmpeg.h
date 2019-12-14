@@ -401,18 +401,21 @@ private:
     /**
      * @brief ffmpeg_gotCodecs Parses the muxers list
      * @param output The output of the FFmpeg process with the muxers list
+     * @param newVersion The version of ffmpeg from which tt output comes from
      */
-    void gotMuxers(QString output);
+    void gotMuxers(QString output, QString newVersion);
     /**
      * @brief ffmpeg_gotCodecs Parses the codec list
      * @param output The output of the FFmpeg process with the codecs list
+     * @param newVersion The version of ffmpeg from which tt output comes from
      */
-    void gotCodecs(QString output);
+    void gotCodecs(QString output, QString newVersion);
     /**
      * @brief ffmpeg_gotPixFormats Parses the pix formats list
      * @param output The output of the FFmpeg process with the codecs list
+     * @param newVersion The version of ffmpeg from which tt output comes from
      */
-    void gotPixFormats(QString output);
+    void gotPixFormats(QString output, QString newVersion);
     /**
      * @brief readyRead Called when FFmpeg outputs somehting on stdError or stdOutput
      * @param The output from FFmpeg

@@ -106,74 +106,75 @@ void FFmpeg::runCommand(QStringList commands)
 
 void FFmpeg::init()
 {   
-#if INIT_FFMPEG
+#if INIT_FFMPEG //used when developping to skip ffmpeg loading
 
     //get version
     _debugBaseMessage = "FFmpeg initialization | Checking version";
     debug();
     _ffmpeg->setArguments(QStringList());
     _ffmpeg->start(QIODevice::ReadOnly);
-    QString v = "";
+    QString newVersion = "";
     if (_ffmpeg->waitForFinished(1000))
     {
-        v = gotVersion(_ffmpegOutput);
+        newVersion = gotVersion(_ffmpegOutput);
     }
 
-    if (v != _version)
+    //get pixFormats
+    _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
+    debug();
+    _ffmpeg->setArguments(QStringList("-pix_fmts"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
     {
-        _version = v;
-        settings.setValue("ffmpeg/version",_version);
-
-        //get pixFormats
-        _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
-        debug();
-        _ffmpeg->setArguments(QStringList("-pix_fmts"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(10000))
-        {
-            gotPixFormats(_ffmpegOutput);
-        }
-
-        //get codecs
-        _debugBaseMessage = "FFmpeg initialization | Loading codecs";
-        debug();
-        _ffmpeg->setArguments(QStringList("-codecs"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(10000))
-        {
-            gotCodecs(_ffmpegOutput);
-        }
-
-        //get muxers
-        _debugBaseMessage = "FFmpeg initialization | Loading muxers";
-        debug();
-        _ffmpeg->setArguments(QStringList("-formats"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(10000))
-        {
-            gotMuxers(_ffmpegOutput);
-        }
-
-        //get long help
-        _debugBaseMessage = "FFmpeg initialization | Loading documentation";
-        debug();
-        QStringList args("-h");
-        args << "long";
-        _ffmpeg->setArguments(args);
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(3000))
-        {
-            _longHelp = _ffmpegOutput;
-        }
-
-        //get help
-        _ffmpeg->setArguments(QStringList("-h"));
-        _ffmpeg->start(QIODevice::ReadOnly);
-        if (_ffmpeg->waitForFinished(3000))
-        {
-            _help = _ffmpegOutput;
-        }
+        gotPixFormats( _ffmpegOutput, newVersion );
     }
+
+
+
+    //get codecs
+    _debugBaseMessage = "FFmpeg initialization | Loading codecs";
+    debug();
+    _ffmpeg->setArguments(QStringList("-codecs"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotCodecs( _ffmpegOutput, newVersion );
+    }
+
+    //get muxers
+    _debugBaseMessage = "FFmpeg initialization | Loading muxers";
+    debug();
+    _ffmpeg->setArguments(QStringList("-formats"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(10000))
+    {
+        gotMuxers( _ffmpegOutput, newVersion );
+    }
+
+
+    //get long help
+    _debugBaseMessage = "FFmpeg initialization | Loading documentation";
+    debug();
+    QStringList args("-h");
+    args << "long";
+    _ffmpeg->setArguments(args);
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _longHelp = _ffmpegOutput;
+    }
+
+    //get help
+    _help = settings.value("ffmpeg/help","").toString();
+    _ffmpeg->setArguments(QStringList("-h"));
+    _ffmpeg->start(QIODevice::ReadOnly);
+    if (_ffmpeg->waitForFinished(3000))
+    {
+        _help = _ffmpegOutput;
+    }
+
+    _version = newVersion;
+    settings.setValue("ffmpeg/version",_version);
 
 #endif
 
@@ -1089,68 +1090,128 @@ bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
     return m1->extensions()[0] < m2->extensions()[0];
 }
 
-void FFmpeg::gotMuxers(QString output)
+void FFmpeg::gotMuxers(QString output, QString newVersion)
 {
     //delete all
     qDeleteAll(_muxers);
     _muxers.clear();
 
-    //get Muxers
-    QStringList muxers = output.split("\n");
-    QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
-
-    foreach(QString muxer,muxers)
+    //if the version is different, get from the output
+    if (newVersion != _version)
     {
-        QRegularExpressionMatch match = re.match(muxer);
-        if (match.hasMatch())
+        debug(" | New ffmpeg version: updating muxers list.");
+
+        QStringList muxers = output.split("\n");
+        QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
+
+        //remove the previous codecs
+        settings.remove("ffmpeg/muxers");
+        //create the new array
+        settings.beginWriteArray("ffmpeg/muxers");
+
+        for (int i = 0 ; i < muxers.count() ; i++)
         {
-            QString name = match.captured(1).trimmed();
-            QString prettyName = match.captured(2).trimmed();
-
-            debug(" | " + name);
-
-            // skip image sequence
-            if (name == "image2") continue;
-            FFMuxer *m = new FFMuxer(name,prettyName,this);
-            _muxers << m;
-            //get default codecs
-            QStringList args("-h");
-            args << "muxer=" + m->name();
-            _ffmpeg->setArguments(args);
-            _ffmpeg->start(QIODevice::ReadOnly);
-            if (_ffmpeg->waitForFinished(3000))
+            QString muxer = muxers[i];
+            QRegularExpressionMatch match = re.match(muxer);
+            if (match.hasMatch())
             {
-                QStringList lines = _ffmpegOutput.split("\n");
+                QString name = match.captured(1).trimmed();
+                QString prettyName = match.captured(2).trimmed();
 
-                QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
-                QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
-                QRegularExpression reExtensions("Common extensions:\\s*(.+)\\.");
+                debug(" | " + name);
 
-                foreach(QString line,lines)
+                // skip image sequence
+                if (name == "image2") continue;
+
+                FFMuxer *m = new FFMuxer(name,prettyName,this);
+                _muxers << m;
+
+                //save to settings
+                settings.setArrayIndex(i);
+                settings.setValue("name", name);
+                settings.setValue("prettyName", prettyName);
+
+                //get default codecs
+                QStringList args("-h");
+                args << "muxer=" + m->name();
+                _ffmpeg->setArguments(args);
+                _ffmpeg->start(QIODevice::ReadOnly);
+
+                if (_ffmpeg->waitForFinished(3000))
                 {
-                    //video codec
-                    QRegularExpressionMatch videoMatch = reVideo.match(line);
-                    if (videoMatch.hasMatch())
-                    {
-                        m->setDefaultVideoCodec(getVideoEncoder(videoMatch.captured(1)));
-                    }
+                    QStringList lines = _ffmpegOutput.split("\n");
 
-                    //audio codec
-                    QRegularExpressionMatch audioMatch = reAudio.match(line);
-                    if (audioMatch.hasMatch())
-                    {
-                        m->setDefaultAudioCodec(getAudioEncoder(audioMatch.captured(1)));
-                    }
+                    QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
+                    QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
+                    QRegularExpression reExtensions("Common extensions:\\s*(.+)\\.");
 
-                    //extensions
-                    QRegularExpressionMatch extensionsMatch = reExtensions.match(line);
-                    if (extensionsMatch.hasMatch())
+                    foreach(QString line,lines)
                     {
-                        m->setExtensions(extensionsMatch.captured(1).split(","));
+                        //video codec
+                        QRegularExpressionMatch videoMatch = reVideo.match(line);
+                        if (videoMatch.hasMatch())
+                        {
+                            QString defltVideoCodec = videoMatch.captured(1);
+                            m->setDefaultVideoCodec(getVideoEncoder( defltVideoCodec ));
+                            settings.setValue("defaultVideoCodec", defltVideoCodec );
+                        }
+
+                        //audio codec
+                        QRegularExpressionMatch audioMatch = reAudio.match(line);
+                        if (audioMatch.hasMatch())
+                        {
+                            QString defltAudioCodec = audioMatch.captured(1);
+                            m->setDefaultAudioCodec(getAudioEncoder( defltAudioCodec ));
+                            settings.setValue("defaultAudioCodec", defltAudioCodec );
+                        }
+
+                        //extensions
+                        QRegularExpressionMatch extensionsMatch = reExtensions.match(line);
+                        if (extensionsMatch.hasMatch())
+                        {
+                            QString extensions = extensionsMatch.captured(1);
+                            m->setExtensions(extensions.split(","));
+                            settings.setValue("extensions", extensions );
+                        }
                     }
                 }
             }
         }
+
+        settings.endArray();
+    }
+    else //other wise, get from settings
+    {
+        debug(" | Gettings muxers from stored list.");
+
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/muxers");
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            settings.setArrayIndex(i);
+
+            QString name = settings.value("name").toString();
+            QString prettyName = settings.value("prettyName").toString();
+
+            debug(" | " + name);
+            if (name == "") continue;
+
+            FFMuxer *m = new FFMuxer(name,prettyName,this);
+            _muxers << m;
+
+            //get default codecs
+            QString defltVideoCodec = settings.value("defaultVideoCodec").toString();
+            m->setDefaultVideoCodec(getVideoEncoder( defltVideoCodec ));
+
+            QString defltAudioCodec = settings.value("defaultAudioCodec").toString();
+            m->setDefaultAudioCodec(getAudioEncoder( defltAudioCodec ));
+
+            QString extensions = settings.value("extensions").toString();
+            m->setExtensions(extensions.split(","));
+        }
+
+        settings.endArray();
     }
 
     //add image sequences
@@ -1286,17 +1347,20 @@ QString FFmpeg::gotVersion(QString output)
     if (match.hasMatch())
     {
         v = match.captured(1);
-        debug(" | FFmpeg versoion: " + v);
+        debug(" | FFmpeg version: " + v);
     }
-
-#ifdef QT_DEBUG
-    qDebug() << v;
-#endif
+    else
+    {
+        setStatus(Error);
+        emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
+        debug("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+    }
 
     return v;
 }
 
-void FFmpeg::gotCodecs(QString output)
+void FFmpeg::gotCodecs(QString output, QString newVersion )
 {
     //delete all
     qDeleteAll(_videoEncoders);
@@ -1316,112 +1380,291 @@ void FFmpeg::gotCodecs(QString output)
     FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
-    //get codecs
-    QStringList codecs = output.split("\n");
-    QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
-    for (int i = 0 ; i < codecs.count() ; i++)
+    //if the version is different, get from the output
+    if (newVersion != _version)
     {
-        QString codec = codecs[i];
+        debug(" | New ffmpeg version: updating codec list.");
 
-        QRegularExpressionMatch match = re.match(codec);
-        if (match.hasMatch())
+        QStringList codecs = output.split("\n");
+        QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
+
+        //remove the previous codecs
+        settings.remove("ffmpeg/codecs");
+        //create the new array
+        settings.beginWriteArray("ffmpeg/codecs");
+
+        for (int i = 0 ; i < codecs.count() ; i++)
         {
-            QString codecName = match.captured(7);
-            QString codecPrettyName = match.captured(8);
-            FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
+            QString codec = codecs[i];
 
-            debug(" | " + codecName);
-
-            co->setDecoder(match.captured(1) == "D");
-            co->setEncoder(match.captured(2) == "E");
-            co->setVideo(match.captured(3) == "V");
-            co->setAudio(match.captured(3) == "A");
-            co->setIframe(match.captured(4) == "I");
-            co->setLossy(match.captured(5) == "L");
-            co->setLossless(match.captured(6) == "S");
-
-            if (co->isVideo())
+            QRegularExpressionMatch match = re.match(codec);
+            if (match.hasMatch())
             {
-                //get pixel formats
-                QStringList args("-h");
-                if (co->isEncoder()) args << "encoder=" + co->name();
-                else args << "decoder=" + co->name();
-                _ffmpeg->setArguments(args);
-                _ffmpeg->start(QIODevice::ReadOnly);
-                if (_ffmpeg->waitForFinished(3000))
-                {
-                    QStringList lines = _ffmpegOutput.split("\n");
-                    if (lines.count() > 0)
-                    {
-                        QRegularExpression rePixFmt("Supported pixel formats: (.+)");
+                QString codecName = match.captured(7);
+                QString codecPrettyName = match.captured(8);
+                FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
 
-                        foreach(QString line,lines)
+                debug(" | " + codecName);
+
+                bool decoder = match.captured(1) == "D";
+                bool encoder = match.captured(2) == "E";
+                bool video = match.captured(3) == "V";
+                bool audio = match.captured(3) == "A";
+                bool iFrame = match.captured(4) == "I";
+                bool lossy = match.captured(5) == "L";
+                bool lossless = match.captured(6) == "S";
+
+                co->setDecoder( decoder );
+                co->setEncoder( encoder );
+                co->setVideo( video );
+                co->setAudio( audio );
+                co->setIframe( iFrame );
+                co->setLossy( lossy );
+                co->setLossless( lossless );
+
+                //save it to settings
+                settings.setArrayIndex(i);
+                settings.setValue("codecName", codecName);
+                settings.setValue("codecPrettyName", codecPrettyName);
+
+                settings.setValue("decoder", decoder);
+                settings.setValue("encoder", encoder);
+                settings.setValue("video", video);
+                settings.setValue("audio", audio);
+                settings.setValue("iFrame", iFrame);
+                settings.setValue("lossy", lossy);
+                settings.setValue("lossless", lossless);
+
+                if (co->isVideo())
+                {
+                    //get pixel formats
+                    QStringList args("-h");
+                    if (co->isEncoder()) args << "encoder=" + co->name();
+                    else args << "decoder=" + co->name();
+                    _ffmpeg->setArguments(args);
+                    _ffmpeg->start(QIODevice::ReadOnly);
+                    if (_ffmpeg->waitForFinished(3000))
+                    {
+                        QStringList lines = _ffmpegOutput.split("\n");
+                        if (lines.count() > 0)
                         {
-                            QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
-                            if (pixFmtMatch.hasMatch())
+                            QRegularExpression rePixFmt("Supported pixel formats: (.+)");
+
+                            foreach(QString line,lines)
                             {
-                                QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
-                                QString defaultPF = pixFmts[0];
-                                pixFmts.sort();
-                                foreach(QString pixFmt, pixFmts)
+                                QRegularExpressionMatch pixFmtMatch = rePixFmt.match(line);
+                                if (pixFmtMatch.hasMatch())
                                 {
-                                    pixFmt = pixFmt.trimmed();
-                                    FFPixFormat *pf = getPixFormat(pixFmt);
-                                    if (pf == nullptr) continue;
-                                    co->addPixFormat(pf);
-                                    if (pixFmt == defaultPF) co->setDefaultPixFormat(pf);
+                                    //create array for supported pixfmts
+                                    settings.beginWriteArray("pixFmts");
+
+                                    QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
+                                    QString defaultPF = pixFmts[0];
+                                    pixFmts.sort();
+                                    for( int j = 0; j < pixFmts.length(); j++ )
+                                    {
+                                        QString pixFmt = pixFmts[j].trimmed();
+
+                                        FFPixFormat *pf = getPixFormat(pixFmt);
+                                        if (pf == nullptr) continue;
+                                        co->addPixFormat(pf);
+                                        bool deflt = pixFmt == defaultPF;
+                                        if ( deflt ) co->setDefaultPixFormat(pf);
+
+                                        settings.setArrayIndex(j);
+                                        settings.setValue("name",pixFmt);
+                                        settings.setValue("default",deflt);
+                                    }
+
+                                    settings.endArray();
+
+                                    break;
                                 }
-                                break;
+
+
                             }
                         }
                     }
                 }
-            }
 
+                if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
+                else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
+                else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
+                else if (co->isAudio() && co->isDecoder()) _audioDecoders << co;
+            }
+        }
+
+        //close array
+        settings.endArray();
+    }
+    else //other wise, get from settings
+    {
+        debug(" | Gettings codecs from stored list.");
+
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/codecs");
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            settings.setArrayIndex(i);
+
+            QString codecName = settings.value("codecName").toString();
+            QString codecPrettyName = settings.value("codecPrettyName").toString();
+            FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
+
+            debug(" | " + codecName);
+
+            bool decoder = settings.value("decoder").toBool();
+            bool encoder = settings.value("encoder").toBool();
+            bool video = settings.value("video").toBool();
+            bool audio = settings.value("audio").toBool();
+            bool iFrame = settings.value("iFrame").toBool();
+            bool lossy = settings.value("lossy").toBool();
+            bool lossless = settings.value("lossless").toBool();
+
+            co->setDecoder( decoder );
+            co->setEncoder( encoder );
+            co->setVideo( video );
+            co->setAudio( audio );
+            co->setIframe( iFrame );
+            co->setLossy( lossy );
+            co->setLossless( lossless );
+
+            if (co->isVideo())
+            {
+                //get pixel formats
+                int pArraySize = settings.beginReadArray("pixFmts");
+                for (int j = 0; j < pArraySize; j++)
+                {
+                    settings.setArrayIndex(j);
+
+                    QString pixFmt = settings.value("name").toString();
+
+                    FFPixFormat *pf = getPixFormat(pixFmt);
+                    if (pf == nullptr) continue;
+
+                    co->addPixFormat(pf);
+
+                    bool deflt = settings.value("default").toBool();
+                    if ( deflt ) co->setDefaultPixFormat(pf);
+                }
+
+                settings.endArray();
+            }
 
             if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
             else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
             else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
             else if (co->isAudio() && co->isDecoder()) _audioDecoders << co;
         }
+
+        //close the array
+        settings.endArray();
     }
+
 
     debug(" | Sorting...");
     std::sort(_videoEncoders.begin(),_videoEncoders.end(),ffSorter);
     std::sort(_audioEncoders.begin(),_audioEncoders.end(),ffSorter);
 }
 
-void FFmpeg::gotPixFormats(QString output)
+void FFmpeg::gotPixFormats(QString output, QString newVersion)
 {
     //delete all
     qDeleteAll(_pixFormats);
     _pixFormats.clear();
 
-    //get pixfmts
-    QStringList pixFmts = output.split("\n");
-    QRegularExpression re("([I.])([O.])([H.])([P.])([B.]) (\\w+) +(\\d+) +(\\d+)");
-    for (int i = 0 ; i < pixFmts.count() ; i++)
+    //if the version is different, get from the output
+    if (newVersion != _version)
     {
-        QString pixFmt = pixFmts[i];
+        QStringList pixFmts = output.split("\n");
+        QRegularExpression re("([I.])([O.])([H.])([P.])([B.]) (\\w+) +(\\d+) +(\\d+)");
 
-        QRegularExpressionMatch match = re.match(pixFmt);
-        if (match.hasMatch())
+        //remove the previous formats
+        settings.remove("ffmpeg/pixFmts");
+        //create the new array
+        settings.beginWriteArray("ffmpeg/pixFmts");
+
+        for (int i = 0 ; i < pixFmts.count() ; i++)
         {
-            QString name = match.captured(6);
-            QString numComponents = match.captured(7);
-            QString bpp = match.captured(8);
-            FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
+            QString pixFmt = pixFmts[i];
+
+            QRegularExpressionMatch match = re.match(pixFmt);
+            if (match.hasMatch())
+            {
+                QString name = match.captured(6);
+                QString numComponents = match.captured(7);
+                QString bpp = match.captured(8);
+                FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
+
+                debug(" | " + name);
+
+                bool input = match.captured(1) == "I";
+                bool output = match.captured(2) == "O";
+                bool hardware = match.captured(3) == "H";
+                bool paletted = match.captured(4) == "P";
+                bool bitStream = match.captured(5) == "B";
+
+                pf->setInput( input );
+                pf->setOutput( output );
+                pf->setHardware( hardware );
+                pf->setPaletted( paletted );
+                pf->setBitstream( bitStream );
+
+                _pixFormats << pf;
+
+                //save it to settings
+                settings.setArrayIndex(i);
+                settings.setValue("name", name);
+                settings.setValue("numComponents", numComponents);
+                settings.setValue("bpp", bpp);
+
+                settings.setValue("input", input);
+                settings.setValue("output", output);
+                settings.setValue("hardware", hardware);
+                settings.setValue("paletted", paletted);
+                settings.setValue("bitStream", bitStream);
+            }
+        }
+
+        //close the array
+        settings.endArray();
+    }
+    else //other wise, get from settings
+    {
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/pixFmts");
+
+        for (int i = 0; i < arraySize; ++i)
+        {
+            settings.setArrayIndex(i);
+
+
+            QString name = settings.value("name").toString();
+            int numComponents = settings.value("numComponents").toInt();
+            int bpp = settings.value("bpp").toInt();
+
+            FFPixFormat *pf = new FFPixFormat(name, "", numComponents, bpp);
 
             debug(" | " + name);
 
-            pf->setInput(match.captured(1) == "I");
-            pf->setOutput(match.captured(2) == "O");
-            pf->setHardware(match.captured(3) == "H");
-            pf->setPaletted(match.captured(4) == "P");
-            pf->setBitstream(match.captured(5) == "B");
+            bool input = settings.value("input").toBool();
+            bool output = settings.value("output").toBool();
+            bool hardware = settings.value("hardware").toBool();
+            bool paletted = settings.value("paletted").toBool();
+            bool bitStream = settings.value("bitStream").toBool();
+
+            pf->setInput( input );
+            pf->setOutput( output );
+            pf->setHardware( hardware );
+            pf->setPaletted( paletted );
+            pf->setBitstream( bitStream );
 
             _pixFormats << pf;
         }
+
+        //close the array
+        settings.endArray();
     }
 
     debug(" | Sorting...");
@@ -1601,6 +1844,11 @@ void FFmpeg::launchAeRenderProcess(QStringList args)
 void FFmpeg::debug(QString message)
 {
     message = _debugBaseMessage + message;
+
+#ifdef QT_DEBUG
+    qDebug() << message;
+#endif
+
     emit debugInfo(message);
 }
 

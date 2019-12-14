@@ -28,9 +28,20 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("DuFFmpeg");
     QCoreApplication::setApplicationVersion(APPVERSION);
 
+    QSettings settings;
+    if (settings.value("version").toString() != APPVERSION)
+    {
+        settings.setValue("version",APPVERSION);
+        settings.setValue("ffmpeg/version","");
+    }
+
+
+#ifdef QT_DEBUG
+    //settings.setValue("ffmpeg/version","");
+#endif
+
     //load FFmpeg
     splash.newMessage("Initializing FFmpeg...");
-    //then save to settings
     FFmpeg *ffmpeg = new FFmpeg();
     QObject::connect(ffmpeg,&FFmpeg::debugInfo,&splash,&SplashScreen::newMessage);
     ffmpeg->init();
@@ -40,6 +51,8 @@ int main(int argc, char *argv[])
     MainWindow *w = new MainWindow(ffmpeg);
     FrameLess f(w);
     w->show();
+
+
     //hide splash when finished
     splash.finish(w);
 
