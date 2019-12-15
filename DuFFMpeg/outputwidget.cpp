@@ -1,5 +1,7 @@
 #include "outputwidget.h"
 
+#include <QGraphicsDropShadowEffect>
+
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
@@ -10,6 +12,16 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     _freezeUI = true;
     _loadingPreset = false;
     setupUi(this);
+
+    //add some shadows
+    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
+    effect->setBlurRadius(20);
+    effect->setXOffset(2);
+    effect->setYOffset(2);
+    effect->setColor(QColor(0, 0, 0, 100));
+
+
+    videoTranscodeWidget->setGraphicsEffect(effect);
 
     outputTabs->setCurrentIndex(0);
 
