@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>588</height>
+    <width>616</width>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
+  <layout class="QVBoxLayout" name="verticalLayout_8">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -242,13 +242,13 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>550</width>
-        <height>580</height>
+        <width>616</width>
+        <height>677</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
        <property name="spacing">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="leftMargin">
         <number>0</number>
@@ -257,7 +257,7 @@
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -274,7 +274,7 @@
           <enum>QTabWidget::North</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_7">
           <property name="sizePolicy">
@@ -291,16 +291,16 @@
             <number>3</number>
            </property>
            <property name="leftMargin">
-            <number>5</number>
+            <number>3</number>
            </property>
            <property name="topMargin">
-            <number>5</number>
+            <number>3</number>
            </property>
            <property name="rightMargin">
-            <number>10</number>
+            <number>6</number>
            </property>
            <property name="bottomMargin">
-            <number>10</number>
+            <number>3</number>
            </property>
            <item>
             <widget class="QWidget" name="videoSelectionWidget" native="true">
@@ -376,8 +376,8 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="videoTranscodeWidget" native="true">
-             <layout class="QFormLayout" name="formLayout">
+            <widget class="QWidget" name="resizeWidget" native="true">
+             <layout class="QFormLayout" name="formLayout_4">
               <property name="horizontalSpacing">
                <number>3</number>
               </property>
@@ -385,16 +385,16 @@
                <number>3</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <item row="0" column="0">
                <widget class="QCheckBox" name="resizeButton">
@@ -501,7 +501,31 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="frameRateWidget" native="true">
+             <layout class="QFormLayout" name="formLayout_5">
+              <property name="horizontalSpacing">
+               <number>3</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item row="0" column="0">
                <widget class="QCheckBox" name="frameRateButton">
                 <property name="minimumSize">
                  <size>
@@ -520,7 +544,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="0" column="1">
                <widget class="QComboBox" name="frameRateBox">
                 <property name="enabled">
                  <bool>false</bool>
@@ -604,7 +628,7 @@
                 </item>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="1" column="1">
                <widget class="QDoubleSpinBox" name="frameRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -623,21 +647,31 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="videoCodecLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Codec:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="mainVideoCodecWidget" native="true">
+             <layout class="QFormLayout" name="formLayout_6">
+              <property name="horizontalSpacing">
+               <number>3</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item row="0" column="0">
                <widget class="QCheckBox" name="videoCodecButton">
                 <property name="minimumSize">
                  <size>
@@ -656,7 +690,7 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
+              <item row="0" column="1">
                <widget class="QWidget" name="videoCodecWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -730,6 +764,12 @@
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>440</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="frame">
                     <bool>false</bool>
                    </property>
@@ -738,7 +778,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="7" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="videoBitrateButton">
                 <property name="minimumSize">
                  <size>
@@ -757,7 +797,7 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="1" column="1">
                <widget class="QDoubleSpinBox" name="videoBitRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -782,7 +822,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
+              <item row="2" column="0">
                <widget class="QCheckBox" name="videoQualityButton">
                 <property name="minimumSize">
                  <size>
@@ -801,7 +841,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
+              <item row="2" column="1">
                <widget class="QWidget" name="videoQualityWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -860,7 +900,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="9" column="0">
+              <item row="3" column="0">
                <widget class="QCheckBox" name="videoProfileButton">
                 <property name="minimumSize">
                  <size>
@@ -879,7 +919,7 @@
                 </property>
                </widget>
               </item>
-              <item row="9" column="1">
+              <item row="3" column="1">
                <widget class="QComboBox" name="videoProfileBox">
                 <property name="enabled">
                  <bool>false</bool>
@@ -895,21 +935,31 @@
                 </property>
                </widget>
               </item>
-              <item row="10" column="0">
-               <widget class="QLabel" name="sequenceLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Sequence:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="11" column="0">
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="sequenceWidget" native="true">
+             <layout class="QFormLayout" name="formLayout_9">
+              <property name="horizontalSpacing">
+               <number>3</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item row="0" column="0">
                <widget class="QCheckBox" name="videoLoopsButton">
                 <property name="minimumSize">
                  <size>
@@ -928,7 +978,7 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="1">
+              <item row="0" column="1">
                <widget class="QSpinBox" name="videoLoopsEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -950,26 +1000,7 @@
                 </property>
                </widget>
               </item>
-              <item row="12" column="0">
-               <widget class="QCheckBox" name="startNumberButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Start number</string>
-                </property>
-               </widget>
-              </item>
-              <item row="12" column="1">
+              <item row="1" column="1">
                <widget class="QSpinBox" name="startNumberEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -991,21 +1022,59 @@
                 </property>
                </widget>
               </item>
-              <item row="13" column="0">
-               <widget class="QLabel" name="componentsLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="startNumberButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
                 </property>
                 <property name="text">
-                 <string>Components:</string>
+                 <string>Start number</string>
                 </property>
                </widget>
               </item>
-              <item row="14" column="0">
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="componentsWidget" native="true">
+             <property name="maximumSize">
+              <size>
+               <width>600</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <layout class="QFormLayout" name="formLayout_10">
+              <property name="formAlignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+              <property name="horizontalSpacing">
+               <number>3</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item row="0" column="0">
                <widget class="QCheckBox" name="alphaButton">
                 <property name="minimumSize">
                  <size>
@@ -1024,7 +1093,7 @@
                 </property>
                </widget>
               </item>
-              <item row="15" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="pixFmtButton">
                 <property name="minimumSize">
                  <size>
@@ -1043,7 +1112,7 @@
                 </property>
                </widget>
               </item>
-              <item row="15" column="1">
+              <item row="1" column="1">
                <widget class="QWidget" name="pixFmtWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1110,7 +1179,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="16" column="0">
+              <item row="2" column="0">
                <widget class="QCheckBox" name="unmultButton">
                 <property name="minimumSize">
                  <size>
@@ -1157,21 +1226,21 @@
           <attribute name="title">
            <string>Audio</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1,0">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="spacing">
             <number>3</number>
            </property>
            <property name="leftMargin">
-            <number>0</number>
+            <number>3</number>
            </property>
            <property name="topMargin">
-            <number>0</number>
+            <number>3</number>
            </property>
            <property name="rightMargin">
-            <number>0</number>
+            <number>6</number>
            </property>
            <property name="bottomMargin">
-            <number>0</number>
+            <number>3</number>
            </property>
            <item>
             <widget class="QWidget" name="audioSelectionWidget" native="true">
@@ -1253,8 +1322,8 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="audioTranscodeWidget" native="true">
-             <layout class="QFormLayout" name="formLayout_2">
+            <widget class="QWidget" name="samplingWidget" native="true">
+             <layout class="QFormLayout" name="formLayout">
               <property name="horizontalSpacing">
                <number>3</number>
               </property>
@@ -1262,16 +1331,16 @@
                <number>3</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <item row="0" column="0">
                <widget class="QCheckBox" name="samplingButton">
@@ -1305,7 +1374,31 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="mainAudioCodecWidget" native="true">
+             <layout class="QFormLayout" name="formLayout_2">
+              <property name="horizontalSpacing">
+               <number>3</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>3</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item row="0" column="0">
                <widget class="QCheckBox" name="audioCodecButton">
                 <property name="minimumSize">
                  <size>
@@ -1324,7 +1417,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="0" column="1">
                <widget class="QWidget" name="audioCodecWidget" native="true">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1395,7 +1488,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="audioBitrateButton">
                 <property name="minimumSize">
                  <size>
@@ -1414,7 +1507,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="1" column="1">
                <widget class="QSpinBox" name="audioBitRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1439,20 +1532,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="audioCodecLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Codec:</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -1464,7 +1543,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>372</height>
               </size>
              </property>
             </spacer>
@@ -1474,36 +1553,38 @@
         </widget>
        </item>
        <item>
-        <layout class="QFormLayout" name="customOptionsLayout">
-         <property name="horizontalSpacing">
-          <number>3</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>3</number>
-         </property>
-         <property name="rightMargin">
-          <number>3</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QPushButton" name="addParam">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Custom option...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QWidget" name="customOptionsWidget" native="true">
+         <layout class="QFormLayout" name="customOptionsLayout">
+          <property name="horizontalSpacing">
+           <number>3</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="addParam">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Custom option...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>

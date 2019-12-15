@@ -76,7 +76,7 @@ private:
     void selectDefaultVideoCodec();
     void selectDefaultAudioCodec();
     void selectDefaultPixFmt();
-    void updateVideoOptions();
+    void updateAudioVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();
 

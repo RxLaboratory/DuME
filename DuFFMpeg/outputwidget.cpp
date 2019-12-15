@@ -1,4 +1,5 @@
 #include "outputwidget.h"
+#include "uidropshadow.h"
 
 #include <QGraphicsDropShadowEffect>
 
@@ -14,14 +15,14 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     setupUi(this);
 
     //add some shadows
-    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
-    effect->setBlurRadius(20);
-    effect->setXOffset(2);
-    effect->setYOffset(2);
-    effect->setColor(QColor(0, 0, 0, 100));
+    resizeWidget->setGraphicsEffect(new UIDropShadow);
+    frameRateWidget->setGraphicsEffect(new UIDropShadow);
+    mainVideoCodecWidget->setGraphicsEffect(new UIDropShadow);
+    sequenceWidget->setGraphicsEffect(new UIDropShadow);
+    componentsWidget->setGraphicsEffect(new UIDropShadow);
 
-
-    videoTranscodeWidget->setGraphicsEffect(effect);
+    samplingWidget->setGraphicsEffect(new UIDropShadow);
+    mainAudioCodecWidget->setGraphicsEffect(new UIDropShadow);
 
     outputTabs->setCurrentIndex(0);
 
@@ -56,7 +57,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     on_presetsFilterBox_activated(0);
     //hide/show supported/unsupported options
-    updateVideoOptions();
+    updateAudioVideoOptions();
 }
 
 void OutputWidget::init()
@@ -350,14 +351,14 @@ QString OutputWidget::getOutputPath()
 
 void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
-    videoTranscodeWidget->setVisible(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+    updateAudioVideoOptions();
 }
 
 void OutputWidget::on_audioTranscodeButton_toggled(bool checked)
 {
-    audioTranscodeWidget->setVisible(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+    updateAudioVideoOptions();
 }
 
 void OutputWidget::on_resizeButton_toggled(bool checked)
@@ -455,7 +456,7 @@ void OutputWidget::on_videoHeightButton_valueChanged(int val)
 
 void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
 {
-    updateVideoOptions();
+    updateAudioVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
     _currentVideoCodec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
     pixFmtFilterBox->setCurrentIndex(0);
@@ -605,7 +606,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     _freezeUI = false;
 
     updateOutputExtension(outputEdit->text());
-    updateVideoOptions();
+    updateAudioVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
@@ -920,9 +921,19 @@ void OutputWidget::selectDefaultPixFmt()
     }
 }
 
-void OutputWidget::updateVideoOptions()
+void OutputWidget::updateAudioVideoOptions()
 {
-    //hide all
+    //VIDEO
+    mainVideoCodecWidget->hide();
+    resizeWidget->hide();
+    frameRateWidget->hide();
+    sequenceWidget->hide();
+    componentsWidget->hide();
+    //AUDIO
+    samplingWidget->hide();
+    mainAudioCodecWidget->hide();
+
+    //hide all details
 
     //VIDEO
     //codec
@@ -937,16 +948,19 @@ void OutputWidget::updateVideoOptions()
     //profile
     videoProfileButton->hide();
     videoProfileBox->hide();
+
     //loop
     videoLoopsButton->hide();
     videoLoopsEdit->hide();
     //start number
     startNumberButton->hide();
     startNumberEdit->hide();
+
     //frame rate
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
+
     //unmult
     unmultButton->hide();
 
@@ -958,71 +972,87 @@ void OutputWidget::updateVideoOptions()
     audioBitrateButton->hide();
     audioBitRateEdit->hide();
 
-
-    //show/hide codec and bitrate depending on muxer
-    FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
-    if (muxer != nullptr)
+    if (videoTranscodeButton->isChecked())
     {
-        if (!muxer->isSequence() && muxer->name() != "gif")
+        resizeWidget->show();
+
+        //show/hide codec depending on muxer
+        FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+        if (muxer != nullptr)
         {
-            videoCodecButton->show();
-            videoCodecWidget->show();
-            videoBitrateButton->show();
-            videoBitRateEdit->show();
-            audioCodecButton->show();
-            audioCodecWidget->show();
-            audioBitrateButton->show();
-            audioBitRateEdit->show();
+            if (!muxer->isSequence() && muxer->name() != "gif")
+            {
+                mainVideoCodecWidget->show();
+                videoCodecButton->show();
+                videoCodecWidget->show();
+                videoBitrateButton->show();
+                videoBitRateEdit->show();
+            }
+
+            if (muxer->isSequence())
+            {
+                sequenceWidget->show();
+                startNumberButton->show();
+                startNumberEdit->show();
+            }
+            else
+            {
+                frameRateWidget->show();
+                frameRateBox->show();
+                frameRateButton->show();
+                frameRateEdit->show();
+            }
         }
 
-        if (muxer->isSequence())
+        FFCodec *codec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
+        if (codec != nullptr)
         {
-            startNumberButton->show();
-            startNumberEdit->show();
-        }
-        else
-        {
-            frameRateBox->show();
-            frameRateButton->show();
-            frameRateEdit->show();
+            //prores
+            if (codec->name() == "prores")
+            {
+                mainVideoCodecWidget->show();
+                videoProfileBox->clear();
+                videoProfileBox->addItem("Proxy",0);
+                videoProfileBox->addItem("LT",1);
+                videoProfileBox->addItem("Normal",2);
+                videoProfileBox->addItem("HQ",3);
+                videoProfileButton->show();
+                videoProfileBox->show();
+            }
+            //h264
+            else if (codec->name() == "h264")
+            {
+                mainVideoCodecWidget->show();
+                videoQualityButton->show();
+                videoQualityWidget->show();
+            }
+            //gif
+            else if (codec->name() == "gif")
+            {
+                sequenceWidget->show();
+                videoLoopsButton->show();
+                videoLoopsEdit->show();
+            }
         }
     }
 
-    FFCodec *codec = _ffmpeg->getVideoEncoder(videoCodecsBox->currentData().toString());
-    if (codec != nullptr)
+    if (audioTranscodeButton->isChecked())
     {
-        //prores
-        if (codec->name() == "prores")
+        //show/hide bitrate depending on muxer
+        FFMuxer *muxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
+        if (muxer != nullptr)
         {
-            videoProfileBox->clear();
-            videoProfileBox->addItem("Proxy",0);
-            videoProfileBox->addItem("LT",1);
-            videoProfileBox->addItem("Normal",2);
-            videoProfileBox->addItem("HQ",3);
-            videoProfileButton->show();
-            videoProfileBox->show();
-        }
-        //h264
-        else if (codec->name() == "h264")
-        {
-            videoQualityButton->show();
-            videoQualityWidget->show();
-        }
-        //gif
-        else if (codec->name() == "gif")
-        {
-            videoLoopsButton->show();
-            videoLoopsEdit->show();
+            if (!muxer->isSequence() && muxer->name() != "gif")
+            {
+                mainAudioCodecWidget->show();
+                samplingWidget->show();
+                audioCodecButton->show();
+                audioCodecWidget->show();
+                audioBitrateButton->show();
+                audioBitRateEdit->show();
+            }
         }
     }
-
-    //Labels
-    if (!videoCodecButton->isVisible()) videoCodecLabel->hide();
-    else videoCodecLabel->show();
-    if (startNumberButton->isVisible() || videoLoopsButton->isVisible()) sequenceLabel->show();
-    else sequenceLabel->hide();
-    if (audioCodecButton->isVisible()) audioCodecLabel->show();
-    else audioCodecLabel->hide();
 
     //uncheck what is hidden
     if (videoCodecButton->isHidden()) videoCodecButton->setChecked(false);
