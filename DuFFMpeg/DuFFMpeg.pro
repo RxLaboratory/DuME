@@ -22,7 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-DEFINES += APPVERSION=\\\"0.0.8-Alpha\\\"
+DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
 
 SOURCES += \
     main.cpp \
@@ -45,6 +45,7 @@ SOURCES += \
     aerender.cpp \
     aerenderobject.cpp \
     splashscreen.cpp \
+    uidropshadow.cpp \
     utils.cpp
 
 HEADERS += \
@@ -67,6 +68,7 @@ HEADERS += \
     aerender.h \
     aerenderobject.h \
     splashscreen.h \
+    uidropshadow.h \
     utils.h
 
 FORMS += \

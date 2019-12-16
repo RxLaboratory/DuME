@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The DuFFmpeg comprehensive documentation">
+  <meta name="author" content="Nicolas Dufresne and contributors">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>Home - DuFFmpeg Documentation</title>
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="style.css" rel="stylesheet">
+  <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/index.html";
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> DuFFmpeg Documentation</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="index.html">Home</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#duffmpeg-introduction">DuFFmpeg Introduction</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#description">Description</a></li>
+        
+            <li><a class="toctree-l3" href="#about-duffmpeg">About DuFFmpeg</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="changelog.html">Changelog</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">License</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="gnu-gpl.html">GNU GPLv3</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="doc-license.html">Documentation license</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainboxlab.org/about/donate/">Donate</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">DuFFmpeg Documentation</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="http://duffmpeg-docs.rainboxlab.org/edit/master/src/docs/index.md"> Edit on Duffmpeg-Docs</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="duffmpeg-introduction">DuFFmpeg Introduction</h1>
+<p><strong><em>DuFFmpeg</em> is a Free and Open Source Media Encoder</strong>.<br />
+It is fast, versatile, and easy-to-use.<br />
+It is developped as a Graphical User Interface (GUI) for <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very fast and versatile command-line media encoder.<br />
+<em>DuFFmpeg</em> is also able to render and transcode <em>Adobe After Effects</em> projects and to render <a href="http://blender.org"><em>Blender</em></a> scenes.</p>
+<h2 id="description">Description</h2>
+<p>The goal of DuFFmpeg is to be as <strong>easy to use</strong> as possible even for beginners, without any compromise on <strong>functionnality for advanced users</strong>.</p>
+<p>To achieve this goal, the development of the application follows these guidelines:</p>
+<ul>
+<li>The User Interface has to be both intuitive and nice-looking, as well as fast.</li>
+<li>Transcoding to standard formats (mp4, PNG&hellip;) is straightforward, thanks to carefully crafted presets.</li>
+<li>The most common parameters (resolution, frames per second, codec, quality&hellip;) can easily be set through the user interface</li>
+<li>Advanced users can add any other parameter available in FFmpeg thanks to the &ldquo;custom parameters&rdquo;, or even input their own commands through the included command line.</li>
+<li>Common parameters and Custom parameters can be saved as easy-to-use User Presets.</li>
+</ul>
+<h3 id="available-features">Available Features</h3>
+<ul>
+<li>Transcode any audio or video file, <a href="https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features">from any format supporter by <em>FFmpeg</em></a> to any other format supported by FFmpeg.</li>
+<li>Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF&hellip; - <em>evolving list</em>.</li>
+<li>Transcode to and from Image Sequences (PNG, EXR&hellip;).</li>
+<li>Mix Media files (e.g. add sound to an image sequence) - <em>available using custom parameters, work in progress</em>.</li>
+<li>Render After Effects projects and transcode to any format supported by FFmpeg - <em>work in progress</em>.</li>
+</ul>
+<h3 id="planned-features">Planned Features</h3>
+<ul>
+<li>Render/Transcode queue.</li>
+<li>Simplify <em>After Effects</em> rendering setup.</li>
+<li>Simple media player (using ffplay).  <ul>
+<li>Preview of the input.</li>
+<li>Preview of the output.</li>
+</ul>
+</li>
+<li>Render <em>Blender</em> scenes.</li>
+<li>Mix several inputs together.</li>
+<li>Append several inputs.</li>
+<li>Add subtitles tracks.</li>
+<li>Burn subtitles in picture.</li>
+<li>Burn Metadata in picture (Timecode&hellip;).</li>
+</ul>
+<h2 id="about-duffmpeg">About DuFFmpeg</h2>
+<p>If you like this free software, please support the developper on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.</p>
+<h3 id="licenses">Licenses:</h3>
+<h4 id="software">Software</h4>
+<p>This program makes use of <em>FFmpeg</em> and <em>Qt</em>.</p>
+<p><strong><em>DuFFmpeg</em> Copyright (c) 2017-2019 Nicolas Dufresne and Contributors</strong><br />
+<strong><em>FFmpeg</em> Copyright (c) the FFmpeg developers</strong><br />
+<strong><em>Qt</em> Copyright (c) The Qt Company</strong></p>
+<p><em>DuFFmpeg</em>, <em>FFmpeg</em> and <em>Qt</em> are free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.</p>
+<p><em>DuFFmpeg</em>, <em>FFmpeg</em> and <em>Qt</em> are distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the <em>GNU General Public License</em> along with <em>DuFFmpeg</em>.  If not, see http://www.gnu.org/licenses/.</p>
+<p><img alt="GNU" src="img/logos/gnu.png" /> <img alt="GPL" src="img/logos/gplv3.png" /> </p>
+<h4 id="documentation">Documentation</h4>
+<p><strong>Copyright (C)  2019 Nicolas Dufresne and Contributors.</strong><br />
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation;<br />
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled &ldquo;<a href="doc-license.html">Documentation License</a>&rdquo;.</p>
+<p><img alt="GNU" src="img/logos/gnu.png" /> <img alt="GFDL" src="img/logos/gfdl-logo.png" /> </p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 Rainbox Laboratory and Nicolas Dufresne</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+        <span style="margin-left: 15px"><a href="changelog.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="video.js" defer></script>
+      <script src="search/main.js" defer></script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2019-12-15 12:31:23
+-->

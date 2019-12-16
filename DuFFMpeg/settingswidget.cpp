@@ -1,4 +1,5 @@
 #include "settingswidget.h"
+#include "uidropshadow.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
@@ -11,6 +12,10 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
 
     _ffmpeg = ffmpeg;
     _freezeUI = true;
+
+    //Add nice shadows
+    generalWidget->setGraphicsEffect(new UIDropShadow);
+    aeWidget->setGraphicsEffect(new UIDropShadow);;
 
 #ifdef Q_OS_LINUX
     QString defaultFfmpegPath = "ffmpeg";

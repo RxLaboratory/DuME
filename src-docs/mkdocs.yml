@@ -1,0 +1,36 @@
+site_name: DuFFmpeg Documentation
+site_url: http://rainboxlab.org
+repo_url: http://duffmpeg-docs.rainboxlab.org
+edit_uri: edit/master/src/docs/
+site_description: The DuFFmpeg comprehensive documentation
+site_author: Nicolas Dufresne and contributors
+copyright: 'Copyright © 2019 Rainbox Laboratory and Nicolas Dufresne'
+use_directory_urls: false
+theme:
+    name: readthedocs
+    custom_dir: theme/
+markdown_extensions:
+    - smarty
+    - footnotes
+    - tables
+    - admonition
+    - codehilite
+    - fenced_code
+    - toc
+extra_css:
+    - style.css
+    - video.css
+extra_javascript:
+    - video.js
+site_dir: ../docs/
+dev_addr: '127.0.0.1:8001'
+extra:
+    version: 0.0.6-alpha
+nav:
+    - Home: index.md
+    - Changelog: changelog.md
+    - License:
+        - GNU GPLv3: gnu-gpl.md
+        - Documentation license: doc-license.md
+    - Contact: https://rainboxlab.org/about/contact/
+    - Donate: https://rainboxlab.org/about/donate/
