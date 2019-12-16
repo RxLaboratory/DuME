@@ -76,7 +76,7 @@
         <x>0</x>
         <y>0</y>
         <width>404</width>
-        <height>418</height>
+        <height>414</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -226,7 +226,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>100</width>
+             <width>150</width>
              <height>16777215</height>
             </size>
            </property>
@@ -243,12 +243,6 @@
              <height>0</height>
             </size>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="text">
             <string>Frame rate</string>
            </property>
@@ -260,12 +254,6 @@
             <size>
              <width>150</width>
              <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
             </size>
            </property>
            <property name="text">
@@ -300,12 +288,6 @@
              <height>0</height>
             </size>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="toolTip">
             <string>Render and encode a specific compostion.</string>
            </property>
@@ -330,12 +312,6 @@
             <size>
              <width>150</width>
              <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
             </size>
            </property>
            <property name="toolTip">
@@ -390,12 +366,6 @@
              <height>0</height>
             </size>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="toolTip">
             <string>Render and encode a specific item in the render queue</string>
            </property>
@@ -432,12 +402,6 @@
             <size>
              <width>150</width>
              <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
             </size>
            </property>
            <property name="toolTip">

@@ -243,7 +243,7 @@
         <x>0</x>
         <y>0</y>
         <width>616</width>
-        <height>677</height>
+        <height>680</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
@@ -274,7 +274,7 @@
           <enum>QTabWidget::North</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_7">
           <property name="sizePolicy">
@@ -286,7 +286,7 @@
           <attribute name="title">
            <string>Video</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,1">
            <property name="spacing">
             <number>3</number>
            </property>
@@ -1226,7 +1226,7 @@
           <attribute name="title">
            <string>Audio</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,1">
            <property name="spacing">
             <number>3</number>
            </property>
@@ -1574,7 +1574,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>150</width>
               <height>16777215</height>
              </size>
             </property>

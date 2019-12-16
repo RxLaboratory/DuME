@@ -19,6 +19,8 @@ QDialog#HelpDialog {
 
 QWidget {
         background-color: @color-dark;
+        font-family: "calibri", sans-serif;
+        font-weight:500;
 }
 
 /* COLOR DIALOG */

@@ -53,4 +53,12 @@
         <file alias="render13">resources/after-effects/-indep-render-13</file>
         <file alias="render14">resources/after-effects/-indep-render-14</file>
     </qresource>
+    <qresource prefix="/fonts">
+        <file alias="calibri">resources/fonts/calibri.ttf</file>
+        <file alias="calibri_bold">resources/fonts/calibrib.ttf</file>
+        <file alias="calibri_italic">resources/fonts/calibrii.ttf</file>
+        <file alias="calibri_light">resources/fonts/calibril.ttf</file>
+        <file alias="calibri_light_italic">resources/fonts/calibrili.ttf</file>
+        <file alias="calibri_bold_italic">resources/fonts/calibriz.ttf</file>
+    </qresource>
 </RCC>

@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 
+#include <QFontDatabase>
+#include <QGraphicsDropShadowEffect>
+
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
@@ -62,8 +65,25 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     queueWidget = new QueueWidget(ffmpeg,this);
     queueLayout->addWidget(queueWidget);
 
+    //add fonts
+    QFontDatabase::addApplicationFont(":/fonts/calibri");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_bold");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_italic");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_light");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_light_italic");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_bold_italic");
+
     //set style
     updateCSS(":/styles/default");
+
+    //add nice shadows
+    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
+    effect->setBlurRadius(20);
+    effect->setXOffset(0);
+    effect->setYOffset(5);
+    effect->setColor(QColor(0, 0, 0, 70));
+
+    progressWidget->setGraphicsEffect(effect);
 
     //init UI
     consoleTabs->setCurrentIndex(3);
@@ -106,13 +126,15 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     debugLog("Init - Map events");
     // Window management
 
-#ifndef Q_OS_MAC
-    // Windows and linux
+    //connect maximize and minimize buttons
+#ifdef Q_OS_WIN
     connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
 #endif
-
+    //connect close button
+#ifndef Q_OS_LINUX
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
+#endif
     //FFmpeg
     connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));
     connect(ffmpeg,SIGNAL(processError(QString)),this,SLOT(ffmpeg_errorOccurred(QString)));
