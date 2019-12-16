@@ -34,17 +34,21 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     //populate toolbar
     ToolBarSpacer *tbs = new ToolBarSpacer();
     mainToolBar->addWidget(tbs);
-    //window buttons
-#ifndef Q_OS_MAC
-    // Maximize and minimize only on linux and windows
+
+    //window buttons for frameless win
+#ifdef Q_OS_WIN
+    // Maximize and minimize only on windows
     this->setWindowFlags(Qt::FramelessWindowHint);
     maximizeButton = new QPushButton(QIcon(":/icons/maximize"),"");
     minimizeButton = new QPushButton(QIcon(":/icons/minimize"),"");
     mainToolBar->addWidget(minimizeButton);
     mainToolBar->addWidget(maximizeButton);
 #endif
+    //quit button for Mac & Win
+#ifndef Q_OS_LINUX
     quitButton = new QPushButton(QIcon(":/icons/close"),"");
     mainToolBar->addWidget(quitButton);
+#endif
 
     //drag window
     toolBarClicked = false;
