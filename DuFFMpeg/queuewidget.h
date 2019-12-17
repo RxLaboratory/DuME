@@ -20,12 +20,19 @@ public:
     void addInputFile(QString file);
     void addInputFile(QUrl file);
 
+signals:
+    /**
+     * @brief console general messages to be displayed in the UI by MainWindow
+     */
+    void consoleEmit( QString );
+
 public slots:
     void presetsPathChanged(QString path);
 
 private slots:
     void on_outputTab_tabCloseRequested(int index);
     void on_outputTab_tabBarClicked(int index);
+    void consoleReceive(QString log);
 
 private:
     FFmpeg *ffmpeg;

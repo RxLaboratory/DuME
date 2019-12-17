@@ -67,7 +67,10 @@ private:
     QSettings *settings;
 
     // ====== UI ========
-
+    /**
+     * @brief mapEvents Maps all events from the Objects and UI
+     */
+    void mapEvents();
     QueueWidget *queueWidget;
     void updateCSS(QString cssFileName);
     /**

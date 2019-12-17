@@ -86,6 +86,11 @@ void QueueWidget::on_outputTab_tabBarClicked(int index)
     addOutput();
 }
 
+void QueueWidget::consoleReceive(QString log)
+{
+    emit consoleEmit(log);
+}
+
 void QueueWidget::addOutput()
 {
     //number of the output
@@ -102,5 +107,7 @@ void QueueWidget::addOutput()
     //get current media info
     FFMediaInfo *iwInfo = iw->getMediaInfo();
     if (iwInfo->fileName() != "") ow->newInputMedia(iwInfo);
+    //connect console
+    connect(ow,SIGNAL(consoleEmit(QString)),this,SLOT(consoleReceive(QString)));
 }
 

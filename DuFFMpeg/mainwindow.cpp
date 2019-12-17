@@ -122,9 +122,13 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     //accept drops
     setAcceptDrops(true);
 
+    mapEvents();
+}
+
+void MainWindow::mapEvents()
+{
     // === MAP EVENTS ===
     debugLog("Init - Map events");
-    // Window management
 
     //connect maximize and minimize buttons
 #ifdef Q_OS_WIN
@@ -144,9 +148,13 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
     connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
     connect(ffmpeg,SIGNAL(debugInfo(QString)),this,SLOT(ffmpeg_debugLog(QString)));
+
     //settings
     connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
     connect(settingsWidget,SIGNAL(presetsPathChanged(QString)),queueWidget,SLOT(presetsPathChanged(QString)));
+
+    //QueueWidget
+    connect(queueWidget,SIGNAL(consoleEmit(QString)),this,SLOT(console(QString)));
 }
 
 void MainWindow::ffmpeg_init()

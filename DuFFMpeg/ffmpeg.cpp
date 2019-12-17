@@ -823,6 +823,17 @@ void FFmpeg::encodeNextItem()
                 //size
                 int width = output->videoWidth();
                 int height = output->videoHeight();
+                //fix odd sizes (for h264)
+                if (codec == "h264" && width % 2 != 0)
+                {
+                    width--;
+                    debug("Adjusting width for h264 compatibility. New width: " + QString::number(width));
+                }
+                if (codec == "h264" && height % 2 != 0)
+                {
+                    height--;
+                    debug("Adjusting height for h264 compatibility. New height: " + QString::number(height));
+                }
                 if (width != 0 && height != 0)
                 {
                     arguments << "-s" << QString::number(width) + "x" + QString::number(height);

@@ -21,6 +21,10 @@ public:
 
 signals:
     void checkSaveOutputPath(QString, OutputWidget*);
+    /**
+     * @brief console general messages to be displayed in the UI by MainWindow
+     */
+    void consoleEmit(QString);
 
 public slots:
     void ffmpeg_init();
@@ -60,11 +64,8 @@ private slots:
     void on_videoLoopsEdit_valueChanged(int arg1);
     void on_startNumberButton_clicked(bool checked);
     void on_pixFmtButton_toggled(bool checked);
-
     void on_audioCodecsBox_currentIndexChanged(int index);
-
     void on_pixFmtFilterBox_currentIndexChanged(int index);
-
     void on_alphaButton_toggled(bool checked);
 
 private:

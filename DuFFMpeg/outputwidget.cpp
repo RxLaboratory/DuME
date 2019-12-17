@@ -446,12 +446,20 @@ void OutputWidget::on_videoWidthButton_valueChanged(int val)
 {
     aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+
+    //warnings depending on codec
+    QString codec = videoCodecsBox->currentData().toString();
+    if (codec == "h264" && val % 2 != 0) emit consoleEmit("WARNING: h264 only accepts width with an even number of pixels");
 }
 
 void OutputWidget::on_videoHeightButton_valueChanged(int val)
 {
     aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+
+    //warnings depending on codec
+    QString codec = videoCodecsBox->currentData().toString();
+    if (codec == "h264" && val % 2 != 0) emit consoleEmit("WARNING: h264 only accepts height with an even number of pixels");
 }
 
 void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
