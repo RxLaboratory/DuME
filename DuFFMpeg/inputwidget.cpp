@@ -349,12 +349,32 @@ void InputWidget::updateOptions()
     rqindexBox->hide();
     aeRenderQueueButton->hide();
 
-    if (_mediaInfo->isImageSequence())
+    //get media default extension (needed to adjust some options)
+    QString extension = "";
+    if (_mediaInfo->extensions().count() > 0) extension = _mediaInfo->extensions()[0];
+
+    // framerate buttons
+    if (_mediaInfo->isImageSequence() || _mediaInfo->isAep())
     {
         frameRateButton->show();
         frameRateBox->show();
         frameRateEdit->show();
     }
+
+    //trc (gamma) buttons
+    if (extension == "exr_pipe" || _mediaInfo->isAep())
+    {
+        for (int i = 0; i < trcBox->count(); i++ )
+        {
+            if (trcBox->itemData(i, Qt::UserRole).toString() == "gamma22")
+            {
+                trcBox->setCurrentIndex(i);
+                trcButton->setChecked(true);
+                break;
+            }
+        }
+    }
+
 
     if (_mediaInfo->isAep())
     {
@@ -371,14 +391,10 @@ void InputWidget::updateOptions()
         compEdit->setEnabled(false);
         threadsButton->setChecked(false);
         //for now, using half the threads.
-        //TODO: count depending on RAM (3Go per thread)
+        //TODO: count depending on RAM (3Go per thread for example)
         threadsBox->setValue(QThread::idealThreadCount()/2);
         aeRenderQueueButton->show();
         aeRenderQueueButton->setChecked(false);
-
-        frameRateButton->show();
-        frameRateBox->show();
-        frameRateEdit->show();
     }
 
     //uncheck what is hidden
