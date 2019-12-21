@@ -10,6 +10,8 @@
 MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
+    DuMagick dum;
+
     setupUi(this);
     debugLog("Initialization");
 

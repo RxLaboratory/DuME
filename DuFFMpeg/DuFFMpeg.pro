@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
 
 SOURCES += \
+    dumagick.cpp \
     main.cpp \
     mainwindow.cpp \
     toolbarspacer.cpp \
@@ -49,6 +50,7 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
+    dumagick.h \
     mainwindow.h \
     toolbarspacer.h \
     settingswidget.h \
@@ -86,3 +88,12 @@ DISTFILES += \
     ico.rc
 
 RC_FILE = ico.rc
+
+# Image Magick
+
+unix:!macx: LIBS += -lMagick++-6.Q16
+unix:!macx: LIBS += -lMagickCore-6.Q16
+unix:!macx: LIBS += -lMagickWand-6.Q16
+
+INCLUDEPATH += /usr/include/ImageMagick-6
+DEPENDPATH += /usr/include/ImageMagick-6

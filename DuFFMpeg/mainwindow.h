@@ -18,6 +18,7 @@
 #include "ffmpeg.h"
 #include "queuewidget.h"
 #include "rainboxui.h"
+#include "dumagick.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
