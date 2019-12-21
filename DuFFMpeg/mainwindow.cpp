@@ -10,8 +10,6 @@
 MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
-    DuEXR de;
-
     setupUi(this);
     debugLog("Initialization");
 
