@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>443</height>
+    <width>473</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,8 +75,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>404</width>
-        <height>414</height>
+        <width>473</width>
+        <height>478</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -216,7 +216,7 @@
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="9" column="0">
           <widget class="QPushButton" name="addParamButton">
            <property name="minimumSize">
             <size>
@@ -248,7 +248,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QCheckBox" name="trcButton">
            <property name="minimumSize">
             <size>
@@ -261,7 +261,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QComboBox" name="trcBox">
            <property name="enabled">
             <bool>false</bool>
@@ -280,7 +280,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QCheckBox" name="compButton">
            <property name="minimumSize">
             <size>
@@ -296,7 +296,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QLineEdit" name="compEdit">
            <property name="enabled">
             <bool>false</bool>
@@ -306,7 +306,7 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="8" column="0">
           <widget class="QCheckBox" name="threadsButton">
            <property name="minimumSize">
             <size>
@@ -322,7 +322,7 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="8" column="1">
           <widget class="QSpinBox" name="threadsBox">
            <property name="enabled">
             <bool>false</bool>
@@ -344,7 +344,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="aeLabel">
            <property name="font">
             <font>
@@ -358,7 +358,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QCheckBox" name="rqindexButton">
            <property name="minimumSize">
             <size>
@@ -374,7 +374,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <widget class="QSpinBox" name="rqindexBox">
            <property name="enabled">
             <bool>false</bool>
@@ -396,7 +396,7 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <widget class="QCheckBox" name="aeRenderQueueButton">
            <property name="minimumSize">
             <size>
@@ -409,6 +409,14 @@
            </property>
            <property name="text">
             <string>Launch render queue</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="exrPreRenderButton">
+           <property name="text">
+            <string>EXR Pre-Render
+(DWA or Luma/Chroma)</string>
            </property>
           </widget>
          </item>

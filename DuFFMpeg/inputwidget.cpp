@@ -339,6 +339,8 @@ void InputWidget::updateOptions()
     frameRateButton->hide();
     frameRateBox->hide();
     frameRateEdit->hide();
+    //exr prerender
+    exrPreRenderButton->hide();
     //Aep
     aeLabel->hide();
     compButton->hide();
@@ -375,6 +377,11 @@ void InputWidget::updateOptions()
         }
     }
 
+    //exr prerender
+    if (extension == "exr_pipe")
+    {
+        exrPreRenderButton->show();
+    }
 
     if (_mediaInfo->isAep())
     {
