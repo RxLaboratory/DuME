@@ -12,11 +12,10 @@ DuMagick::DuMagick(QObject *parent) : QObject(parent)
     //empty image
     Image my_image;
     //load test image
-    qDebug() << "loading file";
     my_image.read("/home/duduf/DEV_SRC/DuFFMpeg/Test Medias/EXR (from Ae)/MYT_0046.003_00000.exr");
+    //set gamma
+    my_image.gamma(2.2);
     //write as tiff
-    qDebug() << "writing file";
     my_image.write("/home/duduf/DEV_SRC/DuFFMpeg/Test Medias/EXR (from Ae)/MYT_0046.003_00000.tiff");
-    qDebug() << "file written";
 
 }

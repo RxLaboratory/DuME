@@ -93,10 +93,10 @@ RC_FILE = ico.rc
 
 unix:!macx: LIBS += -lMagick++-6.Q16
 unix:!macx: LIBS += -lMagickCore-6.Q16
-unix:!macx: LIBS += -lMagickWand-6.Q16
 
-INCLUDEPATH += /usr/include/ImageMagick-6
-DEPENDPATH += /usr/include/ImageMagick-6
+DEFINES += MAGICKCORE_QUANTUM_DEPTH=32 \
+    MAGICKCORE_HDRI_ENABLE
 
-QMAKE_CXXFLAGS += $(shell Magick++-config --cppflags --cxxflags)
-LIBS += $(shell Magick++-config --ldflags --libs)
+INCLUDEPATH += include/ImageMagick
+DEPENDPATH += include/ImageMagick
+
