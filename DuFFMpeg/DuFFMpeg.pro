@@ -97,3 +97,6 @@ unix:!macx: LIBS += -lMagickWand-6.Q16
 
 INCLUDEPATH += /usr/include/ImageMagick-6
 DEPENDPATH += /usr/include/ImageMagick-6
+
+QMAKE_CXXFLAGS += $(shell Magick++-config --cppflags --cxxflags)
+LIBS += $(shell Magick++-config --ldflags --libs)
