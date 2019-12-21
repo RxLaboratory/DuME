@@ -25,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
 
 SOURCES += \
-    dumagick.cpp \
+    duexr.cpp \
     main.cpp \
     mainwindow.cpp \
     toolbarspacer.cpp \
@@ -50,7 +50,7 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
-    dumagick.h \
+    duexr.h \
     mainwindow.h \
     toolbarspacer.h \
     settingswidget.h \
@@ -91,12 +91,27 @@ RC_FILE = ico.rc
 
 # Image Magick
 
-unix:!macx: LIBS += -lMagick++-6.Q16
-unix:!macx: LIBS += -lMagickCore-6.Q16
+#unix:!macx: LIBS += -lMagick++-6.Q16
+#unix:!macx: LIBS += -lMagickCore-6.Q16
 
-DEFINES += MAGICKCORE_QUANTUM_DEPTH=32 \
-    MAGICKCORE_HDRI_ENABLE
+#DEFINES += MAGICKCORE_QUANTUM_DEPTH=32 \
+#    MAGICKCORE_HDRI_ENABLE
 
-INCLUDEPATH += include/ImageMagick
-DEPENDPATH += include/ImageMagick
+#INCLUDEPATH += include/ImageMagick
+#DEPENDPATH += include/ImageMagick
 
+#unix:!macx: LIBS += -lIlmImf
+#unix:!macx: LIBS += -lIlmImfUtil
+#unix:!macx: LIBS += -lIlmThread
+
+#unix:!macx: LIBS += -lHalf \
+
+#INCLUDEPATH += /usr/include/OpenEXR
+#DEPENDPATH += /usr/include/OpenEXR
+
+
+unix:!macx: LIBS += -lOpenImageIO \
+    -lOpenImageIO_Util
+
+INCLUDEPATH += /usr/include/OpenImageIO
+DEPENDPATH += /usr/include/OpenImageIO

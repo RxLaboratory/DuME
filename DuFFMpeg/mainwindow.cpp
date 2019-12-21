@@ -2,7 +2,7 @@
 
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
-
+#include "duexr.h"
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
@@ -10,6 +10,8 @@
 MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
+    DuEXR de;
+
     setupUi(this);
     debugLog("Initialization");
 
