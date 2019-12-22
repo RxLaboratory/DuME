@@ -5,7 +5,7 @@
 FFMediaInfo::FFMediaInfo(QString ffmpegOutput, QObject *parent) : FFObject(parent)
 {
 
-    _aepTempDir = nullptr;
+    _cacheDir = nullptr;
     updateInfo(ffmpegOutput);
 }
 
@@ -223,7 +223,7 @@ void FFMediaInfo::addFFmpegOption(QStringList option)
     _ffmpegOptions << option;
 }
 
-void FFMediaInfo::removeFFmpegOpstion(QString optionName)
+void FFMediaInfo::removeFFmpegOptions(QString optionName)
 {
     for(int i = _ffmpegOptions.count()-1 ; i >= 0 ; i--)
     {
@@ -489,24 +489,24 @@ void FFMediaInfo::setDurationS(double durationS)
     _durationS = durationS;
 }
 
-int FFMediaInfo::durationI() const
+int FFMediaInfo::durationF() const
 {
-    return _durationI;
+    return _durationF;
 }
 
-void FFMediaInfo::setDurationI(int durationI)
+void FFMediaInfo::setDurationF(int durationI)
 {
-    _durationI = durationI;
+    _durationF = durationI;
 }
 
-QTemporaryDir *FFMediaInfo::aepTempDir() const
+QTemporaryDir *FFMediaInfo::cacheDir() const
 {
-    return _aepTempDir;
+    return _cacheDir;
 }
 
-void FFMediaInfo::setAepTempDir(QTemporaryDir *aepTempDir)
+void FFMediaInfo::setCacheDir(QTemporaryDir *aepTempDir)
 {
-    _aepTempDir = aepTempDir;
+    _cacheDir = aepTempDir;
 }
 
 bool FFMediaInfo::aeUseRQueue() const

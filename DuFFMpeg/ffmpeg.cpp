@@ -586,7 +586,7 @@ void FFmpeg::finishedAE()
 
                //set exr
                //get one file
-               QString aeTempPath = input->aepTempDir()->path();
+               QString aeTempPath = input->cacheDir()->path();
                QDir aeTempDir(aeTempPath);
                QStringList filters("Duffmpeg_*.exr");
                QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
@@ -1005,7 +1005,7 @@ void FFmpeg::renderAep(FFMediaInfo *input, bool audio)
     {
         //get the cache dir
         QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
-        input->setAepTempDir(aeTempDir);
+        input->setCacheDir(aeTempDir);
 
         //if a comp name is specified, render this comp
         if (input->aepCompName() != "") arguments << "-comp" << input->aepCompName();
@@ -1767,7 +1767,7 @@ void FFmpeg::readyReadAE(QString output)
         input->setDurationH(h);
         input->setDurationM(m);
         input->setDurationS(s);
-        input->setDurationI(i);
+        input->setDurationF(i);
         input->setDuration(duration);
     }
 
@@ -1782,7 +1782,7 @@ void FFmpeg::readyReadAE(QString output)
         int h = input->durationH();
         int m = input->durationM();
         double s = input->durationS();
-        int i = input->durationI();
+        int i = input->durationF();
 
         double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
         input->setDuration(duration);

@@ -101,9 +101,9 @@ void FFQueueItem::postRenderCleanUp()
 {
     //remove ae cache
     FFMediaInfo *input = _inputMedias[0];
-    if (input->aepTempDir() == nullptr) return;
-    QTemporaryDir *aeTempDir = input->aepTempDir();
+    if (input->cacheDir() == nullptr) return;
+    QTemporaryDir *aeTempDir = input->cacheDir();
     aeTempDir->remove();
-    input->setAepTempDir(nullptr);
+    input->setCacheDir(nullptr);
     delete aeTempDir;
 }
