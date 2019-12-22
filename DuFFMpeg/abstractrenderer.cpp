@@ -65,11 +65,6 @@ void AbstractRenderer::setStopCommand(const QString &stopCommand)
     _stopCommand = stopCommand;
 }
 
-void AbstractRenderer::setPauseCommand(const QString &pauseCommand)
-{
-    _pauseCommand = pauseCommand;
-}
-
 void AbstractRenderer::start( QStringList arguments )
 {
     for (int i = 0; i < _numThreads; i++ )

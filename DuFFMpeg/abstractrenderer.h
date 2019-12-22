@@ -67,11 +67,6 @@ public:
      */
     void setStopCommand(const QString &stopCommand);
     /**
-     * @brief setPauseCommand Sets the command to send to the renderer to pause it, if any.
-     * @param pauseCommand
-     */
-    void setPauseCommand(const QString &pauseCommand);
-    /**
      * @brief start Starts a rendering process
      * @param arguments The arguments to pass to the renderer
      */
@@ -81,10 +76,6 @@ public:
      * @param timeout Kills the process after timeout if it does not respond to the stop commands. In milliseconds.
      */
     void stop(int timeout = 10000);
-    /**
-     * @brief pause Pauses the process, if it is possible
-     */
-    void pause();
     /**
      * @brief numThreads The number of threads to use when launching the rendering process
      * @return
@@ -147,7 +138,6 @@ private:
     // CONFIGURATION
 
     QString _stopCommand;
-    QString _pauseCommand;
     int _numThreads;
 
     // METHODS
