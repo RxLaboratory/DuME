@@ -22,9 +22,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
+# The current version
+DEFINES += APPVERSION=\\\"1.0.0-Beta1\\\"
+
+# For speeding up launch time when working, you can comment this line out.
+# Be sure to set it back when you're finished, before committing your changes.
+DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
+    abstractrenderer.cpp \
+    aerenderer.cpp \
+    aerenderprocess.cpp \
     duexr.cpp \
     main.cpp \
     mediainfo.cpp \
@@ -35,8 +43,7 @@ SOURCES += \
     ffobject.cpp \
     ffpixformat.cpp \
     ffbaseobject.cpp \
-    aerender.cpp \
-    aerenderobject.cpp \
+    rendererqueue.cpp \
     uidropshadow.cpp \
     uiframeless.cpp \
     uiinputwidget.cpp \
@@ -50,6 +57,9 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
+    abstractrenderer.h \
+    aerenderer.h \
+    aerenderprocess.h \
     duexr.h \
     mediainfo.h \
     ffmpeg.h \
@@ -59,8 +69,7 @@ HEADERS += \
     ffobject.h \
     ffpixformat.h \
     ffbaseobject.h \
-    aerender.h \
-    aerenderobject.h \
+    rendererqueue.h \
     uidropshadow.h \
     uiframeless.h \
     uiinputwidget.h \
@@ -88,6 +97,8 @@ DISTFILES += \
     ico.rc
 
 RC_FILE = ico.rc
+
+# OpenImageIO
 
 unix:!macx: LIBS += -lOpenImageIO \
     -lOpenImageIO_Util
