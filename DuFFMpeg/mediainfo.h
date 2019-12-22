@@ -138,11 +138,11 @@ public:
     int durationM() const;
     double durationS() const;
     int durationF() const;
+    QString ffmpegSequenceName() const;
 
     //utils
     QString exportToJson();
     void exportToJson(QString jsonPath);
-
 signals:
 
 public slots:
@@ -295,6 +295,10 @@ private:
      * @brief _aeUseRQueue Wether to launch the render queue when rendering the After Effects project, or render a specific composition or renderqueue item.
      */
     bool _aeUseRQueue;
+    /**
+     * @brief _sequenceName The name of the file sequence as used by ffmpeg
+     */
+    QString _ffmpegSequenceName;
 
     //======== METHODS =============
 

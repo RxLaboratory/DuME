@@ -23,6 +23,7 @@ void MediaInfo::reInit()
     _cacheDir = nullptr;
     _muxer = nullptr;
     _fileName = "";
+    _ffmpegSequenceName = "";
     _duration = 0.0;
     _videoWidth = 0;
     _videoHeight = 0;
@@ -481,6 +482,11 @@ void MediaInfo::exportToJson(QString jsonPath)
     }
 }
 
+QString MediaInfo::ffmpegSequenceName() const
+{
+    return _ffmpegSequenceName;
+}
+
 int MediaInfo::durationH() const
 {
     return _durationH;
@@ -735,6 +741,21 @@ void MediaInfo::loadSequence()
             }
             _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
         }
+    }
+
+    //generates the sequence name used by ffmpeg
+    //detects all {###}
+    QRegularExpression regExDigits("{(#+)}");
+    QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(_fileName);
+    _ffmpegSequenceName = _fileName;
+    while (regExDigitsMatch.hasNext())
+    {
+         QRegularExpressionMatch match = regExDigitsMatch.next();
+         //count the ###
+         QString digits = match.captured(1);
+         int numDigits = digits.count();
+         //replace
+         _ffmpegSequenceName.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
     }
 }
 
