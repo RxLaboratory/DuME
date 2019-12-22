@@ -6,7 +6,7 @@
 #include <QStringList>
 
 #include "ffmpeg.h"
-#include "aerender.h"
+#include "aerenderer.h"
 #include "uisplashscreen.h"
 
 int main(int argc, char *argv[])
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     //load FFmpeg
     splash.newMessage("Initializing FFmpeg...");
     FFmpeg *ffmpeg = new FFmpeg();
-    QObject::connect(ffmpeg,&FFmpeg::debugInfo,&splash,&UISplashScreen::newMessage);
+    QObject::connect(ffmpeg,&FFmpeg::newLog,&splash,&UISplashScreen::newMessage);
     ffmpeg->init();
 
     //build UI and show

@@ -81,7 +81,7 @@ void UIInputWidget::openFile(QString file)
     }
     else
     {
-        _mediaInfo->updateInfo(ffmpeg->getMediaInfoString(file));
+        _mediaInfo->updateInfo(ffmpeg->analyseMedia(file));
 
         mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
 

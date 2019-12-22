@@ -104,7 +104,7 @@ void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     path = QDir::toNativeSeparators(path);
     if (path == "Latest")
     {
-        AERenderObject *ae = _ffmpeg->getAeRender()->versions().last();
+        AERenderProcess *ae = _ffmpeg->getAeRender()->versions().last();
         path = ae->path();
         settings.setValue("aerender/version","Latest");
         settings.setValue("aerender/useLatest",true);
@@ -118,7 +118,7 @@ void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     }
     else
     {
-        AERenderObject *ae = _ffmpeg->getAeRender()->versions().at(index);
+        AERenderProcess *ae = _ffmpeg->getAeRender()->versions().at(index);
         settings.setValue("aerender/version",QVariant());
         settings.setValue("aerender/useLatest",false);
         _ffmpeg->setCurrentAeRender(ae);
@@ -140,7 +140,7 @@ void UISettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
 
     QString path = QDir::toNativeSeparators(arg1);
 
-    AERenderObject *ae = _ffmpeg->getAeRender()->getAERenderObject(path);
+    AERenderProcess *ae = _ffmpeg->getAeRender()->getAERenderObject(path);
     if (ae->isValid())
     {
         aerenderPathEdit->setText(path);
@@ -193,7 +193,7 @@ void UISettingsWidget::refreshAeVersionBox()
 {
     _freezeUI = true;
 
-    foreach(AERenderObject *ae, _ffmpeg->getAeRender()->versions())
+    foreach(AERenderProcess *ae, _ffmpeg->getAeRender()->versions())
     {
         aeVersionBox->addItem(ae->name(),QVariant(ae->path()));
     }
