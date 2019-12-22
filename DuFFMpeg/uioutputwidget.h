@@ -9,18 +9,18 @@
 
 #include "ffmpeg.h"
 
-class OutputWidget : public QWidget, private Ui::OutputWidget
+class UIOutputWidget : public QWidget, private Ui::OutputWidget
 {
     Q_OBJECT
 
 public:
-    explicit OutputWidget(FFmpeg *ff,int id,QWidget *parent = 0);
+    explicit UIOutputWidget(FFmpeg *ff,int id,QWidget *parent = 0);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
     QString getOutputPath();
 
 signals:
-    void checkSaveOutputPath(QString, OutputWidget*);
+    void checkSaveOutputPath(QString, UIOutputWidget*);
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */

@@ -4,10 +4,10 @@
 #include <QObject>
 #include <QSplashScreen>
 
-class SplashScreen : public QSplashScreen
+class UISplashScreen : public QSplashScreen
 {
 public:
-    SplashScreen(const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = Qt::WindowFlags());
+    UISplashScreen(const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = Qt::WindowFlags());
 
 public slots:
     void newMessage(QString message);

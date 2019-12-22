@@ -1,20 +1,20 @@
-#include "rainboxui.h"
+#include "uirainbox.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-RainboxUI::RainboxUI()
+UIRainbox::UIRainbox()
 {
 
 }
 
-QString RainboxUI::loadCSS(QString cssFileName)
+QString UIRainbox::loadCSS(QString cssFileName)
 {
     return loadCSS(QStringList(cssFileName));
 }
 
-QString RainboxUI::loadCSS(QStringList cssFileNames)
+QString UIRainbox::loadCSS(QStringList cssFileNames)
 {
     QString css = "";
 

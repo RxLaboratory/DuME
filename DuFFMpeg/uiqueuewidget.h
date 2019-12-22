@@ -6,15 +6,15 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
-#include "inputwidget.h"
-#include "outputwidget.h"
+#include "uiinputwidget.h"
+#include "uioutputwidget.h"
 
-class QueueWidget : public QWidget, private Ui::QueueWidget
+class UIQueueWidget : public QWidget, private Ui::QueueWidget
 {
     Q_OBJECT
 
 public:
-    explicit QueueWidget(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit UIQueueWidget(FFmpeg *ff, QWidget *parent = nullptr);
     MediaInfo *getInputMedia();
     QList<MediaInfo *> getOutputMedia();
     void addInputFile(QString file);
@@ -38,8 +38,8 @@ private:
     FFmpeg *ffmpeg;
     QSettings _settings;
 
-    QList<OutputWidget*> outputWidgets;
-    QList<InputWidget*> inputWidgets;
+    QList<UIOutputWidget*> outputWidgets;
+    QList<UIInputWidget*> inputWidgets;
 
     void addOutput();
 

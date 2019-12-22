@@ -1,24 +1,24 @@
-#include "dumediainfo.h"
+#include "mediainfo.h"
 
 #include <QtDebug>
 
-DuMediaInfo::DuMediaInfo( QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QObject *parent ) : FFObject(parent)
 {
     reInit();
 }
 
-DuMediaInfo::DuMediaInfo( QFileInfo mediaFile, QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QFileInfo mediaFile, QObject *parent ) : FFObject(parent)
 {
     updateInfo( mediaFile );
 }
 
-DuMediaInfo::DuMediaInfo( QString ffmpegOutput, QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QString ffmpegOutput, QObject *parent ) : FFObject(parent)
 {
 
     updateInfo( ffmpegOutput );
 }
 
-void DuMediaInfo::reInit()
+void MediaInfo::reInit()
 {
     _cacheDir = nullptr;
     _muxer = nullptr;
@@ -52,12 +52,12 @@ void DuMediaInfo::reInit()
     _aeUseRQueue = false;
 }
 
-void DuMediaInfo::updateInfo(QFileInfo mediaFile)
+void MediaInfo::updateInfo(QFileInfo mediaFile)
 {
 
 }
 
-void DuMediaInfo::updateInfo(QString ffmpegOutput)
+void MediaInfo::updateInfo(QString ffmpegOutput)
 {
     reInit();
 
@@ -158,61 +158,61 @@ void DuMediaInfo::updateInfo(QString ffmpegOutput)
     if (_imageSequence) loadSequence();
 }
 
-void DuMediaInfo::setVideoWidth(int width)
+void MediaInfo::setVideoWidth(int width)
 {
     _videoWidth = width;
 }
 
-void DuMediaInfo::setVideoHeight(int height)
+void MediaInfo::setVideoHeight(int height)
 {
     _videoHeight = height;
 }
 
-void DuMediaInfo::setVideoFramerate(double fps)
+void MediaInfo::setVideoFramerate(double fps)
 {
     _videoFramerate = fps;
 }
 
-void DuMediaInfo::setAudioSamplingRate(int sampling)
+void MediaInfo::setAudioSamplingRate(int sampling)
 {
     _audioSamplingRate = sampling;
 }
 
-void DuMediaInfo::setDuration(double duration)
+void MediaInfo::setDuration(double duration)
 {
     _duration = duration;
 }
 
-void DuMediaInfo::setFileName(QString fileName)
+void MediaInfo::setFileName(QString fileName)
 {
     _fileName = fileName;
 }
 
-void DuMediaInfo::setVideoCodec(FFCodec *codec)
+void MediaInfo::setVideoCodec(FFCodec *codec)
 {
     _videoCodec = codec;
 }
 
-void DuMediaInfo::setAudioCodec(FFCodec *codec)
+void MediaInfo::setAudioCodec(FFCodec *codec)
 {
     _audioCodec = codec;
 }
 
-void DuMediaInfo::setVideoBitrate(double bitrate, BitrateUnit unit)
+void MediaInfo::setVideoBitrate(double bitrate, BitrateUnit unit)
 {
     if (unit == Kbps) bitrate = bitrate*1024;
     else if (unit == Mbps) bitrate = bitrate*1024*1024;
     _videoBitrate = bitrate;
 }
 
-void DuMediaInfo::setAudioBitrate(double bitrate, BitrateUnit unit)
+void MediaInfo::setAudioBitrate(double bitrate, BitrateUnit unit)
 {
     if (unit == Kbps) bitrate = bitrate*1024;
     else if (unit == Mbps) bitrate = bitrate*1024*1024;
     _audioBitrate = bitrate;
 }
 
-void DuMediaInfo::setSize(double size, DuMediaInfo::SizeUnit unit)
+void MediaInfo::setSize(double size, MediaInfo::SizeUnit unit)
 {
 
     if (unit == KB) size = size*1024;
@@ -220,32 +220,32 @@ void DuMediaInfo::setSize(double size, DuMediaInfo::SizeUnit unit)
     _size = size;
 }
 
-void DuMediaInfo::setFFmpegOptions(QList<QStringList> options)
+void MediaInfo::setFFmpegOptions(QList<QStringList> options)
 {
     _ffmpegOptions = options;
 }
 
-void DuMediaInfo::setVideo(bool video)
+void MediaInfo::setVideo(bool video)
 {
     _video = video;
 }
 
-void DuMediaInfo::setAudio(bool audio)
+void MediaInfo::setAudio(bool audio)
 {
     _audio = audio;
 }
 
-void DuMediaInfo::setMuxer(FFMuxer *muxer)
+void MediaInfo::setMuxer(FFMuxer *muxer)
 {
     _muxer = muxer;
 }
 
-void DuMediaInfo::addFFmpegOption(QStringList option)
+void MediaInfo::addFFmpegOption(QStringList option)
 {
     _ffmpegOptions << option;
 }
 
-void DuMediaInfo::removeFFmpegOptions(QString optionName)
+void MediaInfo::removeFFmpegOptions(QString optionName)
 {
     for(int i = _ffmpegOptions.count()-1 ; i >= 0 ; i--)
     {
@@ -256,57 +256,57 @@ void DuMediaInfo::removeFFmpegOptions(QString optionName)
     }
 }
 
-void DuMediaInfo::clearFFmpegOptions()
+void MediaInfo::clearFFmpegOptions()
 {
     _ffmpegOptions.clear();
 }
 
-int DuMediaInfo::videoWidth()
+int MediaInfo::videoWidth()
 {
     return _videoWidth;
 }
 
-int DuMediaInfo::videoHeight()
+int MediaInfo::videoHeight()
 {
     return _videoHeight;
 }
 
-double DuMediaInfo::videoFramerate()
+double MediaInfo::videoFramerate()
 {
     return _videoFramerate;
 }
 
-int DuMediaInfo::audioSamplingRate()
+int MediaInfo::audioSamplingRate()
 {
     return _audioSamplingRate;
 }
 
-double DuMediaInfo::duration()
+double MediaInfo::duration()
 {
     return _duration;
 }
 
-QString DuMediaInfo::ffmpegOutput()
+QString MediaInfo::ffmpegOutput()
 {
     return _ffmpegOutput;
 }
 
-QString DuMediaInfo::fileName()
+QString MediaInfo::fileName()
 {
     return _fileName;
 }
 
-FFCodec *DuMediaInfo::videoCodec()
+FFCodec *MediaInfo::videoCodec()
 {
     return _videoCodec;
 }
 
-FFCodec *DuMediaInfo::audioCodec()
+FFCodec *MediaInfo::audioCodec()
 {
     return _audioCodec;
 }
 
-double DuMediaInfo::audioBitrate(BitrateUnit unit)
+double MediaInfo::audioBitrate(BitrateUnit unit)
 {
     double bitrate = _audioBitrate;
     if (unit == Kbps) bitrate = bitrate/1024;
@@ -314,7 +314,7 @@ double DuMediaInfo::audioBitrate(BitrateUnit unit)
     return bitrate;
 }
 
-double DuMediaInfo::videoBitrate(BitrateUnit unit)
+double MediaInfo::videoBitrate(BitrateUnit unit)
 {
     double bitrate = _videoBitrate;
     if (unit == Kbps) bitrate = bitrate/1024;
@@ -322,7 +322,7 @@ double DuMediaInfo::videoBitrate(BitrateUnit unit)
     return bitrate;
 }
 
-double DuMediaInfo::size(DuMediaInfo::SizeUnit unit)
+double MediaInfo::size(MediaInfo::SizeUnit unit)
 {
     double s = _size;
     if (unit == KB) s = s/1024;
@@ -330,39 +330,39 @@ double DuMediaInfo::size(DuMediaInfo::SizeUnit unit)
     return s;
 }
 
-QList<QStringList> DuMediaInfo::ffmpegOptions()
+QList<QStringList> MediaInfo::ffmpegOptions()
 {
     return _ffmpegOptions;
 }
 
-bool DuMediaInfo::hasVideo()
+bool MediaInfo::hasVideo()
 {
     return _video;
 }
 
-bool DuMediaInfo::hasAudio()
+bool MediaInfo::hasAudio()
 {
     return _audio;
 }
 
-bool DuMediaInfo::isImageSequence()
+bool MediaInfo::isImageSequence()
 {
     return _imageSequence;
 }
 
-QStringList DuMediaInfo::extensions() const
+QStringList MediaInfo::extensions() const
 {
     if (_muxer == nullptr) return _extensions;
     if (_muxer->extensions().count() == 0) return _extensions;
     return _muxer->extensions();
 }
 
-FFMuxer *DuMediaInfo::muxer() const
+FFMuxer *MediaInfo::muxer() const
 {
     return _muxer;
 }
 
-QString DuMediaInfo::exportToJson()
+QString MediaInfo::exportToJson()
 {
     QJsonObject mediaObj;
     mediaObj.insert("version",DUFFMPEG_VERSION);
@@ -471,7 +471,7 @@ QString DuMediaInfo::exportToJson()
     return jsonDoc.toJson();
 }
 
-void DuMediaInfo::exportToJson(QString jsonPath)
+void MediaInfo::exportToJson(QString jsonPath)
 {
     QFile jsonFile(jsonPath);
     if (jsonFile.open(QIODevice::WriteOnly))
@@ -481,147 +481,147 @@ void DuMediaInfo::exportToJson(QString jsonPath)
     }
 }
 
-int DuMediaInfo::durationH() const
+int MediaInfo::durationH() const
 {
     return _durationH;
 }
 
-void DuMediaInfo::setDurationH(int durationH)
+void MediaInfo::setDurationH(int durationH)
 {
     _durationH = durationH;
 }
 
-int DuMediaInfo::durationM() const
+int MediaInfo::durationM() const
 {
     return _durationM;
 }
 
-void DuMediaInfo::setDurationM(int durationM)
+void MediaInfo::setDurationM(int durationM)
 {
     _durationM = durationM;
 }
 
-double DuMediaInfo::durationS() const
+double MediaInfo::durationS() const
 {
     return _durationS;
 }
 
-void DuMediaInfo::setDurationS(double durationS)
+void MediaInfo::setDurationS(double durationS)
 {
     _durationS = durationS;
 }
 
-int DuMediaInfo::durationF() const
+int MediaInfo::durationF() const
 {
     return _durationF;
 }
 
-void DuMediaInfo::setDurationF(int durationI)
+void MediaInfo::setDurationF(int durationI)
 {
     _durationF = durationI;
 }
 
-QTemporaryDir *DuMediaInfo::cacheDir() const
+QTemporaryDir *MediaInfo::cacheDir() const
 {
     return _cacheDir;
 }
 
-void DuMediaInfo::setCacheDir(QTemporaryDir *aepTempDir)
+void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir)
 {
     _cacheDir = aepTempDir;
 }
 
-bool DuMediaInfo::aeUseRQueue() const
+bool MediaInfo::aeUseRQueue() const
 {
     return _aeUseRQueue;
 }
 
-void DuMediaInfo::setAeUseRQueue(bool aeUseRQueue)
+void MediaInfo::setAeUseRQueue(bool aeUseRQueue)
 {
     _aeUseRQueue = aeUseRQueue;
 }
 
-int DuMediaInfo::aepRqindex() const
+int MediaInfo::aepRqindex() const
 {
     return _aepRqindex;
 }
 
-void DuMediaInfo::setAepRqindex(int aepRqindex)
+void MediaInfo::setAepRqindex(int aepRqindex)
 {
     _aepRqindex = aepRqindex;
 }
 
-int DuMediaInfo::aepNumThreads() const
+int MediaInfo::aepNumThreads() const
 {
     return _aepNumThreads;
 }
 
-void DuMediaInfo::setAepNumThreads(int aepNumThreads)
+void MediaInfo::setAepNumThreads(int aepNumThreads)
 {
     _aepNumThreads = aepNumThreads;
 }
 
-QString DuMediaInfo::aepCompName() const
+QString MediaInfo::aepCompName() const
 {
     return _aepCompName;
 }
 
-void DuMediaInfo::setAepCompName(const QString &aepCompName)
+void MediaInfo::setAepCompName(const QString &aepCompName)
 {
     _aepCompName = aepCompName;
 }
 
-bool DuMediaInfo::isAep() const
+bool MediaInfo::isAep() const
 {
     return _isAep;
 }
 
-void DuMediaInfo::setAep(bool isAep)
+void MediaInfo::setAep(bool isAep)
 {
     _isAep = isAep;
 }
 
-QString DuMediaInfo::trc() const
+QString MediaInfo::trc() const
 {
     return _trc;
 }
 
-void DuMediaInfo::setTrc(const QString &trc)
+void MediaInfo::setTrc(const QString &trc)
 {
     _trc = trc;
 }
 
-bool DuMediaInfo::premultipliedAlpha() const
+bool MediaInfo::premultipliedAlpha() const
 {
     return _premultipliedAlpha;
 }
 
-void DuMediaInfo::setPremultipliedAlpha(bool premultipliedAlpha)
+void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha)
 {
     _premultipliedAlpha = premultipliedAlpha;
 }
 
-FFPixFormat *DuMediaInfo::pixFormat()
+FFPixFormat *MediaInfo::pixFormat()
 {
     return _pixFormat;
 }
 
-void DuMediaInfo::setPixFormat(FFPixFormat *pixFormat)
+void MediaInfo::setPixFormat(FFPixFormat *pixFormat)
 {
     _pixFormat = pixFormat;
 }
 
-QStringList DuMediaInfo::frames() const
+QStringList MediaInfo::frames() const
 {
     return _frames;
 }
 
-void DuMediaInfo::setFrames(const QStringList &frames)
+void MediaInfo::setFrames(const QStringList &frames)
 {
     _frames = frames;
 }
 
-void DuMediaInfo::loadSequence()
+void MediaInfo::loadSequence()
 {
     _frames.clear();
     _startNumber = 0;
@@ -738,42 +738,42 @@ void DuMediaInfo::loadSequence()
     }
 }
 
-int DuMediaInfo::startNumber() const
+int MediaInfo::startNumber() const
 {
     return _startNumber;
 }
 
-void DuMediaInfo::setStartNumber(int startNumber)
+void MediaInfo::setStartNumber(int startNumber)
 {
     _startNumber = startNumber;
 }
 
-int DuMediaInfo::videoQuality() const
+int MediaInfo::videoQuality() const
 {
     return _videoQuality;
 }
 
-void DuMediaInfo::setVideoQuality(int quality)
+void MediaInfo::setVideoQuality(int quality)
 {
     _videoQuality = quality;
 }
 
-int DuMediaInfo::videoProfile() const
+int MediaInfo::videoProfile() const
 {
     return _videoProfile;
 }
 
-void DuMediaInfo::setVideoProfile(int profile)
+void MediaInfo::setVideoProfile(int profile)
 {
     _videoProfile = profile;
 }
 
-int DuMediaInfo::loop() const
+int MediaInfo::loop() const
 {
     return _loop;
 }
 
-void DuMediaInfo::setLoop(int loop)
+void MediaInfo::setLoop(int loop)
 {
     _loop = loop;
 }

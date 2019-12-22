@@ -6,10 +6,10 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
-class RainboxUI
+class UIRainbox
 {
 public:
-    RainboxUI();
+    UIRainbox();
     /**
      * @brief loadCSS Loads a CSS File
      * If any cssFileName-values.val file is found, uses these values in the CSS

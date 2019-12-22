@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "frameless.h"
+#include "uimainwindow.h"
+#include "uiframeless.h"
 #include <QApplication>
 #include <QBitmap>
 #include <QSettings>
@@ -7,7 +7,7 @@
 
 #include "ffmpeg.h"
 #include "aerender.h"
-#include "splashscreen.h"
+#include "uisplashscreen.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     //create splash screen
     QPixmap pixmap(":/images/splash");
-    SplashScreen splash(pixmap);
+    UISplashScreen splash(pixmap);
     //add a progress bar?
     //QProgressBar progress(&splash);
     //show
@@ -43,12 +43,12 @@ int main(int argc, char *argv[])
     //load FFmpeg
     splash.newMessage("Initializing FFmpeg...");
     FFmpeg *ffmpeg = new FFmpeg();
-    QObject::connect(ffmpeg,&FFmpeg::debugInfo,&splash,&SplashScreen::newMessage);
+    QObject::connect(ffmpeg,&FFmpeg::debugInfo,&splash,&UISplashScreen::newMessage);
     ffmpeg->init();
 
     //build UI and show
     splash.newMessage("Building UI");
-    MainWindow *w = new MainWindow(ffmpeg);
+    UIMainWindow *w = new UIMainWindow(ffmpeg);
 #ifndef Q_OS_LINUX
     FrameLess f(w);
 #endif

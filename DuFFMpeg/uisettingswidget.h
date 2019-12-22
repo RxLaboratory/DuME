@@ -11,12 +11,12 @@
 
 #include "ffmpeg.h"
 
-class SettingsWidget : public QWidget, private Ui::SettingsWidget
+class UISettingsWidget : public QWidget, private Ui::SettingsWidget
 {
     Q_OBJECT
 
 public:
-    explicit SettingsWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
+    explicit UISettingsWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
 
 signals:
     void ffmpegPathChanged(QString);

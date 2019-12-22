@@ -19,12 +19,12 @@
 #include "queuewidget.h"
 #include "rainboxui.h"
 
-class MainWindow : public QMainWindow, private Ui::MainWindow
+class UI_MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit UI_MainWindow(FFmpeg *ff, QWidget *parent = nullptr);
 
     /**
      * @brief The ErrorType enum Error level for printing the debug log

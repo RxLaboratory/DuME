@@ -1,17 +1,17 @@
-#include "queuewidget.h"
+#include "uiqueuewidget.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
+UIQueueWidget::UIQueueWidget(FFmpeg *ff,QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
     ffmpeg = ff;
 
-    InputWidget *inputWidget = new InputWidget(ffmpeg,this);
+    UIInputWidget *inputWidget = new UIInputWidget(ffmpeg,this);
     inputWidgets << inputWidget;
 
     inputTab1->layout()->addWidget(inputWidget);
@@ -27,41 +27,41 @@ QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
 
 }
 
-MediaInfo *QueueWidget::getInputMedia()
+MediaInfo *UIQueueWidget::getInputMedia()
 {
     //TODO build list
     return inputWidgets.at(0)->getMediaInfo();
 }
 
-QList<MediaInfo *> QueueWidget::getOutputMedia()
+QList<MediaInfo *> UIQueueWidget::getOutputMedia()
 {
     QList<MediaInfo *> output;
-    foreach(OutputWidget *ow,outputWidgets)
+    foreach(UIOutputWidget *ow,outputWidgets)
     {
         output << ow->getMediaInfo();
     }
     return output;
 }
 
-void QueueWidget::addInputFile(QString file)
+void UIQueueWidget::addInputFile(QString file)
 {
     inputWidgets[0]->openFile(file);
 }
 
-void QueueWidget::addInputFile(QUrl file)
+void UIQueueWidget::addInputFile(QUrl file)
 {
     inputWidgets[0]->openFile(file);
 }
 
-void QueueWidget::presetsPathChanged(QString path)
+void UIQueueWidget::presetsPathChanged(QString path)
 {
-    foreach(OutputWidget *ow,outputWidgets)
+    foreach(UIOutputWidget *ow,outputWidgets)
     {
         ow->loadPresets(path);
     }
 }
 
-void QueueWidget::on_outputTab_tabCloseRequested(int index)
+void UIQueueWidget::on_outputTab_tabCloseRequested(int index)
 {
     int numTabs = outputTab->count();
     if (index == numTabs-1) return;
@@ -70,7 +70,7 @@ void QueueWidget::on_outputTab_tabCloseRequested(int index)
     //remove tab
     outputTab->removeTab(index);
     //delete corresponding widget
-    OutputWidget *w = outputWidgets.takeAt(index);
+    UIOutputWidget *w = outputWidgets.takeAt(index);
     delete w;
     //update current index
     if (outputTab->currentIndex() == outputTab->count()-1)
@@ -79,28 +79,28 @@ void QueueWidget::on_outputTab_tabCloseRequested(int index)
     }
 }
 
-void QueueWidget::on_outputTab_tabBarClicked(int index)
+void UIQueueWidget::on_outputTab_tabBarClicked(int index)
 {
     if (index != outputTab->count()-1) return;
     //add new
     addOutput();
 }
 
-void QueueWidget::consoleReceive(QString log)
+void UIQueueWidget::consoleReceive(QString log)
 {
     emit consoleEmit(log);
 }
 
-void QueueWidget::addOutput()
+void UIQueueWidget::addOutput()
 {
     //number of the output
     int num = outputWidgets.count()+1;
     //create widget
-    OutputWidget *ow = new OutputWidget(ffmpeg,num,this);
+    UIOutputWidget *ow = new UIOutputWidget(ffmpeg,num,this);
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
     //connect first input widget
-    InputWidget *iw = inputWidgets.at(0);
+    UIInputWidget *iw = inputWidgets.at(0);
     connect(iw,SIGNAL(newMediaLoaded(MediaInfo*)),ow,SLOT(newInputMedia(MediaInfo*)));
     //set tab index
     outputTab->setCurrentIndex(outputTab->count()-2);

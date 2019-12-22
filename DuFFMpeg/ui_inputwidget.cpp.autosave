@@ -1,16 +1,16 @@
-#include "inputwidget.h"
+#include "ui_inputwidget.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
+UI_InputWidget::UI_InputWidget(FFmpeg *ff, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
     ffmpeg = ff;
-    _mediaInfo = new DuMediaInfo("",this);
+    _mediaInfo = new MediaInfo("",this);
 
     //populate color transfer
     trcBox->addItem("BT.709", QVariant("bt709"));
@@ -35,7 +35,7 @@ InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
     updateOptions();
 }
 
-DuMediaInfo *InputWidget::getMediaInfo()
+MediaInfo *UI_InputWidget::getMediaInfo()
 {
     //update custom params before returning
     _mediaInfo->clearFFmpegOptions();
@@ -54,7 +54,7 @@ DuMediaInfo *InputWidget::getMediaInfo()
     return _mediaInfo;
 }
 
-void InputWidget::openFile(QString file)
+void UI_InputWidget::openFile(QString file)
 {
     QSettings settings;
     if (file == "") return;
@@ -98,7 +98,7 @@ void InputWidget::openFile(QString file)
         }
 
 
-        double size = _mediaInfo->size(DuMediaInfo::MB);
+        double size = _mediaInfo->size(MediaInfo::MB);
         int roundedSize = size*1000+0.5;
         size = roundedSize/1000;
         mediaInfoString += "\nSize: " + QString::number(size) + " MB";
@@ -122,11 +122,11 @@ void InputWidget::openFile(QString file)
             }
             mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
             mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
-            int bitrate = _mediaInfo->videoBitrate(DuMediaInfo::Mbps);
+            int bitrate = _mediaInfo->videoBitrate(MediaInfo::Mbps);
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
             else
             {
-                bitrate = _mediaInfo->videoBitrate(DuMediaInfo::Kbps);
+                bitrate = _mediaInfo->videoBitrate(MediaInfo::Kbps);
                 if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
             }
             if (_mediaInfo->pixFormat() != nullptr)
@@ -145,7 +145,7 @@ void InputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->audioCodec()->prettyName();
             }
             mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
-            int abitrate = _mediaInfo->audioBitrate(DuMediaInfo::Kbps);
+            int abitrate = _mediaInfo->audioBitrate(MediaInfo::Kbps);
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
         }
 
@@ -159,12 +159,12 @@ void InputWidget::openFile(QString file)
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::openFile(QUrl file)
+void UI_InputWidget::openFile(QUrl file)
 {
     openFile(file.toLocalFile());
 }
 
-void InputWidget::on_inputBrowseButton_clicked()
+void UI_InputWidget::on_inputBrowseButton_clicked()
 {
     QSettings settings;
     QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path",QVariant("")).toString());
@@ -172,7 +172,7 @@ void InputWidget::on_inputBrowseButton_clicked()
     openFile(inputPath);
 }
 
-void InputWidget::on_inputEdit_editingFinished()
+void UI_InputWidget::on_inputEdit_editingFinished()
 {
     //check if file exists, try to read url
     QUrl test(inputEdit->text());
@@ -187,7 +187,7 @@ void InputWidget::on_inputEdit_editingFinished()
     openFile(inputEdit->text());
 }
 
-void InputWidget::on_addParamButton_clicked()
+void UI_InputWidget::on_addParamButton_clicked()
 {
     //add a param and a value
     QLineEdit *customParam = new QLineEdit(this);
@@ -203,13 +203,13 @@ void InputWidget::on_addParamButton_clicked()
     _customValueEdits << customValue;
 }
 
-void InputWidget::on_frameRateButton_toggled(bool checked)
+void UI_InputWidget::on_frameRateButton_toggled(bool checked)
 {
     frameRateBox->setEnabled(checked);
     frameRateEdit->setEnabled(checked);
 }
 
-void InputWidget::on_trcButton_toggled(bool checked)
+void UI_InputWidget::on_trcButton_toggled(bool checked)
 {
     trcBox->setEnabled(checked);
     if (checked)
@@ -223,7 +223,7 @@ void InputWidget::on_trcButton_toggled(bool checked)
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_frameRateBox_activated(const QString &arg1)
+void UI_InputWidget::on_frameRateBox_activated(const QString &arg1)
 {
     if (arg1 != "Custom")
     {
@@ -232,7 +232,7 @@ void InputWidget::on_frameRateBox_activated(const QString &arg1)
     }
 }
 
-void InputWidget::on_frameRateEdit_valueChanged(double arg1)
+void UI_InputWidget::on_frameRateEdit_valueChanged(double arg1)
 {
     //update mediainfo
     _mediaInfo->setVideoFramerate(frameRateEdit->value());
@@ -251,7 +251,7 @@ void InputWidget::on_frameRateEdit_valueChanged(double arg1)
 
 }
 
-void InputWidget::on_trcBox_currentIndexChanged(int index)
+void UI_InputWidget::on_trcBox_currentIndexChanged(int index)
 {
     if (trcButton->isChecked())
     {
@@ -260,7 +260,7 @@ void InputWidget::on_trcBox_currentIndexChanged(int index)
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_compButton_clicked()
+void UI_InputWidget::on_compButton_clicked()
 {
     compEdit->setEnabled(true);
     rqindexButton->setChecked(false);
@@ -273,12 +273,12 @@ void InputWidget::on_compButton_clicked()
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_compEdit_textEdited(const QString &arg1)
+void UI_InputWidget::on_compEdit_textEdited(const QString &arg1)
 {
     _mediaInfo->setAepCompName(arg1);
 }
 
-void InputWidget::on_rqindexButton_clicked()
+void UI_InputWidget::on_rqindexButton_clicked()
 {
     rqindexBox->setEnabled(true);
     compEdit->setEnabled(false);
@@ -291,13 +291,13 @@ void InputWidget::on_rqindexButton_clicked()
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_rqindexBox_valueChanged(int arg1)
+void UI_InputWidget::on_rqindexBox_valueChanged(int arg1)
 {
     _mediaInfo->setAepRqindex(arg1);
     _mediaInfo->setAepCompName("");
 }
 
-void InputWidget::on_aeRenderQueueButton_clicked()
+void UI_InputWidget::on_aeRenderQueueButton_clicked()
 {
     compEdit->setEnabled(false);
     rqindexButton->setChecked(false);
@@ -308,7 +308,7 @@ void InputWidget::on_aeRenderQueueButton_clicked()
     emit newMediaLoaded(_mediaInfo);
 }
 
-void InputWidget::on_aeRenderQueueButton_toggled(bool checked)
+void UI_InputWidget::on_aeRenderQueueButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -321,19 +321,19 @@ void InputWidget::on_aeRenderQueueButton_toggled(bool checked)
     }
 }
 
-void InputWidget::on_threadsButton_toggled(bool checked)
+void UI_InputWidget::on_threadsButton_toggled(bool checked)
 {
     threadsBox->setEnabled(checked);
     if (!checked && aeRenderQueueButton->isChecked()) threadsBox->setValue(1);
     else threadsBox->setValue(QThread::idealThreadCount());
 }
 
-void InputWidget::on_threadsBox_valueChanged(int arg1)
+void UI_InputWidget::on_threadsBox_valueChanged(int arg1)
 {
     _mediaInfo->setAepNumThreads(arg1);
 }
 
-void InputWidget::updateOptions()
+void UI_InputWidget::updateOptions()
 {
     //frame rate
     frameRateButton->hide();

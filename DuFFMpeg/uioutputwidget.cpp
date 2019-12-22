@@ -1,4 +1,4 @@
-#include "outputwidget.h"
+#include "uioutputwidget.h"
 #include "uidropshadow.h"
 
 #include <QGraphicsDropShadowEffect>
@@ -7,7 +7,7 @@
 #include <QtDebug>
 #endif
 
-OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
+UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
     _freezeUI = true;
@@ -60,7 +60,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     updateAudioVideoOptions();
 }
 
-void OutputWidget::init()
+void UIOutputWidget::init()
 {
     //main
     formatsFilterBox->setCurrentText("");
@@ -89,7 +89,7 @@ void OutputWidget::init()
     _customValueEdits.clear();
 }
 
-MediaInfo *OutputWidget::getMediaInfo()
+MediaInfo *UIOutputWidget::getMediaInfo()
 {
     _mediaInfo->updateInfo("");
 
@@ -181,7 +181,7 @@ MediaInfo *OutputWidget::getMediaInfo()
     return _mediaInfo;
 }
 
-void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
+void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
@@ -344,24 +344,24 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 
 }
 
-QString OutputWidget::getOutputPath()
+QString UIOutputWidget::getOutputPath()
 {
     return outputEdit->text();
 }
 
-void OutputWidget::on_videoTranscodeButton_toggled(bool checked)
+void UIOutputWidget::on_videoTranscodeButton_toggled(bool checked)
 {
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
     updateAudioVideoOptions();
 }
 
-void OutputWidget::on_audioTranscodeButton_toggled(bool checked)
+void UIOutputWidget::on_audioTranscodeButton_toggled(bool checked)
 {
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
     updateAudioVideoOptions();
 }
 
-void OutputWidget::on_resizeButton_toggled(bool checked)
+void UIOutputWidget::on_resizeButton_toggled(bool checked)
 {
     videoWidthButton->setEnabled(checked);
     videoHeightButton->setEnabled(checked);
@@ -371,27 +371,27 @@ void OutputWidget::on_resizeButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_frameRateButton_toggled(bool checked)
+void UIOutputWidget::on_frameRateButton_toggled(bool checked)
 {
     frameRateBox->setEnabled(checked);
     frameRateEdit->setEnabled(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_samplingButton_toggled(bool checked)
+void UIOutputWidget::on_samplingButton_toggled(bool checked)
 {
     samplingBox->setEnabled(checked);
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_outputBrowseButton_clicked()
+void UIOutputWidget::on_outputBrowseButton_clicked()
 {
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
     updateOutputExtension(outputPath);
 }
 
-void OutputWidget::on_frameRateBox_activated(const QString &arg1)
+void UIOutputWidget::on_frameRateBox_activated(const QString &arg1)
 {
     if (arg1 != "Custom")
     {
@@ -401,7 +401,7 @@ void OutputWidget::on_frameRateBox_activated(const QString &arg1)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_frameRateEdit_valueChanged(double arg1)
+void UIOutputWidget::on_frameRateEdit_valueChanged(double arg1)
 {
     //look for corresponding value
     for (int i = 1 ; i < frameRateBox->count() ; i++)
@@ -417,7 +417,7 @@ void OutputWidget::on_frameRateEdit_valueChanged(double arg1)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoQualitySlider_valueChanged(int value)
+void UIOutputWidget::on_videoQualitySlider_valueChanged(int value)
 {
     if (value >= 90)
     {
@@ -442,7 +442,7 @@ void OutputWidget::on_videoQualitySlider_valueChanged(int value)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoWidthButton_valueChanged(int val)
+void UIOutputWidget::on_videoWidthButton_valueChanged(int val)
 {
     aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -452,7 +452,7 @@ void OutputWidget::on_videoWidthButton_valueChanged(int val)
     if (codec == "h264" && val % 2 != 0) emit consoleEmit("WARNING: h264 only accepts width with an even number of pixels");
 }
 
-void OutputWidget::on_videoHeightButton_valueChanged(int val)
+void UIOutputWidget::on_videoHeightButton_valueChanged(int val)
 {
     aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -462,7 +462,7 @@ void OutputWidget::on_videoHeightButton_valueChanged(int val)
     if (codec == "h264" && val % 2 != 0) emit consoleEmit("WARNING: h264 only accepts height with an even number of pixels");
 }
 
-void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
+void UIOutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
 {
     updateAudioVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -490,12 +490,12 @@ void OutputWidget::on_videoCodecsBox_currentIndexChanged(int index)
     ffmpeg_loadPixFmts(true);
 }
 
-void OutputWidget::on_audioCodecsBox_currentIndexChanged(int index)
+void UIOutputWidget::on_audioCodecsBox_currentIndexChanged(int index)
 {
     _currentAudioCodec = _ffmpeg->getAudioEncoder(audioCodecsBox->currentData().toString());
 }
 
-void OutputWidget::on_videoProfileButton_toggled(bool checked)
+void UIOutputWidget::on_videoProfileButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -508,7 +508,7 @@ void OutputWidget::on_videoProfileButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoLoopsButton_toggled(bool checked)
+void UIOutputWidget::on_videoLoopsButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -523,7 +523,7 @@ void OutputWidget::on_videoLoopsButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
+void UIOutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
 {
     if (arg1 == -1) videoLoopsEdit->setSuffix(" No loop");
     else if (arg1 == 0) videoLoopsEdit->setSuffix(" Infinite");
@@ -531,7 +531,7 @@ void OutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_startNumberButton_clicked(bool checked)
+void UIOutputWidget::on_startNumberButton_clicked(bool checked)
 {
     if (checked)
     {
@@ -546,28 +546,28 @@ void OutputWidget::on_startNumberButton_clicked(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
+void UIOutputWidget::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadCodecs();
 }
 
-void OutputWidget::on_pixFmtFilterBox_currentIndexChanged(int index)
+void UIOutputWidget::on_pixFmtFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadPixFmts();
 }
 
-void OutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
+void UIOutputWidget::on_audioCodecsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadCodecs();
 }
 
-void OutputWidget::on_addParam_clicked()
+void UIOutputWidget::on_addParam_clicked()
 {
     addNewParam();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_formatsBox_currentIndexChanged(int index)
+void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
     if (index == -1) return;
     _currentMuxer = _ffmpeg->getMuxer(formatsBox->currentData().toString());
@@ -618,12 +618,12 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
+void UIOutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
     ffmpeg_loadMuxers();
 }
 
-void OutputWidget::on_videoCodecButton_toggled(bool checked)
+void UIOutputWidget::on_videoCodecButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -639,7 +639,7 @@ void OutputWidget::on_videoCodecButton_toggled(bool checked)
     }
 }
 
-void OutputWidget::on_pixFmtButton_toggled(bool checked)
+void UIOutputWidget::on_pixFmtButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -655,7 +655,7 @@ void OutputWidget::on_pixFmtButton_toggled(bool checked)
     }
 }
 
-void OutputWidget::on_videoBitrateButton_toggled(bool checked)
+void UIOutputWidget::on_videoBitrateButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -673,7 +673,7 @@ void OutputWidget::on_videoBitrateButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_videoQualityButton_toggled(bool checked)
+void UIOutputWidget::on_videoQualityButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -689,7 +689,7 @@ void OutputWidget::on_videoQualityButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_audioCodecButton_toggled(bool checked)
+void UIOutputWidget::on_audioCodecButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -706,7 +706,7 @@ void OutputWidget::on_audioCodecButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_audioBitrateButton_toggled(bool checked)
+void UIOutputWidget::on_audioBitrateButton_toggled(bool checked)
 {
     if (checked)
     {
@@ -723,7 +723,7 @@ void OutputWidget::on_audioBitrateButton_toggled(bool checked)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void OutputWidget::on_presetsBox_currentIndexChanged(int index)
+void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
     if (index == 0) return;
     if (_freezeUI) return;
@@ -787,12 +787,12 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     _freezeUI = false;
 }
 
-void OutputWidget::on_presetsFilterBox_activated(int index)
+void UIOutputWidget::on_presetsFilterBox_activated(int index)
 {
     loadPresets(QSettings().value("presets/path","").toString());
 }
 
-void OutputWidget::on_alphaButton_toggled(bool checked)
+void UIOutputWidget::on_alphaButton_toggled(bool checked)
 {
     ffmpeg_loadPixFmts(true);
     if (_inputHasAlpha && checked)
@@ -805,7 +805,7 @@ void OutputWidget::on_alphaButton_toggled(bool checked)
     }
 }
 
-void OutputWidget::aspectRatio()
+void UIOutputWidget::aspectRatio()
 {
     double width = videoWidthButton->value();
     double height = videoHeightButton->value();
@@ -817,7 +817,7 @@ void OutputWidget::aspectRatio()
     aspectRatioLabel->setText(QString::number(ratio) + ":1");
 }
 
-void OutputWidget::updateOutputExtension(QString outputPath)
+void UIOutputWidget::updateOutputExtension(QString outputPath)
 {
     if (outputPath == "") return;
     QFileInfo output(outputPath);
@@ -855,7 +855,7 @@ void OutputWidget::updateOutputExtension(QString outputPath)
     outputEdit->setText(QDir::toNativeSeparators(outputPath));
 }
 
-void OutputWidget::selectDefaultVideoCodec()
+void UIOutputWidget::selectDefaultVideoCodec()
 {
     if (_currentMuxer == nullptr) return;
 
@@ -875,7 +875,7 @@ void OutputWidget::selectDefaultVideoCodec()
     }
 }
 
-void OutputWidget::selectDefaultAudioCodec()
+void UIOutputWidget::selectDefaultAudioCodec()
 {
     if (_currentMuxer == nullptr) return;
 
@@ -893,7 +893,7 @@ void OutputWidget::selectDefaultAudioCodec()
     }
 }
 
-void OutputWidget::selectDefaultPixFmt()
+void UIOutputWidget::selectDefaultPixFmt()
 {
     if (_currentVideoCodec == nullptr) return;
 
@@ -929,7 +929,7 @@ void OutputWidget::selectDefaultPixFmt()
     }
 }
 
-void OutputWidget::updateAudioVideoOptions()
+void UIOutputWidget::updateAudioVideoOptions()
 {
     //VIDEO
     mainVideoCodecWidget->hide();
@@ -1076,7 +1076,7 @@ void OutputWidget::updateAudioVideoOptions()
     if (unmultButton->isHidden()) unmultButton->setChecked(false);
 }
 
-void OutputWidget::addNewParam(QString name, QString value)
+void UIOutputWidget::addNewParam(QString name, QString value)
 {
     //add a param and a value
     QLineEdit *customParam = new QLineEdit(this);
@@ -1094,7 +1094,7 @@ void OutputWidget::addNewParam(QString name, QString value)
     _customValueEdits << customValue;
 }
 
-void OutputWidget::ffmpeg_init()
+void UIOutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
     _currentMuxer = nullptr;
@@ -1105,7 +1105,7 @@ void OutputWidget::ffmpeg_init()
     _freezeUI = false;
 }
 
-void OutputWidget::ffmpeg_loadCodecs()
+void UIOutputWidget::ffmpeg_loadCodecs()
 {
     _freezeUI = true;
     //get codecs and muxers
@@ -1146,7 +1146,7 @@ void OutputWidget::ffmpeg_loadCodecs()
     _freezeUI = false;
 }
 
-void OutputWidget::ffmpeg_loadMuxers()
+void UIOutputWidget::ffmpeg_loadMuxers()
 {
     _freezeUI = true;
 
@@ -1176,7 +1176,7 @@ void OutputWidget::ffmpeg_loadMuxers()
     on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
 }
 
-void OutputWidget::ffmpeg_loadPixFmts(bool init)
+void UIOutputWidget::ffmpeg_loadPixFmts(bool init)
 {
     _freezeUI = true;
 
@@ -1241,7 +1241,7 @@ void OutputWidget::ffmpeg_loadPixFmts(bool init)
     _freezeUI = false;
 }
 
-void OutputWidget::newInputMedia(MediaInfo *input)
+void UIOutputWidget::newInputMedia(MediaInfo *input)
 {
     //set output fileName
     QFileInfo inputFile(input->fileName());
@@ -1311,7 +1311,7 @@ void OutputWidget::newInputMedia(MediaInfo *input)
     }
 }
 
-void OutputWidget::loadPresets(QString userPath)
+void UIOutputWidget::loadPresets(QString userPath)
 {
     if (_freezeUI) return;
     _freezeUI = true;

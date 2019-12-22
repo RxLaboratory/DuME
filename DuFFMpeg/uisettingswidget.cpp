@@ -1,11 +1,11 @@
-#include "settingswidget.h"
+#include "uisettingswidget.h"
 #include "uidropshadow.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
+UISettingsWidget::UISettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
@@ -63,7 +63,7 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg,QWidget *parent) :
     _freezeUI = false;
 }
 
-void SettingsWidget::on_ffmpegBrowseButton_clicked()
+void UISettingsWidget::on_ffmpegBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
@@ -73,14 +73,14 @@ void SettingsWidget::on_ffmpegBrowseButton_clicked()
     emit ffmpegPathChanged(path);
 }
 
-void SettingsWidget::on_ffmpegPathEdit_editingFinished()
+void UISettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
     if (settings.value("ffmpeg/path").toString() == ffmpegPathEdit->text()) return;
     settings.setValue("ffmpeg/path",ffmpegPathEdit->text());
     emit ffmpegPathChanged(ffmpegPathEdit->text());
 }
 
-void SettingsWidget::on_userPresetsBrowseButton_clicked()
+void UISettingsWidget::on_userPresetsBrowseButton_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings.value("presets/path").toString());
     if (path == "") return;
@@ -89,13 +89,13 @@ void SettingsWidget::on_userPresetsBrowseButton_clicked()
     emit presetsPathChanged(path);
 }
 
-void SettingsWidget::on_userPresetsPathEdit_editingFinished()
+void UISettingsWidget::on_userPresetsPathEdit_editingFinished()
 {
     settings.setValue("presets/path",userPresetsPathEdit->text());
     emit presetsPathChanged(userPresetsPathEdit->text());
 }
 
-void SettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
+void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -133,7 +133,7 @@ void SettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     _freezeUI = false;
 }
 
-void SettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
+void UISettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -157,7 +157,7 @@ void SettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
     _freezeUI = false;
 }
 
-void SettingsWidget::on_aerenderBrowseButton_clicked()
+void UISettingsWidget::on_aerenderBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
@@ -165,7 +165,7 @@ void SettingsWidget::on_aerenderBrowseButton_clicked()
     aerenderPathEdit->setText(path);
 }
 
-void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
+void UISettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -181,7 +181,7 @@ void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
     _freezeUI = false;
 }
 
-void SettingsWidget::on_aeCacheBrowseButton_clicked()
+void UISettingsWidget::on_aeCacheBrowseButton_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",settings.value("aerender/cache",aeCacheEdit->text()).toString());
     if (path == "") return;
@@ -189,7 +189,7 @@ void SettingsWidget::on_aeCacheBrowseButton_clicked()
     aeCacheEdit->setText(path);
 }
 
-void SettingsWidget::refreshAeVersionBox()
+void UISettingsWidget::refreshAeVersionBox()
 {
     _freezeUI = true;
 

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "uimainwindow.h"
 
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
@@ -7,7 +7,7 @@
 #include <QtDebug>
 #endif
 
-MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
+UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
@@ -35,7 +35,7 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //populate toolbar
-    ToolBarSpacer *tbs = new ToolBarSpacer();
+    UIToolBarSpacer *tbs = new UIToolBarSpacer();
     mainToolBar->addWidget(tbs);
 
     //window buttons for frameless win
@@ -58,11 +58,11 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->installEventFilter(this);
 
     //settings widget
-    settingsWidget = new SettingsWidget(ffmpeg,this);
+    settingsWidget = new UISettingsWidget(ffmpeg,this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     //queue widget
-    queueWidget = new QueueWidget(ffmpeg,this);
+    queueWidget = new UIQueueWidget(ffmpeg,this);
     queueLayout->addWidget(queueWidget);
 
     //add fonts
@@ -125,7 +125,7 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     mapEvents();
 }
 
-void MainWindow::mapEvents()
+void UIMainWindow::mapEvents()
 {
     // === MAP EVENTS ===
     debugLog("Init - Map events");
@@ -157,25 +157,25 @@ void MainWindow::mapEvents()
     connect(queueWidget,SIGNAL(consoleEmit(QString)),this,SLOT(console(QString)));
 }
 
-void MainWindow::ffmpeg_init()
+void UIMainWindow::ffmpeg_init()
 {
     //get help
     helpEdit->setText(ffmpeg->getLongHelp());
     queuePage->setEnabled(true);
 }
 
-void MainWindow::ffmpeg_debugLog(QString log)
+void UIMainWindow::ffmpeg_debugLog(QString log)
 {
     debugLog("FFmpeg: " + log);
 }
 
-void MainWindow::ffmpeg_errorOccurred(QString e)
+void UIMainWindow::ffmpeg_errorOccurred(QString e)
 {
     debugLog("FFmpeg error: " + e,Warning);
     mainStatusBar->showMessage("An FFmpeg error has occured, see the console and the debug log.");
 }
 
-void MainWindow::ffmpeg_started(FFQueueItem *item)
+void UIMainWindow::ffmpeg_started(FFQueueItem *item)
 {
     //TODO disable corresponding queue widget
 
@@ -200,14 +200,14 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
     }
 }
 
-void MainWindow::ffmpeg_finished(FFQueueItem *item)
+void UIMainWindow::ffmpeg_finished(FFQueueItem *item)
 {
     progressBar->setValue(0);
     progressBar->setMaximum(1);
     //TODO add item to history
 }
 
-void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
+void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
 {
     if (status == FFmpeg::Waiting)
     {
@@ -263,7 +263,7 @@ void MainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
     }
 }
 
-void MainWindow::ffmpeg_progress()
+void UIMainWindow::ffmpeg_progress()
 {
 #ifdef QT_DEBUG
     qDebug() << "== Encoding Progress ==";
@@ -291,7 +291,7 @@ void MainWindow::ffmpeg_progress()
     progressBar->setValue(ffmpeg->getCurrentFrame());
 }
 
-void MainWindow::console(QString log)
+void UIMainWindow::console(QString log)
 {
     //add date
     QTime currentTime = QTime::currentTime();
@@ -303,7 +303,7 @@ void MainWindow::console(QString log)
     mainStatusBar->showMessage(log);
 }
 
-void MainWindow::debugLog(QString log, ErrorType type)
+void UIMainWindow::debugLog(QString log, ErrorType type)
 {
     //add date
     QTime currentTime = QTime::currentTime();
@@ -321,19 +321,19 @@ void MainWindow::debugLog(QString log, ErrorType type)
 #endif
 }
 
-void MainWindow::on_ffmpegCommandsEdit_returnPressed()
+void UIMainWindow::on_ffmpegCommandsEdit_returnPressed()
 {
     on_ffmpegCommandsButton_clicked();
 }
 
-void MainWindow::on_ffmpegCommandsButton_clicked()
+void UIMainWindow::on_ffmpegCommandsButton_clicked()
 {
     QString commands = ffmpegCommandsEdit->text();
     if (commands == "") commands = "-h";
     ffmpeg->runCommand(commands);
 }
 
-void MainWindow::on_actionGo_triggered()
+void UIMainWindow::on_actionGo_triggered()
 {
     //generate input and output
     MediaInfo *input = queueWidget->getInputMedia();
@@ -344,14 +344,14 @@ void MainWindow::on_actionGo_triggered()
     ffmpeg->encode(input,output);
 }
 
-void MainWindow::on_actionStop_triggered()
+void UIMainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
     ffmpeg->stop(6000);
 }
 
-void MainWindow::on_actionSettings_triggered(bool checked)
+void UIMainWindow::on_actionSettings_triggered(bool checked)
 {
     if (checked)
     {
@@ -363,7 +363,7 @@ void MainWindow::on_actionSettings_triggered(bool checked)
     }
 }
 
-void MainWindow::updateCSS(QString cssFileName)
+void UIMainWindow::updateCSS(QString cssFileName)
 {
     QStringList cssFiles(cssFileName);
     //check if there's a duffmpeg file to include
@@ -377,11 +377,11 @@ void MainWindow::updateCSS(QString cssFileName)
     {
         cssFiles << includePath;
     }
-    QString css = RainboxUI::loadCSS(cssFiles);
+    QString css = UIRainbox::loadCSS(cssFiles);
     qApp->setStyleSheet(css);
 }
 
-void MainWindow::reInitCurrentProgress()
+void UIMainWindow::reInitCurrentProgress()
 {
     outputSizeLabel->setText("0 MB");
     outputBitrateLabel->setText("0 Mbps");
@@ -394,7 +394,7 @@ void MainWindow::reInitCurrentProgress()
 }
 
 #ifndef Q_OS_MAC
-void MainWindow::maximize()
+void UIMainWindow::maximize()
 {
     //TODO save setting
     if (this->isMaximized())
@@ -412,7 +412,7 @@ void MainWindow::maximize()
 
 #endif
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void UIMainWindow::closeEvent(QCloseEvent *event)
 {
     //save ui geometry
     settings->beginGroup("mainwindow");
@@ -428,7 +428,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+bool UIMainWindow::eventFilter(QObject *obj, QEvent *event)
 {
   if (event->type() == QEvent::MouseButtonPress)
   {
@@ -472,7 +472,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
   }
 }
 
-void MainWindow::dropEvent(QDropEvent *event)
+void UIMainWindow::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
 
@@ -502,7 +502,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     event->acceptProposedAction();
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+void UIMainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
 
@@ -528,12 +528,12 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
-void MainWindow::dragMoveEvent(QDragMoveEvent *event)
+void UIMainWindow::dragMoveEvent(QDragMoveEvent *event)
 {
      event->acceptProposedAction();
 }
 
-void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
+void UIMainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
     event->accept();
 }

@@ -9,18 +9,18 @@
 
 #include "ffmpeg.h"
 
-class InputWidget : public QWidget, private Ui::InputWidget
+class UI_InputWidget : public QWidget, private Ui::InputWidget
 {
     Q_OBJECT
 
 public:
-    explicit InputWidget(FFmpeg *ff,QWidget *parent = nullptr);
-    DuMediaInfo *getMediaInfo();
+    explicit UI_InputWidget(FFmpeg *ff,QWidget *parent = nullptr);
+    MediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
 
 signals:
-    void newMediaLoaded(DuMediaInfo *);
+    void newMediaLoaded(MediaInfo *);
 
 private slots:
     void on_inputBrowseButton_clicked();
@@ -47,7 +47,7 @@ private slots:
 
 private:
     FFmpeg *ffmpeg;
-    DuMediaInfo *_mediaInfo;
+    MediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
     void updateOptions();

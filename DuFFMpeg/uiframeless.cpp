@@ -1,6 +1,6 @@
-#include "frameless.h"
+#include "uiframeless.h"
 
-FrameLess::FrameLess(QMainWindow *target) :
+UIFrameLess::UIFrameLess(QMainWindow *target) :
     _target(target),
     _cursorchanged(false),
     _leftButtonPressed(false),
@@ -14,7 +14,7 @@ FrameLess::FrameLess(QMainWindow *target) :
     _rubberband = new QRubberBand(QRubberBand::Rectangle);
 }
 
-bool FrameLess::eventFilter(QObject *o, QEvent*e) {
+bool UIFrameLess::eventFilter(QObject *o, QEvent*e) {
     if (e->type() == QEvent::MouseMove ||
         e->type() == QEvent::HoverMove ||
         e->type() == QEvent::Leave ||
@@ -49,17 +49,17 @@ bool FrameLess::eventFilter(QObject *o, QEvent*e) {
     }
 }
 
-void FrameLess::mouseHover(QHoverEvent *e) {
+void UIFrameLess::mouseHover(QHoverEvent *e) {
     updateCursorShape(_target->mapToGlobal(e->pos()));
 }
 
-void FrameLess::mouseLeave(QEvent *e) {
+void UIFrameLess::mouseLeave(QEvent *e) {
     if (!_leftButtonPressed) {
         _target->unsetCursor();
     }
 }
 
-void FrameLess::mousePress(QMouseEvent *e) {
+void UIFrameLess::mousePress(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
         _leftButtonPressed = true;
         calculateCursorPosition(e->globalPos(), _target->frameGeometry(), _mousePress);
@@ -73,14 +73,14 @@ void FrameLess::mousePress(QMouseEvent *e) {
     }
 }
 
-void FrameLess::mouseRealese(QMouseEvent *e) {
+void UIFrameLess::mouseRealese(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
         _leftButtonPressed = false;
         _dragStart = false;
     }
 }
 
-void FrameLess::mouseMove(QMouseEvent *e) {
+void UIFrameLess::mouseMove(QMouseEvent *e) {
     if (_leftButtonPressed) {
         if (_dragStart) {
             _target->setCursor(Qt::SizeAllCursor);
@@ -138,7 +138,7 @@ void FrameLess::mouseMove(QMouseEvent *e) {
     }
 }
 
-void FrameLess::updateCursorShape(const QPoint &pos) {
+void UIFrameLess::updateCursorShape(const QPoint &pos) {
     if (_target->isFullScreen() || _target->isMaximized()) {
         if (_cursorchanged) {
             _target->unsetCursor();
@@ -167,7 +167,7 @@ void FrameLess::updateCursorShape(const QPoint &pos) {
     }
 }
 
-void FrameLess::calculateCursorPosition(const QPoint &pos, const QRect &framerect, Edges &_edge) {
+void UIFrameLess::calculateCursorPosition(const QPoint &pos, const QRect &framerect, Edges &_edge) {
     bool onLeft = pos.x() >= framerect.x() - _borderWidth && pos.x() <= framerect.x() + _borderWidth &&
         pos.y() <= framerect.y() + framerect.height() - _borderWidth && pos.y() >= framerect.y() + _borderWidth;
 

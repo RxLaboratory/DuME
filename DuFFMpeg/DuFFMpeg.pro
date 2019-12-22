@@ -27,59 +27,59 @@ DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
 SOURCES += \
     duexr.cpp \
     main.cpp \
-    mainwindow.cpp \
     mediainfo.cpp \
-    toolbarspacer.cpp \
-    settingswidget.cpp \
     ffmpeg.cpp \
     ffqueueitem.cpp \
     ffcodec.cpp \
-    queuewidget.cpp \
-    inputwidget.cpp \
-    outputwidget.cpp \
-    rainboxui.cpp \
-    frameless.cpp \
     ffmuxer.cpp \
     ffobject.cpp \
     ffpixformat.cpp \
     ffbaseobject.cpp \
     aerender.cpp \
     aerenderobject.cpp \
-    splashscreen.cpp \
     uidropshadow.cpp \
+    uiframeless.cpp \
+    uiinputwidget.cpp \
+    uimainwindow.cpp \
+    uioutputwidget.cpp \
+    uiqueuewidget.cpp \
+    uirainbox.cpp \
+    uisettingswidget.cpp \
+    uisplashscreen.cpp \
+    uitoolbarspacer.cpp \
     utils.cpp
 
 HEADERS += \
     duexr.h \
-    mainwindow.h \
     mediainfo.h \
-    toolbarspacer.h \
-    settingswidget.h \
     ffmpeg.h \
     ffqueueitem.h \
     ffcodec.h \
-    queuewidget.h \
-    inputwidget.h \
-    outputwidget.h \
-    rainboxui.h \
-    frameless.h \
     ffmuxer.h \
     ffobject.h \
     ffpixformat.h \
     ffbaseobject.h \
     aerender.h \
     aerenderobject.h \
-    splashscreen.h \
     uidropshadow.h \
+    uiframeless.h \
+    uiinputwidget.h \
+    uimainwindow.h \
+    uioutputwidget.h \
+    uiqueuewidget.h \
+    uirainbox.h \
+    uisettingswidget.h \
+    uisplashscreen.h \
+    uitoolbarspacer.h \
     utils.h
 
 FORMS += \
     mainwindow.ui \
-    toolbarspacer.ui \
     settingswidget.ui \
     queuewidget.ui \
     inputwidget.ui \
-    outputwidget.ui
+    ui_outputwidget.ui \
+    uitoolbarspacer.ui
 
 RESOURCES += \
     resources.qrc
