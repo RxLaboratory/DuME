@@ -1,52 +1,55 @@
-#include "aerenderobject.h"
+#include "aerenderprocess.h"
 
 #ifdef QT_DEBUG
  #include <QtDebug>
 #endif
 
-AERenderObject::AERenderObject(QString path, QObject *parent) : QObject(parent)
+AERenderProcess::AERenderProcess(QString path, QObject *parent) : QObject(parent)
 {
     _aerender = new QProcess(this);
     _aeOutput = "";
 
-    connect(_aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
-    connect(_aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
-    connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
+    connect(_aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
+    connect(_aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
+    connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 
     _name = "";
     _path = path;
-    _mainVersion = 0;
-    _primaryVersion = 0;
-    _secondaryVersion = 0;
-    _buildNumber = 0;
+    _version = QVersionNumber();
 
     _isValid = false;
+
+    init();
 }
 
-AERenderObject::~AERenderObject()
+AERenderProcess::~AERenderProcess()
 {
     restoreOriginalTemplates();
 }
 
-void AERenderObject::stdErrorAE()
+void AERenderProcess::stdError()
 {
     _aeOutput += _aerender->readAllStandardError();
 }
 
-void AERenderObject::findDataPath()
+QVersionNumber AERenderProcess::version() const
+{
+    return _version;
+}
+
+void AERenderProcess::findDataPath()
 {
     //try to find templates (the Ae data dir)
     QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
 
 #ifdef Q_OS_WIN
+
     //search the right one
     foreach(QString dataPath, dataPaths)
     {
-        dataPath = dataPath.replace("/Duduf/DuFFmpeg","");
+        dataPath = dataPath.replace("/Duduf/DuME","");
 
-#ifdef QT_DEBUG
-qDebug() << "Searching Ae Data in: " + dataPath;
-#endif
+        emit debugLog( "Searching Ae Data in: " + dataPath );
 
         QDir test(dataPath);
         if (QDir(test.absolutePath() + "/Adobe/After Effects").exists())
@@ -57,22 +60,24 @@ qDebug() << "Searching Ae Data in: " + dataPath;
     }
 
     //if found, append version
-    if (_dataPath != "") _dataPath += "/" + QString::number(_mainVersion) + "." + QString::number(_primaryVersion);
-#else
+    if (_dataPath != "")
+    {
+        _dataPath += "/" + QString::number( _version.majorVersion() ) + "." + QString::number( _version.minorVersion() );
+    }
 
 #endif
 
-#ifdef QT_DEBUG
-qDebug() << "AE Data Location: " + _dataPath;
-#endif
+    //TODO MAC OS
+
+    emit newDebug( "AE Data Location: " + _dataPath );
 }
 
-QString AERenderObject::dataPath() const
+QString AERenderProcess::dataPath() const
 {
     return _dataPath;
 }
 
-void AERenderObject::init()
+void AERenderProcess::init()
 {
     QFile aerenderFile(_path);
 
@@ -87,12 +92,11 @@ void AERenderObject::init()
         {
             _name = match.captured(1);
         }
-#ifdef QT_DEBUG
-qDebug() << "Found Ae version: " + version;
-#endif
+
+        emit newDebug( "Found Ae version: " + version );
+
         //get real version number from aerender
         _aeOutput = "";
-
         _aerender->setProgram(aerenderFile.fileName());
         _aerender->setArguments(QStringList("-help"));
         _aerender->start();
@@ -103,9 +107,8 @@ qDebug() << "Found Ae version: " + version;
 
         if (match.hasMatch())
         {
-    #ifdef QT_DEBUG
-    qDebug() << "Found Ae version number: " + match.captured(1);
-    #endif
+            emit newDebug( "Found Ae version number: " + match.captured(1) );
+
             _name += " (" + match.captured(1) + ")";
 
             //get version from name
@@ -119,10 +122,10 @@ qDebug() << "Found Ae version: " + version;
             QRegularExpressionMatch match = re.match(_name);
             if (match.hasMatch())
             {
-                _mainVersion = match.captured(1).toInt();
-                _primaryVersion = match.captured(2).toInt();
-                _secondaryVersion = match.captured(3).toInt();
-                _buildNumber = match.captured(4).toInt();
+                QVector<int> v;
+                //major - minor - micro - build
+                v << match.captured(1).toInt() << match.captured(2).toInt() << match.captured(3).toInt() << match.captured(4).toInt();
+                _version = QVersionNumber( v );
 
                 findDataPath();
             }
@@ -130,7 +133,7 @@ qDebug() << "Found Ae version: " + version;
     }
 }
 
-bool AERenderObject::setDuFFmpegTemplates()
+bool AERenderProcess::setDuMETemplates()
 {
     //load render settings and output modules
 
@@ -141,8 +144,8 @@ bool AERenderObject::setDuFFmpegTemplates()
     if (!aeDataDir.exists()) return false;
 
 
-    //TODO if CS6 and before (<= 11.0), prefs file
-    if (_mainVersion <= 11)
+    // if CS6 and before (<= 11.0), prefs file
+    if (_version.majorVersion() <= 11)
     {
         QStringList settingsFilter("*-x64*");
         QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
@@ -193,7 +196,7 @@ qDebug() << outputFilePaths;
                 FileUtils::move(origPath,bakPath);
 
                 //copy our own
-                FileUtils::copy(":/after-effects/render" + QString::number(_mainVersion), origPath);
+                FileUtils::copy(":/after-effects/render" + QString::number( _version.majorVersion() ), origPath);
             }
         }
 
@@ -217,7 +220,7 @@ qDebug() << outputFilePaths;
     return true;
 }
 
-void AERenderObject::restoreOriginalTemplates()
+void AERenderProcess::restoreOriginalTemplates()
 {
     //if found, replace templates
     if (_dataPath == "") return;
@@ -225,8 +228,8 @@ void AERenderObject::restoreOriginalTemplates()
     QDir aeDataDir(_dataPath);
     if (!aeDataDir.exists()) return;
 
-    //TODO if CS6 and before (<= 11.0), prefs file
-    if (_mainVersion <= 11)
+    // if CS6 and before (<= 11.0), prefs file
+    if (_version.majorVersion() <= 11)
     {
         QStringList settingsFilter("*-x64*");
         QStringList settingsFilePaths = aeDataDir.entryList(settingsFilter);
@@ -285,29 +288,35 @@ qDebug() << "Restoring " + bakPath;
 #endif
 
             //remove our own
-            QFile newOutputFile(txtPath);
-            newOutputFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
-            newOutputFile.remove();
+            FileUtils::remove(txtPath);
 
             //rename original file
-            QFile outputFile(bakPath);
-            outputFile.setPermissions(QFile::ReadOther | QFile::WriteOther);
-            outputFile.rename(txtPath);
+            FileUtils::move(bakPath, txtPath);
         }
     }
 }
 
-bool AERenderObject::isValid() const
+void AERenderProcess::started()
+{
+    _aeOutput = "";
+}
+
+QString AERenderProcess::aeOutput() const
+{
+    return _aeOutput;
+}
+
+bool AERenderProcess::isValid() const
 {
     return _isValid;
 }
 
-void AERenderObject::stdOutputAE()
+void AERenderProcess::stdOutput()
 {
     _aeOutput += _aerender->readAllStandardOutput();
 }
 
-void AERenderObject::errorOccurredAE(QProcess::ProcessError e)
+void AERenderProcess::errorOccurred(QProcess::ProcessError e)
 {
     QString error;
     if (e == QProcess::FailedToStart)
@@ -334,37 +343,91 @@ void AERenderObject::errorOccurredAE(QProcess::ProcessError e)
     {
         error = "An unknown AERender error occured.";
     }
-#ifdef QT_DEBUG
-    qDebug() << error;
-#endif
+
+    emit newDebug( error );
 }
 
-QString AERenderObject::name() const
+void AERenderProcess::readyReadAE(QString output)
+{
+    emit newDebug("AERender output: " + output);
+
+    _aeOutput = _aeOutput + output;
+/*
+    //parse
+
+    //get current input
+    MediaInfo *input = _currentItem->getInputMedias().at(0);
+
+    //Duration
+    QRegularExpression reDuration("PROGRESS:  Duration: (\\d):(\\d\\d):(\\d\\d):(\\d\\d)");
+    QRegularExpressionMatch match = reDuration.match(output);
+    if (match.hasMatch())
+    {
+        int h = match.captured(1).toInt();
+        int m = match.captured(2).toInt();
+        int s = match.captured(3).toInt();
+        int i = match.captured(4).toInt();
+
+        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
+
+        input->setDurationH(h);
+        input->setDurationM(m);
+        input->setDurationS(s);
+        input->setDurationF(i);
+        input->setDuration(duration);
+    }
+
+    QRegularExpression reFrameRate("PROGRESS:  Frame Rate: (\\d+,\\d\\d)");
+    match = reFrameRate.match(output);
+    if (match.hasMatch())
+    {
+        double fr = match.captured(1).toDouble();
+
+        input->setVideoFramerate(fr);
+
+        int h = input->durationH();
+        int m = input->durationM();
+        double s = input->durationS();
+        int i = input->durationF();
+
+        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
+        input->setDuration(duration);
+    }
+
+    QRegularExpression reProgress("PROGRESS:  \\d:\\d\\d:\\d\\d:\\d\\d \\((\\d+)\\)");
+    match = reProgress.match(output);
+    if (match.hasMatch())
+    {
+        _currentFrame = match.captured(1).toInt();
+        //time remaining
+        //get current input duration
+        //gets the current item duration
+        double duration = input->duration() * input->videoFramerate();
+        if (duration > 0)
+        {
+            if (_currentFrame > 0)
+            {
+                int elapsed = _startTime.elapsed() / 1000;
+                double remaining = elapsed*duration/_currentFrame - elapsed;
+                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
+            }
+        }
+    }
+
+    //TODO get size and bitrate
+
+
+    emit progress();
+*/
+}
+
+
+QString AERenderProcess::name() const
 {
     return _name;
 }
 
-QString AERenderObject::path() const
+QString AERenderProcess::path() const
 {
     return QDir::toNativeSeparators(_path);
-}
-
-int AERenderObject::mainVersion() const
-{
-    return _mainVersion;
-}
-
-int AERenderObject::primaryVersion() const
-{
-    return _primaryVersion;
-}
-
-int AERenderObject::secondaryVersion() const
-{
-    return _secondaryVersion;
-}
-
-int AERenderObject::buildNumber() const
-{
-    return _buildNumber;
 }
