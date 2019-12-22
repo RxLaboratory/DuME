@@ -3,15 +3,15 @@
 
 #include "ffobject.h"
 
-#include "ffmediainfo.h"
+#include "dumediainfo.h"
 
 class FFQueueItem : public FFObject
 {
         Q_OBJECT
 public:
-    FFQueueItem(QList<FFMediaInfo*> inputs,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
-    FFQueueItem(FFMediaInfo *input,QList<FFMediaInfo*> outputs,QObject *parent = nullptr);
-    FFQueueItem(FFMediaInfo *input,FFMediaInfo *output,QObject *parent = nullptr);
+    FFQueueItem(QList<DuMediaInfo*> inputs,QList<DuMediaInfo*> outputs,QObject *parent = nullptr);
+    FFQueueItem(DuMediaInfo *input,QList<DuMediaInfo*> outputs,QObject *parent = nullptr);
+    FFQueueItem(DuMediaInfo *input,DuMediaInfo *output,QObject *parent = nullptr);
     ~FFQueueItem();
 
     /**
@@ -20,14 +20,14 @@ public:
     enum Status { Waiting, InProgress, Finished, Stopped, AEError, Error };
     Q_ENUM(Status)
 
-    QList<FFMediaInfo*> getInputMedias();
-    QList<FFMediaInfo*> getOutputMedias();
-    int addInputMedia(FFMediaInfo *input);
-    int addOutputMedia(FFMediaInfo *output);
-    FFMediaInfo *removeInputMedia(int id);
-    FFMediaInfo *removeInputMedia(QString fileName);
-    FFMediaInfo *removeOutputMedia(int id);
-    FFMediaInfo *removeOutputMedia(QString fileName);
+    QList<DuMediaInfo*> getInputMedias();
+    QList<DuMediaInfo*> getOutputMedias();
+    int addInputMedia(DuMediaInfo *input);
+    int addOutputMedia(DuMediaInfo *output);
+    DuMediaInfo *removeInputMedia(int id);
+    DuMediaInfo *removeInputMedia(QString fileName);
+    DuMediaInfo *removeOutputMedia(int id);
+    DuMediaInfo *removeOutputMedia(QString fileName);
     Status getStatus();
 
 public slots:
@@ -48,8 +48,8 @@ signals:
 private slots:
 
 private:
-    QList<FFMediaInfo *> _inputMedias;
-    QList<FFMediaInfo *> _outputMedias;
+    QList<DuMediaInfo *> _inputMedias;
+    QList<DuMediaInfo *> _outputMedias;
     Status _status;
 };
 

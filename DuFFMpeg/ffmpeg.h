@@ -17,7 +17,7 @@
 #include <QThread>
 
 #include "ffcodec.h"
-#include "ffmediainfo.h"
+#include "dumediainfo.h"
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
@@ -98,7 +98,7 @@ public:
      * @param mediaPath The path to the media file
      * @return All informations
      */
-    FFMediaInfo *getMediaInfo(QString mediaPath);
+    DuMediaInfo *getMediaInfo(QString mediaPath);
     /**
      * @brief getMediaInfo Gets the information for the media
      * @param mediaPath The path to the media file
@@ -125,13 +125,13 @@ public:
      * @param The unit of the size
      * @return The size
      */
-    double getOutputSize(FFMediaInfo::SizeUnit unit = FFMediaInfo::Bytes);
+    double getOutputSize(DuMediaInfo::SizeUnit unit = DuMediaInfo::Bytes);
     /**
      * @brief getOutputBitrate Gets the average bitrate of the output file being encoded
      * @param unit The unit of the bitrate
      * @return The bitrate
      */
-    double getOutputBitrate(FFMediaInfo::BitrateUnit unit = FFMediaInfo::Bits);
+    double getOutputBitrate(DuMediaInfo::BitrateUnit unit = DuMediaInfo::Bits);
     /**
      * @brief getEncodingSpeed Gets the speed of the current encoding
      * @return The speed
@@ -183,13 +183,13 @@ public:
      * @param input The input media
      * @param outputs The list of output medias
      */
-    void encode(FFMediaInfo *input,QList<FFMediaInfo*> outputs);
+    void encode(DuMediaInfo *input,QList<DuMediaInfo*> outputs);
     /**
      * @brief encode Launches the encoding of the given input to the given output
      * @param input The input media
      * @param output The output media
      */
-    void encode(FFMediaInfo *input, FFMediaInfo *output);
+    void encode(DuMediaInfo *input, DuMediaInfo *output);
     /**
      * @brief addQueueItem Adds an item to the encoding queue
      * @param item
@@ -217,8 +217,8 @@ public:
      * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
      */
     void stop(int timeout = 10000);
-    FFMediaInfo *loadJson(QString json);
-    FFMediaInfo *loadJsonFromFile(QString jsonFileName);
+    DuMediaInfo *loadJson(QString json);
+    DuMediaInfo *loadJsonFromFile(QString jsonFileName);
 
 
     QString getVersion() const;
@@ -301,7 +301,7 @@ private slots:
 
     //Queue
     void encodeNextItem();
-    void renderAep(FFMediaInfo *input, bool audio = true);
+    void renderAep(DuMediaInfo *input, bool audio = true);
 
     //self
     void setStatus(Status st);

@@ -338,11 +338,11 @@ QString FFmpeg::getLongHelp()
     return _longHelp;
 }
 
-FFMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
+DuMediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
 {
     QString infoString = getMediaInfoString(mediaPath);
-    if (infoString == "") return new FFMediaInfo("",this);
-    FFMediaInfo *info = new FFMediaInfo(infoString,this);
+    if (infoString == "") return new DuMediaInfo("",this);
+    DuMediaInfo *info = new DuMediaInfo(infoString,this);
     return info;
 }
 
@@ -374,19 +374,19 @@ QTime FFmpeg::getElapsedTime()
     return QTime(0,0,0).addSecs(_startTime.elapsed() / 1000);
 }
 
-double FFmpeg::getOutputSize(FFMediaInfo::SizeUnit unit)
+double FFmpeg::getOutputSize(DuMediaInfo::SizeUnit unit)
 {
     double s = _outputSize;
-    if (unit == FFMediaInfo::KB) s = s/1024;
-    if (unit == FFMediaInfo::MB) s = s/1024/1024;
+    if (unit == DuMediaInfo::KB) s = s/1024;
+    if (unit == DuMediaInfo::MB) s = s/1024/1024;
     return s;
 }
 
-double FFmpeg::getOutputBitrate(FFMediaInfo::BitrateUnit unit)
+double FFmpeg::getOutputBitrate(DuMediaInfo::BitrateUnit unit)
 {
     double bitrate = _outputBitrate;
-    if (unit == FFMediaInfo::Kbps) bitrate = bitrate/1024;
-    if (unit == FFMediaInfo::Mbps) bitrate = bitrate/1024/1024;
+    if (unit == DuMediaInfo::Kbps) bitrate = bitrate/1024;
+    if (unit == DuMediaInfo::Mbps) bitrate = bitrate/1024/1024;
     return bitrate;
 }
 
@@ -441,14 +441,14 @@ void FFmpeg::encode(QList<FFQueueItem*> list)
     encode();
 }
 
-void FFmpeg::encode(FFMediaInfo *input, QList<FFMediaInfo *> outputs)
+void FFmpeg::encode(DuMediaInfo *input, QList<DuMediaInfo *> outputs)
 {
     FFQueueItem *item = new FFQueueItem(input,outputs,this);
     _encodingQueue << item;
     encode();
 }
 
-void FFmpeg::encode(FFMediaInfo *input, FFMediaInfo *output)
+void FFmpeg::encode(DuMediaInfo *input, DuMediaInfo *output)
 {
     FFQueueItem *item = new FFQueueItem(input,output,this);
     _encodingQueue << item;
@@ -578,7 +578,7 @@ void FFmpeg::finishedAE()
                 aerender->deleteLater();
             }
 
-           FFMediaInfo *input = _currentItem->getInputMedias()[0];
+           DuMediaInfo *input = _currentItem->getInputMedias()[0];
            //encode rendered EXR
            if (!input->aeUseRQueue())
            {
@@ -721,13 +721,13 @@ void FFmpeg::encodeNextItem()
     _currentItem = _encodingQueue.takeAt(0);
 
     //Check if there are AEP to render
-    foreach(FFMediaInfo *input,_currentItem->getInputMedias())
+    foreach(DuMediaInfo *input,_currentItem->getInputMedias())
     {
         if (input->isAep())
         {
             //check if we need audio
             bool needAudio = false;
-            foreach(FFMediaInfo *output, _currentItem->getOutputMedias())
+            foreach(DuMediaInfo *output, _currentItem->getOutputMedias())
             {
                 if (output->hasAudio())
                 {
@@ -748,7 +748,7 @@ void FFmpeg::encodeNextItem()
     arguments << "-y";
 
     //add inputs
-    foreach(FFMediaInfo *input,_currentItem->getInputMedias())
+    foreach(DuMediaInfo *input,_currentItem->getInputMedias())
     {
         QString inputFileName = input->fileName();
         //add custom options
@@ -776,7 +776,7 @@ void FFmpeg::encodeNextItem()
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }
     //add outputs
-    foreach(FFMediaInfo *output,_currentItem->getOutputMedias())
+    foreach(DuMediaInfo *output,_currentItem->getOutputMedias())
     {
         //muxer
         QString muxer = "";
@@ -989,7 +989,7 @@ void FFmpeg::encodeNextItem()
     emit  encodingStarted(_currentItem);
 }
 
-void FFmpeg::renderAep(FFMediaInfo *input, bool audio)
+void FFmpeg::renderAep(DuMediaInfo *input, bool audio)
 {
     QStringList arguments("-project");
     QStringList audioArguments;
@@ -1717,7 +1717,7 @@ void FFmpeg::readyRead(QString output)
         //get current input duration
         //gets the current item duration
         double duration = 0;
-        foreach(FFMediaInfo *input,_currentItem->getInputMedias())
+        foreach(DuMediaInfo *input,_currentItem->getInputMedias())
         {
             if (input->hasVideo())
             {
@@ -1750,7 +1750,7 @@ void FFmpeg::readyReadAE(QString output)
     //parse
 
     //get current input
-    FFMediaInfo *input = _currentItem->getInputMedias().at(0);
+    DuMediaInfo *input = _currentItem->getInputMedias().at(0);
 
     //Duration
     QRegularExpression reDuration("PROGRESS:  Duration: (\\d):(\\d\\d):(\\d\\d):(\\d\\d)");
@@ -1863,9 +1863,9 @@ void FFmpeg::debug(QString message)
     emit debugInfo(message);
 }
 
-FFMediaInfo *FFmpeg::loadJson(QString json)
+DuMediaInfo *FFmpeg::loadJson(QString json)
 {
-    FFMediaInfo *mediaInfo = nullptr;
+    DuMediaInfo *mediaInfo = nullptr;
 
     debug("Loading preset");
 
@@ -1892,7 +1892,7 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
 
 
     debug("Getting media info...");
-    mediaInfo = new FFMediaInfo();
+    mediaInfo = new DuMediaInfo();
 
     //muxer
     QJsonObject muxerObj = mediaObj.value("muxer").toObject();
@@ -1955,9 +1955,9 @@ FFMediaInfo *FFmpeg::loadJson(QString json)
     return mediaInfo;
 }
 
-FFMediaInfo *FFmpeg::loadJsonFromFile(QString jsonFileName)
+DuMediaInfo *FFmpeg::loadJsonFromFile(QString jsonFileName)
 {
-    FFMediaInfo *mediaInfo = nullptr;
+    DuMediaInfo *mediaInfo = nullptr;
     QFile jsonFile(jsonFileName);
     debug("Opening preset file: " + jsonFileName);
     if (jsonFile.open(QIODevice::ReadOnly))

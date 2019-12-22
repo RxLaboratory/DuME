@@ -15,12 +15,12 @@ class InputWidget : public QWidget, private Ui::InputWidget
 
 public:
     explicit InputWidget(FFmpeg *ff,QWidget *parent = nullptr);
-    FFMediaInfo *getMediaInfo();
+    DuMediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
 
 signals:
-    void newMediaLoaded(FFMediaInfo *);
+    void newMediaLoaded(DuMediaInfo *);
 
 private slots:
     void on_inputBrowseButton_clicked();
@@ -47,7 +47,7 @@ private slots:
 
 private:
     FFmpeg *ffmpeg;
-    FFMediaInfo *_mediaInfo;
+    DuMediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
     void updateOptions();

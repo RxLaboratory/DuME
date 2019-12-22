@@ -1,4 +1,4 @@
-#ifndef MEDIAINFO_H
+﻿#ifndef MEDIAINFO_H
 #define MEDIAINFO_H
 
 #include "ffobject.h"
@@ -15,11 +15,29 @@
 #include "ffcodec.h"
 #include "ffmuxer.h"
 
-class FFMediaInfo : public FFObject
+class DuMediaInfo : public FFObject
 {
     Q_OBJECT
 public:
-    explicit FFMediaInfo(QString ffmpegOutput = "",QObject *parent = nullptr);
+    /**
+     * @brief DuMediaInfo Constructs an empty MediaInfo
+     * @param parent The QObject parent
+     */
+    explicit DuMediaInfo( QObject *parent = nullptr );
+
+    /**
+     * @brief DuMediaInfo Constructs a new MediaInfo from the output of the anaylisis given by `ffmpeg -i mediaFile` or `ffprobe mediaFile`
+     * @param ffmpegOutput The output of the ffmpeg/ffprobe analysis
+     * @param parent The QObject parent
+     */
+    explicit DuMediaInfo(QString ffmpegOutput, QObject *parent = nullptr);
+
+    /**
+     * @brief DuMediaInfo Constructs a new MediaInfo for the given file.
+     * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
+     * @param parent The QObject parent
+     */
+    explicit DuMediaInfo(QFileInfo mediaFile, QObject *parent = nullptr);
 
     /**
      * @brief The unit used for bitrates
@@ -34,12 +52,19 @@ public:
     Q_ENUM(SizeUnit)
 
     //setters
-    void setMuxer(FFMuxer *muxer);
+
+    /**
+     * @brief updateInfo Updates all the information for this media file
+     * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
+     */
+    void updateInfo(QFileInfo mediaFile);
     /**
      * @brief updateInfo Updates all the information for this media from the output of ffprobe or ffmpeg
-     * @param ffmpegOutput The output of ffprobe or ffmpeg when analyzing this media, as returned by `ffmpeg -i medifaFile` or `ffprobe mediaFile`.
+     * @param ffmpegOutput The output of ffprobe or ffmpeg when analyzing this media, as returned by `ffmpeg -i mediaFile` or `ffprobe mediaFile`.
      */
     void updateInfo(QString ffmpegOutput);
+
+    void setMuxer(FFMuxer *muxer);
     void setContainer(QStringList container);
     void setVideoWidth(int width);
     void setVideoHeight(int height);
@@ -123,6 +148,9 @@ signals:
 public slots:
 
 private:
+
+    // ========== ATTRIBUTES ==============
+
     /**
      * @brief _extensions The list of file extensions this media can use
      */
@@ -267,6 +295,13 @@ private:
      * @brief _aeUseRQueue Wether to launch the render queue when rendering the After Effects project, or render a specific composition or renderqueue item.
      */
     bool _aeUseRQueue;
+
+    //======== METHODS =============
+
+    /**
+     * @brief reInit Reinit all to default values
+     */
+    void reInit();
     /**
      * @brief loadSequence Loads all the frames of the frame sequence
      */

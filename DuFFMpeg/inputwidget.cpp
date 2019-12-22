@@ -10,7 +10,7 @@ InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
     setupUi(this);
 
     ffmpeg = ff;
-    _mediaInfo = new FFMediaInfo("",this);
+    _mediaInfo = new DuMediaInfo("",this);
 
     //populate color transfer
     trcBox->addItem("BT.709", QVariant("bt709"));
@@ -35,7 +35,7 @@ InputWidget::InputWidget(FFmpeg *ff, QWidget *parent) :
     updateOptions();
 }
 
-FFMediaInfo *InputWidget::getMediaInfo()
+DuMediaInfo *InputWidget::getMediaInfo()
 {
     //update custom params before returning
     _mediaInfo->clearFFmpegOptions();
@@ -98,7 +98,7 @@ void InputWidget::openFile(QString file)
         }
 
 
-        double size = _mediaInfo->size(FFMediaInfo::MB);
+        double size = _mediaInfo->size(DuMediaInfo::MB);
         int roundedSize = size*1000+0.5;
         size = roundedSize/1000;
         mediaInfoString += "\nSize: " + QString::number(size) + " MB";
@@ -122,11 +122,11 @@ void InputWidget::openFile(QString file)
             }
             mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
             mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
-            int bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Mbps);
+            int bitrate = _mediaInfo->videoBitrate(DuMediaInfo::Mbps);
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
             else
             {
-                bitrate = _mediaInfo->videoBitrate(FFMediaInfo::Kbps);
+                bitrate = _mediaInfo->videoBitrate(DuMediaInfo::Kbps);
                 if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
             }
             if (_mediaInfo->pixFormat() != nullptr)
@@ -145,7 +145,7 @@ void InputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->audioCodec()->prettyName();
             }
             mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
-            int abitrate = _mediaInfo->audioBitrate(FFMediaInfo::Kbps);
+            int abitrate = _mediaInfo->audioBitrate(DuMediaInfo::Kbps);
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
         }
 

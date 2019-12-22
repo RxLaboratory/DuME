@@ -27,15 +27,15 @@ QueueWidget::QueueWidget(FFmpeg *ff,QWidget *parent) :
 
 }
 
-FFMediaInfo *QueueWidget::getInputMedia()
+DuMediaInfo *QueueWidget::getInputMedia()
 {
     //TODO build list
     return inputWidgets.at(0)->getMediaInfo();
 }
 
-QList<FFMediaInfo *> QueueWidget::getOutputMedia()
+QList<DuMediaInfo *> QueueWidget::getOutputMedia()
 {
-    QList<FFMediaInfo *> output;
+    QList<DuMediaInfo *> output;
     foreach(OutputWidget *ow,outputWidgets)
     {
         output << ow->getMediaInfo();
@@ -101,11 +101,11 @@ void QueueWidget::addOutput()
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
     //connect first input widget
     InputWidget *iw = inputWidgets.at(0);
-    connect(iw,SIGNAL(newMediaLoaded(FFMediaInfo*)),ow,SLOT(newInputMedia(FFMediaInfo*)));
+    connect(iw,SIGNAL(newMediaLoaded(DuMediaInfo*)),ow,SLOT(newInputMedia(DuMediaInfo*)));
     //set tab index
     outputTab->setCurrentIndex(outputTab->count()-2);
     //get current media info
-    FFMediaInfo *iwInfo = iw->getMediaInfo();
+    DuMediaInfo *iwInfo = iw->getMediaInfo();
     if (iwInfo->fileName() != "") ow->newInputMedia(iwInfo);
     //connect console
     connect(ow,SIGNAL(consoleEmit(QString)),this,SLOT(consoleReceive(QString)));

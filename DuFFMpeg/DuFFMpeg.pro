@@ -26,6 +26,7 @@ DEFINES += APPVERSION=\\\"0.0.9-Alpha\\\"
 
 SOURCES += \
     duexr.cpp \
+    dumediainfo.cpp \
     main.cpp \
     mainwindow.cpp \
     toolbarspacer.cpp \
@@ -33,7 +34,6 @@ SOURCES += \
     ffmpeg.cpp \
     ffqueueitem.cpp \
     ffcodec.cpp \
-    ffmediainfo.cpp \
     queuewidget.cpp \
     inputwidget.cpp \
     outputwidget.cpp \
@@ -51,13 +51,13 @@ SOURCES += \
 
 HEADERS += \
     duexr.h \
+    dumediainfo.h \
     mainwindow.h \
     toolbarspacer.h \
     settingswidget.h \
     ffmpeg.h \
     ffqueueitem.h \
     ffcodec.h \
-    ffmediainfo.h \
     queuewidget.h \
     inputwidget.h \
     outputwidget.h \
