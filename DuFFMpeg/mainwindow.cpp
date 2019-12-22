@@ -181,7 +181,7 @@ void MainWindow::ffmpeg_started(FFQueueItem *item)
 
     reInitCurrentProgress();
     //Get input infos from first video input
-    foreach(DuMediaInfo *input, item->getInputMedias())
+    foreach(MediaInfo *input, item->getInputMedias())
     {
         if (input->hasVideo())
         {
@@ -269,10 +269,10 @@ void MainWindow::ffmpeg_progress()
     qDebug() << "== Encoding Progress ==";
 #endif
     //size
-    int outputSize = ffmpeg->getOutputSize(DuMediaInfo::MB);
+    int outputSize = ffmpeg->getOutputSize(MediaInfo::MB);
     outputSizeLabel->setText(QString::number(outputSize) + " MB");
     //bitrate
-    int bitrate = ffmpeg->getOutputBitrate(DuMediaInfo::Mbps);
+    int bitrate = ffmpeg->getOutputBitrate(MediaInfo::Mbps);
     outputBitrateLabel->setText(QString::number(bitrate) + " Mbps");
     //time elapsed
     QTime elapsed = ffmpeg->getElapsedTime();
@@ -336,8 +336,8 @@ void MainWindow::on_ffmpegCommandsButton_clicked()
 void MainWindow::on_actionGo_triggered()
 {
     //generate input and output
-    DuMediaInfo *input = queueWidget->getInputMedia();
-    QList<DuMediaInfo *> output = queueWidget->getOutputMedia();
+    MediaInfo *input = queueWidget->getInputMedia();
+    QList<MediaInfo *> output = queueWidget->getOutputMedia();
 
     //Launch!
     debugLog("=== Beginning encoding ===");

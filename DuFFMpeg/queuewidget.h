@@ -15,8 +15,8 @@ class QueueWidget : public QWidget, private Ui::QueueWidget
 
 public:
     explicit QueueWidget(FFmpeg *ff, QWidget *parent = nullptr);
-    DuMediaInfo *getInputMedia();
-    QList<DuMediaInfo *> getOutputMedia();
+    MediaInfo *getInputMedia();
+    QList<MediaInfo *> getOutputMedia();
     void addInputFile(QString file);
     void addInputFile(QUrl file);
 

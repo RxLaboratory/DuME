@@ -28,7 +28,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     _ffmpeg = ff;
     _index = id;
-    _mediaInfo = new DuMediaInfo("",this);
+    _mediaInfo = new MediaInfo("",this);
     _currentMuxer = nullptr;
     _currentAudioCodec = nullptr;
     _currentVideoCodec = nullptr;
@@ -89,7 +89,7 @@ void OutputWidget::init()
     _customValueEdits.clear();
 }
 
-DuMediaInfo *OutputWidget::getMediaInfo()
+MediaInfo *OutputWidget::getMediaInfo()
 {
     _mediaInfo->updateInfo("");
 
@@ -114,7 +114,7 @@ DuMediaInfo *OutputWidget::getMediaInfo()
             }
             if (videoBitrateButton->isChecked())
             {
-                _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),DuMediaInfo::Mbps);
+                _mediaInfo->setVideoBitrate(videoBitRateEdit->value(),MediaInfo::Mbps);
             }
             if (videoQualityButton->isChecked())
             {
@@ -155,7 +155,7 @@ DuMediaInfo *OutputWidget::getMediaInfo()
             {
                 _mediaInfo->setAudioSamplingRate(samplingBox->currentData().toInt());
             }
-            if (audioBitrateButton->isChecked()) _mediaInfo->setAudioBitrate(audioBitRateEdit->value(),DuMediaInfo::Kbps);
+            if (audioBitrateButton->isChecked()) _mediaInfo->setAudioBitrate(audioBitRateEdit->value(),MediaInfo::Kbps);
         }
     }
 
@@ -181,7 +181,7 @@ DuMediaInfo *OutputWidget::getMediaInfo()
     return _mediaInfo;
 }
 
-void OutputWidget::setMediaInfo(DuMediaInfo *mediaInfo)
+void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
@@ -259,7 +259,7 @@ void OutputWidget::setMediaInfo(DuMediaInfo *mediaInfo)
             frameRateButton->setChecked(true);
             frameRateEdit->setValue(framerate);
         }
-        double bitrate = _mediaInfo->videoBitrate(DuMediaInfo::Mbps);
+        double bitrate = _mediaInfo->videoBitrate(MediaInfo::Mbps);
         if (bitrate != 0.0)
         {
             videoBitrateButton->setChecked(true);
@@ -320,7 +320,7 @@ void OutputWidget::setMediaInfo(DuMediaInfo *mediaInfo)
                 }
             }
         }
-        double bitrate = _mediaInfo->audioBitrate(DuMediaInfo::Kbps);
+        double bitrate = _mediaInfo->audioBitrate(MediaInfo::Kbps);
         if (bitrate != 0.0)
         {
             audioBitrateButton->setChecked(true);
@@ -762,7 +762,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         }
 
         //load
-        DuMediaInfo *mInfo = _ffmpeg->loadJsonFromFile(openFileName);
+        MediaInfo *mInfo = _ffmpeg->loadJsonFromFile(openFileName);
         //update
         _freezeUI = false;
         setMediaInfo(mInfo);
@@ -772,7 +772,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     {
         _loadingPreset = true;
         //load
-        DuMediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
+        MediaInfo *mInfo =_ffmpeg->loadJsonFromFile(presetsBox->currentData().toString());
         //update
         _freezeUI = false;
         //set filters to all
@@ -1099,7 +1099,7 @@ void OutputWidget::ffmpeg_init()
     _freezeUI = true;
     _currentMuxer = nullptr;
     delete _mediaInfo;
-    _mediaInfo = new DuMediaInfo();
+    _mediaInfo = new MediaInfo();
     ffmpeg_loadCodecs();
     ffmpeg_loadMuxers();
     _freezeUI = false;
@@ -1241,7 +1241,7 @@ void OutputWidget::ffmpeg_loadPixFmts(bool init)
     _freezeUI = false;
 }
 
-void OutputWidget::newInputMedia(DuMediaInfo *input)
+void OutputWidget::newInputMedia(MediaInfo *input)
 {
     //set output fileName
     QFileInfo inputFile(input->fileName());

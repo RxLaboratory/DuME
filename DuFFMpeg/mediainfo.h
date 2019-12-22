@@ -15,7 +15,7 @@
 #include "ffcodec.h"
 #include "ffmuxer.h"
 
-class DuMediaInfo : public FFObject
+class MediaInfo : public FFObject
 {
     Q_OBJECT
 public:
@@ -23,21 +23,21 @@ public:
      * @brief DuMediaInfo Constructs an empty MediaInfo
      * @param parent The QObject parent
      */
-    explicit DuMediaInfo( QObject *parent = nullptr );
+    explicit MediaInfo( QObject *parent = nullptr );
 
     /**
      * @brief DuMediaInfo Constructs a new MediaInfo from the output of the anaylisis given by `ffmpeg -i mediaFile` or `ffprobe mediaFile`
      * @param ffmpegOutput The output of the ffmpeg/ffprobe analysis
      * @param parent The QObject parent
      */
-    explicit DuMediaInfo(QString ffmpegOutput, QObject *parent = nullptr);
+    explicit MediaInfo(QString ffmpegOutput, QObject *parent = nullptr);
 
     /**
      * @brief DuMediaInfo Constructs a new MediaInfo for the given file.
      * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
      * @param parent The QObject parent
      */
-    explicit DuMediaInfo(QFileInfo mediaFile, QObject *parent = nullptr);
+    explicit MediaInfo(QFileInfo mediaFile, QObject *parent = nullptr);
 
     /**
      * @brief The unit used for bitrates

@@ -1,6 +1,6 @@
 #include "ffqueueitem.h"
 
-FFQueueItem::FFQueueItem(QList<DuMediaInfo *> inputs, QList<DuMediaInfo *> outputs, QObject *parent) : FFObject(parent)
+FFQueueItem::FFQueueItem(QList<MediaInfo *> inputs, QList<MediaInfo *> outputs, QObject *parent) : FFObject(parent)
 {
     _inputMedias = inputs;
     _outputMedias = outputs;
@@ -8,14 +8,14 @@ FFQueueItem::FFQueueItem(QList<DuMediaInfo *> inputs, QList<DuMediaInfo *> outpu
     emit queued();
 }
 
-FFQueueItem::FFQueueItem(DuMediaInfo *input, QList<DuMediaInfo *> outputs, QObject *parent) : FFObject(parent)
+FFQueueItem::FFQueueItem(MediaInfo *input, QList<MediaInfo *> outputs, QObject *parent) : FFObject(parent)
 {
     _inputMedias << input;
     _outputMedias = outputs;
     _status = Waiting;
 }
 
-FFQueueItem::FFQueueItem(DuMediaInfo *input, DuMediaInfo *output, QObject *parent) : FFObject(parent)
+FFQueueItem::FFQueueItem(MediaInfo *input, MediaInfo *output, QObject *parent) : FFObject(parent)
 {
     _inputMedias << input;
     _outputMedias << output;
@@ -27,34 +27,34 @@ FFQueueItem::~FFQueueItem()
     postRenderCleanUp();
 }
 
-QList<DuMediaInfo *> FFQueueItem::getInputMedias()
+QList<MediaInfo *> FFQueueItem::getInputMedias()
 {
     return _inputMedias;
 }
 
-QList<DuMediaInfo *> FFQueueItem::getOutputMedias()
+QList<MediaInfo *> FFQueueItem::getOutputMedias()
 {
     return _outputMedias;
 }
 
-int FFQueueItem::addInputMedia(DuMediaInfo *input)
+int FFQueueItem::addInputMedia(MediaInfo *input)
 {
     _inputMedias << input;
     return _inputMedias.count() - 1;
 }
 
-int FFQueueItem::addOutputMedia(DuMediaInfo *output)
+int FFQueueItem::addOutputMedia(MediaInfo *output)
 {
     _outputMedias << output;
     return _outputMedias.count() -1;
 }
 
-DuMediaInfo *FFQueueItem::removeInputMedia(int id)
+MediaInfo *FFQueueItem::removeInputMedia(int id)
 {
     return _inputMedias.takeAt(id);
 }
 
-DuMediaInfo *FFQueueItem::removeInputMedia(QString fileName)
+MediaInfo *FFQueueItem::removeInputMedia(QString fileName)
 {
     for (int i = 0 ; i < _inputMedias.count() ; i++)
     {
@@ -65,12 +65,12 @@ DuMediaInfo *FFQueueItem::removeInputMedia(QString fileName)
     }
 }
 
-DuMediaInfo *FFQueueItem::removeOutputMedia(int id)
+MediaInfo *FFQueueItem::removeOutputMedia(int id)
 {
     return _outputMedias.takeAt(id);
 }
 
-DuMediaInfo *FFQueueItem::removeOutputMedia(QString fileName)
+MediaInfo *FFQueueItem::removeOutputMedia(QString fileName)
 {
     for (int i = 0 ; i < _outputMedias.count() ; i++)
     {
@@ -100,7 +100,7 @@ void FFQueueItem::setStatus(Status st)
 void FFQueueItem::postRenderCleanUp()
 {
     //remove ae cache
-    DuMediaInfo *input = _inputMedias[0];
+    MediaInfo *input = _inputMedias[0];
     if (input->cacheDir() == nullptr) return;
     QTemporaryDir *aeTempDir = input->cacheDir();
     aeTempDir->remove();

@@ -15,8 +15,8 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
 
 public:
     explicit OutputWidget(FFmpeg *ff,int id,QWidget *parent = 0);
-    DuMediaInfo *getMediaInfo();
-    void setMediaInfo(DuMediaInfo *mediaInfo);
+    MediaInfo *getMediaInfo();
+    void setMediaInfo(MediaInfo *mediaInfo);
     QString getOutputPath();
 
 signals:
@@ -31,7 +31,7 @@ public slots:
     void ffmpeg_loadCodecs();
     void ffmpeg_loadMuxers();
     void ffmpeg_loadPixFmts(bool init = false);
-    void newInputMedia(DuMediaInfo *input);
+    void newInputMedia(MediaInfo *input);
     void loadPresets(QString userPath = "");
 
 private slots:
@@ -83,7 +83,7 @@ private:
 
     QSettings _settings;
     FFmpeg *_ffmpeg;
-    DuMediaInfo *_mediaInfo;
+    MediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
     FFMuxer *_currentMuxer;
