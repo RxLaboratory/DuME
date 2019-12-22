@@ -7,34 +7,18 @@
 
 FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
 {
-    _status = Waiting;
-    _lastErrorMessage = "";
-    _lastError = QProcess::UnknownError;
-    _debugBaseMessage = "";
+    // The Process
+    ffmpegProcess = new QProcess(this);
 
-    _ffmpeg = new QProcess(this);
-
-    _aeInfo = new AERender(this);
-
-    _currentFrame = 0;
-    _startTime = QTime(0,0,0);
-    _outputSize = 0.0;
-    _outputBitrate = 0;
-    _encodingSpeed = 0.0;
-
-    _aerenderOutput = "";
+    // The output
     _ffmpegOutput = "";
 
-    restoreAETemplates = false;
-    timer = new QTimer(this);
-    timer->setSingleShot(true);
-
     //Connect process
-    connect(_ffmpeg,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
-    connect(_ffmpeg,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
-    connect(_ffmpeg,SIGNAL(started()),this,SLOT(started()));
-    connect(_ffmpeg,SIGNAL(finished(int)),this,SLOT(finished()));
-    connect(_ffmpeg,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
+    connect(ffmpegProcess,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
+    connect(ffmpegProcess,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
+    connect(ffmpegProcess,SIGNAL(started()),this,SLOT(started()));
+    connect(ffmpegProcess,SIGNAL(finished(int)),this,SLOT(finished()));
+    connect(ffmpegProcess,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
@@ -50,12 +34,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     else setBinaryFileName(path, false);
 
     _version = settings.value("ffmpeg/version","").toString();
-
 }
 
 FFmpeg::~FFmpeg()
 {
-    postRenderCleanUp();
+
 }
 
 bool FFmpeg::setBinaryFileName(QString path, bool initialize)
@@ -68,17 +51,14 @@ bool FFmpeg::setBinaryFileName(QString path, bool initialize)
 
     if(fileExists)
     {
-        _ffmpeg->setProgram(path);
+        ffmpegProcess->setProgram(path);
         if (initialize) init();
         emit binaryChanged();
         return true;
     }
     else
     {
-        setStatus(Error);
-        emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
-        _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
-        debug("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        emit newError("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
         return false;
     }
 }
@@ -100,8 +80,8 @@ void FFmpeg::runCommand(QString commands)
 
 void FFmpeg::runCommand(QStringList commands)
 {
-    _ffmpeg->setArguments(commands);
-    _ffmpeg->start();
+    ffmpegProcess->setArguments(commands);
+    ffmpegProcess->start();
 }
 
 void FFmpeg::init()
@@ -109,66 +89,58 @@ void FFmpeg::init()
 #if INIT_FFMPEG //used when developping to skip ffmpeg loading
 
     //get version
-    _debugBaseMessage = "FFmpeg initialization | Checking version";
-    debug();
-    _ffmpeg->setArguments(QStringList());
-    _ffmpeg->start(QIODevice::ReadOnly);
+    emit newLog( "Checking version" );
+    ffmpegProcess->setArguments(QStringList());
+    ffmpegProcess->start(QIODevice::ReadOnly);
     QString newVersion = "";
-    if (_ffmpeg->waitForFinished(1000))
+    if (ffmpegProcess->waitForFinished(1000))
     {
         newVersion = gotVersion(_ffmpegOutput);
     }
 
     //get pixFormats
-    _debugBaseMessage = "FFmpeg initialization | Loading pixel Formats";
-    debug();
-    _ffmpeg->setArguments(QStringList("-pix_fmts"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
+    emit newLog( "Loading Pixel Formats" );
+    ffmpegProcess->setArguments(QStringList("-pix_fmts"));
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(10000))
     {
         gotPixFormats( _ffmpegOutput, newVersion );
     }
 
-
-
     //get codecs
-    _debugBaseMessage = "FFmpeg initialization | Loading codecs";
-    debug();
-    _ffmpeg->setArguments(QStringList("-codecs"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
+    emit newLog( "Loading Codecs" );
+    ffmpegProcess->setArguments(QStringList("-codecs"));
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(10000))
     {
         gotCodecs( _ffmpegOutput, newVersion );
     }
 
     //get muxers
-    _debugBaseMessage = "FFmpeg initialization | Loading muxers";
-    debug();
-    _ffmpeg->setArguments(QStringList("-formats"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(10000))
+    emit newLog( "Loading Muxers" );
+    ffmpegProcess->setArguments(QStringList("-formats"));
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(10000))
     {
         gotMuxers( _ffmpegOutput, newVersion );
     }
 
-
     //get long help
-    _debugBaseMessage = "FFmpeg initialization | Loading documentation";
-    debug();
+    emit newLog( "Loading Documentation" );
     QStringList args("-h");
     args << "long";
-    _ffmpeg->setArguments(args);
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
+    ffmpegProcess->setArguments(args);
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(3000))
     {
         _longHelp = _ffmpegOutput;
     }
 
     //get help
     _help = settings.value("ffmpeg/help","").toString();
-    _ffmpeg->setArguments(QStringList("-h"));
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
+    ffmpegProcess->setArguments(QStringList("-h"));
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(3000))
     {
         _help = _ffmpegOutput;
     }
@@ -177,76 +149,6 @@ void FFmpeg::init()
     settings.setValue("ffmpeg/version",_version);
 
 #endif
-
-    //After Effects
-    initAe();
-}
-
-void FFmpeg::initAe()
-{
-#if INIT_AE
-
-    QSettings settings;
-    //get AERender
-    _debugBaseMessage = "";
-    debug("Adobe After Effects Renderer initialization...");
-
-    _aeInfo->init();
-
-    //load After Effects
-    QList<AERenderObject *> aeRenders = _aeInfo->versions();
-    if (aeRenders.count() > 0)
-    {
-        if (settings.value("aerender/useLatest",true).toBool())
-        {
-            settings.setValue("aerender/path",QVariant(aeRenders.last()->path()));
-        }
-        else
-        {
-            QString preferredVersion = settings.value("aerender/version","Custom").toString();
-            bool found = false;
-            if (preferredVersion != "Custom")
-            {
-                for (int i = 0; i < aeRenders.count(); i++)
-                {
-                    if (aeRenders[i]->name() == preferredVersion)
-                    {
-                        settings.setValue("aerender/path",QVariant(aeRenders[i]->path()));
-                        found = true;
-                        break;
-                    }
-                }
-                //if not found, use latest
-                if (!found)
-                {
-                    settings.setValue("aerender/path",QVariant(aeRenders.last()->path()));
-                }
-            }
-        }
-
-        if (settings.value("aerender/path","") == "")
-        {
-            debug("Adobe After Effects Renderer not found. You may have to install Adobe After Effects to render After Effects compositions.");
-        }
-        else
-        {
-            debug("Adobe After Effects Renderer found at \n" + settings.value("aerender/path","").toString());
-        }
-
-        setCurrentAeRender(_aeInfo->getAERenderObject(settings.value("aerender/path","").toString()));
-    }
-
-#endif
-}
-
-AERenderObject *FFmpeg::getCurrentAeRender() const
-{
-    return _currentAeRender;
-}
-
-void FFmpeg::setCurrentAeRender(AERenderObject *currentAeRender)
-{
-    _currentAeRender = currentAeRender;
 }
 
 QList<FFMuxer *> FFmpeg::getMuxers()
@@ -338,298 +240,45 @@ QString FFmpeg::getLongHelp()
     return _longHelp;
 }
 
-MediaInfo *FFmpeg::getMediaInfo(QString mediaPath)
-{
-    QString infoString = getMediaInfoString(mediaPath);
-    if (infoString == "") return new MediaInfo("",this);
-    MediaInfo *info = new MediaInfo(infoString,this);
-    return info;
-}
-
-QString FFmpeg::getMediaInfoString(QString mediaPath)
+QString FFmpeg::analyseMedia(QString mediaPath)
 {
     QStringList args("-i");
     args << QDir::toNativeSeparators(mediaPath);
-    _ffmpeg->setArguments(args);
-    _ffmpeg->start(QIODevice::ReadOnly);
-    if (_ffmpeg->waitForFinished(3000))
+    ffmpegProcess->setArguments(args);
+    ffmpegProcess->start(QIODevice::ReadOnly);
+    if (ffmpegProcess->waitForFinished(3000))
     {
         return _ffmpegOutput;
     }
     return "";
 }
 
-int FFmpeg::getCurrentFrame()
-{
-    return _currentFrame;
-}
-
-QTime FFmpeg::getStartTime()
-{
-    return _startTime;
-}
-
-QTime FFmpeg::getElapsedTime()
-{
-    return QTime(0,0,0).addSecs(_startTime.elapsed() / 1000);
-}
-
-double FFmpeg::getOutputSize(MediaInfo::SizeUnit unit)
-{
-    double s = _outputSize;
-    if (unit == MediaInfo::KB) s = s/1024;
-    if (unit == MediaInfo::MB) s = s/1024/1024;
-    return s;
-}
-
-double FFmpeg::getOutputBitrate(MediaInfo::BitrateUnit unit)
-{
-    double bitrate = _outputBitrate;
-    if (unit == MediaInfo::Kbps) bitrate = bitrate/1024;
-    if (unit == MediaInfo::Mbps) bitrate = bitrate/1024/1024;
-    return bitrate;
-}
-
-double FFmpeg::getEncodingSpeed()
-{
-    return _encodingSpeed;
-}
-
-QTime FFmpeg::getTimeRemaining()
-{
-    return _timeRemaining;
-}
-
-FFQueueItem *FFmpeg::getCurrentItem()
-{
-    return _currentItem;
-}
-
-QProcess::ProcessError FFmpeg::getLastError()
-{
-    return _lastError;
-}
-
-QString FFmpeg::getLastErrorMessage()
-{
-    return _lastErrorMessage;
-}
-
-FFmpeg::Status FFmpeg::getStatus()
-{
-    return _status;
-}
-
-void FFmpeg::encode()
-{
-    if (_status == Encoding) return;
-    setStatus(Encoding);
-
-    //launch first item
-    encodeNextItem();
-}
-
-void FFmpeg::encode(FFQueueItem *item)
-{
-    _encodingQueue << item;
-    encode();
-}
-
-void FFmpeg::encode(QList<FFQueueItem*> list)
-{
-    _encodingQueue.append(list);
-    encode();
-}
-
-void FFmpeg::encode(MediaInfo *input, QList<MediaInfo *> outputs)
-{
-    FFQueueItem *item = new FFQueueItem(input,outputs,this);
-    _encodingQueue << item;
-    encode();
-}
-
-void FFmpeg::encode(MediaInfo *input, MediaInfo *output)
-{
-    FFQueueItem *item = new FFQueueItem(input,output,this);
-    _encodingQueue << item;
-    encode();
-}
-
-int FFmpeg::addQueueItem(FFQueueItem *item)
-{
-    _encodingQueue.append(item);
-    return _encodingQueue.count()-1;
-}
-
-void FFmpeg::removeQueueItem(int id)
-{
-    FFQueueItem *i = _encodingQueue.takeAt(id);
-    delete i;
-}
-
-FFQueueItem *FFmpeg::takeQueueItem(int id)
-{
-    return _encodingQueue.takeAt(id);
-}
-
-void FFmpeg::clearQueue()
-{
-    while(_encodingQueue.count() > 0)
-    {
-        removeQueueItem(0);
-    }
-}
-
 void FFmpeg::stop(int timeout)
 {
-    if (_ffmpeg->state() == QProcess::NotRunning) return;
-    _ffmpeg->write("q\n");
-    if (!_ffmpeg->waitForFinished(timeout))
+    if (ffmpegProcess->state() == QProcess::NotRunning) return;
+    ffmpegProcess->write("q\n");
+    if (!ffmpegProcess->waitForFinished(timeout))
     {
-        _ffmpeg->kill();
+        ffmpegProcess->kill();
     }
-    setStatus(Waiting);
+    emit newLog("Stopped");
 }
 
 void FFmpeg::stdError()
 {
-    QString output = _ffmpeg->readAllStandardError();
+    QString output = ffmpegProcess->readAllStandardError();
     readyRead(output);
 }
 
 void FFmpeg::stdOutput()
 {
-    QString output = _ffmpeg->readAllStandardOutput();
+    QString output = ffmpegProcess->readAllStandardOutput();
     readyRead(output);
-}
-
-void FFmpeg::stdErrorAE()
-{
-    QProcess* aerender = qobject_cast<QProcess*>(sender());
-    QString output = aerender->readAllStandardError();
-    readyReadAE(output);
-}
-
-void FFmpeg::stdOutputAE()
-{
-    QProcess* aerender = qobject_cast<QProcess*>(sender());
-    QString output = aerender->readAllStandardOutput();
-    readyReadAE(output);
 }
 
 void FFmpeg::started()
 {
     _ffmpegOutput = "";
-}
-
-void FFmpeg::finished()
-{
-    if (_status == Encoding)
-    {
-        _currentItem->setStatus(FFQueueItem::Finished);
-        emit encodingFinished(_currentItem);
-        //move to history
-        _encodingHistory << _currentItem;
-
-        setStatus(Cleaning);
-
-        disconnect(timer, SIGNAL(timeout()), nullptr, nullptr);
-        connect(timer,SIGNAL(timeout()), this, SLOT(postRenderCleanUp()));
-        connect(timer,SIGNAL(timeout()), _currentItem, SLOT(postRenderCleanUp()));
-        timer->start(3000);
-    }
-    else
-    {
-        setStatus(Waiting);
-    }
-}
-
-void FFmpeg::startedAE()
-{
-    _aerenderOutput = "";
-}
-
-void FFmpeg::finishedAE()
-{
-    if (_status == AERendering)
-    {
-        //check which processes have finished
-        QList<int> finishedProcesses;
-        QString debugFinishedProcesses = "Finished After Effects renderer threads: ";
-        for(int i = 0; i < _aerenders.count(); i++)
-        {
-            if(_aerenders[i]->state() == QProcess::NotRunning)
-            {
-                finishedProcesses << i;
-                if (i > 0) debugFinishedProcesses += ", ";
-                debugFinishedProcesses += QString::number(i);
-            }
-        }
-
-        debug(debugFinishedProcesses);
-
-        //if all processes have finished
-        if (finishedProcesses.count() == _aerenders.count())
-        {
-            //remove all processes
-            while(_aerenders.count() > 0)
-            {
-                QProcess *aerender = _aerenders.takeLast();
-                aerender->deleteLater();
-            }
-
-           MediaInfo *input = _currentItem->getInputMedias()[0];
-           //encode rendered EXR
-           if (!input->aeUseRQueue())
-           {
-               debug("After Effects Render process successfully finished");
-
-               //set exr
-               //get one file
-               QString aeTempPath = input->cacheDir()->path();
-               QDir aeTempDir(aeTempPath);
-               QStringList filters("Duffmpeg_*.exr");
-               QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
-
-               //if nothing has been rendered, set to error and go on with next queue item
-               if (files.count() == 0)
-               {
-                   _currentItem->setStatus(FFQueueItem::AEError);
-                   emit encodingFinished(_currentItem);
-                   //move to history
-                   _encodingHistory << _currentItem;
-                   encodeNextItem();
-                   return;
-               }
-
-               //set file and relaunch
-               QString prevTrc = input->trc();
-               double frameRate = input->videoFramerate();
-               input->updateInfo(getMediaInfoString(aeTempPath + "/" + files[0]));
-               if (prevTrc == "") input->setTrc("gamma22");
-               else input->setTrc(prevTrc);
-               if (frameRate != 0) input->setVideoFramerate(frameRate);
-
-               //reInsert at first place in renderqueue
-               _encodingQueue.insert(0,_currentItem);
-               setStatus(Encoding);
-               encodeNextItem();
-           }
-           //finished
-           else
-           {
-               _currentItem->setStatus(FFQueueItem::Finished);
-               emit encodingFinished(_currentItem);
-               //move to history
-               _encodingHistory << _currentItem;
-               encodeNextItem();
-           }
-        }
-    }
-    else
-    {
-        setStatus(Waiting);
-    }
 }
 
 void FFmpeg::errorOccurred(QProcess::ProcessError e)
@@ -660,432 +309,18 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
         error = "An unknown FFmpeg error occured.";
     }
 
-    if (_status == Encoding)
-    {
-        _currentItem->setStatus(FFQueueItem::Stopped);
-        _encodingHistory << _currentItem;
-    }
-
-    setStatus(Error);
-    _lastError = e;
-    emit processError(error);
+    emit newError(error);
 }
 
-void FFmpeg::errorOccurredAE(QProcess::ProcessError e)
+void FFmpeg::start(QStringList arguments)
 {
-    QString error;
-    if (e == QProcess::FailedToStart)
-    {
-        error = "Failed to start AERender.";
-    }
-    else if (e == QProcess::Crashed)
-    {
-        error = "AERender just crashed.";
-    }
-    else if (e == QProcess::Timedout)
-    {
-        error = "AERender operation timed out.";
-    }
-    else if (e == QProcess::WriteError)
-    {
-        error = "AERender write Error.";
-    }
-    else if (e == QProcess::ReadError)
-    {
-        error = "Cannot read AERender output.";
-    }
-    else if (e == QProcess::UnknownError)
-    {
-        error = "An unknown AERender error occured.";
-    }
-
-    if (_status == Encoding)
-    {
-        _currentItem->setStatus(FFQueueItem::Stopped);
-        _encodingHistory << _currentItem;
-    }
-
-    setStatus(Error);
-    _lastError = e;
-    emit processError(error);
-}
-
-void FFmpeg::encodeNextItem()
-{
-    if (_encodingQueue.count() == 0)
-    {
-        setStatus(Waiting);
-        return;
-    }
-
-    _currentItem = _encodingQueue.takeAt(0);
-
-    //Check if there are AEP to render
-    foreach(MediaInfo *input,_currentItem->getInputMedias())
-    {
-        if (input->isAep())
-        {
-            //check if we need audio
-            bool needAudio = false;
-            foreach(MediaInfo *output, _currentItem->getOutputMedias())
-            {
-                if (output->hasAudio())
-                {
-                    needAudio = true;
-                    break;
-                }
-            }
-
-            renderAep(input, needAudio);
-            return;
-        }
-    }
-
-    //if all aep are rendered, launch ffmpeg process
-
-    //generate arguments
-    QStringList arguments("-stats");
-    arguments << "-y";
-
-    //add inputs
-    foreach(MediaInfo *input,_currentItem->getInputMedias())
-    {
-        QString inputFileName = input->fileName();
-        //add custom options
-        foreach(QStringList option,input->ffmpegOptions())
-        {
-            arguments << option[0];
-            if (option.count() > 1)
-            {
-                if (option[1] != "") arguments << option[1];
-            }
-        }
-        //add sequence options
-        if (input->isImageSequence())
-        {
-            arguments << "-framerate" << QString::number(input->videoFramerate());
-            arguments << "-start_number" << QString::number(input->startNumber());
-            inputFileName = convertSequenceName(inputFileName);
-        }
-        //add trc
-        if (input->trc() != "")
-        {
-            arguments << "-apply_trc" << input->trc();
-        }
-        //add input file
-        arguments << "-i" << QDir::toNativeSeparators(inputFileName);
-    }
-    //add outputs
-    foreach(MediaInfo *output,_currentItem->getOutputMedias())
-    {
-        //muxer
-        QString muxer = "";
-        if (output->muxer() != nullptr)
-        {
-            muxer = output->muxer()->name();
-            if (output->muxer()->isSequence()) muxer = "image2";
-        }
-        if (muxer != "")
-        {
-            arguments << "-f" << muxer;
-        }
-
-        //add custom options
-        foreach(QStringList option,output->ffmpegOptions())
-        {
-            arguments << option[0];
-            if (option.count() > 1)
-            {
-                if (option[1] != "") arguments << option[1];
-            }
-        }
-
-        //video
-        QString codec = "";
-        if (output->videoCodec() != nullptr) codec = output->videoCodec()->name();
-
-
-        if (output->hasVideo())
-        {
-            //codec
-            if (codec != "") arguments << "-vcodec" << codec;
-
-            if (codec != "copy")
-            {
-                //bitrate
-                int bitrate = output->videoBitrate();
-                if (bitrate != 0)
-                {
-                    arguments << "-b:v" << QString::number(bitrate);
-
-                }
-
-                //size
-                int width = output->videoWidth();
-                int height = output->videoHeight();
-                //fix odd sizes (for h264)
-                if (codec == "h264" && width % 2 != 0)
-                {
-                    width--;
-                    debug("Adjusting width for h264 compatibility. New width: " + QString::number(width));
-                }
-                if (codec == "h264" && height % 2 != 0)
-                {
-                    height--;
-                    debug("Adjusting height for h264 compatibility. New height: " + QString::number(height));
-                }
-                if (width != 0 && height != 0)
-                {
-                    arguments << "-s" << QString::number(width) + "x" + QString::number(height);
-                }
-
-                //framerate
-                double framerate = output->videoFramerate();
-                if (framerate != 0.0)
-                {
-                    arguments << "-r" << QString::number(framerate);
-                }
-
-                //loop (gif)
-                if (codec == "gif")
-                {
-                    int loop = output->loop();
-                    arguments << "-loop" << QString::number(loop);
-                }
-
-                //profile
-                int profile = output->videoProfile();
-                if (profile > -1)
-                {
-                    arguments << "-profile" << QString::number(profile);
-                }
-
-                //quality (h264)
-                int quality = output->videoQuality();
-                if (codec == "h264" && quality > 0 )
-                {
-                    quality = 100-quality;
-                    //adjust to CRF values
-                    if (quality < 10)
-                    {
-                        //convert to range 0-15 // visually lossless
-                        quality = quality*15/10;
-                    }
-                    else if (quality < 25)
-                    {
-                        //convert to range 15-21 // very good
-                        quality = quality-10;
-                        quality = quality*6/15;
-                        quality = quality+15;
-                    }
-                    else if (quality < 50)
-                    {
-                        //convert to range 22-28 // good
-                        quality = quality-25;
-                        quality = quality*6/25;
-                        quality = quality+21;
-                    }
-                    else if (quality < 75)
-                    {
-                        //convert to range 29-34 // bad
-                        quality = quality-50;
-                        quality = quality*6/25;
-                        quality = quality+28;
-                    }
-                    else
-                    {
-                        //convert to range 35-51 // very bad
-                        quality = quality-75;
-                        quality = quality*17/25;
-                        quality = quality+34;
-                    }
-                    arguments << "-crf" << QString::number(quality);
-                }
-
-                //start number (sequences)
-                if (muxer == "image2")
-                {
-                    int startNumber = output->startNumber();
-                    arguments << "-start_number" << QString::number(startNumber);
-                }
-
-                //pixel format
-                QString pixFmt = "";
-                if (output->pixFormat() != nullptr) pixFmt = output->pixFormat()->name();
-                //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
-                if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
-                if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
-
-                //b-pyramids
-                //set as none to h264: not really useful (only on very static footage), but has compatibility issues
-                if (codec == "h264") arguments << "-x264opts" << "b_pyramid=0";
-
-                //unpremultiply
-                bool unpremultiply = !output->premultipliedAlpha();
-                if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
-            }
-        }
-        else
-        {
-            //no video
-            arguments << "-vn";
-        }
-
-        //audio
-        QString acodec = "";
-        if (output->audioCodec() != nullptr) acodec = output->audioCodec()->name();
-
-        if (output->hasAudio())
-        {
-            //codec
-            if (acodec != "") arguments << "-acodec" << acodec;
-
-            if (acodec != "copy")
-            {
-                //bitrate
-                int bitrate = output->audioBitrate();
-                if (bitrate != 0)
-                {
-                    arguments << "-b:a" << QString::number(output->audioBitrate());
-                }
-
-                //sampling
-                int sampling = output->audioSamplingRate();
-                if (sampling != 0)
-                {
-                    arguments << "-ar" << QString::number(sampling);
-                }
-            }
-        }
-        else
-        {
-            //no audio
-            arguments << "-an";
-        }
-
-        //file
-        QString outputPath = QDir::toNativeSeparators(output->fileName());
-
-        //if sequence, digits
-        if (output->muxer() != nullptr)
-        {
-            if (output->muxer()->isSequence())
-            {
-                outputPath = convertSequenceName(outputPath);
-            }
-        }
-
-        arguments << outputPath;
-    }
-
-    debug("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
-
-    //launch
-    _ffmpeg->setArguments(arguments);
-    _ffmpeg->start(QIODevice::ReadWrite);
-
-    _currentItem->setStatus(FFQueueItem::InProgress);
-    _startTime = QTime::currentTime();
-    emit  encodingStarted(_currentItem);
-}
-
-void FFmpeg::renderAep(MediaInfo *input, bool audio)
-{
-    QStringList arguments("-project");
-    QStringList audioArguments;
-    arguments <<  QDir::toNativeSeparators(input->fileName());
-
-    //if we have to replace render templates, we will have to restore the original ones
-    restoreAETemplates = false;
-    //the path containing the template files
-    QString aeDataPath = "";
-
-    //if not using the existing render queue
-    if (!input->aeUseRQueue())
-    {
-        //get the cache dir
-        QTemporaryDir *aeTempDir = new QTemporaryDir(settings.value("aerender/cache","").toString());
-        input->setCacheDir(aeTempDir);
-
-        //if a comp name is specified, render this comp
-        if (input->aepCompName() != "") arguments << "-comp" << input->aepCompName();
-        //else use the sepecified renderqueue item
-        else if (input->aepRqindex() > 0) arguments << "-rqindex" << QString::number(input->aepRqindex());
-        //or the first one if not specified
-        else arguments << "-rqindex" << "1";
-
-        //add duffmpeg templates to the output modules of After Effects
-        restoreAETemplates = _currentAeRender->setDuFFmpegTemplates();
-
-        //and finally, append arguments
-        audioArguments = arguments;
-
-        arguments << "-RStemplate" << "DuFFmpegMultiMachine";
-        audioArguments << "-RStemplate" << "DuFFmpegBest";
-        arguments << "-OMtemplate" << "DuFFmpegEXR";
-        audioArguments << "-OMtemplate" << "DuFFmpegWAV";
-
-        QString tempPath = QDir::toNativeSeparators(aeTempDir->path() + "/" + "Duffmpeg_[#####]");
-        QString audioTempPath = QDir::toNativeSeparators(aeTempDir->path() + "/" + "Duffmpeg");
-
-        arguments << "-output" << tempPath;
-        audioArguments << "-output" << audioTempPath;
-    }
-
-    debug("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
-
-    //adjust the number of threads
-    //keep one available for exporting the audio
-    int numThreads = input->aepNumThreads();
-    if (audio && input->aepNumThreads() >= QThread::idealThreadCount()  && !input->aeUseRQueue()) numThreads--;
-
-    //launch processes
-    for (int i = 0; i < numThreads; i++)
-    {
-        launchAeRenderProcess(arguments);
-    }
-
-    //launch another process for the sound
-    if (audio && !input->aeUseRQueue())
-    {
-        launchAeRenderProcess(audioArguments);
-    }
-
-    _currentItem->setStatus(FFQueueItem::InProgress);
-    _startTime = QTime::currentTime();
-
-    setStatus(AERendering);
-    emit encodingStarted(_currentItem);
-}
-
-void FFmpeg::setStatus(Status st)
-{
-    _status = st;
-    emit statusChanged(_status);
-}
-
-void FFmpeg::postRenderCleanUp()
-{
-    //restore templates if they have been changed (remove Duffmpeg templates)
-    if (restoreAETemplates)
-    {
-        _currentAeRender->restoreOriginalTemplates();
-        restoreAETemplates = false;
-    }
-
-    setStatus(Encoding);
-
-    encodeNextItem();
+    ffmpegProcess->setArguments( arguments );
+    ffmpegProcess->start( QIODevice::ReadWrite );
 }
 
 QString FFmpeg::getVersion() const
 {
     return _version;
-}
-
-AERender *FFmpeg::getAeRender() const
-{
-    return _aeInfo;
 }
 
 QList<FFPixFormat *> FFmpeg::getPixFormats()
@@ -1110,7 +345,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     //if the version is different, get from the output
     if (newVersion != _version)
     {
-        debug(" | New ffmpeg version: updating muxers list.");
+        emit newLog("Updating muxers list.");
 
         QStringList muxers = output.split("\n");
         QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
@@ -1129,7 +364,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 QString name = match.captured(1).trimmed();
                 QString prettyName = match.captured(2).trimmed();
 
-                debug(" | " + name);
+                emit newLog("Loading muxer: " + name);
 
                 // skip image sequence
                 if (name == "image2") continue;
@@ -1145,10 +380,10 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 //get default codecs
                 QStringList args("-h");
                 args << "muxer=" + m->name();
-                _ffmpeg->setArguments(args);
-                _ffmpeg->start(QIODevice::ReadOnly);
+                ffmpegProcess->setArguments(args);
+                ffmpegProcess->start(QIODevice::ReadOnly);
 
-                if (_ffmpeg->waitForFinished(3000))
+                if (ffmpegProcess->waitForFinished(3000))
                 {
                     QStringList lines = _ffmpegOutput.split("\n");
 
@@ -1193,7 +428,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     }
     else //other wise, get from settings
     {
-        debug(" | Gettings muxers from stored list.");
+        emit newLog("Getting muxers from stored list.");
 
         //open array
         int arraySize = settings.beginReadArray("ffmpeg/muxers");
@@ -1205,7 +440,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
             QString name = settings.value("name").toString();
             QString prettyName = settings.value("prettyName").toString();
 
-            debug(" | " + name);
+            emit newLog("Loading muxer:" + name);
             if (name == "") continue;
 
             FFMuxer *m = new FFMuxer(name,prettyName,this);
@@ -1228,7 +463,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     //add image sequences
     QStringList extensions;
 
-    debug(" | Image sequences...");
+    emit newLog("Image sequences muxers...");
 
     FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
     muxer->setSequence(true);
@@ -1339,7 +574,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     _muxers << muxer;
 
 
-    debug(" | Sorting...");
+    emit newLog("Sorting muxers...");
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
 }
 
@@ -1358,14 +593,11 @@ QString FFmpeg::gotVersion(QString output)
     if (match.hasMatch())
     {
         v = match.captured(1);
-        debug(" | FFmpeg version: " + v);
+        emit newLog("Current version: " + v);
     }
     else
     {
-        setStatus(Error);
-        emit newOutput("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
-        _lastErrorMessage = "FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org";
-        debug("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        emit newError("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
     }
 
     return v;
@@ -1384,17 +616,17 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     _audioDecoders.clear();
 
     //add copy
-    debug(" | video copy");
+    emit newLog("Loading codec: video copy");
     FFCodec *copyVideo = new FFCodec("copy","Copy video stream",FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _videoEncoders << copyVideo;
-    debug(" | audio copy");
+    emit newLog("Loading codec: audio copy");
     FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
     //if the version is different, get from the output
     if (newVersion != _version)
     {
-        debug(" | New ffmpeg version: updating codec list.");
+        emit newLog("Updating codec list.");
 
         QStringList codecs = output.split("\n");
         QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
@@ -1415,7 +647,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                 QString codecPrettyName = match.captured(8);
                 FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
 
-                debug(" | " + codecName);
+                emit newLog("Loading codec: " + codecName);
 
                 bool decoder = match.captured(1) == "D";
                 bool encoder = match.captured(2) == "E";
@@ -1452,9 +684,9 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                     QStringList args("-h");
                     if (co->isEncoder()) args << "encoder=" + co->name();
                     else args << "decoder=" + co->name();
-                    _ffmpeg->setArguments(args);
-                    _ffmpeg->start(QIODevice::ReadOnly);
-                    if (_ffmpeg->waitForFinished(3000))
+                    ffmpegProcess->setArguments(args);
+                    ffmpegProcess->start(QIODevice::ReadOnly);
+                    if (ffmpegProcess->waitForFinished(3000))
                     {
                         QStringList lines = _ffmpegOutput.split("\n");
                         if (lines.count() > 0)
@@ -1510,7 +742,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     }
     else //other wise, get from settings
     {
-        debug(" | Gettings codecs from stored list.");
+        emit newLog("Getting codecs from stored list.");
 
         //open array
         int arraySize = settings.beginReadArray("ffmpeg/codecs");
@@ -1523,7 +755,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
             QString codecPrettyName = settings.value("codecPrettyName").toString();
             FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
 
-            debug(" | " + codecName);
+            emit newLog("Loading codec: " + codecName);
 
             bool decoder = settings.value("decoder").toBool();
             bool encoder = settings.value("encoder").toBool();
@@ -1574,7 +806,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     }
 
 
-    debug(" | Sorting...");
+    emit newLog("Sorting Codecs...");
     std::sort(_videoEncoders.begin(),_videoEncoders.end(),ffSorter);
     std::sort(_audioEncoders.begin(),_audioEncoders.end(),ffSorter);
 }
@@ -1608,7 +840,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
                 QString bpp = match.captured(8);
                 FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
 
-                debug(" | " + name);
+                emit newLog("Loading pixel format: " + name);
 
                 bool input = match.captured(1) == "I";
                 bool output = match.captured(2) == "O";
@@ -1657,7 +889,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
             FFPixFormat *pf = new FFPixFormat(name, "", numComponents, bpp);
 
-            debug(" | " + name);
+            emit newLog("Loading pixel format: " + name);
 
             bool input = settings.value("input").toBool();
             bool output = settings.value("output").toBool();
@@ -1678,7 +910,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
         settings.endArray();
     }
 
-    debug(" | Sorting...");
+    emit newLog("Sorting pixel formats...");
     std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
 
 }
@@ -1717,6 +949,7 @@ void FFmpeg::readyRead(QString output)
         //get current input duration
         //gets the current item duration
         double duration = 0;
+        /*
         foreach(MediaInfo *input,_currentItem->getInputMedias())
         {
             if (input->hasVideo())
@@ -1734,237 +967,8 @@ void FFmpeg::readyRead(QString output)
                 _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
             }
         }
+        */
         emit progress();
     }
 
-}
-
-void FFmpeg::readyReadAE(QString output)
-{
-    emit newOutput("AERender output: " + output);
-
-    debug("AERender output: " + output);
-
-    _aerenderOutput = _aerenderOutput + output;
-
-    //parse
-
-    //get current input
-    MediaInfo *input = _currentItem->getInputMedias().at(0);
-
-    //Duration
-    QRegularExpression reDuration("PROGRESS:  Duration: (\\d):(\\d\\d):(\\d\\d):(\\d\\d)");
-    QRegularExpressionMatch match = reDuration.match(output);
-    if (match.hasMatch())
-    {
-        int h = match.captured(1).toInt();
-        int m = match.captured(2).toInt();
-        int s = match.captured(3).toInt();
-        int i = match.captured(4).toInt();
-
-        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
-
-        input->setDurationH(h);
-        input->setDurationM(m);
-        input->setDurationS(s);
-        input->setDurationF(i);
-        input->setDuration(duration);
-    }
-
-    QRegularExpression reFrameRate("PROGRESS:  Frame Rate: (\\d+,\\d\\d)");
-    match = reFrameRate.match(output);
-    if (match.hasMatch())
-    {
-        double fr = match.captured(1).toDouble();
-
-        input->setVideoFramerate(fr);
-
-        int h = input->durationH();
-        int m = input->durationM();
-        double s = input->durationS();
-        int i = input->durationF();
-
-        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
-        input->setDuration(duration);
-    }
-
-    QRegularExpression reProgress("PROGRESS:  \\d:\\d\\d:\\d\\d:\\d\\d \\((\\d+)\\)");
-    match = reProgress.match(output);
-    if (match.hasMatch())
-    {
-        _currentFrame = match.captured(1).toInt();
-        //time remaining
-        //get current input duration
-        //gets the current item duration
-        double duration = input->duration() * input->videoFramerate();
-        if (duration > 0)
-        {
-            if (_currentFrame > 0)
-            {
-                int elapsed = _startTime.elapsed() / 1000;
-                double remaining = elapsed*duration/_currentFrame - elapsed;
-                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
-            }
-        }
-    }
-
-    //TODO get size and bitrate
-
-
-    emit progress();
-
-}
-
-QString FFmpeg::convertSequenceName(QString name)
-{
-    //detects all {###}
-    QRegularExpression regExDigits("{(#+)}");
-    QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(name);
-    while (regExDigitsMatch.hasNext())
-    {
-         QRegularExpressionMatch match = regExDigitsMatch.next();
-         //count the ###
-         QString digits = match.captured(1);
-         int numDigits = digits.count();
-         //replace
-         name.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
-    }
-    return name;
-}
-
-void FFmpeg::launchAeRenderProcess(QStringList args)
-{
-    //create process
-    QProcess *aerender = new QProcess(this);
-    connect(aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdErrorAE()));
-    connect(aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutputAE()));
-    connect(aerender,SIGNAL(started()),this,SLOT(startedAE()));
-    connect(aerender,SIGNAL(finished(int)),this,SLOT(finishedAE()));
-    connect(aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurredAE(QProcess::ProcessError)));
-
-    //launch
-    aerender->setProgram(_currentAeRender->path());
-    aerender->setArguments(args);
-    aerender->start(QIODevice::ReadWrite);
-
-    //TODO check processor affinity?
-
-    _aerenders << aerender;
-}
-
-void FFmpeg::debug(QString message)
-{
-    message = _debugBaseMessage + message;
-
-#ifdef QT_DEBUG
-    qDebug() << message;
-#endif
-
-    emit debugInfo(message);
-}
-
-MediaInfo *FFmpeg::loadJson(QString json)
-{
-    MediaInfo *mediaInfo = nullptr;
-
-    debug("Loading preset");
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
-
-    //validate file
-    if (!jsonDoc.isObject())
-    {
-        debug("Invalid preset file");
-        return mediaInfo;
-    }
-    QJsonObject mainObj = jsonDoc.object();
-    if (mainObj.value("duffmpeg") == QJsonValue::Undefined)
-    {
-        debug("Invalid preset file - Cannot find Duffmpeg object");
-        return mediaInfo;
-    }
-
-    //load and create mediaInfo
-    QJsonObject mediaObj = mainObj.value("duffmpeg").toObject();
-    QString version = mediaObj.value("version").toString();
-    //TODO Check version
-    debug("Preset version: " + version);
-
-
-    debug("Getting media info...");
-    mediaInfo = new MediaInfo();
-
-    //muxer
-    QJsonObject muxerObj = mediaObj.value("muxer").toObject();
-    QString muxerName = muxerObj.value("name").toString();
-    debug("Muxer: " + muxerName);
-    mediaInfo->setMuxer(getMuxer(muxerName));
-    mediaInfo->setLoop(mediaObj.value("loop").toInt());
-
-    //video
-    if (mediaObj.value("hasVideo").toBool())
-    {
-        mediaInfo->setVideo(true);
-        QJsonObject videoObj = mediaObj.value("video").toObject();
-        QString codecName = videoObj.value("codecName").toString();
-        debug("Video codec: " + codecName);
-        if (codecName != "default")
-        {
-            mediaInfo->setVideoCodec(getVideoEncoder(codecName));
-        }
-        mediaInfo->setVideoWidth(videoObj.value("width").toInt());
-        mediaInfo->setVideoHeight(videoObj.value("height").toInt());
-        mediaInfo->setVideoFramerate(videoObj.value("framerate").toDouble());
-        mediaInfo->setVideoBitrate(videoObj.value("bitrate").toInt());
-        mediaInfo->setVideoProfile(videoObj.value("profile").toInt());
-        mediaInfo->setVideoQuality(videoObj.value("quality").toInt());
-        mediaInfo->setStartNumber(videoObj.value("startNumber").toInt());
-        if (!videoObj.value("premultipliedAlpha").isUndefined()) mediaInfo->setPremultipliedAlpha(videoObj.value("premultipliedAlpha").toBool());
-        else mediaInfo->setPremultipliedAlpha(true);
-        mediaInfo->setPixFormat(getPixFormat(videoObj.value("pixelFormat").toString()));
-    }
-
-    //audio
-    if (mediaObj.value("hasAudio").toBool())
-    {
-        mediaInfo->setAudio(true);
-        QJsonObject audioObj = mediaObj.value("audio").toObject();
-        QString codecName = audioObj.value("codecName").toString();
-        debug("Audio codec: " + codecName);
-        if (codecName != "default")
-        {
-            mediaInfo->setAudioCodec(getAudioEncoder(codecName));
-        }
-        mediaInfo->setAudioSamplingRate(audioObj.value("sampling").toInt());
-        mediaInfo->setAudioBitrate(audioObj.value("bitrate").toInt());
-    }
-
-    //options
-    QJsonArray options = mediaObj.value("options").toArray();
-    debug("Custom options");
-    foreach(QJsonValue option,options)
-    {
-        QJsonObject optionObj = option.toObject();
-        QStringList opt(optionObj.value("name").toString());
-        opt << optionObj.value("value").toString();
-        mediaInfo->addFFmpegOption(opt);
-    }
-
-    debug("FFmpeg preset loaded");
-
-    return mediaInfo;
-}
-
-MediaInfo *FFmpeg::loadJsonFromFile(QString jsonFileName)
-{
-    MediaInfo *mediaInfo = nullptr;
-    QFile jsonFile(jsonFileName);
-    debug("Opening preset file: " + jsonFileName);
-    if (jsonFile.open(QIODevice::ReadOnly))
-    {
-        debug("File opened");
-        mediaInfo = loadJson(jsonFile.readAll());
-        jsonFile.close();
-    }
-    return mediaInfo;
 }

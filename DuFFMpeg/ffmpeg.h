@@ -1,9 +1,6 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#define INIT_FFMPEG true
-#define INIT_AE true
-
 #include "ffobject.h"
 
 #include <QProcess>
@@ -21,14 +18,14 @@
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
-#include "aerender.h"
+#include "aerenderer.h"
 
 class FFmpeg : public FFObject
 {
     Q_OBJECT
 public:
     /**
-     * @brief FFmpeg Constructs the FFmpeg manager
+     * @brief FFmpeg Constructs the FFmpeg manager. Note: This constructor does not initializes ffmpeg, you have to run init() before using it.
      * @param path The path to the FFmpeg binary executable
      * @param parent The parent QObject
      */
@@ -94,17 +91,11 @@ public:
      */
     QString getLongHelp();
     /**
-     * @brief getMediaInfo Gets the information for the media
-     * @param mediaPath The path to the media file
-     * @return All informations
-     */
-    MediaInfo *getMediaInfo(QString mediaPath);
-    /**
-     * @brief getMediaInfo Gets the information for the media
+     * @brief analyseMedia Gets the information for the media
      * @param mediaPath The path to the media file
      * @return The information returned by FFmpeg
      */
-    QString getMediaInfoString(QString mediaPath);
+    QString analyseMedia(QString mediaPath);
     /**
      * @brief getCurrentFrame Gets the number of the latest encoded frame
      * @return The number of the latest encoded frame
@@ -142,84 +133,17 @@ public:
      * @return The time remaining
      */
     QTime getTimeRemaining();
+
     /**
-     * @brief getCurrentInputInfos Gets the item currently being encoded
-     * @return The queue item
+     * @brief start Starts an encoding process
+     * @param arguments The arguments to pass to ffmpeg
      */
-    FFQueueItem *getCurrentItem();
+    void start( QStringList arguments );
     /**
-     * @brief getLastError Gets the last error that occured
-     * @return The error
-     */
-    QProcess::ProcessError getLastError();
-    /**
-     * @brief getLastErrorMessage Gets a human readable description of the last error
-     * @return The description
-     */
-    QString getLastErrorMessage();
-    /**
-     * @brief getStatus Gets the current status of FFmpeg
-     * @return The status
-     */
-    Status getStatus();
-    AERenderObject *getCurrentAeRender() const;
-    AERender *getAeRender() const;
-    /**
-     * @brief encode Launches the encoding of the current queue
-     */
-    void encode();
-    /**
-     * @brief encode Launches the encoding of the given item
-     * @param item The item to encode
-     */
-    void encode(FFQueueItem *item);
-    /**
-     * @brief encode Launches the encoding of the given list of items
-     * @param list The items to be encoded
-     */
-    void encode(QList<FFQueueItem*> list);
-    /**
-     * @brief encode Launches the encoding of the given input media with multiple outputs
-     * @param input The input media
-     * @param outputs The list of output medias
-     */
-    void encode(MediaInfo *input,QList<MediaInfo*> outputs);
-    /**
-     * @brief encode Launches the encoding of the given input to the given output
-     * @param input The input media
-     * @param output The output media
-     */
-    void encode(MediaInfo *input, MediaInfo *output);
-    /**
-     * @brief addQueueItem Adds an item to the encoding queue
-     * @param item
-     * @return The item id
-     */
-    int addQueueItem(FFQueueItem *item);
-    /**
-     * @brief removeQueueItem Removes the item from the encoding queue.
-     * The item will be deleted
-     * @param id The id of the item to remove
-     */
-    void removeQueueItem(int id);
-    /**
-     * @brief takeQueueItem Removes the item from the encoding queue and returns it.
-     * @param id The id of the item to take
-     * @return The item, or nullptr if not found
-     */
-    FFQueueItem *takeQueueItem(int id);
-    /**
-     * @brief clearQueue Clears the current queue and deletes the items
-     */
-    void clearQueue();
-    /**
-     * @brief stop Stops the current FFmpeg process
+     * @brief stop Stops the current process
      * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
      */
     void stop(int timeout = 10000);
-    MediaInfo *loadJson(QString json);
-    MediaInfo *loadJsonFromFile(QString jsonFileName);
-
 
     QString getVersion() const;
 
@@ -229,35 +153,25 @@ signals:
      */
     void newOutput(QString);
     /**
-     * @brief encodingStarted Emitted when FFmpeg starts an encoding process, with infos about the input media
+     * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
      */
-    void encodingStarted(FFQueueItem*);
+    void newError(QString);
     /**
-     * @brief encodingFinished Emitted when the encoding finishes or is stopped
+     * @brief newLog Emitted when some debug infos are available
      */
-    void encodingFinished(FFQueueItem*);
+    void newLog(QString);
+
+
     /**
      * @brief progress Emitted each time the transcoding process outputs new stats
      */
     void progress();
-    /**
-     * @brief error Emitted when an error occured with the FFmpeg process
-     * Emits a human readable string
-     */
-    void processError(QString);
-    /**
-     * @brief statusChanged Emitted when FFmpeg status changes
-     */
-    void statusChanged(FFmpeg::Status);
+
     /**
      * @brief binaryChanged Emitted when the path to the binary has been changed
      */
     void binaryChanged();
-    /**
-     * @brief debugInfo Regularly sends useful informations for debugging
-     * @param log
-     */
-    void debugInfo(QString log);
+
 
 public slots:   
     /**
@@ -266,12 +180,6 @@ public slots:
      * @return true if the exe is found
      */
     bool setBinaryFileName(QString path, bool initialize = true);
-    /**
-     * @brief setAERenderFileName Sets the path to the AErender binary
-     * @param path The path to the binary executable file
-     * @return true if the exe is found
-     */
-    void setCurrentAeRender(AERenderObject *currentAeRender);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
@@ -283,55 +191,24 @@ public slots:
      */
     void runCommand(QStringList commands);
     void init();
-    void initAe();
 
 private slots:
     //FFmpeg signals
     void stdError();
     void stdOutput();
     void started();
-    void finished();
     void errorOccurred(QProcess::ProcessError e);
 
-    void stdErrorAE();
-    void stdOutputAE();
-    void startedAE();
-    void finishedAE();
-    void errorOccurredAE(QProcess::ProcessError e);
-
-    //Queue
-    void encodeNextItem();
-    void renderAep(MediaInfo *input, bool audio = true);
-
-    //self
-    void setStatus(Status st);
-
-    void postRenderCleanUp();
-
 private:
+
+    // === ATTRIBUTES ===
+
     QSettings settings;
-    //=== About FFmpeg ===
-    /**
-     * @brief ffmpeg The process used to handle the binary
-     */
-    QProcess *_ffmpeg;
-    /**
-     * @brief version The version of ffmpeg used
-     */
+    // The ffmpeg process
+    QProcess *ffmpegProcess;
+    // The ffmpeg version
     QString _version;
-    /**
-     * @brief aeRender Info about the Ae renderer
-     */
-    AERender *_aeInfo;
-    /**
-     * @brief aerender The process used to handle the binary
-     */
-    QList<QProcess *> _aerenders;
-    AERenderObject *_currentAeRender;
-    QFileInfoList _aeRenderSettings;
-    QFileInfoList _aeOutputModules;
-    bool restoreAETemplates;
-    QTimer *timer;
+
     /**
      * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
      */
@@ -356,42 +233,7 @@ private:
      * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
      */
     QString _ffmpegOutput;
-    /**
-     * @brief aerenderOutput The complete output of the latest aerender process until it has finished
-     */
-    QString _aerenderOutput;
-    /**
-     * @brief status FFmpeg current status
-     */
-    Status _status;
-    /**
-     * @brief lastError The last error that occured
-     */
-    QProcess::ProcessError _lastError;
-    /**
-     * @brief lastErrorMessage The human readable description of the last error
-     */
-    QString _lastErrorMessage;
-    //=== Current Encoding ===
-    int _currentFrame;
-    QTime _startTime;
-    double _outputSize;
-    int _outputBitrate;
-    double _encodingSpeed;
-    QTime _timeRemaining;
-    //=== Queue ===
-    /**
-     * @brief encodingQueue The queue of items to be encoded
-     */
-    QList<FFQueueItem *> _encodingQueue;
-    /**
-     * @brief encodingHistory The list of items which has been encoded
-     */
-    QList<FFQueueItem *> _encodingHistory;
-    /**
-     * @brief currentItem The item currently being encoded
-     */
-    FFQueueItem *_currentItem;
+
     //=== Process outputs ===
     /**
      * @brief ffmpeg_gotVersion Parses the version
@@ -421,22 +263,7 @@ private:
      * @param The output from FFmpeg
      */
     void readyRead(QString output);
-    /**
-     * @brief readyReadAE Called when AERender outputs something on stdError or stdOutput
-     * @param The output from AERender
-     */
-    void readyReadAE(QString output);
-    //=== Misc. ===
-    /**
-     * @brief convertSequenceName Converts a filename with {####} to ffmpeg %4d
-     * @param name
-     * @return
-     */
-    QString convertSequenceName(QString name);
-    void launchAeRenderProcess(QStringList args);
 
-    QString _debugBaseMessage;
-    void debug(QString message = "");
 };
 
 #endif // FFMPEG_H
