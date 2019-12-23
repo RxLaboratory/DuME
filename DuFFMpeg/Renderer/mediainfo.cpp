@@ -9,13 +9,14 @@ MediaInfo::MediaInfo( FFmpeg *ffmpeg, QObject *parent ) : QObject(parent)
 MediaInfo::MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
     _ffmpeg = ffmpeg;
-    updateInfo( mediaFile );
+    if ( mediaFile.suffix() == "dffp" ) loadPreset( mediaFile );
+    else updateInfo( mediaFile );
 }
 
-void MediaInfo::reInit()
+void MediaInfo::reInit(bool removeFileName)
 {
     // GENERAL
-    _fileName = "";
+    if (removeFileName) _fileName = "";
     _extensions.clear();
     _muxer = nullptr;
     _duration = 0.0;
@@ -52,9 +53,9 @@ void MediaInfo::reInit()
     _aeUseRQueue = false;
 }
 
-void MediaInfo::updateInfo(QString mediaFilePath)
+void MediaInfo::updateInfo(QFileInfo mediaFile)
 {
-    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFilePath );
+    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
 
     reInit();
 
@@ -88,10 +89,10 @@ void MediaInfo::updateInfo(QString mediaFilePath)
             if (match.captured(4) != "N/A")
             {
                 //set duration
-                _durationH = match.captured(1).toInt();
-                _durationM = match.captured(2).toInt();
-                _durationS = match.captured(3).toDouble();
-                _duration = _durationH*60*60+_durationM*60+_durationS;
+                int durationH = match.captured(1).toInt();
+                int durationM = match.captured(2).toInt();
+                double durationS = match.captured(3).toDouble();
+                _duration = durationH*60*60+durationM*60+durationS;
             }
             else
             {
@@ -147,6 +148,93 @@ void MediaInfo::updateInfo(QString mediaFilePath)
     }
 
     if (_imageSequence) loadSequence();
+}
+
+void MediaInfo::loadPreset(QFileInfo presetFile)
+{
+    QFile jsonFile( presetFile.absoluteFilePath() );
+
+    QString json = "";
+
+    if (jsonFile.open(QIODevice::ReadOnly))
+    {
+        json = jsonFile.readAll();
+        jsonFile.close();
+    }
+    else return;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
+
+    //validate file
+    if (!jsonDoc.isObject())
+    {
+        return;
+    }
+
+    QJsonObject mainObj = jsonDoc.object();
+    if (mainObj.value("dume") == QJsonValue::Undefined)
+    {
+        return;
+    }
+
+    reInit(false);
+
+    //load and create mediaInfo
+    QJsonObject mediaObj = mainObj.value("dume").toObject();
+    QString version = mediaObj.value("version").toString();
+    //TODO Check version
+
+    //muxer
+    QJsonObject muxerObj = mediaObj.value("muxer").toObject();
+    QString muxerName = muxerObj.value("name").toString();
+    _muxer = _ffmpeg->muxer( muxerName );
+    _loop = mediaObj.value("loop").toInt();
+
+    //video
+    if (mediaObj.value("hasVideo").toBool())
+    {
+        _video = true;
+        QJsonObject videoObj = mediaObj.value("video").toObject();
+        QString codecName = videoObj.value("codecName").toString();
+        if (codecName != "default")
+        {
+           _videoCodec = _ffmpeg->videoEncoder( codecName );
+        }
+        _videoWidth = videoObj.value("width").toInt();
+        _videoHeight = videoObj.value("height").toInt();
+        _videoFramerate = videoObj.value("framerate").toDouble();
+        _videoBitrate = videoObj.value("bitrate").toInt();
+        _videoProfile = videoObj.value("profile").toInt();
+        _videoQuality = videoObj.value("quality").toInt();
+        _startNumber = videoObj.value("startNumber").toInt();
+        if (!videoObj.value("premultipliedAlpha").isUndefined()) _premultipliedAlpha = videoObj.value("premultipliedAlpha").toBool();
+        else _premultipliedAlpha = true;
+        _pixFormat = _ffmpeg->pixFormat( videoObj.value("pixelFormat").toString() );
+    }
+
+    //audio
+    if (mediaObj.value("hasAudio").toBool())
+    {
+        _audio = true;
+        QJsonObject audioObj = mediaObj.value("audio").toObject();
+        QString codecName = audioObj.value("codecName").toString();
+        if (codecName != "default")
+        {
+           _audioCodec = _ffmpeg->audioEncoder( codecName ) ;
+        }
+        _audioSamplingRate = audioObj.value("sampling").toInt();
+        _audioBitrate = audioObj.value("bitrate").toInt();
+    }
+
+    //options
+    QJsonArray options = mediaObj.value("options").toArray();
+    foreach(QJsonValue option,options)
+    {
+        QJsonObject optionObj = option.toObject();
+        QStringList opt(optionObj.value("name").toString());
+        opt << optionObj.value("value").toString();
+        addFFmpegOption(opt);
+    }
 }
 
 void MediaInfo::setVideoWidth(int width)

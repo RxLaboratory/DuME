@@ -26,10 +26,11 @@ public:
 
     /**
      * @brief DuMediaInfo Constructs a new MediaInfo for the given file.
-     * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
+     * @param mediaFile The media file or a JSON preset. For a frame sequence, it can be any frame from the sequence
      * @param parent The QObject parent
      */
     explicit MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent = nullptr );
+
 
     //setters
 
@@ -37,7 +38,8 @@ public:
      * @brief updateInfo Updates all the information for this media file
      * @param mediaFilePath The media file. For a frame sequence, it can be any frame from the sequence
      */
-    void updateInfo(QString mediaFilePath);
+    void updateInfo(QFileInfo mediaFile);
+    void loadPreset(QFileInfo presetFile);
 
     void setMuxer(FFMuxer *muxer);
     void setContainer(QStringList container);
@@ -267,7 +269,7 @@ private:
     /**
      * @brief reInit Reinit all to default values
      */
-    void reInit();
+    void reInit(bool removeFileName = true);
     /**
      * @brief loadSequence Loads all the frames of the frame sequence
      */
