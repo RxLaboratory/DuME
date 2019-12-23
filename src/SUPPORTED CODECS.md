@@ -17,7 +17,7 @@ When it's checked, it's already supported, if not, it's planned ;)
 - [ ] MJpeg
 - [x] __TGA__
 - [ ] JPEG2000 (and DCP)
-- [x] __GIF__
+- [x] __GIF__ (still needs better default parameters)
 - [ ] Quicktime Animation
 - [x] __HAP__
 - [x] __EXR__ (input only, DWA and Luma/Chroma support in development)
