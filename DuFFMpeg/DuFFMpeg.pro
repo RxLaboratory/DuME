@@ -32,6 +32,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 SOURCES += \
     abstractrenderer.cpp \
     aerenderer.cpp \
+    aerendererbak.cpp \
     aerenderprocess.cpp \
     duexr.cpp \
     ffmpegrenderer.cpp \
@@ -60,6 +61,7 @@ SOURCES += \
 HEADERS += \
     abstractrenderer.h \
     aerenderer.h \
+    aerendererbak.h \
     aerenderprocess.h \
     duexr.h \
     ffmpegrenderer.h \

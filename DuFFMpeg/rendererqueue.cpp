@@ -1,6 +1,6 @@
 ﻿#include "rendererqueue.h"
 
-RendererQueue::RendererQueue( FFmpeg *ffmpeg, AERenderer *aeRenderer, QObject *parent ) : QObject(parent)
+RendererQueue::RendererQueue( FFmpeg *ffmpeg, AERendererBak *aeRenderer, QObject *parent ) : QObject(parent)
 {
     setStatus( Initializing );
 

@@ -6,7 +6,7 @@
 #include <QStringList>
 
 #include "ffmpeg.h"
-#include "aerenderer.h"
+#include "aerendererbak.h"
 #include "uisplashscreen.h"
 
 int main(int argc, char *argv[])

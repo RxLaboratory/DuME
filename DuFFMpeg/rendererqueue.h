@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDebug>
 
-#include "aerenderer.h"
+#include "aerendererbak.h"
 #include "ffmpeg.h"
 
 /**
@@ -20,7 +20,7 @@ public:
      * @param aeRenderer The After Effects Renderer
      * @param parent The parent QObject
      */
-    explicit RendererQueue( FFmpeg *ffmpeg, AERenderer *aeRenderer, QObject *parent = nullptr);
+    explicit RendererQueue( FFmpeg *ffmpeg, AERendererBak *aeRenderer, QObject *parent = nullptr);
     ~RendererQueue();
 
     /**
@@ -178,7 +178,7 @@ private:
     // ======= AFTER EFFECTS ========
 
     // The After Effects renderer
-    AERenderer *_aeRenderer;
+    AERendererBak *_aeRenderer;
 
     // ======== DEBUG and LOGS =======
 
