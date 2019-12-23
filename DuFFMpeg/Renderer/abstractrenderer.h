@@ -122,9 +122,6 @@ public:
      */
     void setNumThreads(int numThreads);
 
-    // CONFIGURE RENDERER
-    void setBinaryFileName(const QString &binaryFileName);
-
 signals:
     /**
      * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
@@ -150,6 +147,10 @@ signals:
      * @brief progress Emitted each time the transcoding process outputs new stats
      */
     void progress();
+
+public slots:
+    // CONFIGURE RENDERER
+    void setBinary(const QString &binaryFileName);
 
 protected:
 

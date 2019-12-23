@@ -221,22 +221,7 @@ void AbstractRenderer::killRenderProcesses()
     emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
 }
 
-void AbstractRenderer::setEncodingSpeed(double encodingSpeed)
-{
-    _encodingSpeed = encodingSpeed;
-}
-
-void AbstractRenderer::setOutputBitrate(double outputBitrate)
-{
-    _outputBitrate = outputBitrate;
-}
-
-void AbstractRenderer::setOutputSize(double outputSize)
-{
-    _outputSize = outputSize;
-}
-
-void AbstractRenderer::setBinaryFileName(const QString &binaryFileName)
+void AbstractRenderer::setBinary(const QString &binaryFileName)
 {
     _binaryFileName = binaryFileName;
 }
