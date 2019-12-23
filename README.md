@@ -9,11 +9,12 @@ Rendering and transcoding medias.
 
 ## Build
 
-The easiest way to build DuME is to [install Qt](https://www.qt.io/download-open-source) along with Qt Creator, then install the [OpenImageIO](https://github.com/OpenImageIO/oiio) library for development.
+First, get and install the dependencies:  
+[Install Qt](https://www.qt.io/download-open-source) along with Qt Creator,  
+Then install the [OpenImageIO](https://github.com/OpenImageIO/oiio) library for development,  
+And finally, get an [FFmpeg](http://ffmpeg.org) executable binary to transcode medias with DuME.
 
-Then, you can just open and build the project with Qt Creator.
-
-You will need an [FFmpeg](http://ffmpeg.org) executable binary to transcode medias with DuME.
+Then, you can just open and build the project with Qt Creator. The project and the source code are in the [DuFFmpeg] directory.
 
 ### Linux
 
