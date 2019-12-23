@@ -2,7 +2,7 @@
 
 AERenderer::AERenderer(QString aerender, QObject *parent) : AbstractRenderer(parent)
 {
-    setBinaryFileName( aerender );
+    setBinary( aerender );
     _duration = 0;
 }
 

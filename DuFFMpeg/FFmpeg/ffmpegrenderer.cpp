@@ -2,7 +2,7 @@
 
 FFmpegRenderer::FFmpegRenderer(QString ffmpeg, QObject *parent) : AbstractRenderer(parent)
 {
-    setBinaryFileName( ffmpeg );
+    setBinary( ffmpeg );
 }
 
 void FFmpegRenderer::readyRead(QString output)
