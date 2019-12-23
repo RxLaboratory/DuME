@@ -14,6 +14,7 @@
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
+#include "utils.h"
 
 class MediaInfo : public FFObject
 {
@@ -39,17 +40,7 @@ public:
      */
     explicit MediaInfo(QFileInfo mediaFile, QObject *parent = nullptr);
 
-    /**
-     * @brief The unit used for bitrates
-     */
-    enum BitrateUnit { Bits, Kbps, Mbps};
-    Q_ENUM(BitrateUnit)
 
-    /**
-     * @brief The unit used for sizes
-     */
-    enum SizeUnit { Bytes, KB, MB};
-    Q_ENUM(SizeUnit)
 
     //setters
 
@@ -74,9 +65,9 @@ public:
     void setFileName(QString fileName);
     void setVideoCodec(FFCodec *codec);
     void setAudioCodec(FFCodec *codec);
-    void setVideoBitrate(double bitrate, BitrateUnit unit = Bits);
-    void setAudioBitrate(double bitrate, BitrateUnit unit = Bits);
-    void setSize(double size, SizeUnit unit = Bytes);
+    void setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    void setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    void setSize(double size, MediaUtils::SizeUnit unit = MediaUtils::Bytes);
     void setFFmpegOptions(QList<QStringList> options);
     void setVideo(bool video = true);
     void setAudio(bool audio = true);
@@ -113,9 +104,9 @@ public:
     FFCodec *videoCodec();
     FFCodec *audioCodec();
     FFPixFormat *pixFormat();
-    double audioBitrate(BitrateUnit unit = Bits);
-    double videoBitrate(BitrateUnit unit = Bits);
-    double size(SizeUnit unit = Bytes);
+    double audioBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    double videoBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    double size(MediaUtils::SizeUnit unit = MediaUtils::Bytes);
     QList<QStringList> ffmpegOptions();
     bool hasVideo();
     bool hasAudio();

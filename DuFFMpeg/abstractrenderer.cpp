@@ -32,13 +32,22 @@ QTime AbstractRenderer::startTime() const
     return _startTime;
 }
 
-double AbstractRenderer::outputSize() const
+double AbstractRenderer::outputSize(MediaUtils::SizeUnit unit) const
 {
+    if (unit == MediaUtils::Bytes) return _outputSize;
+    else if (unit == MediaUtils::KB) return _outputSize/1024;
+    else if (unit == MediaUtils::MB) return _outputSize/1024/1024;
+    else if (unit == MediaUtils::GB) return _outputSize/1024/1024/1024;
+
     return _outputSize;
 }
 
-int AbstractRenderer::outputBitrate() const
+double AbstractRenderer::outputBitrate(MediaUtils::BitrateUnit unit) const
 {
+    if (unit == MediaUtils::Bits) return _outputBitrate;
+    else if (unit == MediaUtils::Kbps) return _outputBitrate/1000;
+    else if (unit == MediaUtils::Mbps) return _outputBitrate/1000/1000;
+
     return _outputBitrate;
 }
 
@@ -111,14 +120,18 @@ void AbstractRenderer::processStdError()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process);
-    readyRead( "Process " + QString::number(id) + ": " + process->readAllStandardError() );
+    QString log = "Process " + QString::number(id) + ": " + process->readAllStandardError();
+    readyRead( log );
+    emit newOutput( log );
 }
 
 void AbstractRenderer::processStdOutput()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process);
-    readyRead( "Process " + QString::number(id) + ": " + process->readAllStandardOutput() );
+    QString log = "Process " + QString::number(id) + ": " + process->readAllStandardOutput();
+    readyRead( log );
+    emit newOutput( log );
 }
 
 void AbstractRenderer::processStarted()
@@ -206,6 +219,26 @@ void AbstractRenderer::killRenderProcesses()
         emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
     }
     emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
+}
+
+void AbstractRenderer::setEncodingSpeed(double encodingSpeed)
+{
+    _encodingSpeed = encodingSpeed;
+}
+
+void AbstractRenderer::setOutputBitrate(double outputBitrate)
+{
+    _outputBitrate = outputBitrate;
+}
+
+void AbstractRenderer::setOutputSize(double outputSize)
+{
+    _outputSize = outputSize;
+}
+
+void AbstractRenderer::setBinaryFileName(const QString &binaryFileName)
+{
+    _binaryFileName = binaryFileName;
 }
 
 void AbstractRenderer::setFrameRate(double frameRate)

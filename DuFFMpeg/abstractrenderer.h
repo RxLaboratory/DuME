@@ -9,6 +9,8 @@
 #include <QFileInfoList>
 #include <QDir>
 
+#include "utils.h"
+
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...
  */
@@ -25,6 +27,11 @@ public:
      */
     int currentFrame() const;
     /**
+     * @brief setCurrentFrame Sets the current frame being rendered and updates all progress info (size, time, bitrate...)
+     * @param currentFrame
+     */
+    void setCurrentFrame(int currentFrame);
+    /**
      * @brief startTime The start time of the rendering process
      * @return
      */
@@ -33,12 +40,12 @@ public:
      * @brief outputSize The expected output file size
      * @return
      */
-    double outputSize() const;
+    double outputSize(MediaUtils::SizeUnit unit = MediaUtils::MB) const;
     /**
      * @brief outputBitrate The output bitrate
      * @return
      */
-    int outputBitrate() const;
+    double outputBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Kbps) const;
     /**
      * @brief encodingSpeed The rendering speed, compared to the media duration
      * @return
@@ -54,7 +61,21 @@ public:
      * @return
      */
     QTime elapsedTime() const;
-
+    /**
+     * @brief setOutputSize Sets the output file size (in Bytes)
+     * @param outputSize
+     */
+    void setOutputSize(double outputSize);
+    /**
+     * @brief setOutputBitrate Sets the output bitrate (in bps)
+     * @param outputBitrate
+     */
+    void setOutputBitrate(double outputBitrate);
+    /**
+     * @brief setEncodingSpeed Sets the encoding speed (the ratio between media duration and encoding duration)
+     * @param encodingSpeed
+     */
+    void setEncodingSpeed(double encodingSpeed);
     // OUTPUT FILE INFO
     /**
      * @brief outputFileName The output file name.
@@ -105,6 +126,10 @@ public:
      */
     void setNumThreads(int numThreads);
 
+    // CONFIGURE RENDERER
+    void setBinaryFileName(const QString &binaryFileName);
+
+
 signals:
     /**
      * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
@@ -114,6 +139,10 @@ signals:
      * @brief newLog Emitted when some debug infos are available
      */
     void newLog(QString);
+    /**
+     * @brief newOutput Emitted when the process(es) output something
+     */
+    void newOutput(QString);
     /**
      * @brief started Emitted when the rendering has just started
      */
@@ -174,8 +203,6 @@ private:
 
     // METHODS
 
-    //updates the current frame and computes remaining time, output sze, etc
-    void setCurrentFrame(int currentFrame);
     //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
     void readyRead(QString output);
     //Launches a new process

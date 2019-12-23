@@ -199,25 +199,26 @@ void MediaInfo::setAudioCodec(FFCodec *codec)
     _audioCodec = codec;
 }
 
-void MediaInfo::setVideoBitrate(double bitrate, BitrateUnit unit)
+void MediaInfo::setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit)
 {
-    if (unit == Kbps) bitrate = bitrate*1024;
-    else if (unit == Mbps) bitrate = bitrate*1024*1024;
+    if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
+    else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
     _videoBitrate = bitrate;
 }
 
-void MediaInfo::setAudioBitrate(double bitrate, BitrateUnit unit)
+void MediaInfo::setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit)
 {
-    if (unit == Kbps) bitrate = bitrate*1024;
-    else if (unit == Mbps) bitrate = bitrate*1024*1024;
+    if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
+    else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
     _audioBitrate = bitrate;
 }
 
-void MediaInfo::setSize(double size, MediaInfo::SizeUnit unit)
+void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
 {
 
-    if (unit == KB) size = size*1024;
-    if (unit == MB) size = size*1024*1024;
+    if (unit == MediaUtils::KB) size = size*1024;
+    else if (unit == MediaUtils::MB) size = size*1024*1024;
+    else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
     _size = size;
 }
 
@@ -307,27 +308,28 @@ FFCodec *MediaInfo::audioCodec()
     return _audioCodec;
 }
 
-double MediaInfo::audioBitrate(BitrateUnit unit)
+double MediaInfo::audioBitrate(MediaUtils::BitrateUnit unit)
 {
     double bitrate = _audioBitrate;
-    if (unit == Kbps) bitrate = bitrate/1024;
-    if (unit == Mbps) bitrate = bitrate/1024/1024;
+    if (unit == MediaUtils::Kbps) bitrate = bitrate/1024;
+    if (unit == MediaUtils::Mbps) bitrate = bitrate/1024/1024;
     return bitrate;
 }
 
-double MediaInfo::videoBitrate(BitrateUnit unit)
+double MediaInfo::videoBitrate(MediaUtils::BitrateUnit unit)
 {
     double bitrate = _videoBitrate;
-    if (unit == Kbps) bitrate = bitrate/1024;
-    if (unit == Mbps) bitrate = bitrate/1024/1024;
+    if (unit == MediaUtils::Kbps) bitrate = bitrate/1024;
+    if (unit == MediaUtils::Mbps) bitrate = bitrate/1024/1024;
     return bitrate;
 }
 
-double MediaInfo::size(MediaInfo::SizeUnit unit)
+double MediaInfo::size(MediaUtils::SizeUnit unit)
 {
     double s = _size;
-    if (unit == KB) s = s/1024;
-    if (unit == MB) s = s/1024/1024;
+    if (unit == MediaUtils::KB) s = s/1024;
+    else if (unit == MediaUtils::MB) s = s/1024/1024;
+    else if (unit == MediaUtils::GB) s = s/1024/1024/1024;
     return s;
 }
 
