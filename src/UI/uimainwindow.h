@@ -13,6 +13,8 @@
 #include <QDateTime>
 #include <QMimeData>
 
+#include "FFmpeg/ffmpeg.h"
+
 #include "uitoolbarspacer.h"
 #include "uisettingswidget.h"
 #include "uiqueuewidget.h"

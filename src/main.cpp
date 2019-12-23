@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     splash.newMessage("Loading settings...");
     QCoreApplication::setOrganizationName("Rainbox Laboratory");
     QCoreApplication::setOrganizationDomain("rainboxlab.org");
-    QCoreApplication::setApplicationName("DuFFmpeg");
+    QCoreApplication::setApplicationName("DuME");
     QCoreApplication::setApplicationVersion(APPVERSION);
 
     QSettings settings;
@@ -48,12 +48,11 @@ int main(int argc, char *argv[])
 
     //build UI and show
     splash.newMessage("Building UI");
-    UIMainWindow *w = new UIMainWindow(ffmpeg);
+    UIMainWindow *w = new UIMainWindow( ffmpeg );
 #ifndef Q_OS_LINUX
     FrameLess f(w);
 #endif
     w->show();
-
 
     //hide splash when finished
     splash.finish(w);
