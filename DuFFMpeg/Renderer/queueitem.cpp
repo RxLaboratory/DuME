@@ -90,7 +90,7 @@ void QueueItem::setStatus(Status st)
 {
     if(_status == st) return;
     _status = st;
-    emit statusChanged(_status);
+    emit statusChanged( _status );
     if (_status == InProgress) emit encodingStarted();
     else if (_status == Finished) emit encodingFinished();
     else if (_status == Stopped || _status == Error || _status == AEError) emit encodingStopped();
