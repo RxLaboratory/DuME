@@ -17,7 +17,7 @@ First, get and install the dependencies:
 Then install the [OpenImageIO](https://github.com/OpenImageIO/oiio) library for development,  
 And finally, get an [FFmpeg](http://ffmpeg.org) executable binary to transcode medias with DuME.
 
-Then, you can just open and build the project with Qt Creator. The project and the source code are in the [DuFFmpeg](https://github.com/Rainbox-dev/DuFFMpeg/tree/master/DuFFMpeg) sub-directory.
+Then, you can just open and build the project with Qt Creator. The project and the source code are in the [src](https://github.com/Rainbox-dev/DuME/tree/master/src) sub-directory.
 
 ### Linux
 
