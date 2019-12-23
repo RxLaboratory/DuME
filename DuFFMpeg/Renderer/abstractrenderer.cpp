@@ -19,7 +19,6 @@ AbstractRenderer::AbstractRenderer(QObject *parent) : QObject(parent)
     _binaryFileName = "";
 
     _stopCommand = "";
-    _numThreads = 1;
 }
 
 int AbstractRenderer::currentFrame() const
