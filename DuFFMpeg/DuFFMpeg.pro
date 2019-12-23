@@ -84,11 +84,11 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
+    outputwidget.ui \
     settingswidget.ui \
     queuewidget.ui \
     inputwidget.ui \
-    ui_outputwidget.ui \
-    uitoolbarspacer.ui
+    toolbarspacer.ui
 
 RESOURCES += \
     resources.qrc
