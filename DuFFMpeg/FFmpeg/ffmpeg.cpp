@@ -51,7 +51,7 @@ bool FFmpeg::setBinaryFileName(QString path, bool initialize)
     {
         ffmpegProcess->setProgram(path);
         if (initialize) init();
-        emit binaryChanged();
+        emit binaryChanged( path );
         return true;
     }
     else
@@ -261,6 +261,11 @@ void FFmpeg::stdOutput()
 {
     QString output = ffmpegProcess->readAllStandardOutput();
     readyRead(output);
+}
+
+QString FFmpeg::binary() const
+{
+    return _binary;
 }
 
 QString FFmpeg::getVersion() const

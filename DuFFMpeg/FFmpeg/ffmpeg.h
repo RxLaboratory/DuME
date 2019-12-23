@@ -25,75 +25,75 @@ public:
      * @brief getMuxers Gets the list of available muxers
      * @return
      */
-    QList<FFMuxer *> getMuxers();
+    QList<FFMuxer *> muxers();
     /**
      * @brief getMuxer Retrieves a muxer with its name
      * @param name
      * @return
      */
-    FFMuxer *getMuxer(QString name);
+    FFMuxer *muxer(QString name);
     /**
      * @brief getMuxerDefaultCodec Checks what is the default codec for this muxer
      * @param muxer
      * @param ability
      * @return
      */
-    FFCodec *getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability = FFCodec::Video);
+    FFCodec *muxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability = FFCodec::Video);
     /**
      * @brief getMuxerDefaultCodec Checks what is the default codec for this muxer
      * @param name The name of the muxer
      * @param ability
      * @return
      */
-    FFCodec *getMuxerDefaultCodec(QString name, FFCodec::Ability ability = FFCodec::Video);
+    FFCodec *muxerDefaultCodec(QString name, FFCodec::Ability ability = FFCodec::Video);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
      * @return The codec list
      */
-    QList<FFCodec *> getEncoders();
+    QList<FFCodec *> encoders();
     /**
      * @brief getVideoEncoders Gets the list of video encoders supported by the current version of FFmpeg
      * @return The video codec list
      */
-    QList<FFCodec *> getVideoEncoders();
+    QList<FFCodec *> videoEncoders();
     /**
      * @brief getVideoEncoders Gets the list of audio encoders supported by the current version of FFmpeg
      * @return The audio codec list
      */
-    QList<FFCodec *> getAudioEncoders();
+    QList<FFCodec *> audioEncoders();
     /**
      * @brief getInputPixFormats Gets the list of input pixel formats supported by the current version of FFmpeg
      * @return The pixel formats list
      */
-    QList<FFPixFormat *> getPixFormats();
+    QList<FFPixFormat *> pixFormats();
     /**
      * @brief getCodec Gets a video encoder using its name
      * @param name The name of the codec
      * @return A pointer to the codec
      */
-    FFCodec *getVideoEncoder(QString name);
+    FFCodec *videoEncoder(QString name);
     /**
      * @brief getCodec Gets an audio encoder using its name
      * @param name The name of the codec
      * @return A pointer to the codec
      */
-    FFCodec *getAudioEncoder(QString name);
+    FFCodec *audioEncoder(QString name);
     /**
      * @brief getPixFormat Gets a pixel format using its name
      * @param name The name of the pixel format
      * @return A pointer to the pixel format
      */
-    FFPixFormat *getPixFormat(QString name);
+    FFPixFormat *pixFormat(QString name);
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
      */
-    QString getHelp();
+    QString help();
     /**
      * @brief getLongHelp Gets the longer help of FFmpeg
      * @return The longer version of the documentation
      */
-    QString getLongHelp();
+    QString longHelp();
     /**
      * @brief analyseMedia Gets the information for the media
      * @param mediaPath The path to the media file
@@ -104,7 +104,12 @@ public:
      * @brief getVersion Gets the current ffmpeg version
      * @return
      */
-    QString getVersion() const;
+    QString version() const;
+    /**
+     * @brief binary Gets the ffmpeg binary path
+     * @return
+     */
+    QString binary() const;
 
 signals:
     /**
@@ -123,7 +128,7 @@ signals:
     /**
      * @brief binaryChanged Emitted when the path to the binary has been changed
      */
-    void binaryChanged();
+    void binaryChanged(QString);
 
 public slots:   
     /**
@@ -131,7 +136,7 @@ public slots:
      * @param path The path to the binary executable file
      * @return true if the exe is found
      */
-    bool setBinaryFileName(QString path, bool initialize = true);
+    bool setBinary(QString path, bool initialize = true);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
@@ -159,6 +164,8 @@ private:
     QProcess *ffmpegProcess;
     // The ffmpeg version
     QString _version;
+    // The binary
+    QString _binary;
 
     // The list of video encoders
     QList<FFCodec *> _videoEncoders;
