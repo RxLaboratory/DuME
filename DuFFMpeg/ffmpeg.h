@@ -1,24 +1,14 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#include "ffobject.h"
-
 #include <QProcess>
-#include <QTime>
-#include <QDir>
-#include <algorithm>
 #include <QSettings>
-#include <QTemporaryDir>
-#include <QStandardPaths>
-#include <QTimer>
-#include <QThread>
 
+#include "ffobject.h"
 #include "ffcodec.h"
-#include "mediainfo.h"
 #include "ffqueueitem.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
-#include "aerenderer.h"
 
 class FFmpeg : public FFObject
 {
@@ -33,14 +23,29 @@ public:
     ~FFmpeg();
 
     /**
-     * @brief The Status enum Used to describe the current status of ffmpeg
+     * @brief getMuxers Gets the list of available muxers
+     * @return
      */
-    enum Status { Waiting, Encoding, Error, Other, AERendering, Cleaning };
-    Q_ENUM(Status)
-
     QList<FFMuxer *> getMuxers();
+    /**
+     * @brief getMuxer Retrieves a muxer with its name
+     * @param name
+     * @return
+     */
     FFMuxer *getMuxer(QString name);
+    /**
+     * @brief getMuxerDefaultCodec Checks what is the default codec for this muxer
+     * @param muxer
+     * @param ability
+     * @return
+     */
     FFCodec *getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability = FFCodec::Video);
+    /**
+     * @brief getMuxerDefaultCodec Checks what is the default codec for this muxer
+     * @param name The name of the muxer
+     * @param ability
+     * @return
+     */
     FFCodec *getMuxerDefaultCodec(QString name, FFCodec::Ability ability = FFCodec::Video);
     /**
      * @brief getEncoders Gets the list of encoders supported the current version of FFmpeg
@@ -97,54 +102,9 @@ public:
      */
     QString analyseMedia(QString mediaPath);
     /**
-     * @brief getCurrentFrame Gets the number of the latest encoded frame
-     * @return The number of the latest encoded frame
+     * @brief getVersion Gets the current ffmpeg version
+     * @return
      */
-    int getCurrentFrame();
-    /**
-     * @brief getStartTime Gets the time when the latest encoding process started
-     * @return The time
-     */
-    QTime getStartTime();
-    /**
-     * @brief getElapsedTime Gets the time elapsed since the encoding started
-     * @return The time elapsed
-     */
-    QTime getElapsedTime();
-    /**
-     * @brief getOutputSize Gets the current size of the output file being encoded
-     * @param The unit of the size
-     * @return The size
-     */
-    double getOutputSize(MediaInfo::SizeUnit unit = MediaInfo::Bytes);
-    /**
-     * @brief getOutputBitrate Gets the average bitrate of the output file being encoded
-     * @param unit The unit of the bitrate
-     * @return The bitrate
-     */
-    double getOutputBitrate(MediaInfo::BitrateUnit unit = MediaInfo::Bits);
-    /**
-     * @brief getEncodingSpeed Gets the speed of the current encoding
-     * @return The speed
-     */
-    double getEncodingSpeed();
-    /**
-     * @brief getTimeRemaining Gets the estimated time remaining before the encoding process finishes
-     * @return The time remaining
-     */
-    QTime getTimeRemaining();
-
-    /**
-     * @brief start Starts an encoding process
-     * @param arguments The arguments to pass to ffmpeg
-     */
-    void start( QStringList arguments );
-    /**
-     * @brief stop Stops the current process
-     * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
-     */
-    void stop(int timeout = 10000);
-
     QString getVersion() const;
 
 signals:
@@ -161,17 +121,10 @@ signals:
      */
     void newLog(QString);
 
-
-    /**
-     * @brief progress Emitted each time the transcoding process outputs new stats
-     */
-    void progress();
-
     /**
      * @brief binaryChanged Emitted when the path to the binary has been changed
      */
     void binaryChanged();
-
 
 public slots:   
     /**
@@ -196,7 +149,6 @@ private slots:
     //FFmpeg signals
     void stdError();
     void stdOutput();
-    void started();
     void errorOccurred(QProcess::ProcessError e);
 
 private:
@@ -209,29 +161,23 @@ private:
     // The ffmpeg version
     QString _version;
 
-    /**
-     * @brief videoEncoders The list of the encoders supported by the current version of FFmpeg
-     */
+    // The list of video encoders
     QList<FFCodec *> _videoEncoders;
-    /**
-     * @brief audioEncoders The list of the encoders supported by the current version of FFmpeg
-     */
+    // The list of audio encoders
     QList<FFCodec *> _audioEncoders;
+    // The list of video decoders
     QList<FFCodec *> _videoDecoders;
+    // The list of audio decoders
     QList<FFCodec *> _audioDecoders;
+    // The list of muxers
     QList<FFMuxer *> _muxers;
+    // The list of pixel formats
     QList<FFPixFormat *> _pixFormats;
-    /**
-     * @brief help The FFmpeg help returned by the -h command
-     */
+    // The help
     QString _help;
-    /**
-     * @brief longHelp The longer FFmpeg help returned by the -h long command
-     */
+    // The documentation
     QString _longHelp;
-    /**
-     * @brief ffmpegOutput The complete output of the latest ffmpeg process until it has finished
-     */
+    // The output from the process
     QString _ffmpegOutput;
 
     //=== Process outputs ===

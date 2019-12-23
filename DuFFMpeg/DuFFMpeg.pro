@@ -34,6 +34,7 @@ SOURCES += \
     aerenderer.cpp \
     aerenderprocess.cpp \
     duexr.cpp \
+    ffmpegrenderer.cpp \
     main.cpp \
     mediainfo.cpp \
     ffmpeg.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     aerenderer.h \
     aerenderprocess.h \
     duexr.h \
+    ffmpegrenderer.h \
     mediainfo.h \
     ffmpeg.h \
     ffqueueitem.h \

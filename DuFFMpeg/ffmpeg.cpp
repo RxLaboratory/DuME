@@ -16,8 +16,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
     //Connect process
     connect(ffmpegProcess,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
     connect(ffmpegProcess,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
-    connect(ffmpegProcess,SIGNAL(started()),this,SLOT(started()));
-    connect(ffmpegProcess,SIGNAL(finished(int)),this,SLOT(finished()));
     connect(ffmpegProcess,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 
     //TODO auto find ffmpeg if no settings or path invalid
@@ -58,7 +56,7 @@ bool FFmpeg::setBinaryFileName(QString path, bool initialize)
     }
     else
     {
-        emit newError("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        emit newError("FFmpeg executable binary not found.\nYou can download it from http://ffmpeg.org");
         return false;
     }
 }
@@ -253,17 +251,6 @@ QString FFmpeg::analyseMedia(QString mediaPath)
     return "";
 }
 
-void FFmpeg::stop(int timeout)
-{
-    if (ffmpegProcess->state() == QProcess::NotRunning) return;
-    ffmpegProcess->write("q\n");
-    if (!ffmpegProcess->waitForFinished(timeout))
-    {
-        ffmpegProcess->kill();
-    }
-    emit newLog("Stopped");
-}
-
 void FFmpeg::stdError()
 {
     QString output = ffmpegProcess->readAllStandardError();
@@ -274,48 +261,6 @@ void FFmpeg::stdOutput()
 {
     QString output = ffmpegProcess->readAllStandardOutput();
     readyRead(output);
-}
-
-void FFmpeg::started()
-{
-    _ffmpegOutput = "";
-}
-
-void FFmpeg::errorOccurred(QProcess::ProcessError e)
-{
-    QString error;
-    if (e == QProcess::FailedToStart)
-    {
-        error = "Failed to start FFMpeg.";
-    }
-    else if (e == QProcess::Crashed)
-    {
-        error = "FFmpeg just crashed.";
-    }
-    else if (e == QProcess::Timedout)
-    {
-        error = "FFmpeg operation timed out.";
-    }
-    else if (e == QProcess::WriteError)
-    {
-        error = "FFmpeg write Error.";
-    }
-    else if (e == QProcess::ReadError)
-    {
-        error = "Cannot read FFMpeg output.";
-    }
-    else if (e == QProcess::UnknownError)
-    {
-        error = "An unknown FFmpeg error occured.";
-    }
-
-    emit newError(error);
-}
-
-void FFmpeg::start(QStringList arguments)
-{
-    ffmpegProcess->setArguments( arguments );
-    ffmpegProcess->start( QIODevice::ReadWrite );
 }
 
 QString FFmpeg::getVersion() const
@@ -915,60 +860,3 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
 }
 
-void FFmpeg::readyRead(QString output)
-{
-    emit newOutput("FFmpeg output: " + output);
-
-    _ffmpegOutput = _ffmpegOutput + output;
-
-    QRegularExpression reProgress("(?:frame= *(\\d+).*fps= *(\\d+).*)?size= *(?:(\\d+)kB)?.*time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d).*bitrate= *(?:(\\d+).\\d+kbits)?.*speed= *(\\d+.\\d*)x");
-    QRegularExpressionMatch match = reProgress.match(output);
-    //if progress, update UI
-    if (match.hasMatch())
-    {
-        QString frame = match.captured(1);
-        QString size = match.captured(3);
-        QString bitrate = match.captured(5);
-        QString speed = match.captured(6);
-
-        //frame
-        _currentFrame = frame.toInt();
-
-        //size
-        int sizeKB = size.toInt();
-        _outputSize = sizeKB*1024;
-
-        //bitrate
-        int bitrateKB = bitrate.toInt();
-        _outputBitrate = bitrateKB*1024;
-
-        //speed
-        _encodingSpeed = speed.toDouble();
-
-        //time remaining
-        //get current input duration
-        //gets the current item duration
-        double duration = 0;
-        /*
-        foreach(MediaInfo *input,_currentItem->getInputMedias())
-        {
-            if (input->hasVideo())
-            {
-                duration = input->duration() * input->videoFramerate();
-                break;
-            }
-        }
-        if (duration > 0)
-        {
-            if (_currentFrame > 0)
-            {
-                int elapsed = _startTime.elapsed() / 1000;
-                double remaining = elapsed*duration/_currentFrame - elapsed;
-                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
-            }
-        }
-        */
-        emit progress();
-    }
-
-}
