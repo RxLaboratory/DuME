@@ -76,10 +76,10 @@ void AbstractRenderer::setStopCommand(const QString &stopCommand)
     _stopCommand = stopCommand;
 }
 
-void AbstractRenderer::start( QStringList arguments )
+void AbstractRenderer::start( QStringList arguments, int numThreads )
 {
-    emit newLog("Launching " + QString::number( _numThreads ) + " processes.");
-    for (int i = 0; i < _numThreads; i++ )
+    emit newLog("Launching " + QString::number( numThreads ) + " processes.");
+    for (int i = 0; i < numThreads; i++ )
     {
         launchProcess( arguments );
     }
@@ -104,16 +104,6 @@ void AbstractRenderer::stop(int timeout)
 
     // wait for timeout and kill all remaining processes
     QTimer::singleShot(timeout, this, SLOT( killRenderProcesses()) );
-}
-
-int AbstractRenderer::numThreads() const
-{
-    return _numThreads;
-}
-
-void AbstractRenderer::setNumThreads(int numThreads)
-{
-    _numThreads = numThreads;
 }
 
 void AbstractRenderer::processStdError()
@@ -224,6 +214,11 @@ void AbstractRenderer::killRenderProcesses()
 void AbstractRenderer::setBinary(const QString &binaryFileName)
 {
     _binaryFileName = binaryFileName;
+}
+
+double AbstractRenderer::expectedSize() const
+{
+    return _expectedSize;
 }
 
 int AbstractRenderer::numFrames() const

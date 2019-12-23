@@ -71,6 +71,11 @@ public:
      * @return
      */
     double frameRate() const;
+    /**
+     * @brief expectedSize The expected size of the output file
+     * @return
+     */
+    double expectedSize() const;
 
     // OUTPUT FILE INFO
     /**
@@ -105,22 +110,13 @@ public:
      * @brief start Starts a rendering process
      * @param arguments The arguments to pass to the renderer
      */
-    void start( QStringList arguments );
+    void start(QStringList arguments , int numThreads = 1);
     /**
      * @brief stop Stops the current process(es)
      * @param timeout Kills the process after timeout if it does not respond to the stop commands. In milliseconds.
      */
     void stop(int timeout = 10000);
-    /**
-     * @brief numThreads The number of threads to use when launching the rendering process
-     * @return
-     */
-    int numThreads() const;
-    /**
-     * @brief setNumThreads Sets the number of threads to use
-     * @param numThreads
-     */
-    void setNumThreads(int numThreads);
+
 
 signals:
     /**
@@ -197,7 +193,6 @@ private:
     // CONFIGURATION
 
     QString _stopCommand;
-    int _numThreads;
 
     // METHODS
 
