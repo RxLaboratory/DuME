@@ -19,13 +19,9 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
-    home.mkdir("DuFFmpeg Presets");
+    home.mkdir("DuME Presets");
 
-
-    // === FFMPEG INIT ===
-    debugLog("Init - FFmpeg");
-    //TODO auto find ffmpeg if no settings or path invalid
-    //then save to settings
+    // FFMPEG
     ffmpeg = ff;
 
 
