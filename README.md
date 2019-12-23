@@ -1,7 +1,28 @@
-# DuFFMpeg
-Tools for FFmpeg
+# DuME - The Duduf Media Encoder
+Rendering and transcoding medias.
 
-You will need FFMpeg binaries which can be downloaded here: http://ffmpeg.org/download.html
-More info about FFMpeg on the official website: http://ffmpeg.org/
+## Dependencies
 
-The folder _DuFFmpeg_ contains a stand alone UI for FFmpeg in Qt/C++. Its development has just begun but it can already be tested.
+- Qt >= 5.9.8
+- OpenImageIO >= 1.7
+- FFmpeg executable binary >= 3.4
+
+## Build
+
+The easiest way to build DuME is to [install Qt](https://www.qt.io/download-open-source) along with Qt Creator, then install the [OpenImageIO](https://github.com/OpenImageIO/oiio) library for development.
+
+Then, you can just open and build the project with Qt Creator.
+
+You will need an [FFmpeg](http://ffmpeg.org) executable binary to transcode medias with DuME.
+
+### Linux
+
+- Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
+- OpenImageIO is probably available in your distribution packages. With Aptitude (Ubuntu / Debian): `sudo apt-get install libimageio-dev`. If not, you will have to [build it from source](https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md).
+- FFmpeg is also probably available in your distribution packages. With Aptitude (Ubuntu / Debian): `sudo apt-get install ffmpeg`.
+
+### Windows
+
+- Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
+- OpenImageIO: TODO
+- FFmpeg can be downloaded [here](https://ffmpeg.zeranoe.com/builds/).
