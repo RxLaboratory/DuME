@@ -11,8 +11,7 @@
 #include <QDir>
 #include <QTemporaryDir>
 
-#include "FFmpeg/ffcodec.h"
-#include "FFmpeg/ffmuxer.h"
+#include "FFmpeg/ffmpeg.h"
 #include "utils.h"
 
 class MediaInfo : public QObject
@@ -23,36 +22,22 @@ public:
      * @brief DuMediaInfo Constructs an empty MediaInfo
      * @param parent The QObject parent
      */
-    explicit MediaInfo( QObject *parent = nullptr );
-
-    /**
-     * @brief DuMediaInfo Constructs a new MediaInfo from the output of the anaylisis given by `ffmpeg -i mediaFile` or `ffprobe mediaFile`
-     * @param ffmpegOutput The output of the ffmpeg/ffprobe analysis
-     * @param parent The QObject parent
-     */
-    explicit MediaInfo(QString ffmpegOutput, QObject *parent = nullptr);
+    explicit MediaInfo( FFmpeg *ffmpeg, QObject *parent = nullptr );
 
     /**
      * @brief DuMediaInfo Constructs a new MediaInfo for the given file.
      * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
      * @param parent The QObject parent
      */
-    explicit MediaInfo(QFileInfo mediaFile, QObject *parent = nullptr);
-
-
+    explicit MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent = nullptr );
 
     //setters
 
     /**
      * @brief updateInfo Updates all the information for this media file
-     * @param mediaFile The media file. For a frame sequence, it can be any frame from the sequence
+     * @param mediaFilePath The media file. For a frame sequence, it can be any frame from the sequence
      */
-    void updateInfo(QFileInfo mediaFile);
-    /**
-     * @brief updateInfo Updates all the information for this media from the output of ffprobe or ffmpeg
-     * @param ffmpegOutput The output of ffprobe or ffmpeg when analyzing this media, as returned by `ffmpeg -i mediaFile` or `ffprobe mediaFile`.
-     */
-    void updateInfo(QString ffmpegOutput);
+    void updateInfo(QString mediaFilePath);
 
     void setMuxer(FFMuxer *muxer);
     void setContainer(QStringList container);
@@ -85,10 +70,6 @@ public:
     void setAepNumThreads(int aepNumThreads);
     void setAepCompName(const QString &aepCompName);
     void setAepRqindex(int aepRqindex);
-    void setDurationH(int durationH);
-    void setDurationM(int durationM);
-    void setDurationS(double durationS);
-    void setDurationF(int durationF);
     void setCacheDir(QTemporaryDir *cacheDir);
     void setAeUseRQueue(bool aeUseRQueue);
     //getters
@@ -98,7 +79,6 @@ public:
     double videoFramerate();
     int audioSamplingRate();
     double duration();
-    QString ffmpegOutput();
     QString fileName();
     FFCodec *videoCodec();
     FFCodec *audioCodec();
@@ -124,10 +104,6 @@ public:
     int aepRqindex() const;
     QTemporaryDir *cacheDir() const;
     bool aeUseRQueue() const;
-    int durationH() const;
-    int durationM() const;
-    double durationS() const;
-    int durationF() const;
     QString ffmpegSequenceName() const;
 
     //utils
@@ -139,7 +115,14 @@ public slots:
 
 private:
 
+    // === FOR INTERNAL USE ===
+
+    // The ffmpeg pointer to get all ffmpeg information and analyse medias
+    FFmpeg *_ffmpeg;
+
     // ========== ATTRIBUTES ==============
+
+    // GENERAL
 
     /**
      * @brief _extensions The list of file extensions this media can use
@@ -153,22 +136,6 @@ private:
      * @brief _duration The duration in seconds
      */
     double _duration;
-    /**
-     * @brief _durationH The hours part of the duration
-     */
-    int _durationH;
-    /**
-     * @brief _durationM The minutes part of the duration
-     */
-    int _durationM;
-    /**
-     * @brief _durationS The seconds part of the duration
-     */
-    double _durationS;
-    /**
-     * @brief _durationI The frames part of the duration
-     */
-    int _durationF;
     /**
      * @brief _size The file size
      */
@@ -222,10 +189,6 @@ private:
      */
     int _audioBitrate;
     /**
-     * @brief _ffmpegOutput The analysis of the media as returned by ffprobe
-     */
-    QString _ffmpegOutput;
-    /**
      * @brief _fileName The filename of the media
      */
     QString _fileName;
@@ -233,10 +196,6 @@ private:
      * @brief _frames For a frame sequence, the list of all the frames filenames
      */
     QStringList _frames;
-    /**
-     * @brief _ffmpegOptions The custom options to be used by ffmpeg when decoding or encoding this media
-     */
-    QList<QStringList> _ffmpegOptions;
     /**
      * @brief _videoQuality The video quality, as used by some codecs like h264
      */
@@ -261,6 +220,27 @@ private:
      * @brief _trc The color transfer profile (gamma)
      */
     QString _trc;
+
+    // GENERAL Encoding/decoding parameters
+
+    /**
+     * @brief _cacheDir A pointer to the cache for temporary transcoding and other files for this media
+     */
+    QTemporaryDir *_cacheDir;
+
+    // FFMPEG Encoding/decoding
+
+    /**
+     * @brief _ffmpegOptions The custom options to be used by ffmpeg when decoding or encoding this media
+     */
+    QList<QStringList> _ffmpegOptions;
+    /**
+     * @brief _sequenceName The name of the file sequence as used by ffmpeg
+     */
+    QString _ffmpegSequenceName;
+
+    // AFTER EFFECTS Encoding/decoding
+
     /**
      * @brief _isAep Wether this is an After Effects project (aep, aet or aepx)
      */
@@ -278,19 +258,11 @@ private:
      */
     int _aepRqindex;
     /**
-     * @brief _aepTempDir A pointer to the cache for temporary transcoding and other files for this media
-     */
-    QTemporaryDir *_cacheDir;
-    /**
      * @brief _aeUseRQueue Wether to launch the render queue when rendering the After Effects project, or render a specific composition or renderqueue item.
      */
     bool _aeUseRQueue;
-    /**
-     * @brief _sequenceName The name of the file sequence as used by ffmpeg
-     */
-    QString _ffmpegSequenceName;
 
-    //======== METHODS =============
+    // ======== METHODS =============
 
     /**
      * @brief reInit Reinit all to default values

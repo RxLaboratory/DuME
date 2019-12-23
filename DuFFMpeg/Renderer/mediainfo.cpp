@@ -1,51 +1,50 @@
 #include "mediainfo.h"
 
-#include <QtDebug>
-
-MediaInfo::MediaInfo( QObject *parent ) : QObject(parent)
+MediaInfo::MediaInfo( FFmpeg *ffmpeg, QObject *parent ) : QObject(parent)
 {
+    _ffmpeg = ffmpeg;
     reInit();
 }
 
-MediaInfo::MediaInfo( QFileInfo mediaFile, QObject *parent ) : QObject(parent)
+MediaInfo::MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
+    _ffmpeg = ffmpeg;
     updateInfo( mediaFile );
-}
-
-MediaInfo::MediaInfo( QString ffmpegOutput, QObject *parent ) : QObject(parent)
-{
-
-    updateInfo( ffmpegOutput );
 }
 
 void MediaInfo::reInit()
 {
-    _cacheDir = nullptr;
-    _muxer = nullptr;
+    // GENERAL
     _fileName = "";
-    _ffmpegSequenceName = "";
+    _extensions.clear();
+    _muxer = nullptr;
     _duration = 0.0;
+    _size = 0;
+    _video = false;
+    _audio = false;
+    _imageSequence = false;
+    _videoCodec = nullptr;
     _videoWidth = 0;
     _videoHeight = 0;
     _videoFramerate = 0.0;
-    _audioSamplingRate = 0;
-    _size = 0;
-    _videoCodec = nullptr;
+    _videoBitrate = 0;
     _pixFormat = nullptr;
     _audioCodec = nullptr;
+    _audioSamplingRate = 0;
     _audioBitrate = 0;
-    _videoBitrate = 0;
-    _imageSequence = false;
-    _video = false;
-    _audio = false;
-    _ffmpegOptions.clear();
-    _ffmpegOutput = "";
+    _frames.clear();
     _videoQuality = -1;
-    _loop = -1;
     _videoProfile = -1;
+    _loop = -1;
     _startNumber = 0;
     _premultipliedAlpha = true;
     _trc = "";
+    // GENERAL Encoding/decoding parameters
+    _cacheDir = nullptr;
+    // FFMPEG Encoding/decoding
+    _ffmpegOptions.clear();
+    _ffmpegSequenceName = "";
+    // AFTER EFFECTS Encoding/decoding
     _isAep = false;
     _aepCompName = "";
     _aepNumThreads = 1;
@@ -53,16 +52,11 @@ void MediaInfo::reInit()
     _aeUseRQueue = false;
 }
 
-void MediaInfo::updateInfo(QFileInfo mediaFile)
+void MediaInfo::updateInfo(QString mediaFilePath)
 {
+    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFilePath );
 
-}
-
-void MediaInfo::updateInfo(QString ffmpegOutput)
-{
     reInit();
-
-    _ffmpegOutput = ffmpegOutput;
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -72,7 +66,6 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
     QRegularExpression reSequenceStream("Stream #.+Video: .+, (\\d+)x(\\d+)");
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
     QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), )?(?:(N\\/A), )?");
-
 
     bool input = false;
     foreach(QString info,infos)
@@ -84,7 +77,6 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
             input = true;
             _extensions = match.captured(1).split(",");
             _fileName = match.captured(2);
-            qDebug() << info;
         }
 
         if (!input) continue;
@@ -114,7 +106,7 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
         {
             QString details = match.captured(1);
             QStringList detailsList = details.split(", ");
-            qDebug() << details;
+
             QRegularExpression reVideoSize(", (\\d+)x(\\d+).*, ");
             QRegularExpression reVideoFrameRate(", (\\d{1,3}(?:\\.\\d{0,3})?) fps");
             QString codec = detailsList[0].split(" ")[0];
@@ -126,7 +118,7 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
             _videoHeight = videoSizeMatch.captured(2).toInt();
             QRegularExpressionMatch videoFrameRateMatch = reVideoFrameRate.match(details);
             _videoFramerate = videoFrameRateMatch.captured(1).toDouble();
-            if (_videoFramerate == 0) _videoFramerate = 24;
+            if ( int( _videoFramerate ) == 0 ) _videoFramerate = 24;
             _video = true;
             continue;
         }
@@ -135,7 +127,6 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
         match = reSequenceStream.match(info);
         if (match.hasMatch())
         {
-            qDebug() << info;
             //set size
             _videoWidth = match.captured(1).toInt();
             _videoHeight = match.captured(2).toInt();
@@ -148,7 +139,6 @@ void MediaInfo::updateInfo(QString ffmpegOutput)
         match = reAudioStream.match(info);
         if (match.hasMatch())
         {
-            qDebug() << info;
             //set sampling rate
             _audioSamplingRate = match.captured(1).toInt();
             _audio = true;
@@ -203,14 +193,14 @@ void MediaInfo::setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit)
 {
     if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
     else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
-    _videoBitrate = bitrate;
+    _videoBitrate = int( bitrate );
 }
 
 void MediaInfo::setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit)
 {
     if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
     else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
-    _audioBitrate = bitrate;
+    _audioBitrate = int( bitrate );
 }
 
 void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
@@ -219,7 +209,7 @@ void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
     if (unit == MediaUtils::KB) size = size*1024;
     else if (unit == MediaUtils::MB) size = size*1024*1024;
     else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
-    _size = size;
+    _size = int( size );
 }
 
 void MediaInfo::setFFmpegOptions(QList<QStringList> options)
@@ -286,11 +276,6 @@ int MediaInfo::audioSamplingRate()
 double MediaInfo::duration()
 {
     return _duration;
-}
-
-QString MediaInfo::ffmpegOutput()
-{
-    return _ffmpegOutput;
 }
 
 QString MediaInfo::fileName()
@@ -368,7 +353,7 @@ FFMuxer *MediaInfo::muxer() const
 QString MediaInfo::exportToJson()
 {
     QJsonObject mediaObj;
-    mediaObj.insert("version",DUFFMPEG_VERSION);
+    mediaObj.insert("version", APPVERSION);
 
     //muxer
     QJsonObject muxerObj;
@@ -487,46 +472,6 @@ void MediaInfo::exportToJson(QString jsonPath)
 QString MediaInfo::ffmpegSequenceName() const
 {
     return _ffmpegSequenceName;
-}
-
-int MediaInfo::durationH() const
-{
-    return _durationH;
-}
-
-void MediaInfo::setDurationH(int durationH)
-{
-    _durationH = durationH;
-}
-
-int MediaInfo::durationM() const
-{
-    return _durationM;
-}
-
-void MediaInfo::setDurationM(int durationM)
-{
-    _durationM = durationM;
-}
-
-double MediaInfo::durationS() const
-{
-    return _durationS;
-}
-
-void MediaInfo::setDurationS(double durationS)
-{
-    _durationS = durationS;
-}
-
-int MediaInfo::durationF() const
-{
-    return _durationF;
-}
-
-void MediaInfo::setDurationF(int durationI)
-{
-    _durationF = durationI;
 }
 
 QTemporaryDir *MediaInfo::cacheDir() const
