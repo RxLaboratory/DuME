@@ -36,4 +36,4 @@
 
 # Mainwindow
 
-- [ ] update stop button to stop aerender
+- [X] update stop button to stop aerender
