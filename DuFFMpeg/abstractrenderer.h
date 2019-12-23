@@ -5,6 +5,9 @@
 #include <QTime>
 #include <QProcess>
 #include <QTimer>
+#include <QRegularExpression>
+#include <QFileInfoList>
+#include <QDir>
 
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...
@@ -46,6 +49,11 @@ public:
      * @return
      */
     QTime timeRemaining() const;
+    /**
+     * @brief elapsedTime The elapsed time since the rendering process has started
+     * @return
+     */
+    QTime elapsedTime() const;
 
     // OUTPUT FILE INFO
     /**
@@ -54,10 +62,20 @@ public:
      */
     QString outputFileName() const;
     /**
+     * @brief setNumFrames The number of frames to render
+     * @param numFrames
+     */
+    void setNumFrames(int numFrames);
+    /**
      * @brief setOutputFileName Sets the output file name.
      * @param outputFileName
      */
     void setOutputFileName(const QString &outputFileName);
+    /**
+     * @brief setFrameRate The framerate of the output video
+     * @param frameRate
+     */
+    void setFrameRate(double frameRate);
 
     // MANAGE THE RENDERING PROCESS
     /**
@@ -97,17 +115,25 @@ signals:
      */
     void newLog(QString);
     /**
+     * @brief started Emitted when the rendering has just started
+     */
+    void started();
+    /**
+     * @brief finished Emitted when the rendering has finished
+     */
+    void finished();
+    /**
      * @brief progress Emitted each time the transcoding process outputs new stats
      */
     void progress();
 
 private slots:
     // gets the output from the render process(es)
-    void stdError();
-    void stdOutput();
-    void started();
-    void finished();
-    void errorOccurred(QProcess::ProcessError e);
+    void processStdError();
+    void processStdOutput();
+    void processStarted();
+    void processFinished();
+    void processErrorOccurred(QProcess::ProcessError e);
     // kills all render processes
     void killRenderProcesses();
 
@@ -120,20 +146,26 @@ private:
 
     // the output fileName
     QString _outputFileName;
-    // the output folder
-    QString _outputPath;
+    // the number of frames to render
+    int _numFrames;
+    // the framerate of the video
+    double _frameRate;
     // the current frame being renderered.
     int _currentFrame;
     // the starttime of the rendering process
     QTime _startTime;
-    // the output size of the rendered file
+    // the current output size of the rendered file in Bytes
     double _outputSize;
-    // the output bitrate of the renderered file
-    int _outputBitrate;
+    // the output bitrate of the renderered file in bps
+    double _outputBitrate;
+    // the expected output size
+    double _expectedSize;
     // the speed of the encoding compared to the speed of the video
     double _encodingSpeed;
     // the time remaining before rendering completion
     QTime _timeRemaining;
+    // the elapsed time
+    QTime _elapsedTime;
 
     // CONFIGURATION
 
@@ -142,9 +174,9 @@ private:
 
     // METHODS
 
-    //updates the current frame and computes remaining time, etc
+    //updates the current frame and computes remaining time, output sze, etc
     void setCurrentFrame(int currentFrame);
-    //Called when the process outputs something on stdError or stdOutput
+    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
     void readyRead(QString output);
     //Launches a new process
     void launchProcess(QStringList arguments );
