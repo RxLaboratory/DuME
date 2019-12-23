@@ -19,8 +19,11 @@ Then, you can just open and build the project with Qt Creator. The project and t
 ### Linux
 
 - Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
-- OpenImageIO is probably available in your distribution packages. With Aptitude (Ubuntu / Debian): `sudo apt-get install libimageio-dev`. If not, you will have to [build it from source](https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md).
-- FFmpeg is also probably available in your distribution packages. With Aptitude (Ubuntu / Debian): `sudo apt-get install ffmpeg`.
+- OpenImageIO is probably available in your distribution packages.  
+With Aptitude (Ubuntu / Debian): `sudo apt-get install libimageio-dev`.  
+Otherwise, you will have to [build it from source](https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md).
+- FFmpeg is also probably available in your distribution packages.  
+With Aptitude (Ubuntu / Debian): `sudo apt-get install ffmpeg`.
 
 ### Windows
 
