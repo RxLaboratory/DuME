@@ -23,10 +23,10 @@ public:
     QList<MediaInfo*> getOutputMedias();
     int addInputMedia(MediaInfo *input);
     int addOutputMedia(MediaInfo *output);
-    MediaInfo *removeInputMedia(int id);
-    MediaInfo *removeInputMedia(QString fileName);
-    MediaInfo *removeOutputMedia(int id);
-    MediaInfo *removeOutputMedia(QString fileName);
+    MediaInfo *takeInputMedia(int id);
+    MediaInfo *takeInputMedia(QString fileName);
+    MediaInfo *takeOutputMedia(int id);
+    MediaInfo *takeOutputMedia(QString fileName);
     Status getStatus();
 
 public slots:

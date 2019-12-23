@@ -49,12 +49,12 @@ int QueueItem::addOutputMedia(MediaInfo *output)
     return _outputMedias.count() -1;
 }
 
-MediaInfo *QueueItem::removeInputMedia(int id)
+MediaInfo *QueueItem::takeInputMedia(int id)
 {
     return _inputMedias.takeAt(id);
 }
 
-MediaInfo *QueueItem::removeInputMedia(QString fileName)
+MediaInfo *QueueItem::takeInputMedia(QString fileName)
 {
     for (int i = 0 ; i < _inputMedias.count() ; i++)
     {
@@ -65,12 +65,12 @@ MediaInfo *QueueItem::removeInputMedia(QString fileName)
     }
 }
 
-MediaInfo *QueueItem::removeOutputMedia(int id)
+MediaInfo *QueueItem::takeOutputMedia(int id)
 {
     return _outputMedias.takeAt(id);
 }
 
-MediaInfo *QueueItem::removeOutputMedia(QString fileName)
+MediaInfo *QueueItem::takeOutputMedia(QString fileName)
 {
     for (int i = 0 ; i < _outputMedias.count() ; i++)
     {
