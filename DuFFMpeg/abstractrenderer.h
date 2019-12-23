@@ -61,21 +61,7 @@ public:
      * @return
      */
     QTime elapsedTime() const;
-    /**
-     * @brief setOutputSize Sets the output file size (in Bytes)
-     * @param outputSize
-     */
-    void setOutputSize(double outputSize);
-    /**
-     * @brief setOutputBitrate Sets the output bitrate (in bps)
-     * @param outputBitrate
-     */
-    void setOutputBitrate(double outputBitrate);
-    /**
-     * @brief setEncodingSpeed Sets the encoding speed (the ratio between media duration and encoding duration)
-     * @param encodingSpeed
-     */
-    void setEncodingSpeed(double encodingSpeed);
+
     // OUTPUT FILE INFO
     /**
      * @brief outputFileName The output file name.
@@ -156,20 +142,7 @@ signals:
      */
     void progress();
 
-private slots:
-    // gets the output from the render process(es)
-    void processStdError();
-    void processStdOutput();
-    void processStarted();
-    void processFinished();
-    void processErrorOccurred(QProcess::ProcessError e);
-    // kills all render processes
-    void killRenderProcesses();
-
-private:
-    // The process(es)
-    QList<QProcess *> _renderProcesses;
-    QString _binaryFileName;
+protected:
 
     // RENDERING PROCESS
 
@@ -196,15 +169,31 @@ private:
     // the elapsed time
     QTime _elapsedTime;
 
+    // METHODS
+
+    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
+    void readyRead(QString output);
+
+private slots:
+    // gets the output from the render process(es)
+    void processStdError();
+    void processStdOutput();
+    void processStarted();
+    void processFinished();
+    void processErrorOccurred(QProcess::ProcessError e);
+    // kills all render processes
+    void killRenderProcesses();
+
+private:
+    // The process(es)
+    QList<QProcess *> _renderProcesses;
+    QString _binaryFileName;
+
     // CONFIGURATION
 
     QString _stopCommand;
     int _numThreads;
 
-    // METHODS
-
-    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
-    void readyRead(QString output);
     //Launches a new process
     void launchProcess(QStringList arguments );
 };

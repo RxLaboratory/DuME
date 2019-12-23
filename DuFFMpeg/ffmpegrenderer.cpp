@@ -23,14 +23,14 @@ void FFmpegRenderer::readyRead(QString output)
 
         //size
         int sizeKB = size.toInt();
-        setOutputSize( sizeKB * 1024 );
+        _outputSize = sizeKB * 1024;
 
         //bitrate
         int bitrateKB = bitrate.toInt();
-        setOutputBitrate( bitrateKB * 1024 * 8 );
+        _outputBitrate = bitrateKB * 1024 * 8;
 
         //speed
-        setEncodingSpeed( speed.toDouble() );
+        _encodingSpeed = speed.toDouble();
 
         emit progress();
     }
