@@ -9,6 +9,9 @@ Rendering and transcoding medias.
 
 ## Build
 
+***WARNING* DuME is currently under heavy refactory, and the code as it is today won't compile.**  
+This work should be finished in a few days.
+
 First, get and install the dependencies:  
 [Install Qt](https://www.qt.io/download-open-source) along with Qt Creator,  
 Then install the [OpenImageIO](https://github.com/OpenImageIO/oiio) library for development,  
