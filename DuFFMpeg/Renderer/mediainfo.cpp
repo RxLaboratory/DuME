@@ -2,17 +2,17 @@
 
 #include <QtDebug>
 
-MediaInfo::MediaInfo( QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QObject *parent ) : QObject(parent)
 {
     reInit();
 }
 
-MediaInfo::MediaInfo( QFileInfo mediaFile, QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
     updateInfo( mediaFile );
 }
 
-MediaInfo::MediaInfo( QString ffmpegOutput, QObject *parent ) : FFObject(parent)
+MediaInfo::MediaInfo( QString ffmpegOutput, QObject *parent ) : QObject(parent)
 {
 
     updateInfo( ffmpegOutput );

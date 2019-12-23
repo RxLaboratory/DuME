@@ -9,7 +9,6 @@
 #include <QTemporaryDir>
 #include <QFile>
 
-#include "ffmpeg.h"
 
 class UISettingsWidget : public QWidget, private Ui::SettingsWidget
 {

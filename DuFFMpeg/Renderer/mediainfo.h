@@ -1,8 +1,7 @@
 ﻿#ifndef MEDIAINFO_H
 #define MEDIAINFO_H
 
-#include "ffobject.h"
-
+#include <QObject>
 #include <QRegularExpression>
 #include <QFile>
 #include <QJsonDocument>
@@ -12,11 +11,11 @@
 #include <QDir>
 #include <QTemporaryDir>
 
-#include "ffcodec.h"
-#include "ffmuxer.h"
+#include "FFmpeg/ffcodec.h"
+#include "FFmpeg/ffmuxer.h"
 #include "utils.h"
 
-class MediaInfo : public FFObject
+class MediaInfo : public QObject
 {
     Q_OBJECT
 public:

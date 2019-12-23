@@ -1,7 +1,7 @@
 #ifndef FFMPEGRENDERER_H
 #define FFMPEGRENDERER_H
 
-#include "abstractrenderer.h"
+#include "Renderer/abstractrenderer.h"
 
 #include <QObject>
 

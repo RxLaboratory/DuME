@@ -2,7 +2,6 @@
 #define FFMUXER_H
 
 #include "ffbaseobject.h"
-
 #include "ffcodec.h"
 
 class FFMuxer : public FFBaseObject

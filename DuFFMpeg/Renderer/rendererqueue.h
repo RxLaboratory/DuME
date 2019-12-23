@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QDebug>
 
-#include "aerendererbak.h"
-#include "ffmpeg.h"
-
 /**
  * @brief The Renderer class handles the render queue and render processes (ffmpeg, After Effects, Blender...)
  */

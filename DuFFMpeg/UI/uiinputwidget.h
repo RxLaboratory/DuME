@@ -7,8 +7,6 @@
 #include <QSettings>
 #include <QThread>
 
-#include "ffmpeg.h"
-
 class UIInputWidget : public QWidget, private Ui::InputWidget
 {
     Q_OBJECT

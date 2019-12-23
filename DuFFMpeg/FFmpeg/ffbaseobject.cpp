@@ -1,6 +1,6 @@
 #include "ffbaseobject.h"
 
-FFBaseObject::FFBaseObject(QString name, QString prettyName, QObject *parent)  : FFObject(parent)
+FFBaseObject::FFBaseObject(QString name, QString prettyName, QObject *parent)  : QObject(parent)
 {
     _name = name;
     if (prettyName == "")

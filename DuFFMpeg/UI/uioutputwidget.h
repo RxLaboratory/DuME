@@ -7,8 +7,6 @@
 #include <QSettings>
 #include <QStringList>
 
-#include "ffmpeg.h"
-
 class UIOutputWidget : public QWidget, private Ui::OutputWidget
 {
     Q_OBJECT

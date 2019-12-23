@@ -1,18 +1,17 @@
 #ifndef FFQUEUEITEM_H
 #define FFQUEUEITEM_H
 
-#include "ffobject.h"
-
+#include <QObject>
 #include "mediainfo.h"
 
-class FFQueueItem : public FFObject
+class QueueItem : public QObject
 {
         Q_OBJECT
 public:
-    FFQueueItem(QList<MediaInfo*> inputs,QList<MediaInfo*> outputs,QObject *parent = nullptr);
-    FFQueueItem(MediaInfo *input,QList<MediaInfo*> outputs,QObject *parent = nullptr);
-    FFQueueItem(MediaInfo *input,MediaInfo *output,QObject *parent = nullptr);
-    ~FFQueueItem();
+    QueueItem(QList<MediaInfo*> inputs,QList<MediaInfo*> outputs,QObject *parent = nullptr);
+    QueueItem(MediaInfo *input,QList<MediaInfo*> outputs,QObject *parent = nullptr);
+    QueueItem(MediaInfo *input,MediaInfo *output,QObject *parent = nullptr);
+    ~QueueItem();
 
     /**
      * @brief The Status enum Used to describe the current status of the item

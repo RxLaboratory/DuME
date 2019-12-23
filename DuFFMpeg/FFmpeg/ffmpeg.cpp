@@ -5,7 +5,7 @@
 #endif
 
 
-FFmpeg::FFmpeg(QString path,QObject *parent) : FFObject(parent)
+FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
 {
     // The Process
     ffmpegProcess = new QProcess(this);

@@ -15,7 +15,6 @@
 
 #include "uitoolbarspacer.h"
 #include "uisettingswidget.h"
-#include "ffmpeg.h"
 #include "uiqueuewidget.h"
 #include "uirainbox.h"
 

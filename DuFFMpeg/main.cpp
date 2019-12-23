@@ -1,13 +1,13 @@
-#include "uimainwindow.h"
-#include "uiframeless.h"
+#include "UI/uimainwindow.h"
+#include "UI/uiframeless.h"
+
 #include <QApplication>
 #include <QBitmap>
 #include <QSettings>
 #include <QStringList>
 
-#include "ffmpeg.h"
-#include "aerendererbak.h"
-#include "uisplashscreen.h"
+#include "FFmpeg/ffmpeg.h"
+#include "UI/uisplashscreen.h"
 
 int main(int argc, char *argv[])
 {

@@ -1,12 +1,11 @@
 #ifndef FFBASEOBJECT_H
 #define FFBASEOBJECT_H
 
-#include "ffobject.h"
-
+#include <QObject>
 #include <QString>
 
 
-class FFBaseObject : public FFObject
+class FFBaseObject : public QObject
 {
     Q_OBJECT
 public:

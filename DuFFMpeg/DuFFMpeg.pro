@@ -34,15 +34,14 @@ SOURCES += \
     AfterEffects/aftereffectsversion.cpp \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
+    Renderer/queueitem.cpp \
     duexr.cpp \
     FFmpeg/ffmpegrenderer.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
     FFmpeg/ffmpeg.cpp \
-    Renderer/ffqueueitem.cpp \
     FFmpeg/ffcodec.cpp \
     FFmpeg/ffmuxer.cpp \
-    FFmpeg/ffobject.cpp \
     FFmpeg/ffpixformat.cpp \
     FFmpeg/ffbaseobject.cpp \
     Renderer/rendererqueue.cpp \
@@ -63,14 +62,13 @@ HEADERS += \
     AfterEffects/aftereffectsversion.h \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
+    Renderer/queueitem.h \
     duexr.h \
     FFmpeg/ffmpegrenderer.h \
     Renderer/mediainfo.h \
     FFmpeg/ffmpeg.h \
-    Renderer/ffqueueitem.h \
     FFmpeg/ffcodec.h \
     FFmpeg/ffmuxer.h \
-    FFmpeg/ffobject.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
     Renderer/rendererqueue.h \

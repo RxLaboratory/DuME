@@ -3,14 +3,13 @@
 
 #include <QProcess>
 #include <QSettings>
+#include <QObject>
 
-#include "ffobject.h"
 #include "ffcodec.h"
-#include "ffqueueitem.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
 
-class FFmpeg : public FFObject
+class FFmpeg : public QObject
 {
     Q_OBJECT
 public:
