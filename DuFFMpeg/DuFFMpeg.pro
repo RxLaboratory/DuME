@@ -35,6 +35,7 @@ SOURCES += \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
     Renderer/queueitem.cpp \
+    Renderer/renderqueue.cpp \
     duexr.cpp \
     FFmpeg/ffmpegrenderer.cpp \
     main.cpp \
@@ -44,7 +45,6 @@ SOURCES += \
     FFmpeg/ffmuxer.cpp \
     FFmpeg/ffpixformat.cpp \
     FFmpeg/ffbaseobject.cpp \
-    Renderer/rendererqueue.cpp \
     UI/uidropshadow.cpp \
     UI/uiframeless.cpp \
     UI/uiinputwidget.cpp \
@@ -63,6 +63,7 @@ HEADERS += \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
     Renderer/queueitem.h \
+    Renderer/renderqueue.h \
     duexr.h \
     FFmpeg/ffmpegrenderer.h \
     Renderer/mediainfo.h \
@@ -71,7 +72,6 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
-    Renderer/rendererqueue.h \
     UI/uidropshadow.h \
     UI/uiframeless.h \
     UI/uiinputwidget.h \

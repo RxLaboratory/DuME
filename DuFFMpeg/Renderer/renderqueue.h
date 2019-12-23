@@ -3,13 +3,22 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QTimer>
+
+#include "FFmpeg/ffmpegrenderer.h"
+#include "AfterEffects/aerenderer.h"
+#include "FFmpeg/ffmpeg.h"
+#include "AfterEffects/aftereffects.h"
+
+#include "queueitem.h"
 
 /**
  * @brief The Renderer class handles the render queue and render processes (ffmpeg, After Effects, Blender...)
  */
-class RendererQueue : public QObject
+class RenderQueue : public QObject
 {
     Q_OBJECT
+
 public:
     /**
      * @brief Renderer Constructs the main renderer.
@@ -17,13 +26,13 @@ public:
      * @param aeRenderer The After Effects Renderer
      * @param parent The parent QObject
      */
-    explicit RendererQueue( FFmpeg *ffmpeg, AERendererBak *aeRenderer, QObject *parent = nullptr);
-    ~RendererQueue();
+    explicit RenderQueue( FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *parent = nullptr);
+    ~RenderQueue();
 
     /**
      * @brief The Status enum Used to describe the current status of the renderer
      */
-    enum Status { Initializing, Waiting, FFmpegEncoding, Error, Other, AERendering, BlenderRendering, FramesConversion, Cleaning };
+    enum Status { Initializing, Waiting, FFmpegEncoding, Error, Other, AERendering, BlenderRendering, FramesConversion, Cleaning, Launching };
     Q_ENUM(Status)
 
     /**
@@ -36,7 +45,7 @@ public:
      * @brief getCurrentInputInfos Gets the item currently being encoded
      * @return The queue item
      */
-    FFQueueItem *getCurrentItem();
+    QueueItem *getCurrentItem();
     /**
      * @brief encode Launches the encoding of the current queue
      */
@@ -45,12 +54,12 @@ public:
      * @brief encode Launches the encoding of the given item
      * @param item The item to encode
      */
-    void encode(FFQueueItem *item);
+    void encode(QueueItem *item);
     /**
      * @brief encode Launches the encoding of the given list of items
      * @param list The items to be encoded
      */
-    void encode(QList<FFQueueItem*> list);
+    void encode(QList<QueueItem*> list);
     /**
      * @brief encode Launches the encoding of the given input media with multiple outputs
      * @param input The input media
@@ -68,7 +77,7 @@ public:
      * @param item
      * @return The item id
      */
-    int addQueueItem(FFQueueItem *item);
+    int addQueueItem(QueueItem *item);
     /**
      * @brief removeQueueItem Removes the item from the encoding queue.
      * The item will be deleted
@@ -80,7 +89,7 @@ public:
      * @param id The id of the item to take
      * @return The item, or nullptr if not found
      */
-    FFQueueItem *takeQueueItem(int id);
+    QueueItem *takeQueueItem(int id);
     /**
      * @brief clearQueue Clears the current queue and deletes the items
      */
@@ -91,34 +100,37 @@ public:
      */
     void stop(int timeout = 10000);
 
-    MediaInfo *loadPreset(QString json);
-    MediaInfo *loadPresetFromFile(QString jsonFileName);
-
-
-
 signals:
     /**
      * @brief statusChanged Emitted when the Renderer status changes.
      */
-    void statusChanged(RendererQueue::Status);
+    void statusChanged(RenderQueue::Status);
     /**
-     * @brief newLog Emitted when some debug infos/logs are available
+     * @brief newLog Emitted when some debug logs are available
      */
     void newLog(QString);
     /**
      * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
      */
     void newError(QString);
+    /**
+     * @brief newOutput Emitted when some general infos are available
+     */
+    void newOutput(QString);
 
     // === QUEUE ===
     /**
-     * @brief encodingStarted Emitted when FFmpeg starts an encoding process, with infos about the input media
+     * @brief encodingStarted Emitted when the queue starts an encoding process, with infos about the input media
      */
-    void encodingStarted( FFQueueItem* );
+    void encodingStarted( QueueItem* );
     /**
      * @brief encodingFinished Emitted when the encoding finishes or is stopped
      */
-    void encodingFinished( FFQueueItem* );
+    void encodingFinished();
+    /**
+     * @brief progress Emitted when some progression information is available
+     */
+    void progress();
 
 private slots:
     // removes temp files, cache, restores AE templates...
@@ -129,23 +141,35 @@ private slots:
     void log(QString message);
     // logs an error
     void error(QString message);
+    // logs an output (debug)
+    void output(QString message);
+
     // finished current item rendering/transcoding
     void finished();
+    // encodes the next item in the queue
     void encodeNextItem();
 
     // === ffmpeg ===
 
-    // logs ffmpeg debug output
+    // logs ffmpeg output
     void ffmpegLog(QString message);
-    // when ffmpeg encounters an error
     void ffmpegError(QString message);
+    void ffmpegOutput(QString message);
+    void ffmpegFinished();
+    void ffmpegProgress();
+    // launch ffmpeg transcoding
+    void renderFFmpeg(QueueItem *item );
 
     // === Ae ===
 
-    // finished ae rendering
-    void finishedAe();
+    // logs ae output
+    void aeLog(QString message);
+    void aeError(QString message);
+    void aeOutput(QString message);
+    void aeProgress();
+    void aeFinished();
     // launch after effects rendering
-    void renderAep(MediaInfo *input, bool audio = false);
+    void renderAep( MediaInfo *input, bool audio = false );
 
 private:
 
@@ -161,23 +185,48 @@ private:
     // ======= QUEUE =============
 
     // The items remaining to encode
-    QList<FFQueueItem *> _encodingQueue;
+    QList<QueueItem *> _encodingQueue;
     // All the items previously encoded
-    QList<FFQueueItem *> _encodingHistory;
+    QList<QueueItem *> _encodingHistory;
     // The item currently encoding
-    FFQueueItem *_currentItem;
+    QueueItem *_currentItem;
 
     // ========== FFMPEG ============
 
-    // The FFmpeg transcoder
+    // The FFmpeg transcoder info
     FFmpeg *_ffmpeg;
+    // The FFmpeg transcoder
+    FFmpegRenderer *_ffmpegRenderer;
 
     // ======= AFTER EFFECTS ========
 
+    // The After Effects renderer info
+    AfterEffects *_ae;
     // The After Effects renderer
-    AERendererBak *_aeRenderer;
+    AERenderer *_aeRenderer;
 
-    // ======== DEBUG and LOGS =======
+    // ======= RENDERING PROCESS ========
+
+    // the number of frames to render
+    int _numFrames;
+    // the framerate of the video
+    double _frameRate;
+    // the current frame being renderered.
+    int _currentFrame;
+    // the starttime of the rendering process
+    QTime _startTime;
+    // the current output size of the rendered file in Bytes
+    double _outputSize;
+    // the output bitrate of the renderered file in bps
+    double _outputBitrate;
+    // the expected output size
+    double _expectedSize;
+    // the speed of the encoding compared to the speed of the video
+    double _encodingSpeed;
+    // the time remaining before rendering completion
+    QTime _timeRemaining;
+    // the elapsed time
+    QTime _elapsedTime;
 
 };
 
