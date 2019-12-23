@@ -20,4 +20,4 @@ When it's checked, it's already supported, if not, it's planned ;)
 - [x] __GIF__
 - [ ] Quicktime Animation
 - [x] __HAP__
-- [x] __EXR__ (input only)
+- [x] __EXR__ (input only, DWA and Luma/Chroma support in development)
