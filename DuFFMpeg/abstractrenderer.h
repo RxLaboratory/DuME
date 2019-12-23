@@ -61,6 +61,16 @@ public:
      * @return
      */
     QTime elapsedTime() const;
+    /**
+     * @brief numFrames The total frame count of the output media. Note: this value may be update by the renderer during the process, and can be retrieved when it's finished.
+     * @return
+     */
+    int numFrames() const;
+    /**
+     * @brief frameRate The frame rate of the output media. Note: this value may be update by the renderer during the process, and can be retrieved when it's finished.
+     * @return
+     */
+    double frameRate() const;
 
     // OUTPUT FILE INFO
     /**
@@ -115,7 +125,6 @@ public:
     // CONFIGURE RENDERER
     void setBinaryFileName(const QString &binaryFileName);
 
-
 signals:
     /**
      * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
@@ -169,11 +178,6 @@ protected:
     // the elapsed time
     QTime _elapsedTime;
 
-    // METHODS
-
-    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
-    void readyRead(QString output);
-
 private slots:
     // gets the output from the render process(es)
     void processStdError();
@@ -194,6 +198,10 @@ private:
     QString _stopCommand;
     int _numThreads;
 
+    // METHODS
+
+    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
+    void readyRead(QString output);
     //Launches a new process
     void launchProcess(QStringList arguments );
 };

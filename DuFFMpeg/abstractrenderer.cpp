@@ -241,6 +241,16 @@ void AbstractRenderer::setBinaryFileName(const QString &binaryFileName)
     _binaryFileName = binaryFileName;
 }
 
+int AbstractRenderer::numFrames() const
+{
+    return _numFrames;
+}
+
+double AbstractRenderer::frameRate() const
+{
+    return _frameRate;
+}
+
 void AbstractRenderer::setFrameRate(double frameRate)
 {
     _frameRate = frameRate;
