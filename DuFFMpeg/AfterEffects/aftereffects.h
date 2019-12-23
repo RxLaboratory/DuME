@@ -25,6 +25,8 @@ public:
      */
     void setCurrentAERenderProcess(QString name);
 
+    QString binary() const;
+
 signals:
     void newLog(QString);
     void currentAeVersionChanged(QString aerender);
@@ -37,6 +39,8 @@ private:
     QList<AfterEffectsVersion *> _versions;
     // The application settings
     QSettings settings;
+    // The binary
+    QString _binary;
 
     // === METHODS ===
 

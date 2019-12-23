@@ -91,11 +91,17 @@ void AfterEffects::setCurrentAERenderProcess(QString name)
 
             emit newLog("After Effects set to renderer: " + _versions[i]->name() );
             emit currentAeVersionChanged( _versions[i]->path() );
+            _binary = _versions[i]->path();
             break;
         }
     }
 
 #endif
+}
+
+QString AfterEffects::binary() const
+{
+    return _binary;
 }
 
 void AfterEffects::findAeVersions(QString dir)
