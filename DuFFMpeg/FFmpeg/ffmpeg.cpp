@@ -28,8 +28,8 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : QObject(parent)
     QString defaultFFmpegPath = "ffmpeg.exe";
 #endif
 
-    if (path == "") setBinaryFileName(settings.value("ffmpeg/path",defaultFFmpegPath).toString(), false);
-    else setBinaryFileName(path, false);
+    if (path == "") setBinary(settings.value("ffmpeg/path",defaultFFmpegPath).toString(), false);
+    else setBinary(path, false);
 
     _version = settings.value("ffmpeg/version","").toString();
 }
@@ -39,7 +39,7 @@ FFmpeg::~FFmpeg()
 
 }
 
-bool FFmpeg::setBinaryFileName(QString path, bool initialize)
+bool FFmpeg::setBinary(QString path, bool initialize)
 {
     bool fileExists = true;
 
@@ -149,12 +149,12 @@ void FFmpeg::init()
 #endif
 }
 
-QList<FFMuxer *> FFmpeg::getMuxers()
+QList<FFMuxer *> FFmpeg::muxers()
 {
     return _muxers;
 }
 
-FFMuxer *FFmpeg::getMuxer(QString name)
+FFMuxer *FFmpeg::muxer(QString name)
 {
     foreach(FFMuxer *muxer,_muxers)
     {
@@ -166,7 +166,7 @@ FFMuxer *FFmpeg::getMuxer(QString name)
     return nullptr;
 }
 
-FFCodec *FFmpeg::getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
+FFCodec *FFmpeg::muxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
 {
     FFCodec *videoCodec = muxer->defaultVideoCodec();
     FFCodec *audioCodec = muxer->defaultAudioCodec();
@@ -178,12 +178,12 @@ FFCodec *FFmpeg::getMuxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
     return nullptr;
 }
 
-FFCodec *FFmpeg::getMuxerDefaultCodec(QString name, FFCodec::Ability ability)
+FFCodec *FFmpeg::muxerDefaultCodec(QString name, FFCodec::Ability ability)
 {
-    return getMuxerDefaultCodec(getMuxer(name),ability);
+    return muxerDefaultCodec(muxer(name),ability);
 }
 
-QList<FFCodec *> FFmpeg::getEncoders()
+QList<FFCodec *> FFmpeg::encoders()
 {
     QList<FFCodec *> encoders = _videoEncoders;
     encoders.append(_audioEncoders);
@@ -191,17 +191,17 @@ QList<FFCodec *> FFmpeg::getEncoders()
     return encoders;
 }
 
-QList<FFCodec *> FFmpeg::getVideoEncoders()
+QList<FFCodec *> FFmpeg::videoEncoders()
 {
     return _videoEncoders;
 }
 
-QList<FFCodec *> FFmpeg::getAudioEncoders()
+QList<FFCodec *> FFmpeg::audioEncoders()
 {
     return _audioEncoders;
 }
 
-FFCodec *FFmpeg::getVideoEncoder(QString name)
+FFCodec *FFmpeg::videoEncoder(QString name)
 {
     foreach(FFCodec *codec,_videoEncoders)
     {
@@ -210,7 +210,7 @@ FFCodec *FFmpeg::getVideoEncoder(QString name)
     return nullptr;
 }
 
-FFCodec *FFmpeg::getAudioEncoder(QString name)
+FFCodec *FFmpeg::audioEncoder(QString name)
 {
     foreach(FFCodec *codec,_audioEncoders)
     {
@@ -219,7 +219,7 @@ FFCodec *FFmpeg::getAudioEncoder(QString name)
     return nullptr;
 }
 
-FFPixFormat *FFmpeg::getPixFormat(QString name)
+FFPixFormat *FFmpeg::pixFormat(QString name)
 {
     foreach(FFPixFormat *pf,_pixFormats)
     {
@@ -228,12 +228,12 @@ FFPixFormat *FFmpeg::getPixFormat(QString name)
     return nullptr;
 }
 
-QString FFmpeg::getHelp()
+QString FFmpeg::help()
 {
     return _help;
 }
 
-QString FFmpeg::getLongHelp()
+QString FFmpeg::longHelp()
 {
     return _longHelp;
 }
@@ -268,12 +268,12 @@ QString FFmpeg::binary() const
     return _binary;
 }
 
-QString FFmpeg::getVersion() const
+QString FFmpeg::version() const
 {
     return _version;
 }
 
-QList<FFPixFormat *> FFmpeg::getPixFormats()
+QList<FFPixFormat *> FFmpeg::pixFormats()
 {
     return _pixFormats;
 }
@@ -348,7 +348,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                         if (videoMatch.hasMatch())
                         {
                             QString defltVideoCodec = videoMatch.captured(1);
-                            m->setDefaultVideoCodec(getVideoEncoder( defltVideoCodec ));
+                            m->setDefaultVideoCodec(videoEncoder( defltVideoCodec ));
                             settings.setValue("defaultVideoCodec", defltVideoCodec );
                         }
 
@@ -357,7 +357,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                         if (audioMatch.hasMatch())
                         {
                             QString defltAudioCodec = audioMatch.captured(1);
-                            m->setDefaultAudioCodec(getAudioEncoder( defltAudioCodec ));
+                            m->setDefaultAudioCodec(audioEncoder( defltAudioCodec ));
                             settings.setValue("defaultAudioCodec", defltAudioCodec );
                         }
 
@@ -398,10 +398,10 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
             //get default codecs
             QString defltVideoCodec = settings.value("defaultVideoCodec").toString();
-            m->setDefaultVideoCodec(getVideoEncoder( defltVideoCodec ));
+            m->setDefaultVideoCodec(videoEncoder( defltVideoCodec ));
 
             QString defltAudioCodec = settings.value("defaultAudioCodec").toString();
-            m->setDefaultAudioCodec(getAudioEncoder( defltAudioCodec ));
+            m->setDefaultAudioCodec(audioEncoder( defltAudioCodec ));
 
             QString extensions = settings.value("extensions").toString();
             m->setExtensions(extensions.split(","));
@@ -418,13 +418,13 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("bmp"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("bmp"));
+    muxer->setDefaultVideoCodec(videoEncoder("bmp"));
     _muxers << muxer;
 
     muxer = new FFMuxer("dpx","DPX Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("dpx"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("dpx"));
+    muxer->setDefaultVideoCodec(videoEncoder("dpx"));
     _muxers << muxer;
 
     muxer = new FFMuxer("mjpeg","JPEG Sequence");
@@ -432,67 +432,67 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions << "jpg" << "jpeg";
     muxer->setExtensions(extensions);
     extensions.clear();
-    muxer->setDefaultVideoCodec(getVideoEncoder("mjpeg"));
+    muxer->setDefaultVideoCodec(videoEncoder("mjpeg"));
     _muxers << muxer;
 
     muxer = new FFMuxer("ljpeg","Lossless JPEG Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("ljpg"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("ljpeg"));
+    muxer->setDefaultVideoCodec(videoEncoder("ljpeg"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pam","PAM (Portable AnyMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pam"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("pam"));
+    muxer->setDefaultVideoCodec(videoEncoder("pam"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pbm","PBM (Portable BitMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pbm"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("pbm"));
+    muxer->setDefaultVideoCodec(videoEncoder("pbm"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pcx","PC Paintbrush PCX Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pcx"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("pcx"));
+    muxer->setDefaultVideoCodec(videoEncoder("pcx"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pgm","PGM (Portable GrayMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pgm"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("pgm"));
+    muxer->setDefaultVideoCodec(videoEncoder("pgm"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pgmyuv","PGMYUV (Portable GrayMap YUV) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pgmyuv"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("pgmyuv"));
+    muxer->setDefaultVideoCodec(videoEncoder("pgmyuv"));
     _muxers << muxer;
 
     muxer = new FFMuxer("png","PNG (Portable Network Graphics) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("png"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("png"));
+    muxer->setDefaultVideoCodec(videoEncoder("png"));
     _muxers << muxer;
 
     muxer = new FFMuxer("ppm","PPM (Portable PixelMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("ppm"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("ppm"));
+    muxer->setDefaultVideoCodec(videoEncoder("ppm"));
     _muxers << muxer;
 
     muxer = new FFMuxer("sgi","SGI Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("sgi"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("sgi"));
+    muxer->setDefaultVideoCodec(videoEncoder("sgi"));
     _muxers << muxer;
 
     muxer = new FFMuxer("targa","TARGA (Truevision Targa) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("tga"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("targa"));
+    muxer->setDefaultVideoCodec(videoEncoder("targa"));
     _muxers << muxer;
 
     muxer = new FFMuxer("tiff","TIFF Sequence");
@@ -500,7 +500,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions << "tif" << "tiff";
     muxer->setExtensions(extensions);
     extensions.clear();
-    muxer->setDefaultVideoCodec(getVideoEncoder("tiff"));
+    muxer->setDefaultVideoCodec(videoEncoder("tiff"));
     _muxers << muxer;
 
     muxer = new FFMuxer("jpeg2000","JPEG 2000 Sequence");
@@ -508,19 +508,19 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions << "jp2" << "j2k";
     muxer->setExtensions(extensions);
     extensions.clear();
-    muxer->setDefaultVideoCodec(getVideoEncoder("jpeg2000"));
+    muxer->setDefaultVideoCodec(videoEncoder("jpeg2000"));
     _muxers << muxer;
 
     muxer = new FFMuxer("xwd","XWD (X Window Dump) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("xwd"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("xwd"));
+    muxer->setDefaultVideoCodec(videoEncoder("xwd"));
     _muxers << muxer;
 
     muxer = new FFMuxer("xbm","XBM (X BitMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("xbm"));
-    muxer->setDefaultVideoCodec(getVideoEncoder("xbm"));
+    muxer->setDefaultVideoCodec(videoEncoder("xbm"));
     _muxers << muxer;
 
 
@@ -658,7 +658,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                                     {
                                         QString pixFmt = pixFmts[j].trimmed();
 
-                                        FFPixFormat *pf = getPixFormat(pixFmt);
+                                        FFPixFormat *pf = pixFormat(pixFmt);
                                         if (pf == nullptr) continue;
                                         co->addPixFormat(pf);
                                         bool deflt = pixFmt == defaultPF;
@@ -733,7 +733,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
                     QString pixFmt = settings.value("name").toString();
 
-                    FFPixFormat *pf = getPixFormat(pixFmt);
+                    FFPixFormat *pf = pixFormat(pixFmt);
                     if (pf == nullptr) continue;
 
                     co->addPixFormat(pf);

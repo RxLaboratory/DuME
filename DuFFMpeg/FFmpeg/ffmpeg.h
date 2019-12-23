@@ -4,6 +4,8 @@
 #include <QProcess>
 #include <QSettings>
 #include <QObject>
+#include <QDir>
+#include <QRegularExpression>
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
