@@ -1,7 +1,7 @@
 #ifndef AERENDERER_H
 #define AERENDERER_H
 
-#include "abstractrenderer.h"
+#include "Renderer/abstractrenderer.h"
 
 #include <QObject>
 #include <QRegularExpression>

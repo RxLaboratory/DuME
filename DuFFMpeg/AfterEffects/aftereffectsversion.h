@@ -12,12 +12,12 @@
 
 #include "utils.h"
 
-class AERenderProcess : public QObject
+class AfterEffectsVersion : public QObject
 {
     Q_OBJECT
 public:
-    AERenderProcess(QString path = "", QObject *parent = nullptr);
-    ~AERenderProcess();
+    AfterEffectsVersion(QString path = "", QObject *parent = nullptr);
+    ~AfterEffectsVersion();
 
     /**
      * @brief name The name of this Renderer
@@ -44,34 +44,18 @@ public:
      * @return
      */
     QVersionNumber version() const;
-    /**
-    * @brief aeOutput The output from the binary
-    * @return
-    */
-    QString aeOutput() const;
 
 signals:
-    /**
-     * @brief newDebug Outputs useful debug informations to be printed in the console
-     */
-    void newDebug(QString);
+    void newLog(QString);
+
 
 private slots:
     void init();
-    // Gets and relays the After Effects process errors
-    void errorOccurred(QProcess::ProcessError e);
-    // Gets and relays the After Effects standard output
-    void stdOutput();
-    // Gets and relays the After Effects standard error
-    void stdError();
     //Sets the DuME Render Templates for After Effects
     bool setDuMETemplates();
     // Restores the original render templates
     void restoreOriginalTemplates();
-    // Rendering started
-    void started();
 
-    void readyReadAE(QString output);
 private:
     // The name of this renderer process
     QString _name;
@@ -83,10 +67,6 @@ private:
     QString _dataPath;
     // Wether this version works/is found
     bool _isValid;
-    // The Process
-    QProcess *_aerender;
-    // The output
-    QString _aeOutput;
 
     void findDataPath();
 };

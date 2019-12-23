@@ -30,77 +30,77 @@ DEFINES += APPVERSION=\\\"1.0.0-Beta1\\\"
 DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
-    abstractrenderer.cpp \
-    aerenderer.cpp \
-    aerendererbak.cpp \
-    aerenderprocess.cpp \
+    AfterEffects/aftereffects.cpp \
+    AfterEffects/aftereffectsversion.cpp \
+    Renderer/abstractrenderer.cpp \
+    AfterEffects/aerenderer.cpp \
     duexr.cpp \
-    ffmpegrenderer.cpp \
+    FFmpeg/ffmpegrenderer.cpp \
     main.cpp \
-    mediainfo.cpp \
-    ffmpeg.cpp \
-    ffqueueitem.cpp \
-    ffcodec.cpp \
-    ffmuxer.cpp \
-    ffobject.cpp \
-    ffpixformat.cpp \
-    ffbaseobject.cpp \
-    rendererqueue.cpp \
-    uidropshadow.cpp \
-    uiframeless.cpp \
-    uiinputwidget.cpp \
-    uimainwindow.cpp \
-    uioutputwidget.cpp \
-    uiqueuewidget.cpp \
-    uirainbox.cpp \
-    uisettingswidget.cpp \
-    uisplashscreen.cpp \
-    uitoolbarspacer.cpp \
+    Renderer/mediainfo.cpp \
+    FFmpeg/ffmpeg.cpp \
+    Renderer/ffqueueitem.cpp \
+    FFmpeg/ffcodec.cpp \
+    FFmpeg/ffmuxer.cpp \
+    FFmpeg/ffobject.cpp \
+    FFmpeg/ffpixformat.cpp \
+    FFmpeg/ffbaseobject.cpp \
+    Renderer/rendererqueue.cpp \
+    UI/uidropshadow.cpp \
+    UI/uiframeless.cpp \
+    UI/uiinputwidget.cpp \
+    UI/uimainwindow.cpp \
+    UI/uioutputwidget.cpp \
+    UI/uiqueuewidget.cpp \
+    UI/uirainbox.cpp \
+    UI/uisettingswidget.cpp \
+    UI/uisplashscreen.cpp \
+    UI/uitoolbarspacer.cpp \
     utils.cpp
 
 HEADERS += \
-    abstractrenderer.h \
-    aerenderer.h \
-    aerendererbak.h \
-    aerenderprocess.h \
+    AfterEffects/aftereffects.h \
+    AfterEffects/aftereffectsversion.h \
+    Renderer/abstractrenderer.h \
+    AfterEffects/aerenderer.h \
     duexr.h \
-    ffmpegrenderer.h \
-    mediainfo.h \
-    ffmpeg.h \
-    ffqueueitem.h \
-    ffcodec.h \
-    ffmuxer.h \
-    ffobject.h \
-    ffpixformat.h \
-    ffbaseobject.h \
-    rendererqueue.h \
-    uidropshadow.h \
-    uiframeless.h \
-    uiinputwidget.h \
-    uimainwindow.h \
-    uioutputwidget.h \
-    uiqueuewidget.h \
-    uirainbox.h \
-    uisettingswidget.h \
-    uisplashscreen.h \
-    uitoolbarspacer.h \
+    FFmpeg/ffmpegrenderer.h \
+    Renderer/mediainfo.h \
+    FFmpeg/ffmpeg.h \
+    Renderer/ffqueueitem.h \
+    FFmpeg/ffcodec.h \
+    FFmpeg/ffmuxer.h \
+    FFmpeg/ffobject.h \
+    FFmpeg/ffpixformat.h \
+    FFmpeg/ffbaseobject.h \
+    Renderer/rendererqueue.h \
+    UI/uidropshadow.h \
+    UI/uiframeless.h \
+    UI/uiinputwidget.h \
+    UI/uimainwindow.h \
+    UI/uioutputwidget.h \
+    UI/uiqueuewidget.h \
+    UI/uirainbox.h \
+    UI/uisettingswidget.h \
+    UI/uisplashscreen.h \
+    UI/uitoolbarspacer.h \
     utils.h
 
 FORMS += \
-    mainwindow.ui \
-    outputwidget.ui \
-    settingswidget.ui \
-    queuewidget.ui \
-    inputwidget.ui \
-    toolbarspacer.ui
+    UI/mainwindow.ui \
+    UI/outputwidget.ui \
+    UI/settingswidget.ui \
+    UI/queuewidget.ui \
+    UI/inputwidget.ui \
+    UI/toolbarspacer.ui
 
 RESOURCES += \
-    resources.qrc
+    resources/resources.qrc
 
 DISTFILES += \
-    ico.rc
+    resources/ico.rc
 
-RC_FILE = ico.rc
+RC_FILE = resources/ico.rc
 
 # OpenImageIO
 

@@ -6,6 +6,11 @@ AERenderer::AERenderer(QString aerender, QObject *parent) : AbstractRenderer(par
     _duration = 0;
 }
 
+QList<AfterEffects *> AERenderer::AeRenderers() const
+{
+    return _AeRenderers;
+}
+
 void AERenderer::readyRead(QString output)
 {
     QRegularExpression reProgress("PROGRESS:  \\d:\\d\\d:\\d\\d:\\d\\d \\((\\d+)\\)");

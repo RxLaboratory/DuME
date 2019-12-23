@@ -1,18 +1,11 @@
-#include "aerenderprocess.h"
+#include "aftereffectsversion.h"
 
 #ifdef QT_DEBUG
  #include <QtDebug>
 #endif
 
-AERenderProcess::AERenderProcess(QString path, QObject *parent) : QObject(parent)
+AfterEffectsVersion::AfterEffectsVersion(QString path, QObject *parent) : QObject(parent)
 {
-    _aerender = new QProcess(this);
-    _aeOutput = "";
-
-    connect(_aerender,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
-    connect(_aerender,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
-    connect(_aerender,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
-
     _name = "";
     _path = path;
     _version = QVersionNumber();
@@ -22,22 +15,17 @@ AERenderProcess::AERenderProcess(QString path, QObject *parent) : QObject(parent
     init();
 }
 
-AERenderProcess::~AERenderProcess()
+AfterEffectsVersion::~AfterEffectsVersion()
 {
     restoreOriginalTemplates();
 }
 
-void AERenderProcess::stdError()
-{
-    _aeOutput += _aerender->readAllStandardError();
-}
-
-QVersionNumber AERenderProcess::version() const
+QVersionNumber AfterEffectsVersion::version() const
 {
     return _version;
 }
 
-void AERenderProcess::findDataPath()
+void AfterEffectsVersion::findDataPath()
 {
     //try to find templates (the Ae data dir)
     QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
@@ -49,7 +37,7 @@ void AERenderProcess::findDataPath()
     {
         dataPath = dataPath.replace("/Duduf/DuME","");
 
-        emit debugLog( "Searching Ae Data in: " + dataPath );
+        emit newLog( "Searching Ae Data in: " + dataPath );
 
         QDir test(dataPath);
         if (QDir(test.absolutePath() + "/Adobe/After Effects").exists())
@@ -69,15 +57,15 @@ void AERenderProcess::findDataPath()
 
     //TODO MAC OS
 
-    emit newDebug( "AE Data Location: " + _dataPath );
+    emit newLog( "AE Data Location: " + _dataPath );
 }
 
-QString AERenderProcess::dataPath() const
+QString AfterEffectsVersion::dataPath() const
 {
     return _dataPath;
 }
 
-void AERenderProcess::init()
+void AfterEffectsVersion::init()
 {
     QFile aerenderFile(_path);
 
@@ -93,21 +81,23 @@ void AERenderProcess::init()
             _name = match.captured(1);
         }
 
-        emit newDebug( "Found Ae version: " + version );
+        emit newLog( "Found Ae version: " + version );
 
         //get real version number from aerender
-        _aeOutput = "";
-        _aerender->setProgram(aerenderFile.fileName());
-        _aerender->setArguments(QStringList("-help"));
-        _aerender->start();
-        _aerender->waitForFinished(3000);
+        QProcess aerender(this);
+        aerender.setProgram(aerenderFile.fileName());
+        aerender.setArguments(QStringList("-help"));
+        aerender.start();
+        aerender.waitForFinished(3000);
+
+        QString aeOutput = aerender.readAll();
 
         QRegularExpression reRealVersion(".*aerender version ([\\d.x]+)",QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption);
-        match = reRealVersion.match(_aeOutput);
+        match = reRealVersion.match(aeOutput);
 
         if (match.hasMatch())
         {
-            emit newDebug( "Found Ae version number: " + match.captured(1) );
+            emit newLog( "Found Ae version number: " + match.captured(1) );
 
             _name += " (" + match.captured(1) + ")";
 
@@ -133,7 +123,7 @@ void AERenderProcess::init()
     }
 }
 
-bool AERenderProcess::setDuMETemplates()
+bool AfterEffectsVersion::setDuMETemplates()
 {
     //load render settings and output modules
 
@@ -220,7 +210,7 @@ qDebug() << outputFilePaths;
     return true;
 }
 
-void AERenderProcess::restoreOriginalTemplates()
+void AfterEffectsVersion::restoreOriginalTemplates()
 {
     //if found, replace templates
     if (_dataPath == "") return;
@@ -296,138 +286,17 @@ qDebug() << "Restoring " + bakPath;
     }
 }
 
-void AERenderProcess::started()
-{
-    _aeOutput = "";
-}
-
-QString AERenderProcess::aeOutput() const
-{
-    return _aeOutput;
-}
-
-bool AERenderProcess::isValid() const
+bool AfterEffectsVersion::isValid() const
 {
     return _isValid;
 }
 
-void AERenderProcess::stdOutput()
-{
-    _aeOutput += _aerender->readAllStandardOutput();
-}
-
-void AERenderProcess::errorOccurred(QProcess::ProcessError e)
-{
-    QString error;
-    if (e == QProcess::FailedToStart)
-    {
-        error = "Failed to start AERender.";
-    }
-    else if (e == QProcess::Crashed)
-    {
-        error = "AERender just crashed.";
-    }
-    else if (e == QProcess::Timedout)
-    {
-        error = "AERender operation timed out.";
-    }
-    else if (e == QProcess::WriteError)
-    {
-        error = "AERender write Error.";
-    }
-    else if (e == QProcess::ReadError)
-    {
-        error = "Cannot read AERender output.";
-    }
-    else if (e == QProcess::UnknownError)
-    {
-        error = "An unknown AERender error occured.";
-    }
-
-    emit newDebug( error );
-}
-
-void AERenderProcess::readyReadAE(QString output)
-{
-    emit newDebug("AERender output: " + output);
-
-    _aeOutput = _aeOutput + output;
-/*
-    //parse
-
-    //get current input
-    MediaInfo *input = _currentItem->getInputMedias().at(0);
-
-    //Duration
-    QRegularExpression reDuration("PROGRESS:  Duration: (\\d):(\\d\\d):(\\d\\d):(\\d\\d)");
-    QRegularExpressionMatch match = reDuration.match(output);
-    if (match.hasMatch())
-    {
-        int h = match.captured(1).toInt();
-        int m = match.captured(2).toInt();
-        int s = match.captured(3).toInt();
-        int i = match.captured(4).toInt();
-
-        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
-
-        input->setDurationH(h);
-        input->setDurationM(m);
-        input->setDurationS(s);
-        input->setDurationF(i);
-        input->setDuration(duration);
-    }
-
-    QRegularExpression reFrameRate("PROGRESS:  Frame Rate: (\\d+,\\d\\d)");
-    match = reFrameRate.match(output);
-    if (match.hasMatch())
-    {
-        double fr = match.captured(1).toDouble();
-
-        input->setVideoFramerate(fr);
-
-        int h = input->durationH();
-        int m = input->durationM();
-        double s = input->durationS();
-        int i = input->durationF();
-
-        double duration = h*60*60 + m*60 + s + i/input->videoFramerate();
-        input->setDuration(duration);
-    }
-
-    QRegularExpression reProgress("PROGRESS:  \\d:\\d\\d:\\d\\d:\\d\\d \\((\\d+)\\)");
-    match = reProgress.match(output);
-    if (match.hasMatch())
-    {
-        _currentFrame = match.captured(1).toInt();
-        //time remaining
-        //get current input duration
-        //gets the current item duration
-        double duration = input->duration() * input->videoFramerate();
-        if (duration > 0)
-        {
-            if (_currentFrame > 0)
-            {
-                int elapsed = _startTime.elapsed() / 1000;
-                double remaining = elapsed*duration/_currentFrame - elapsed;
-                _timeRemaining = QTime(0,0,0).addMSecs(remaining*1000);
-            }
-        }
-    }
-
-    //TODO get size and bitrate
-
-
-    emit progress();
-*/
-}
-
-
-QString AERenderProcess::name() const
+QString AfterEffectsVersion::name() const
 {
     return _name;
 }
 
-QString AERenderProcess::path() const
+QString AfterEffectsVersion::path() const
 {
     return QDir::toNativeSeparators(_path);
 }
