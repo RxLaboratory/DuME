@@ -108,15 +108,7 @@ signals:
     /**
      * @brief newLog Emitted when some debug logs are available
      */
-    void newLog(QString);
-    /**
-     * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
-     */
-    void newError(QString);
-    /**
-     * @brief newOutput Emitted when some general infos are available
-     */
-    void newOutput(QString);
+    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
     // === QUEUE ===
     /**
@@ -137,12 +129,6 @@ private slots:
     void postRenderCleanUp();
     // changes the current status (and emits statusChanged)
     void setStatus(Status st);
-    // logs a message
-    void log(QString message);
-    // logs an error
-    void error(QString message);
-    // logs an output (debug)
-    void output(QString message);
 
     // finished current item rendering/transcoding
     void finished();
@@ -152,9 +138,7 @@ private slots:
     // === ffmpeg ===
 
     // logs ffmpeg output
-    void ffmpegLog(QString message);
-    void ffmpegError(QString message);
-    void ffmpegOutput(QString message);
+    void ffmpegLog(QString message, LogUtils::LogType lt = LogUtils::Information );
     void ffmpegFinished();
     void ffmpegProgress();
     // launch ffmpeg transcoding
@@ -163,9 +147,7 @@ private slots:
     // === Ae ===
 
     // logs ae output
-    void aeLog(QString message);
-    void aeError(QString message);
-    void aeOutput(QString message);
+    void aeLog(QString message, LogUtils::LogType lt = LogUtils::Information );
     void aeProgress();
     void aeFinished();
     // launch after effects rendering

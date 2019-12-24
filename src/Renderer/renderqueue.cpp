@@ -12,9 +12,7 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     _ffmpegRenderer = new FFmpegRenderer( _ffmpeg->binary() );
     // Connections
     connect( _ffmpeg, &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
-    connect( _ffmpegRenderer, &FFmpegRenderer::newError, this, &RenderQueue::ffmpegError ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
-    connect( _ffmpegRenderer, &FFmpegRenderer::newOutput, this, &RenderQueue::ffmpegOutput ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::finished, this, &RenderQueue::ffmpegFinished ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::progress, this, &RenderQueue::ffmpegProgress ) ;
 
@@ -26,10 +24,8 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     // Create the renderer
     _aeRenderer = new AERenderer( _ae->binary() );
     // Connections
-    connect( _ae, &AfterEffects::currentAeVersionChanged, _aeRenderer, &AERenderer::setBinary ) ;
-    connect( _aeRenderer, &AERenderer::newError, this, &RenderQueue::aeError ) ;
+    connect( _ae, &AfterEffects::binaryChanged, _aeRenderer, &AERenderer::setBinary ) ;
     connect( _aeRenderer, &AERenderer::newLog, this, &RenderQueue::aeLog ) ;
-    connect( _aeRenderer, &AERenderer::newOutput, this, &RenderQueue::aeOutput ) ;
     connect( _aeRenderer, &AERenderer::finished, this, &RenderQueue::aeFinished ) ;
     connect( _aeRenderer, &AERenderer::progress, this, &RenderQueue::aeProgress ) ;
 
@@ -61,49 +57,22 @@ void RenderQueue::setStatus(RenderQueue::Status st)
     emit statusChanged(_status);
 }
 
-void RenderQueue::log(QString message)
-{
-    qInfo() << message;
-    emit newLog( message );
-}
-
-void RenderQueue::error(QString message)
-{
-    qWarning() << message;
-    emit newError( message );
-}
-
-void RenderQueue::output(QString message)
-{
-    qDebug() << message;
-    emit newOutput( message );
-}
-
-void RenderQueue::ffmpegLog(QString message)
+void RenderQueue::ffmpegLog(QString message, LogUtils::LogType lt)
 {
     message = "FFmpeg | " + message;
-    log( message );
-}
+    emit newLog( message, lt );
 
-void RenderQueue::ffmpegError(QString message)
-{
-    message = "FFmpeg | " + message;
-    error( message );
-
-    setStatus( Error );
-    _currentItem->setStatus( QueueItem::Error );
-    _encodingHistory << _currentItem;
-}
-
-void RenderQueue::ffmpegOutput(QString message)
-{
-    message = "FFmpeg | " + message;
-    output( message );
+    if ( lt == LogUtils::Critical )
+    {
+        setStatus( Error );
+        _currentItem->setStatus( QueueItem::Error );
+        _encodingHistory << _currentItem;
+    }
 }
 
 void RenderQueue::ffmpegFinished()
 {
-    log("FFmpeg Transcoding process successfully finished");
+    emit newLog("FFmpeg Transcoding process successfully finished");
     finished();
 }
 
@@ -208,12 +177,12 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (codec == "h264" && width % 2 != 0)
                 {
                     width--;
-                    log("Adjusting width for h264 compatibility. New width: " + QString::number(width));
+                    emit newLog("Adjusting width for h264 compatibility. New width: " + QString::number(width));
                 }
                 if (codec == "h264" && height % 2 != 0)
                 {
                     height--;
-                    log("Adjusting height for h264 compatibility. New height: " + QString::number(height));
+                    emit newLog("Adjusting height for h264 compatibility. New height: " + QString::number(height));
                 }
                 if (width != 0 && height != 0)
                 {
@@ -377,7 +346,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         arguments << outputPath;
     }
 
-    log("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
+    emit newLog("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
 
     //launch
     _ffmpegRenderer->setOutputFileName( item->getOutputMedias()[0]->fileName() );
@@ -389,26 +358,17 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     setStatus(FFmpegEncoding);
 }
 
-void RenderQueue::aeLog(QString message)
+void RenderQueue::aeLog(QString message, LogUtils::LogType lt)
 {
     message = "After Effects | " + message;
-    log( message );
-}
+    emit newLog( message, lt );
 
-void RenderQueue::aeError(QString message)
-{
-    message = "After Effects | " + message;
-    error( message );
-
-    setStatus( Error );
-    _currentItem->setStatus( QueueItem::Error );
-    _encodingHistory << _currentItem;
-}
-
-void RenderQueue::aeOutput(QString message)
-{
-    message = "After Effects | " + message;
-    output( message );
+    if ( lt == LogUtils::Critical )
+    {
+        setStatus( Error );
+        _currentItem->setStatus( QueueItem::Error );
+        _encodingHistory << _currentItem;
+    }
 }
 
 void RenderQueue::aeProgress()
@@ -502,7 +462,7 @@ void RenderQueue::clearQueue()
 
 void RenderQueue::stop(int timeout)
 {
-    log( "Stopping queue" );
+    emit newLog( "Stopping queue" );
 
     if ( _status == FFmpegEncoding )
     {
@@ -515,7 +475,7 @@ void RenderQueue::stop(int timeout)
 
     setStatus(Waiting);
 
-    log( "Queue stopped" );
+    emit newLog( "Queue stopped" );
 }
 
 void RenderQueue::finished()
@@ -581,7 +541,7 @@ void RenderQueue::aeFinished()
 {
     MediaInfo *input = _currentItem->getInputMedias()[0];
 
-    log("After Effects Render process successfully finished");
+    emit newLog("After Effects Render process successfully finished");
 
     //encode rendered EXR
     if (!input->aeUseRQueue())
@@ -666,7 +626,7 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
         }
     }
 
-    log("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
+    emit newLog("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));
 
     //adjust the number of threads
     //keep one available for exporting the audio
