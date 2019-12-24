@@ -4,7 +4,7 @@ QueueItem::QueueItem(QList<MediaInfo *> inputs, QList<MediaInfo *> outputs, QObj
 {
     _inputMedias = inputs;
     _outputMedias = outputs;
-    _status = Waiting;
+    _status = MediaUtils::Waiting;
     emit queued();
 }
 
@@ -12,14 +12,14 @@ QueueItem::QueueItem(MediaInfo *input, QList<MediaInfo *> outputs, QObject *pare
 {
     _inputMedias << input;
     _outputMedias = outputs;
-    _status = Waiting;
+    _status = MediaUtils::Waiting;
 }
 
 QueueItem::QueueItem(MediaInfo *input, MediaInfo *output, QObject *parent) : QObject(parent)
 {
     _inputMedias << input;
     _outputMedias << output;
-    _status = Waiting;
+    _status = MediaUtils::Waiting;
 }
 
 QueueItem::~QueueItem()
@@ -63,6 +63,7 @@ MediaInfo *QueueItem::takeInputMedia(QString fileName)
             return _inputMedias.takeAt(i);
         }
     }
+    return nullptr;
 }
 
 MediaInfo *QueueItem::takeOutputMedia(int id)
@@ -79,22 +80,23 @@ MediaInfo *QueueItem::takeOutputMedia(QString fileName)
             return _outputMedias.takeAt(i);
         }
     }
+    return nullptr;
 }
 
-QueueItem::Status QueueItem::getStatus()
+MediaUtils::Status QueueItem::getStatus()
 {
     return _status;
 }
 
-void QueueItem::setStatus(Status st)
+void QueueItem::setStatus( MediaUtils::Status st )
 {
     if(_status == st) return;
     _status = st;
     emit statusChanged( _status );
-    if (_status == InProgress) emit encodingStarted();
-    else if (_status == Finished) emit encodingFinished();
-    else if (_status == Stopped || _status == Error || _status == AEError) emit encodingStopped();
-    else if (_status == Waiting) emit queued();
+    if (_status == MediaUtils::FFmpegEncoding || _status == MediaUtils::AERendering || _status == MediaUtils::BlenderRendering ) emit encodingStarted();
+    else if (_status == MediaUtils::Finished ) emit encodingFinished();
+    else if (_status == MediaUtils::Stopped || _status == MediaUtils::Error ) emit encodingStopped();
+    else if (_status == MediaUtils::Waiting ) emit queued();
 }
 
 void QueueItem::postRenderCleanUp()

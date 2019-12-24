@@ -2,7 +2,7 @@
 
 RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *parent ) : QObject(parent)
 {
-    setStatus( Initializing );
+    setStatus( MediaUtils::Initializing );
 
     // === FFmpeg ===
 
@@ -33,7 +33,7 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     timer = new QTimer( this );
     timer->setSingleShot(true);
 
-    setStatus( Waiting );
+    setStatus( MediaUtils::Waiting );
 }
 
 RenderQueue::~RenderQueue()
@@ -44,14 +44,14 @@ RenderQueue::~RenderQueue()
 
 void RenderQueue::postRenderCleanUp()
 {
-    setStatus(Cleaning);
+    setStatus( MediaUtils::Cleaning );
 
     _currentItem->postRenderCleanUp();
 
     encodeNextItem();
 }
 
-void RenderQueue::setStatus(RenderQueue::Status st)
+void RenderQueue::setStatus(MediaUtils::Status st)
 {
     _status = st;
     emit statusChanged(_status);
@@ -64,8 +64,8 @@ void RenderQueue::ffmpegLog(QString message, LogUtils::LogType lt)
 
     if ( lt == LogUtils::Critical )
     {
-        setStatus( Error );
-        _currentItem->setStatus( QueueItem::Error );
+        setStatus( MediaUtils::Error );
+        _currentItem->setStatus( MediaUtils::Error );
         _encodingHistory << _currentItem;
     }
 }
@@ -353,9 +353,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     _ffmpegRenderer->setNumFrames( int( item->getOutputMedias()[0]->duration() * item->getOutputMedias()[0]->videoFramerate() ) );
     _ffmpegRenderer->setFrameRate( item->getOutputMedias()[0]->videoFramerate() );
     _ffmpegRenderer->start( arguments );
-    _currentItem->setStatus(QueueItem::InProgress);
+    _currentItem->setStatus(MediaUtils::FFmpegEncoding);
     emit encodingStarted( _currentItem );
-    setStatus(FFmpegEncoding);
+    setStatus( MediaUtils::FFmpegEncoding );
 }
 
 void RenderQueue::aeLog(QString message, LogUtils::LogType lt)
@@ -365,8 +365,8 @@ void RenderQueue::aeLog(QString message, LogUtils::LogType lt)
 
     if ( lt == LogUtils::Critical )
     {
-        setStatus( Error );
-        _currentItem->setStatus( QueueItem::Error );
+        setStatus( MediaUtils::Error );
+        _currentItem->setStatus( MediaUtils::Error );
         _encodingHistory << _currentItem;
     }
 }
@@ -387,7 +387,7 @@ void RenderQueue::aeProgress()
     emit progress();
 }
 
-RenderQueue::Status RenderQueue::status() const
+MediaUtils::Status RenderQueue::status() const
 {
     return _status;
 }
@@ -399,9 +399,9 @@ QueueItem *RenderQueue::getCurrentItem()
 
 void RenderQueue::encode()
 {
-    if (_status == FFmpegEncoding || _status == AERendering ) return;
+    if (_status == MediaUtils::FFmpegEncoding || _status == MediaUtils::AERendering ) return;
 
-    setStatus(Launching);
+    setStatus( MediaUtils::Launching );
     //launch first item
     encodeNextItem();
 }
@@ -464,29 +464,29 @@ void RenderQueue::stop(int timeout)
 {
     emit newLog( "Stopping queue" );
 
-    if ( _status == FFmpegEncoding )
+    if ( _status == MediaUtils::FFmpegEncoding )
     {
         _ffmpegRenderer->stop( timeout );
     }
-    else if ( _status == AERendering )
+    else if ( _status == MediaUtils::AERendering )
     {
         _aeRenderer->stop( timeout );
     }
 
-    setStatus(Waiting);
+    setStatus( MediaUtils::Waiting );
 
     emit newLog( "Queue stopped" );
 }
 
 void RenderQueue::finished()
 {
-    if (_status == FFmpegEncoding || _status == AERendering || _status == BlenderRendering )
+    if (_status == MediaUtils::FFmpegEncoding || _status == MediaUtils::AERendering || _status == MediaUtils::BlenderRendering )
     {
-        _currentItem->setStatus( QueueItem::Finished );
+        _currentItem->setStatus( MediaUtils::Finished );
         //move to history
         _encodingHistory << _currentItem;
 
-        setStatus(Cleaning);
+        setStatus( MediaUtils::Cleaning );
 
         disconnect(timer, SIGNAL(timeout()), nullptr, nullptr);
         connect(timer,SIGNAL(timeout()), this, SLOT(postRenderCleanUp()));
@@ -496,7 +496,7 @@ void RenderQueue::finished()
     }
     else
     {
-        setStatus(Waiting);
+        setStatus( MediaUtils::Waiting );
     }
 }
 
@@ -504,11 +504,11 @@ void RenderQueue::encodeNextItem()
 {
     if (_encodingQueue.count() == 0)
     {
-        setStatus(Waiting);
+        setStatus( MediaUtils::Waiting );
         return;
     }
 
-    setStatus(Launching);
+    setStatus( MediaUtils::Launching );
 
     _currentItem = _encodingQueue.takeAt(0);
 
@@ -556,7 +556,7 @@ void RenderQueue::aeFinished()
         //if nothing has been rendered, set to error and go on with next queue item
         if (files.count() == 0)
         {
-            _currentItem->setStatus(QueueItem::AEError);
+            _currentItem->setStatus(MediaUtils::Error);
             emit encodingFinished( );
             //move to history
             _encodingHistory << _currentItem;
@@ -641,7 +641,7 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     // audio
     if (audio) _aeRenderer->start( audioArguments );
 
-    _currentItem->setStatus(QueueItem::InProgress);
-    setStatus(AERendering);
+    _currentItem->setStatus(MediaUtils::AERendering);
+    setStatus( MediaUtils::AERendering );
     emit encodingStarted(_currentItem);
 }

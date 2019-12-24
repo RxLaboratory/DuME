@@ -36,6 +36,12 @@ public:
      */
     enum SizeUnit { Bytes, KB, MB, GB};
     Q_ENUM(SizeUnit)
+
+    /**
+     * @brief The Status enum Used to describe the current status of the renderer
+     */
+    enum Status { Initializing, Waiting, Launching, FramesConversion, FFmpegEncoding, AERendering, BlenderRendering, Cleaning, Finished, Stopped, Error, Other };
+    Q_ENUM(Status)
 };
 
 class LogUtils

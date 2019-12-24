@@ -13,12 +13,6 @@ public:
     QueueItem(MediaInfo *input,MediaInfo *output,QObject *parent = nullptr);
     ~QueueItem();
 
-    /**
-     * @brief The Status enum Used to describe the current status of the item
-     */
-    enum Status { Waiting, InProgress, Finished, Stopped, AEError, Error };
-    Q_ENUM(Status)
-
     QList<MediaInfo*> getInputMedias();
     QList<MediaInfo*> getOutputMedias();
     int addInputMedia(MediaInfo *input);
@@ -27,14 +21,14 @@ public:
     MediaInfo *takeInputMedia(QString fileName);
     MediaInfo *takeOutputMedia(int id);
     MediaInfo *takeOutputMedia(QString fileName);
-    Status getStatus();
+    MediaUtils::Status getStatus();
 
 public slots:
     /**
      * @brief setStatus Changes the status of the item
      * @param st The status
      */
-    void setStatus(Status st);
+    void setStatus( MediaUtils::Status st );
     void postRenderCleanUp();
 
 signals:
@@ -42,14 +36,14 @@ signals:
     void encodingStopped();
     void encodingFinished();
     void queued();
-    void statusChanged(Status);
+    void statusChanged( MediaUtils::Status );
 
 private slots:
 
 private:
     QList<MediaInfo *> _inputMedias;
     QList<MediaInfo *> _outputMedias;
-    Status _status;
+    MediaUtils::Status _status;
 };
 
 #endif // FFQUEUEITEM_H

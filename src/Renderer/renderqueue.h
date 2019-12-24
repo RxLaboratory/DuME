@@ -30,16 +30,10 @@ public:
     ~RenderQueue();
 
     /**
-     * @brief The Status enum Used to describe the current status of the renderer
-     */
-    enum Status { Initializing, Waiting, FFmpegEncoding, Error, Other, AERendering, BlenderRendering, FramesConversion, Cleaning, Launching };
-    Q_ENUM(Status)
-
-    /**
      * @brief status Returns the current status of the renderer
      * @return The status
      */
-    Status status() const;
+    MediaUtils::Status status() const;
 
     /**
      * @brief getCurrentInputInfos Gets the item currently being encoded
@@ -104,7 +98,7 @@ signals:
     /**
      * @brief statusChanged Emitted when the Renderer status changes.
      */
-    void statusChanged(RenderQueue::Status);
+    void statusChanged(MediaUtils::Status);
     /**
      * @brief newLog Emitted when some debug logs are available
      */
@@ -128,7 +122,7 @@ private slots:
     // removes temp files, cache, restores AE templates...
     void postRenderCleanUp();
     // changes the current status (and emits statusChanged)
-    void setStatus(Status st);
+    void setStatus(MediaUtils::Status st);
 
     // finished current item rendering/transcoding
     void finished();
@@ -160,7 +154,7 @@ private:
     // The application settings
     QSettings settings;
     // The current status
-    Status _status;
+    MediaUtils::Status _status;
     // A timer to keep track of the processes
     QTimer *timer;
 
