@@ -229,14 +229,16 @@ void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
 
 void AbstractRenderer::killRenderProcesses()
 {   
+    bool killed = false;
     while ( _renderProcesses.count() >= 0 )
     {
         QProcess *rp = _renderProcesses.takeLast();
         rp->kill();
         rp->deleteLater();
         emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
+        killed = true;
     }
-    emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
+    if (killed) emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
     setStatus( MediaUtils::Stopped );
 }
 

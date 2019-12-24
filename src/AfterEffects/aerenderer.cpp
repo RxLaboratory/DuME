@@ -2,8 +2,8 @@
 
 AERenderer::AERenderer(QString aerender, QObject *parent) : AbstractRenderer(parent)
 {
-    setBinary( aerender );
     _duration = 0;
+    setBinary( aerender ); 
 }
 
 void AERenderer::readyRead(QString output)
