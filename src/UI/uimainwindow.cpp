@@ -3,31 +3,23 @@
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
 #include "duexr.h"
-#ifdef QT_DEBUG
-#include <QtDebug>
-#endif
 
 UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
-    debugLog("Initialization");
+    log("Initialization");
 
     // === SETTINGS ===
-    debugLog("Init - Settings");
+    log("Init - Settings");
     settings = new QSettings(this);
-    versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
     home.mkdir("DuME Presets");
 
-    // FFMPEG
-    ffmpeg = ff;
-
-
     // === UI SETUP ===
 
-    debugLog("Init - UI");
+    log("Init - UI");
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //populate toolbar
@@ -54,11 +46,11 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->installEventFilter(this);
 
     //settings widget
-    settingsWidget = new UISettingsWidget(ffmpeg,this);
+    settingsWidget = new UISettingsWidget(_ffmpeg,this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     //queue widget
-    queueWidget = new UIQueueWidget(ffmpeg,this);
+    queueWidget = new UIQueueWidget(_ffmpeg,this);
     queueLayout->addWidget(queueWidget);
 
     //add fonts
@@ -86,6 +78,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainStackWidget->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
+    versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
 
     //restore geometry
     settings->beginGroup("mainwindow");
@@ -102,12 +95,15 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     consoleSplitter->setSizes(sizes);
     settings->endGroup();
 
-    // === FFMPEG INIT ===
-    debugLog("Init - FFmpeg (run test)");
-    if (ffmpeg->getStatus() == FFmpeg::Error)
+    // === FFMPEG ===
+    log("Init - FFmpeg (run test)");
+
+    _ffmpeg = ff;
+
+    if (_ffmpeg->status() == MediaUtils::Error)
     {
-        debugLog("FFmpeg error",Warning);
-        debugLog(ffmpeg->getLastErrorMessage());
+        log("FFmpeg error", LogUtils::Critical );
+        log( _ffmpeg->lastErrorMessage() );
         queuePage->setEnabled(false);
     }
     else
@@ -115,16 +111,23 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
         ffmpeg_init();
     }
 
+    // === AE ===
+    log ("Init - After Effects");
+
+    _ae = new AfterEffects( this );
+
+
     //accept drops
     setAcceptDrops(true);
 
+    //map events
     mapEvents();
 }
 
 void UIMainWindow::mapEvents()
 {
     // === MAP EVENTS ===
-    debugLog("Init - Map events");
+    log("Init - Map events");
 
     //connect maximize and minimize buttons
 #ifdef Q_OS_WIN
@@ -136,17 +139,11 @@ void UIMainWindow::mapEvents()
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 #endif
     //FFmpeg
-    connect(ffmpeg,SIGNAL(newOutput(QString)),this,SLOT(console(QString)));
-    connect(ffmpeg,SIGNAL(processError(QString)),this,SLOT(ffmpeg_errorOccurred(QString)));
-    connect(ffmpeg,SIGNAL(encodingStarted(FFQueueItem*)),this,SLOT(ffmpeg_started(FFQueueItem*)));
-    connect(ffmpeg,SIGNAL(encodingFinished(FFQueueItem*)),this,SLOT(ffmpeg_finished(FFQueueItem*)));
-    connect(ffmpeg,SIGNAL(statusChanged(FFmpeg::Status)),this,SLOT(ffmpeg_statusChanged(FFmpeg::Status)));
-    connect(ffmpeg,SIGNAL(progress()),this,SLOT(ffmpeg_progress()));
-    connect(ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
-    connect(ffmpeg,SIGNAL(debugInfo(QString)),this,SLOT(ffmpeg_debugLog(QString)));
+    connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
 
     //settings
-    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),ffmpeg,SLOT(setBinaryFileName(QString)));
+    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),_ffmpeg,SLOT(setBinaryFileName(QString)));
     connect(settingsWidget,SIGNAL(presetsPathChanged(QString)),queueWidget,SLOT(presetsPathChanged(QString)));
 
     //QueueWidget
@@ -156,18 +153,18 @@ void UIMainWindow::mapEvents()
 void UIMainWindow::ffmpeg_init()
 {
     //get help
-    helpEdit->setText(ffmpeg->getLongHelp());
+    helpEdit->setText(_ffmpeg->getLongHelp());
     queuePage->setEnabled(true);
 }
 
 void UIMainWindow::ffmpeg_debugLog(QString log)
 {
-    debugLog("FFmpeg: " + log);
+    log("FFmpeg: " + log);
 }
 
 void UIMainWindow::ffmpeg_errorOccurred(QString e)
 {
-    debugLog("FFmpeg error: " + e,Warning);
+    log("FFmpeg error: " + e,Warning);
     mainStatusBar->showMessage("An FFmpeg error has occured, see the console and the debug log.");
 }
 
@@ -212,7 +209,7 @@ void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         mainStatusBar->clearMessage();
         statusLabel->setText("Ready.");
         actionStatus->setText("Ready");
-        debugLog("== WAITING ==");
+        log("== WAITING ==");
         queueWidget->setEnabled(true);
         setCursor(Qt::ArrowCursor);
     }
@@ -223,7 +220,7 @@ void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         mainStatusBar->clearMessage();
         statusLabel->setText("Transcoding...");
         actionStatus->setText("Transcoding...");
-        debugLog("== TRANSCODING ==");
+        log("== TRANSCODING ==");
         queueWidget->setEnabled(false);
         setCursor(Qt::BusyCursor);
     }
@@ -233,7 +230,7 @@ void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         actionStop->setEnabled(false);
         statusLabel->setText("Ready.");
         actionStatus->setText("An error occured");
-        debugLog("== AN ERROR OCCURED ==");
+        log("== AN ERROR OCCURED ==");
         queueWidget->setEnabled(true);
         setCursor(Qt::ArrowCursor);
     }
@@ -243,7 +240,7 @@ void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         actionStop->setEnabled(true);
         statusLabel->setText("Rendering.");
         actionStatus->setText("Rendering (Ae)...");
-        debugLog("== RENDERING (Ae) ==");
+        log("== RENDERING (Ae) ==");
         queueWidget->setEnabled(false);
         setCursor(Qt::BusyCursor);
     }
@@ -253,7 +250,7 @@ void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
         actionStop->setEnabled(true);
         statusLabel->setText("Cleaning.");
         actionStatus->setText("Cleaning...");
-        debugLog("== CLEANING ==");
+        log("== CLEANING ==");
         queueWidget->setEnabled(true);
         setCursor(Qt::ArrowCursor);
     }
@@ -265,26 +262,26 @@ void UIMainWindow::ffmpeg_progress()
     qDebug() << "== Encoding Progress ==";
 #endif
     //size
-    int outputSize = ffmpeg->getOutputSize(MediaInfo::MB);
+    int outputSize = _ffmpeg->getOutputSize(MediaInfo::MB);
     outputSizeLabel->setText(QString::number(outputSize) + " MB");
     //bitrate
-    int bitrate = ffmpeg->getOutputBitrate(MediaInfo::Mbps);
+    int bitrate = _ffmpeg->getOutputBitrate(MediaInfo::Mbps);
     outputBitrateLabel->setText(QString::number(bitrate) + " Mbps");
     //time elapsed
-    QTime elapsed = ffmpeg->getElapsedTime();
+    QTime elapsed = _ffmpeg->getElapsedTime();
     timeLabel->setText(elapsed.toString("hh:mm:ss"));
 
 #ifdef QT_DEBUG
     qDebug() << elapsed.toString("hh:mm:ss") << QString::number(outputSize) + " MB";
 #endif
-    debugLog("=== Encoding progress: output file size: " + QString::number(outputSize) + "MB");
+    log("=== Encoding progress: output file size: " + QString::number(outputSize) + "MB");
     //speed
-    speedLabel->setText(QString::number(ffmpeg->getEncodingSpeed()) + "x");
+    speedLabel->setText(QString::number(_ffmpeg->getEncodingSpeed()) + "x");
     //time remaining
-    QTime remaining = ffmpeg->getTimeRemaining();
+    QTime remaining = _ffmpeg->getTimeRemaining();
     timeRemainingLabel->setText(remaining.toString("hh:mm:ss"));
     //progress bar
-    progressBar->setValue(ffmpeg->getCurrentFrame());
+    progressBar->setValue(_ffmpeg->getCurrentFrame());
 }
 
 void UIMainWindow::console(QString log)
@@ -299,22 +296,41 @@ void UIMainWindow::console(QString log)
     mainStatusBar->showMessage(log);
 }
 
-void UIMainWindow::debugLog(QString log, ErrorType type)
+void UIMainWindow::log(QString log, LogUtils::LogType type)
 {
-    //add date
-    QTime currentTime = QTime::currentTime();
     //type
     QString typeString = "";
-    if (type == Warning) typeString = "/!\\ Warning: ";
-    else if (type == Critical) typeString = " --- !!! Critical: ";
-    else if (type == Fatal) typeString = " === Fatal === ";
+    if ( type == LogUtils::Debug )
+    {
+        qDebug() << log;
+        return;
+    }
+    else if ( type == LogUtils::Information )
+    {
+        qInfo() << log;
+    }
+    if (type == LogUtils::Warning)
+    {
+        qWarning() << log;
+        typeString = "/!\\ Warning: ";
+    }
+    else if (type == LogUtils::Critical)
+    {
+        qCritical() << log;
+        typeString = " --- !!! Critical: ";
+    }
+    else if (type == LogUtils::Fatal)
+    {
+        qFatal("%s", qUtf8Printable(log));
+        typeString = " === Fatal === ";
+    }
+
+    //add date
+    QTime currentTime = QTime::currentTime();
     //log
-    debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
+    debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + "\n" + log);
     // put the slider at the bottom
     debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
-#ifdef QT_DEBUG
-    qDebug() << typeString << log;
-#endif
 }
 
 void UIMainWindow::on_ffmpegCommandsEdit_returnPressed()
@@ -326,7 +342,7 @@ void UIMainWindow::on_ffmpegCommandsButton_clicked()
 {
     QString commands = ffmpegCommandsEdit->text();
     if (commands == "") commands = "-h";
-    ffmpeg->runCommand(commands);
+    _ffmpeg->runCommand(commands);
 }
 
 void UIMainWindow::on_actionGo_triggered()
@@ -336,15 +352,15 @@ void UIMainWindow::on_actionGo_triggered()
     QList<MediaInfo *> output = queueWidget->getOutputMedia();
 
     //Launch!
-    debugLog("=== Beginning encoding ===");
-    ffmpeg->encode(input,output);
+    log("=== Beginning encoding ===");
+    _ffmpeg->encode(input,output);
 }
 
 void UIMainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
-    ffmpeg->stop(6000);
+    _ffmpeg->stop(6000);
 }
 
 void UIMainWindow::on_actionSettings_triggered(bool checked)

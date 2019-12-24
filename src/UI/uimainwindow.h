@@ -15,6 +15,7 @@
 #include <QDebug>
 
 #include "FFmpeg/ffmpeg.h"
+#include "AfterEffects/aftereffects.h"
 #include "utils.cpp"
 
 #include "uitoolbarspacer.h"
@@ -31,16 +32,11 @@ public:
 
 private slots:
     // FFMPEG
-    void ffmpeg_errorOccurred(QString e);
-    void ffmpeg_started(QueueItem *item);
-    void ffmpeg_finished(QueueItem *item);
-    void ffmpeg_statusChanged(FFmpeg::Status status);
-    void ffmpeg_progress();
+    void ffmpegLog(QString e);
     /**
      * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
      */
     void ffmpeg_init();
-    void ffmpeg_debugLog(QString log);
 
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
@@ -109,9 +105,15 @@ private:
 
     // ===== FFMPEG ======
     /**
-     * @brief ffmpeg The ffmpeg bridge
+     * @brief ffmpeg The FFmpeg information and utils
      */
-    FFmpeg *ffmpeg;
+    FFmpeg *_ffmpeg;
+
+    // ===== AE =====
+    /**
+     * @brief ae The After Effects information and utils
+     */
+    AfterEffects *_ae;
 
 protected:
     void closeEvent(QCloseEvent *event);
