@@ -46,7 +46,7 @@ public:
     QVersionNumber version() const;
 
 signals:
-    void newLog(QString);
+    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
 
 private slots:

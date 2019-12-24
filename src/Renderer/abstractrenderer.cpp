@@ -111,7 +111,7 @@ void AbstractRenderer::processStdError()
     int id = _renderProcesses.indexOf(process);
     QString log = "Process " + QString::number(id) + ": " + process->readAllStandardError();
     readyRead( log );
-    emit newOutput( log );
+    emit newLog( log, LogUtils::Debug );
 }
 
 void AbstractRenderer::processStdOutput()
@@ -120,7 +120,7 @@ void AbstractRenderer::processStdOutput()
     int id = _renderProcesses.indexOf(process);
     QString log = "Process " + QString::number(id) + ": " + process->readAllStandardOutput();
     readyRead( log );
-    emit newOutput( log );
+    emit newLog( log, LogUtils::Debug );
 }
 
 void AbstractRenderer::processStarted()
@@ -195,7 +195,7 @@ void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
         error = "An unknown process (" + QString::number( id ) + ") error occured.";
     }
 
-    emit newError( error );
+    emit newLog( error, LogUtils::Critical );
 }
 
 void AbstractRenderer::killRenderProcesses()

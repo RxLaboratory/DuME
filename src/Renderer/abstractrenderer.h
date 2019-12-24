@@ -120,17 +120,9 @@ public:
 
 signals:
     /**
-     * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
-     */
-    void newError(QString);
-    /**
      * @brief newLog Emitted when some debug infos are available
      */
-    void newLog(QString);
-    /**
-     * @brief newOutput Emitted when the process(es) output something
-     */
-    void newOutput(QString);
+    void newLog(QString, LogUtils::LogType lt = LogUtils::Information);
     /**
      * @brief started Emitted when the rendering has just started
      */
