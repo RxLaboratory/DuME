@@ -51,7 +51,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->installEventFilter(this);
 
     //settings widget
-    settingsWidget = new UISettingsWidget(_ffmpeg,this);
+    settingsWidget = new UISettingsWidget(_ffmpeg, _ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     //queue widget
