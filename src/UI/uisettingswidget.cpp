@@ -65,13 +65,15 @@ void UISettingsWidget::on_userPresetsBrowseButton_clicked()
     if (path == "") return;
     userPresetsPathEdit->setText(path);
     settings.setValue("presets/path",path);
-    emit presetsPathChanged(path);
+    settings.sync();
+    emit presetsPathChanged();
 }
 
 void UISettingsWidget::on_userPresetsPathEdit_editingFinished()
 {
     settings.setValue("presets/path",userPresetsPathEdit->text());
-    emit presetsPathChanged(userPresetsPathEdit->text());
+    settings.sync();
+    emit presetsPathChanged();
 }
 
 void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)

@@ -21,7 +21,7 @@ public:
     explicit UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent = nullptr);
 
 signals:
-    void presetsPathChanged(QString);
+    void presetsPathChanged();
 
 private slots:
     void on_ffmpegBrowseButton_clicked();
