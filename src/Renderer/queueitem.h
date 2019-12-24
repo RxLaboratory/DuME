@@ -32,10 +32,6 @@ public slots:
     void postRenderCleanUp();
 
 signals:
-    void encodingStarted();
-    void encodingStopped();
-    void encodingFinished();
-    void queued();
     void statusChanged( MediaUtils::Status );
 
 private slots:

@@ -93,10 +93,6 @@ void QueueItem::setStatus( MediaUtils::Status st )
     if(_status == st) return;
     _status = st;
     emit statusChanged( _status );
-    if (_status == MediaUtils::FFmpegEncoding || _status == MediaUtils::AERendering || _status == MediaUtils::BlenderRendering ) emit encodingStarted();
-    else if (_status == MediaUtils::Finished ) emit encodingFinished();
-    else if (_status == MediaUtils::Stopped || _status == MediaUtils::Error ) emit encodingStopped();
-    else if (_status == MediaUtils::Waiting ) emit queued();
 }
 
 void QueueItem::postRenderCleanUp()
