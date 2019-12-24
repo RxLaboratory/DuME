@@ -40,6 +40,10 @@ public:
      */
     void updateInfo(QFileInfo mediaFile);
     void loadPreset(QFileInfo presetFile);
+    /**
+     * @brief reInit Reinit all to default values
+     */
+    void reInit(bool removeFileName = true);
 
     void setMuxer(FFMuxer *muxer);
     void setContainer(QStringList container);
@@ -109,8 +113,9 @@ public:
     QString ffmpegSequenceName() const;
 
     //utils
-    QString exportToJson();
-    void exportToJson(QString jsonPath);
+    QString exportPreset();
+    void exportPreset(QString jsonPath);
+
 signals:
 
 public slots:
@@ -266,10 +271,6 @@ private:
 
     // ======== METHODS =============
 
-    /**
-     * @brief reInit Reinit all to default values
-     */
-    void reInit(bool removeFileName = true);
     /**
      * @brief loadSequence Loads all the frames of the frame sequence
      */

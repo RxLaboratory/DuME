@@ -448,7 +448,7 @@ FFMuxer *MediaInfo::muxer() const
     return _muxer;
 }
 
-QString MediaInfo::exportToJson()
+QString MediaInfo::exportPreset()
 {
     QJsonObject mediaObj;
     mediaObj.insert("version", APPVERSION);
@@ -557,12 +557,12 @@ QString MediaInfo::exportToJson()
     return jsonDoc.toJson();
 }
 
-void MediaInfo::exportToJson(QString jsonPath)
+void MediaInfo::exportPreset(QString jsonPath)
 {
     QFile jsonFile(jsonPath);
     if (jsonFile.open(QIODevice::WriteOnly))
     {
-        jsonFile.write(exportToJson().toUtf8());
+        jsonFile.write(exportPreset().toUtf8());
         jsonFile.close();
     }
 }
