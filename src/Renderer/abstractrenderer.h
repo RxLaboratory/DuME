@@ -1,4 +1,4 @@
-#ifndef ABSTRACTRENDERER_H
+﻿#ifndef ABSTRACTRENDERER_H
 #define ABSTRACTRENDERER_H
 
 #include <QObject>
@@ -9,7 +9,7 @@
 #include <QFileInfoList>
 #include <QDir>
 
-#include "utils.h"
+#include "utils.cpp"
 
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...
@@ -76,6 +76,11 @@ public:
      * @return
      */
     double expectedSize() const;
+    /**
+     * @brief status The rendering status
+     * @return
+     */
+    MediaUtils::Status status() const;
 
     // OUTPUT FILE INFO
     /**
@@ -117,28 +122,25 @@ public:
      */
     void stop(int timeout = 10000);
 
-
 signals:
     /**
      * @brief newLog Emitted when some debug infos are available
      */
     void newLog(QString, LogUtils::LogType lt = LogUtils::Information);
     /**
-     * @brief started Emitted when the rendering has just started
+     * @brief statusChanged Emitted when the current status changed.
      */
-    void started();
+    void statusChanged( MediaUtils::Status );
     /**
-     * @brief finished Emitted when the rendering has finished
-     */
-    void finished();
-    /**
-     * @brief progress Emitted each time the transcoding process outputs new stats
+     * @brief progress Emitted regularly when the renderer is rendering, to tell there are new informations about the progress
      */
     void progress();
 
 public slots:
     // CONFIGURE RENDERER
     void setBinary(const QString &binaryFileName);
+    // Changes the current status
+    void setStatus(MediaUtils::Status status);
 
 protected:
 
@@ -181,6 +183,8 @@ private:
     // The process(es)
     QList<QProcess *> _renderProcesses;
     QString _binaryFileName;
+    // The status
+    MediaUtils::Status _status;
 
     // CONFIGURATION
 

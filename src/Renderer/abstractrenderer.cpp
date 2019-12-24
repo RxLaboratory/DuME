@@ -2,6 +2,8 @@
 
 AbstractRenderer::AbstractRenderer(QObject *parent) : QObject(parent)
 {
+    setStatus( MediaUtils::Initializing );
+
     //set default values
     _currentFrame = 0;
     _numFrames = 0;
@@ -77,17 +79,23 @@ void AbstractRenderer::setStopCommand(const QString &stopCommand)
 
 void AbstractRenderer::start( QStringList arguments, int numThreads )
 {
+    setStatus( MediaUtils::Launching );
+
     emit newLog("Launching " + QString::number( numThreads ) + " processes.");
     for (int i = 0; i < numThreads; i++ )
     {
         launchProcess( arguments );
     }
     _startTime.start();
+
+    setStatus( MediaUtils::Encoding );
 }
 
 void AbstractRenderer::stop(int timeout)
 {
-    newLog("Sending the stop command");
+    emit newLog("Sending the stop command");
+
+    setStatus( MediaUtils::Cleaning );
 
     // send the stop command to everyone
     if ( _stopCommand != "")
@@ -129,8 +137,6 @@ void AbstractRenderer::processStarted()
     int id = _renderProcesses.indexOf(process);
 
     emit newLog("Process " + QString::number( id ) + " started.");
-
-    emit started();
 }
 
 void AbstractRenderer::processFinished()
@@ -160,7 +166,7 @@ void AbstractRenderer::processFinished()
             process->deleteLater();
         }
 
-        emit finished();
+        setStatus( MediaUtils::Finished );
     }
 }
 
@@ -195,7 +201,30 @@ void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
         error = "An unknown process (" + QString::number( id ) + ") error occured.";
     }
 
-    emit newLog( error, LogUtils::Critical );
+    emit newLog( error, LogUtils::Warning );
+
+    // Check if all processes have stopped
+    QList<int> finishedProcesses;
+    for(int i = 0; i < _renderProcesses.count(); i++)
+    {
+        if( _renderProcesses[i]->state() == QProcess::NotRunning )
+        {
+            finishedProcesses << i;
+        }
+    }
+
+    //if all processes have finished
+    if ( finishedProcesses.count() == _renderProcesses.count() )
+    {
+        //remove all processes
+        while( _renderProcesses.count() > 0 )
+        {
+            QProcess *process = _renderProcesses.takeLast();
+            process->deleteLater();
+        }
+
+        setStatus( MediaUtils::Error );
+    }
 }
 
 void AbstractRenderer::killRenderProcesses()
@@ -208,11 +237,24 @@ void AbstractRenderer::killRenderProcesses()
         emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
     }
     emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
+    setStatus( MediaUtils::Stopped );
+}
+
+MediaUtils::Status AbstractRenderer::status() const
+{
+    return _status;
 }
 
 void AbstractRenderer::setBinary(const QString &binaryFileName)
 {
     _binaryFileName = binaryFileName;
+    setStatus( MediaUtils:: Waiting );
+}
+
+void AbstractRenderer::setStatus(MediaUtils::Status status)
+{
+    _status = status;
+    emit statusChanged( _status );
 }
 
 double AbstractRenderer::expectedSize() const
