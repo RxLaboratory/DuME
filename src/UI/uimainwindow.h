@@ -12,8 +12,10 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QMimeData>
+#include <QDebug>
 
 #include "FFmpeg/ffmpeg.h"
+#include "utils.cpp"
 
 #include "uitoolbarspacer.h"
 #include "uisettingswidget.h"
@@ -27,17 +29,11 @@ class UIMainWindow : public QMainWindow, private Ui::MainWindow
 public:
     explicit UIMainWindow(FFmpeg *ff, QWidget *parent = nullptr);
 
-    /**
-     * @brief The ErrorType enum Error level for printing the debug log
-     */
-    enum ErrorType { Information, Warning, Critical, Fatal };
-    Q_ENUM(ErrorType)
-
 private slots:
     // FFMPEG
     void ffmpeg_errorOccurred(QString e);
-    void ffmpeg_started(FFQueueItem *item);
-    void ffmpeg_finished(FFQueueItem *item);
+    void ffmpeg_started(QueueItem *item);
+    void ffmpeg_finished(QueueItem *item);
     void ffmpeg_statusChanged(FFmpeg::Status status);
     void ffmpeg_progress();
     /**
@@ -52,7 +48,7 @@ private slots:
 
     // CONSOLE
     void console(QString log);
-    void debugLog(QString log,ErrorType type = Information);
+    void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
     // ACTIONS
     void on_actionGo_triggered();

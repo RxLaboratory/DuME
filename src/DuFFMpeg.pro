@@ -83,8 +83,7 @@ HEADERS += \
     UI/uirainbox.h \
     UI/uisettingswidget.h \
     UI/uisplashscreen.h \
-    UI/uitoolbarspacer.h \
-    utils.h
+    UI/uitoolbarspacer.h
 
 FORMS += \
     UI/mainwindow.ui \

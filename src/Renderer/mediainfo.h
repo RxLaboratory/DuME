@@ -12,7 +12,7 @@
 #include <QTemporaryDir>
 
 #include "FFmpeg/ffmpeg.h"
-#include "utils.h"
+#include "utils.cpp"
 
 class MediaInfo : public QObject
 {

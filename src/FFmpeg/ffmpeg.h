@@ -9,7 +9,7 @@
 
 #include "Renderer/abstractrendererinfo.h"
 
-#include "utils.h"
+#include "utils.cpp"
 
 #include "ffcodec.h"
 #include "ffmuxer.h"

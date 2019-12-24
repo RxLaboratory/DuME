@@ -10,7 +10,7 @@
 #include <QStandardPaths>
 #include <QVersionNumber>
 
-#include "utils.h"
+#include "utils.cpp"
 
 class AfterEffectsVersion : public QObject
 {

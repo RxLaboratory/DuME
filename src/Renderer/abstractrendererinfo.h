@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "utils.h"
+#include "utils.cpp"
 
 class AbstractRendererInfo : public QObject
 {
