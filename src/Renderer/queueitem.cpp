@@ -5,7 +5,6 @@ QueueItem::QueueItem(QList<MediaInfo *> inputs, QList<MediaInfo *> outputs, QObj
     _inputMedias = inputs;
     _outputMedias = outputs;
     _status = MediaUtils::Waiting;
-    emit queued();
 }
 
 QueueItem::QueueItem(MediaInfo *input, QList<MediaInfo *> outputs, QObject *parent) : QObject(parent)

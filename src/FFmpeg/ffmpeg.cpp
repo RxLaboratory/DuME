@@ -576,7 +576,7 @@ QString FFmpeg::gotVersion(QString output)
     }
     else
     {
-        emit newError("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org");
+        emit newLog("FFmpeg executable binary not found.\nYou can download it at http://ffmpeg.org", LogUtils::Critical );
     }
 
     return v;
