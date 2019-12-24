@@ -1352,4 +1352,3 @@ void UIOutputWidget::loadPresets()
 
     _freezeUI = false;
 }
-
