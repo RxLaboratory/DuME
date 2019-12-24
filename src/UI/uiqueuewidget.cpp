@@ -4,14 +4,14 @@
 #include <QtDebug>
 #endif
 
-UIQueueWidget::UIQueueWidget(FFmpeg *ff,QWidget *parent) :
+UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
-    ffmpeg = ff;
+    _ffmpeg = ffmpeg;
 
-    UIInputWidget *inputWidget = new UIInputWidget(ffmpeg,this);
+    UIInputWidget *inputWidget = new UIInputWidget(_ffmpeg, this);
     inputWidgets << inputWidget;
 
     inputTab1->layout()->addWidget(inputWidget);
@@ -21,6 +21,7 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ff,QWidget *parent) :
     //hide close buttons on add buttons
     QTabBar *outputTabBar = outputTab->tabBar();
     outputTabBar->tabButton(1,QTabBar::RightSide)->hide();
+
     //No add tab for now on input
     //QTabBar *inputTabBar = inputTab->tabBar();
     //inputTabBar->tabButton(1,QTabBar::RightSide)->hide();
@@ -53,11 +54,11 @@ void UIQueueWidget::addInputFile(QUrl file)
     inputWidgets[0]->openFile(file);
 }
 
-void UIQueueWidget::presetsPathChanged(QString path)
+void UIQueueWidget::presetsPathChanged()
 {
     foreach(UIOutputWidget *ow,outputWidgets)
     {
-        ow->loadPresets(path);
+        ow->loadPresets();
     }
 }
 
@@ -71,7 +72,7 @@ void UIQueueWidget::on_outputTab_tabCloseRequested(int index)
     outputTab->removeTab(index);
     //delete corresponding widget
     UIOutputWidget *w = outputWidgets.takeAt(index);
-    delete w;
+    w->deleteLater();
     //update current index
     if (outputTab->currentIndex() == outputTab->count()-1)
     {
@@ -86,9 +87,9 @@ void UIQueueWidget::on_outputTab_tabBarClicked(int index)
     addOutput();
 }
 
-void UIQueueWidget::consoleReceive(QString log)
+void UIQueueWidget::log(QString log, LogUtils::LogType lt )
 {
-    emit consoleEmit(log);
+    emit newLog(log, lt);
 }
 
 void UIQueueWidget::addOutput()
@@ -96,7 +97,7 @@ void UIQueueWidget::addOutput()
     //number of the output
     int num = outputWidgets.count()+1;
     //create widget
-    UIOutputWidget *ow = new UIOutputWidget(ffmpeg,num,this);
+    UIOutputWidget *ow = new UIOutputWidget(_ffmpeg, num, this);
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
     //connect first input widget
@@ -108,6 +109,6 @@ void UIQueueWidget::addOutput()
     MediaInfo *iwInfo = iw->getMediaInfo();
     if (iwInfo->fileName() != "") ow->newInputMedia(iwInfo);
     //connect console
-    connect(ow,SIGNAL(consoleEmit(QString)),this,SLOT(consoleReceive(QString)));
+    connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 }
 

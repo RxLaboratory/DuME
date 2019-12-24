@@ -14,7 +14,7 @@ class UIQueueWidget : public QWidget, private Ui::QueueWidget
     Q_OBJECT
 
 public:
-    explicit UIQueueWidget(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
     MediaInfo *getInputMedia();
     QList<MediaInfo *> getOutputMedia();
     void addInputFile(QString file);
@@ -24,20 +24,19 @@ signals:
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */
-    void consoleEmit( QString );
+    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
 public slots:
-    void presetsPathChanged(QString path);
+    void presetsPathChanged();
 
 private slots:
     void on_outputTab_tabCloseRequested(int index);
     void on_outputTab_tabBarClicked(int index);
-    void consoleReceive(QString log);
+    void log(QString log, LogUtils::LogType lt = LogUtils::Information );
 
 private:
-    FFmpeg *ffmpeg;
     QSettings _settings;
-
+    FFmpeg *_ffmpeg;
     QList<UIOutputWidget*> outputWidgets;
     QList<UIInputWidget*> inputWidgets;
 
