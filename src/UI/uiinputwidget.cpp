@@ -9,26 +9,25 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
 {
     setupUi(this);
 
-    ffmpeg = ff;
-    _mediaInfo = new MediaInfo("",this);
+    _mediaInfo = new MediaInfo( ff, this);
 
     //populate color transfer
-    trcBox->addItem("BT.709", QVariant("bt709"));
-    trcBox->addItem("Gamma", QVariant("gamma"));
-    trcBox->addItem("BT.470 M (Gamma 2.2)", QVariant("gamma22"));
-    trcBox->addItem("BT.470 BG (Gamma 2.8)", QVariant("gamma28"));
-    trcBox->addItem("SMPTE 170 M", QVariant("smpte170m"));
-    trcBox->addItem("SMPTE 240 M", QVariant("smpte240m"));
-    trcBox->addItem("Linear", QVariant("linear"));
-    trcBox->addItem("Log", QVariant("log"));
-    trcBox->addItem("Log square root", QVariant("log_sqrt"));
-    trcBox->addItem("IEC 61966-2-4", QVariant("iec61966_2_4"));
-    trcBox->addItem("BT.1361", QVariant("bt1361"));
-    trcBox->addItem("IEC 61966-2-1", QVariant("iec61966_2_1"));
-    trcBox->addItem("bt2020_10bit", QVariant("bt2020_10bit"));
-    trcBox->addItem("bt2020_12bit", QVariant("BT.2020 - 12 bit"));
-    trcBox->addItem("smpte2084", QVariant("SMPTE ST 2084"));
-    trcBox->addItem("smpte428_1", QVariant("SMPTE ST 428-1"));
+    trcBox->addItem("Linear", "linear");
+    trcBox->addItem("Log", "log");
+    trcBox->addItem("Log square root", "log_sqrt");
+    trcBox->addItem("sRGB", "iec61966_2_1");
+    trcBox->addItem("xvYCC (Extended-gamut YCC)", "iec61966_2_4");
+    trcBox->addItem("BT.709", "bt709");
+    trcBox->addItem("BT.470 M (Gamma 2.2)", "gamma22");
+    trcBox->addItem("BT.470 BG (Gamma 2.8)", "gamma28");
+    trcBox->addItem("BT.1361", "bt1361");
+    trcBox->addItem("BT.2020 10 bit", "bt2020_10bit");
+    trcBox->addItem("BT.2020 12 bit", "BT.2020_12bit");
+    trcBox->addItem("SMPTE 170 M", "smpte170m");
+    trcBox->addItem("SMPTE 240 M", "smpte240m");
+    trcBox->addItem("SMPTE ST 2084", "smpte2084");
+    trcBox->addItem("SMPTE ST 428-1", "smpte428_1");
+    trcBox->addItem("Gamma", "gamma");
 
     trcBox->setCurrentIndex(0);
 
@@ -58,51 +57,48 @@ void UIInputWidget::openFile(QString file)
 {
     QSettings settings;
     if (file == "") return;
+    file = QDir::toNativeSeparators( file );
 
     //Text
     QString mediaInfoString = "Media information";
 
     QFileInfo fileInfo(file);
+    _mediaInfo->updateInfo( fileInfo );
+
     //update UI
-    inputEdit->setText(QDir::toNativeSeparators(file));
+    inputEdit->setText( file );
     //keep in settings
-    settings.setValue("input/path",QVariant(fileInfo.path()));
+    settings.setValue("input/path", fileInfo.path() );
 
-    if (fileInfo.suffix() == "aep" || fileInfo.suffix() == "aet" || fileInfo.suffix() == "aepx")
+    if ( _mediaInfo->isAep() )
     {
-        _mediaInfo->updateInfo("");
-        _mediaInfo->setAep(true);
         _mediaInfo->setAepNumThreads(threadsBox->value());
-        _mediaInfo->setFileName(file);
-
         if (fileInfo.suffix() == "aep") mediaInfoString += "\n\nAfter Effects project.";
         if (fileInfo.suffix() == "aet") mediaInfoString += "\n\nAfter Effects template.";
         if (fileInfo.suffix() == "aepx") mediaInfoString += "\n\nAfter Effects XML project.";
     }
-    else
+
+    mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+
+    if (_mediaInfo->duration() != 0.0)
     {
-        _mediaInfo->updateInfo(ffmpeg->analyseMedia(file));
+        QTime duration(0,0,0);
+        duration = duration.addSecs( int( _mediaInfo->duration() ) );
+        mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+    }
+    else if (_mediaInfo->isImageSequence())
+    {
+        mediaInfoString += "\nDuration: " + QString::number(  _mediaInfo->frames().count() ) + " frames";
+        mediaInfoString += "\nStart Frame Number: " + QString::number( _mediaInfo->startNumber() );
+    }
 
-        mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+    double size = _mediaInfo->size( MediaUtils::MB );
+    int roundedSize = int ( size*1000+0.5 );
+    size = roundedSize/1000;
+    mediaInfoString += "\nSize: " + QString::number(size) + " MB";
 
-        if (_mediaInfo->duration() != 0.0)
-        {
-            QTime duration(0,0,0);
-            duration = duration.addSecs(_mediaInfo->duration());
-            mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
-        }
-        else if (_mediaInfo->isImageSequence())
-        {
-            mediaInfoString += "\nDuration: " + QString::number(_mediaInfo->frames().count()) + " frames";
-            mediaInfoString += "\nStart Frame Number: " + QString::number(_mediaInfo->startNumber());
-        }
-
-
-        double size = _mediaInfo->size(MediaInfo::MB);
-        int roundedSize = size*1000+0.5;
-        size = roundedSize/1000;
-        mediaInfoString += "\nSize: " + QString::number(size) + " MB";
-
+    if ( !_mediaInfo->isAep() )
+    {
         mediaInfoString += "\nContains video: ";
         if (_mediaInfo->hasVideo()) mediaInfoString += "yes";
         else mediaInfoString += "no";
@@ -122,11 +118,11 @@ void UIInputWidget::openFile(QString file)
             }
             mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
             mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
-            int bitrate = _mediaInfo->videoBitrate(MediaInfo::Mbps);
+            int bitrate = int( _mediaInfo->videoBitrate( MediaUtils::Mbps ) );
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
             else
             {
-                bitrate = _mediaInfo->videoBitrate(MediaInfo::Kbps);
+                bitrate = int( _mediaInfo->videoBitrate( MediaUtils::Kbps ) );
                 if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
             }
             if (_mediaInfo->pixFormat() != nullptr)
@@ -145,11 +141,9 @@ void UIInputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->audioCodec()->prettyName();
             }
             mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
-            int abitrate = _mediaInfo->audioBitrate(MediaInfo::Kbps);
+            int abitrate = int( _mediaInfo->audioBitrate( MediaUtils::Kbps ) );
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
         }
-
-        //mediaInfoString += "\n\nFFmpeg analysis:\n" + _mediaInfo->ffmpegOutput();
     }
 
     mediaInfosText->setText(mediaInfoString);
@@ -167,7 +161,7 @@ void UIInputWidget::openFile(QUrl file)
 void UIInputWidget::on_inputBrowseButton_clicked()
 {
     QSettings settings;
-    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path",QVariant("")).toString());
+    QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path","").toString());
     if (inputPath == "") return;
     openFile(inputPath);
 }
@@ -207,6 +201,14 @@ void UIInputWidget::on_frameRateButton_toggled(bool checked)
 {
     frameRateBox->setEnabled(checked);
     frameRateEdit->setEnabled(checked);
+    if (checked)
+    {
+        _mediaInfo->setVideoFramerate( frameRateEdit->value() );
+    }
+    else
+    {
+        _mediaInfo->setVideoFramerate( 24.0 );
+    }
 }
 
 void UIInputWidget::on_trcButton_toggled(bool checked)
@@ -241,14 +243,13 @@ void UIInputWidget::on_frameRateEdit_valueChanged(double arg1)
     for (int i = 1 ; i < frameRateBox->count() ; i++)
     {
         QString num = frameRateBox->itemText(i).replace(" fps","");
-        if (num.toDouble() == arg1)
+        if (int( num.toDouble() * 100 ) == int( arg1 * 100) )
         {
             frameRateBox->setCurrentIndex(i);
             return;
         }
     }
     frameRateBox->setCurrentIndex(0);
-
 }
 
 void UIInputWidget::on_trcBox_currentIndexChanged(int index)
@@ -305,6 +306,8 @@ void UIInputWidget::on_aeRenderQueueButton_clicked()
     rqindexBox->setEnabled(false);
     aeRenderQueueButton->setChecked(true);
     _mediaInfo->setAeUseRQueue(true);
+    _mediaInfo->setAepRqindex( 0 );
+    _mediaInfo->setAepCompName("");
     emit newMediaLoaded(_mediaInfo);
 }
 
@@ -366,15 +369,7 @@ void UIInputWidget::updateOptions()
     //trc (gamma) buttons
     if (extension == "exr_pipe" || _mediaInfo->isAep())
     {
-        for (int i = 0; i < trcBox->count(); i++ )
-        {
-            if (trcBox->itemData(i, Qt::UserRole).toString() == "gamma22")
-            {
-                trcBox->setCurrentIndex(i);
-                trcButton->setChecked(true);
-                break;
-            }
-        }
+        trcBox->setCurrentText("sRGB");
     }
 
     //exr prerender

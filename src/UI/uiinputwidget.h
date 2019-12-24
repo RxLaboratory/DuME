@@ -3,16 +3,19 @@
 
 #include "ui_inputwidget.h"
 
+#include "Renderer/mediainfo.h"
+
 #include <QFileDialog>
 #include <QSettings>
 #include <QThread>
+#include <QTime>
 
 class UIInputWidget : public QWidget, private Ui::InputWidget
 {
     Q_OBJECT
 
 public:
-    explicit UIInputWidget(FFmpeg *ff,QWidget *parent = nullptr);
+    explicit UIInputWidget(FFmpeg *ff, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
@@ -32,19 +35,13 @@ private slots:
     void on_compButton_clicked();
     void on_threadsButton_toggled(bool checked);
     void on_rqindexButton_clicked();
-
     void on_compEdit_textEdited(const QString &arg1);
-
     void on_rqindexBox_valueChanged(int arg1);
-
     void on_aeRenderQueueButton_clicked();
-
     void on_threadsBox_valueChanged(int arg1);
-
     void on_aeRenderQueueButton_toggled(bool checked);
 
 private:
-    FFmpeg *ffmpeg;
     MediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
