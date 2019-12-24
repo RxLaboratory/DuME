@@ -17,6 +17,11 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     QDir home = QDir::home();
     home.mkdir("DuME Presets");
 
+    // Load Renderers info (to be passed to other widgets)
+    _ffmpeg = ff;
+    _ae = new AfterEffects( this );
+
+
     // === UI SETUP ===
 
     log("Init - UI");
@@ -97,9 +102,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
-
-    _ffmpeg = ff;
-
     if (_ffmpeg->status() == MediaUtils::Error)
     {
         log("FFmpeg error", LogUtils::Critical );
@@ -110,12 +112,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     {
         ffmpeg_init();
     }
-
-    // === AE ===
-    log ("Init - After Effects");
-
-    _ae = new AfterEffects( this );
-
 
     //accept drops
     setAcceptDrops(true);
