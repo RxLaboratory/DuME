@@ -55,7 +55,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     settingsPage->layout()->addWidget(settingsWidget);
 
     //queue widget
-    queueWidget = new UIQueueWidget(_ffmpeg,this);
+    queueWidget = new UIQueueWidget(_ffmpeg, this);
     queueLayout->addWidget(queueWidget);
 
     //add fonts
@@ -113,11 +113,20 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
         ffmpeg_init();
     }
 
+    // ==== Create RenderQueue ====
+
+    _renderQueue = new RenderQueue( _ffmpeg, _ae, this );
+
     //accept drops
     setAcceptDrops(true);
 
     //map events
     mapEvents();
+}
+
+void UIMainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
+{
+    log( "FFmpeg | " + l, lt);
 }
 
 void UIMainWindow::mapEvents()
@@ -138,12 +147,19 @@ void UIMainWindow::mapEvents()
     connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
     connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
 
+    //After Effects
+    connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
+
     //settings
-    connect(settingsWidget,SIGNAL(ffmpegPathChanged(QString)),_ffmpeg,SLOT(setBinaryFileName(QString)));
-    connect(settingsWidget,SIGNAL(presetsPathChanged(QString)),queueWidget,SLOT(presetsPathChanged(QString)));
+    connect(settingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
     //QueueWidget
-    connect(queueWidget,SIGNAL(consoleEmit(QString)),this,SLOT(console(QString)));
+    connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
+
+    //RenderQueue
+    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::Status)), this, SLOT(renderQueueStatusChanged(MediaUtils::Status)) );
+    connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
+    connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
 }
 
 void UIMainWindow::ffmpeg_init()
@@ -151,6 +167,11 @@ void UIMainWindow::ffmpeg_init()
     //get help
     helpEdit->setText(_ffmpeg->getLongHelp());
     queuePage->setEnabled(true);
+}
+
+void UIMainWindow::aeLog(QString l, LogUtils::LogType lt)
+{
+    log("After Effects Info | " + l, lt);
 }
 
 void UIMainWindow::ffmpeg_debugLog(QString log)
@@ -280,18 +301,6 @@ void UIMainWindow::ffmpeg_progress()
     progressBar->setValue(_ffmpeg->getCurrentFrame());
 }
 
-void UIMainWindow::console(QString log)
-{
-    //add date
-    QTime currentTime = QTime::currentTime();
-    //log
-    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
-    // put the slider at the bottom
-    consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
-    //status bar
-    mainStatusBar->showMessage(log);
-}
-
 void UIMainWindow::log(QString log, LogUtils::LogType type)
 {
     //type
@@ -299,7 +308,6 @@ void UIMainWindow::log(QString log, LogUtils::LogType type)
     if ( type == LogUtils::Debug )
     {
         qDebug() << log;
-        return;
     }
     else if ( type == LogUtils::Information )
     {
@@ -321,12 +329,22 @@ void UIMainWindow::log(QString log, LogUtils::LogType type)
         typeString = " === Fatal === ";
     }
 
+    //status bar
+    mainStatusBar->showMessage(log);
+
     //add date
     QTime currentTime = QTime::currentTime();
+
+    //console
+    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
+    consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
+
     //log
-    debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + "\n" + log);
-    // put the slider at the bottom
-    debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+    if ( type != LogUtils::Debug )
+    {
+        debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + "\n" + log);
+        debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+    }
 }
 
 void UIMainWindow::on_ffmpegCommandsEdit_returnPressed()

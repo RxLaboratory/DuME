@@ -16,6 +16,7 @@
 
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
+#include "Renderer/renderqueue.h"
 #include "utils.cpp"
 
 #include "uitoolbarspacer.h"
@@ -32,18 +33,23 @@ public:
 
 private slots:
     // FFMPEG
-    void ffmpegLog(QString e);
+    void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
     /**
      * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
      */
     void ffmpeg_init();
+
+    // AE
+    void aeLog(QString l, LogUtils::LogType lt = LogUtils::Information);
+
+    // Queue
+    void progress();
 
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
     void on_ffmpegCommandsButton_clicked();
 
     // CONSOLE
-    void console(QString log);
     void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
     // ACTIONS
@@ -114,6 +120,12 @@ private:
      * @brief ae The After Effects information and utils
      */
     AfterEffects *_ae;
+
+    // ===== RENDERQUEUE =====
+    /**
+     * @brief _renderQueue The render queue
+     */
+    RenderQueue *_renderQueue;
 
 protected:
     void closeEvent(QCloseEvent *event);
