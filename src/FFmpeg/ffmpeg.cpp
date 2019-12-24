@@ -44,9 +44,11 @@ FFmpeg::~FFmpeg()
 
 bool FFmpeg::setBinary(QString path, bool initialize)
 {
+    if ( path == binary() ) return false;
     if ( AbstractRendererInfo::setBinary(path) )
     {
         ffmpegProcess->setProgram(path);
+        settings.setValue("ffmpeg/path", path );
         if (initialize) init();
         emit binaryChanged( path );
         return true;
