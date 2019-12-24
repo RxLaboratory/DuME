@@ -3,6 +3,8 @@
 
 #include "ui_outputwidget.h"
 
+#include "Renderer/mediainfo.h"
+
 #include <QFileDialog>
 #include <QSettings>
 #include <QStringList>
@@ -12,7 +14,7 @@ class UIOutputWidget : public QWidget, private Ui::OutputWidget
     Q_OBJECT
 
 public:
-    explicit UIOutputWidget(FFmpeg *ff,int id,QWidget *parent = 0);
+    explicit UIOutputWidget(FFmpeg *ff, int id, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
     QString getOutputPath();
@@ -22,7 +24,7 @@ signals:
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */
-    void consoleEmit(QString);
+    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
 public slots:
     void ffmpeg_init();
@@ -30,11 +32,11 @@ public slots:
     void ffmpeg_loadMuxers();
     void ffmpeg_loadPixFmts(bool init = false);
     void newInputMedia(MediaInfo *input);
-    void loadPresets(QString userPath = "");
+    void loadPresets();
 
 private slots:
-    void on_videoTranscodeButton_toggled(bool checked);
-    void on_audioTranscodeButton_toggled(bool checked);
+    void on_videoTranscodeButton_toggled();
+    void on_audioTranscodeButton_toggled();
     void on_resizeButton_toggled(bool checked);
     void on_frameRateButton_toggled(bool checked);
     void on_samplingButton_toggled(bool checked);
@@ -44,26 +46,26 @@ private slots:
     void on_videoQualitySlider_valueChanged(int value);
     void on_videoWidthButton_valueChanged(int val);
     void on_videoHeightButton_valueChanged(int val);
-    void on_videoCodecsFilterBox_currentIndexChanged(int index);
-    void on_audioCodecsFilterBox_currentIndexChanged(int index);
+    void on_videoCodecsFilterBox_currentIndexChanged();
+    void on_audioCodecsFilterBox_currentIndexChanged();
     void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
-    void on_formatsFilterBox_currentIndexChanged(int index);
+    void on_formatsFilterBox_currentIndexChanged();
     void on_videoCodecButton_toggled(bool checked);
     void on_videoBitrateButton_toggled(bool checked);
     void on_videoQualityButton_toggled(bool checked);
     void on_audioCodecButton_toggled(bool checked);
     void on_audioBitrateButton_toggled(bool checked);
     void on_presetsBox_currentIndexChanged(int index);
-    void on_presetsFilterBox_activated(int index);
-    void on_videoCodecsBox_currentIndexChanged(int index);
+    void on_presetsFilterBox_activated();
+    void on_videoCodecsBox_currentIndexChanged();
     void on_videoProfileButton_toggled(bool checked);
     void on_videoLoopsButton_toggled(bool checked);
     void on_videoLoopsEdit_valueChanged(int arg1);
     void on_startNumberButton_clicked(bool checked);
     void on_pixFmtButton_toggled(bool checked);
-    void on_audioCodecsBox_currentIndexChanged(int index);
-    void on_pixFmtFilterBox_currentIndexChanged(int index);
+    void on_audioCodecsBox_currentIndexChanged();
+    void on_pixFmtFilterBox_currentIndexChanged();
     void on_alphaButton_toggled(bool checked);
 
 private:
@@ -79,7 +81,7 @@ private:
     void addNewParam(QString name = "",QString value = "");
     void init();
 
-    QSettings _settings;
+    QSettings settings;
     FFmpeg *_ffmpeg;
     MediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
