@@ -98,54 +98,36 @@ signals:
     /**
      * @brief statusChanged Emitted when the Renderer status changes.
      */
-    void statusChanged(MediaUtils::Status);
+    void statusChanged( MediaUtils::Status );
     /**
      * @brief newLog Emitted when some debug logs are available
      */
     void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
     // === QUEUE ===
-    /**
-     * @brief encodingStarted Emitted when the queue starts an encoding process, with infos about the input media
-     */
-    void encodingStarted( QueueItem* );
-    /**
-     * @brief encodingFinished Emitted when the encoding finishes or is stopped
-     */
-    void encodingFinished();
+
     /**
      * @brief progress Emitted when some progression information is available
      */
     void progress();
 
 private slots:
-    // removes temp files, cache, restores AE templates...
-    void postRenderCleanUp();
     // changes the current status (and emits statusChanged)
     void setStatus(MediaUtils::Status st);
-
-    // finished current item rendering/transcoding
-    void finished();
-    // encodes the next item in the queue
-    void encodeNextItem();
 
     // === ffmpeg ===
 
     // logs ffmpeg output
     void ffmpegLog(QString message, LogUtils::LogType lt = LogUtils::Information );
-    void ffmpegFinished();
+    void ffmpegStatusChanged(MediaUtils::Status status);
     void ffmpegProgress();
-    // launch ffmpeg transcoding
-    void renderFFmpeg(QueueItem *item );
 
     // === Ae ===
 
     // logs ae output
     void aeLog(QString message, LogUtils::LogType lt = LogUtils::Information );
+    void aeStatusChanged(MediaUtils::Status status);
     void aeProgress();
-    void aeFinished();
-    // launch after effects rendering
-    void renderAep( MediaInfo *input, bool audio = false );
 
 private:
 
@@ -204,6 +186,18 @@ private:
     // the elapsed time
     QTime _elapsedTime;
 
+    // === METHODS ===
+
+    // finished current item rendering/transcoding
+    void finishCurrentItem(MediaUtils::Status lastStatus = MediaUtils::Finished );
+    // launch ffmpeg transcoding
+    void renderFFmpeg(QueueItem *item );
+    // launch after effects rendering
+    void renderAep( MediaInfo *input, bool audio = false );
+    // encodes the next item in the queue
+    void encodeNextItem();
+    // removes temp files, cache, restores AE templates...
+    void postRenderCleanUp( MediaUtils::Status lastStatus = MediaUtils::Finished );
 };
 
 #endif // RENDERER_H
