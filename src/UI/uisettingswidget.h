@@ -3,6 +3,9 @@
 
 #include "ui_settingswidget.h"
 
+#include "FFmpeg/ffmpeg.h"
+#include "AfterEffects/aftereffects.h"
+
 #include <QSettings>
 #include <QFileDialog>
 #include <QDir>
@@ -15,10 +18,9 @@ class UISettingsWidget : public QWidget, private Ui::SettingsWidget
     Q_OBJECT
 
 public:
-    explicit UISettingsWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
+    explicit UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent = nullptr);
 
 signals:
-    void ffmpegPathChanged(QString);
     void presetsPathChanged(QString);
 
 private slots:
@@ -35,6 +37,7 @@ private slots:
 private:
     QSettings settings;
     FFmpeg *_ffmpeg;
+    AfterEffects *_ae;
     bool _freezeUI;
 
     void refreshAeVersionBox();
