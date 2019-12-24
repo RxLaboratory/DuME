@@ -48,7 +48,7 @@ bool AfterEffects::setBinary()
 
     if ( settings.value("aerender/useLatest",true).toBool() )
     {
-        name = _versions.last()->name();
+        name = "Latest";
     }
     else
     {
@@ -72,26 +72,38 @@ bool AfterEffects::setBinary(QString name)
         {
             _versions << ae;
             name = ae->name();
+            settings.setValue( "aerender/useLatest", false );
+            settings.setValue( "aerender/version", "Custom" );
+            _useLatest = false;
         }
         else
         {
             emit newLog( "Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString(), LogUtils::Warning );
             //revert to use latest
-            settings.setValue( "aerender/useLatest", true );
-            name = _versions.last()->name();
+            name = "Latest";
+
+
         }
+    }
+
+    if ( name == "Latest" )
+    {
+        _useLatest = true;
+        settings.setValue( "aerender/useLatest", true );
+        name = _versions.last()->name();
+        settings.setValue( "aerender/version", "Latest" );
     }
 
     for (int i = 0; i < _versions.count(); i++)
     {
         if (_versions[i]->name() == name)
         {
-            settings.setValue( "aerender/version", _versions[i]->name() );
             settings.setValue("aerender/path", _versions[i]->path() );
 
             if ( AbstractRendererInfo::setBinary( _versions[i]->path() ) )
             {
                 emit newLog("After Effects set to renderer: " + _versions[i]->name() );
+                _currentName = name;
                 return true;
             }
         }
@@ -101,6 +113,16 @@ bool AfterEffects::setBinary(QString name)
     return false;
 
 #endif
+}
+
+bool AfterEffects::useLatest() const
+{
+    return _useLatest;
+}
+
+QString AfterEffects::currentName() const
+{
+    return _currentName;
 }
 
 void AfterEffects::findAeVersions(QString dir)

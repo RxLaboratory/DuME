@@ -16,6 +16,8 @@ public:
     explicit AfterEffects(QObject *parent = nullptr);
 
     QList<AfterEffectsVersion *> versions() const;
+    QString currentName() const;
+    bool useLatest() const;
 
 public slots:
     /**
@@ -36,6 +38,10 @@ private:
     QList<AfterEffectsVersion *> _versions;
     // The application settings
     QSettings settings;
+    // The current renderer name
+    QString _currentName;
+    // Wether to use the latest version
+    bool _useLatest;
 
     // === METHODS ===
 
