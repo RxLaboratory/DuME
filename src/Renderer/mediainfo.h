@@ -141,7 +141,7 @@ private:
     /**
      * @brief _size The file size
      */
-    int _size;
+    qint64 _size;
     /**
      * @brief _video Wether the file contains video
      */

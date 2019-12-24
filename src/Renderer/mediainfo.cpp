@@ -27,7 +27,7 @@ void MediaInfo::reInit(bool removeFileName)
     _videoCodec = nullptr;
     _videoWidth = 0;
     _videoHeight = 0;
-    _videoFramerate = 0.0;
+    _videoFramerate = 24.0;
     _videoBitrate = 0;
     _pixFormat = nullptr;
     _audioCodec = nullptr;
@@ -55,9 +55,19 @@ void MediaInfo::reInit(bool removeFileName)
 
 void MediaInfo::updateInfo(QFileInfo mediaFile)
 {
-    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
-
     reInit();
+
+    if (mediaFile.suffix() == "aep" || mediaFile.suffix() == "aet" || mediaFile.suffix() == "aepx")
+    {
+        setAep(true);
+        _extensions << "aep" << "aet" << "aepx";
+        _size = mediaFile.size();
+    }
+
+    _fileName = QDir::toNativeSeparators( mediaFile.absoluteFilePath() ) ;
+
+
+    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -77,7 +87,7 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
         {
             input = true;
             _extensions = match.captured(1).split(",");
-            _fileName = match.captured(2);
+            _fileName = QDir::toNativeSeparators( match.captured(2) );
         }
 
         if (!input) continue;
@@ -297,7 +307,7 @@ void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
     if (unit == MediaUtils::KB) size = size*1024;
     else if (unit == MediaUtils::MB) size = size*1024*1024;
     else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
-    _size = int( size );
+    _size = qint64( size );
 }
 
 void MediaInfo::setFFmpegOptions(QList<QStringList> options)
