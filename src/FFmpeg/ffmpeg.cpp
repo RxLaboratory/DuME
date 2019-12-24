@@ -7,6 +7,9 @@
 
 FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 {
+    _status = MediaUtils::Initializing;
+    _lastErrorMessage = "";
+
     // The Process
     ffmpegProcess = new QProcess(this);
 
@@ -45,6 +48,7 @@ bool FFmpeg::setBinary(QString path, bool initialize)
     {
         ffmpegProcess->setProgram(path);
         if (initialize) init();
+        emit binaryChanged( path );
         return true;
     }
 
@@ -76,6 +80,7 @@ void FFmpeg::runCommand(QStringList commands, QIODevice::OpenModeFlag of)
 void FFmpeg::init()
 {   
 #if INIT_FFMPEG //used when developping to skip ffmpeg loading
+    _status = MediaUtils::Initializing;
 
     //get version
     emit newLog( "Checking version" );
@@ -130,6 +135,7 @@ void FFmpeg::init()
     settings.setValue("ffmpeg/version",_version);
 
 #endif
+    _status = MediaUtils::Waiting;
 }
 
 QList<FFMuxer *> FFmpeg::muxers()
@@ -275,6 +281,18 @@ void FFmpeg::errorOccurred(QProcess::ProcessError e)
     }
 
     emit newLog( error, LogUtils::Critical );
+    _lastErrorMessage = error;
+    _status = MediaUtils::Error;
+}
+
+QString FFmpeg::lastErrorMessage() const
+{
+    return _lastErrorMessage;
+}
+
+MediaUtils::Status FFmpeg::status() const
+{
+    return _status;
 }
 
 QString FFmpeg::version() const

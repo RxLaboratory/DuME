@@ -111,8 +111,18 @@ public:
      * @return
      */
     QString version() const;
+    /**
+     * @brief status The current FFmpeg Status
+     * @return
+     */
+    MediaUtils::Status status() const;
+    /**
+     * @brief lastErrorMessage The last error if any.
+     * @return
+     */
+    QString lastErrorMessage() const;
 
-public slots:   
+public slots:
     /**
      * @brief setBinaryFileName Sets the path to the FFmpeg binary
      * @param path The path to the binary executable file
@@ -146,6 +156,10 @@ private:
     QProcess *ffmpegProcess;
     // The ffmpeg version
     QString _version;
+    // The Status
+    MediaUtils::Status _status;
+    // The last error if any (used if the error happens before signals could be connected)
+    QString _lastErrorMessage;
 
     // The list of video encoders
     QList<FFCodec *> _videoEncoders;
