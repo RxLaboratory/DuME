@@ -11,7 +11,7 @@ bool aeVersionSorter(AfterEffectsVersion *v1, AfterEffectsVersion *v2)
     return true;
 }
 
-AfterEffects::AfterEffects(QObject *parent) : QObject(parent)
+AfterEffects::AfterEffects(QObject *parent) : AbstractRendererInfo(parent)
 {
     emit newLog("Initializing the After Effects renderer");
 
@@ -34,7 +34,7 @@ AfterEffects::AfterEffects(QObject *parent) : QObject(parent)
     //sort
     std::sort(_versions.begin(),_versions.end(),aeVersionSorter);
 
-    setCurrentAERenderProcess();
+    setBinary();
 }
 
 QList<AfterEffectsVersion *> AfterEffects::versions() const
@@ -42,7 +42,7 @@ QList<AfterEffectsVersion *> AfterEffects::versions() const
     return _versions;
 }
 
-void AfterEffects::setCurrentAERenderProcess()
+bool AfterEffects::setBinary()
 {
     QString name = "Custom";
 
@@ -55,10 +55,10 @@ void AfterEffects::setCurrentAERenderProcess()
         name = settings.value("aerender/version","Custom").toString();
     }
 
-    setCurrentAERenderProcess( name );
+    return setBinary( name );
 }
 
-void AfterEffects::setCurrentAERenderProcess(QString name)
+bool AfterEffects::setBinary(QString name)
 {
     emit newLog("Selecting the After Effects renderer");
 
@@ -75,7 +75,7 @@ void AfterEffects::setCurrentAERenderProcess(QString name)
         }
         else
         {
-            emit newLog("Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString());
+            emit newLog( "Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString(), LogUtils::Warning );
             //revert to use latest
             settings.setValue( "aerender/useLatest", true );
             name = _versions.last()->name();
@@ -89,19 +89,18 @@ void AfterEffects::setCurrentAERenderProcess(QString name)
             settings.setValue( "aerender/version", _versions[i]->name() );
             settings.setValue("aerender/path", _versions[i]->path() );
 
-            emit newLog("After Effects set to renderer: " + _versions[i]->name() );
-            emit currentAeVersionChanged( _versions[i]->path() );
-            _binary = _versions[i]->path();
-            break;
+            if ( AbstractRendererInfo::setBinary( _versions[i]->path() ) )
+            {
+                emit newLog("After Effects set to renderer: " + _versions[i]->name() );
+                return true;
+            }
         }
     }
 
-#endif
-}
+    emit newLog( "After Effects not found on this system. After Effects rendering disabled.", LogUtils::Warning );
+    return false;
 
-QString AfterEffects::binary() const
-{
-    return _binary;
+#endif
 }
 
 void AfterEffects::findAeVersions(QString dir)

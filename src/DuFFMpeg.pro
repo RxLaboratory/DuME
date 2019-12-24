@@ -34,6 +34,7 @@ SOURCES += \
     AfterEffects/aftereffectsversion.cpp \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
+    Renderer/abstractrendererinfo.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     duexr.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     AfterEffects/aftereffectsversion.h \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
+    Renderer/abstractrendererinfo.h \
     Renderer/queueitem.h \
     Renderer/renderqueue.h \
     duexr.h \

@@ -39,13 +39,3 @@ void FileUtils::remove(QString path)
     setReadWrite(&file);
     file.remove();
 }
-
-MediaUtils::MediaUtils()
-{
-
-}
-
-MediaUtils::~MediaUtils()
-{
-
-}

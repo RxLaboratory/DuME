@@ -5,9 +5,11 @@
 #include <QDir>
 #include <QSettings>
 
+#include "Renderer/abstractrendererinfo.h"
+
 #include "AfterEffects/aftereffectsversion.h"
 
-class AfterEffects : public QObject
+class AfterEffects : public AbstractRendererInfo
 {
     Q_OBJECT
 public:
@@ -15,21 +17,16 @@ public:
 
     QList<AfterEffectsVersion *> versions() const;
 
+public slots:
     /**
      * @brief setCurrentAERenderProcess Sets the process (Ae version) to use, based on the settings of the application
      */
-    void setCurrentAERenderProcess();
+    bool setBinary();
     /**
      * @brief setCurrentAERenderProcess Sets the process (Ae version) to use
      * @param name The name of the process to use.
      */
-    void setCurrentAERenderProcess(QString name);
-
-    QString binary() const;
-
-signals:
-    void newLog(QString);
-    void currentAeVersionChanged(QString aerender);
+    bool setBinary(QString name);
 
 private:
 
@@ -39,8 +36,6 @@ private:
     QList<AfterEffectsVersion *> _versions;
     // The application settings
     QSettings settings;
-    // The binary
-    QString _binary;
 
     // === METHODS ===
 

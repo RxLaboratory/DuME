@@ -7,11 +7,15 @@
 #include <QDir>
 #include <QRegularExpression>
 
+#include "Renderer/abstractrendererinfo.h"
+
+#include "utils.h"
+
 #include "ffcodec.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
 
-class FFmpeg : public QObject
+class FFmpeg : public AbstractRendererInfo
 {
     Q_OBJECT
 public:
@@ -107,30 +111,6 @@ public:
      * @return
      */
     QString version() const;
-    /**
-     * @brief binary Gets the ffmpeg binary path
-     * @return
-     */
-    QString binary() const;
-
-signals:
-    /**
-     * @brief newOutput Emitteed when FFmpeg outputs on stderr or stdoutput
-     */
-    void newOutput(QString);
-    /**
-     * @brief newError Emitted when a blocking error occurs. Contains the description of the error.
-     */
-    void newError(QString);
-    /**
-     * @brief newLog Emitted when some debug infos are available
-     */
-    void newLog(QString);
-
-    /**
-     * @brief binaryChanged Emitted when the path to the binary has been changed
-     */
-    void binaryChanged(QString);
 
 public slots:   
     /**
@@ -143,12 +123,12 @@ public slots:
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
      */
-    void runCommand(QString commands);
+    void runCommand(QString commands, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments
      */
-    void runCommand(QStringList commands);
+    void runCommand(QStringList commands, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
     void init();
 
 private slots:
@@ -166,8 +146,6 @@ private:
     QProcess *ffmpegProcess;
     // The ffmpeg version
     QString _version;
-    // The binary
-    QString _binary;
 
     // The list of video encoders
     QList<FFCodec *> _videoEncoders;

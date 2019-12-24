@@ -22,8 +22,8 @@ class MediaUtils
     Q_OBJECT
 
 public:
-    MediaUtils();
-    virtual ~MediaUtils();
+    MediaUtils() {}
+    virtual ~MediaUtils() {}
 
     /**
      * @brief The unit used for bitrates
@@ -36,6 +36,21 @@ public:
      */
     enum SizeUnit { Bytes, KB, MB, GB};
     Q_ENUM(SizeUnit)
+};
+
+class LogUtils
+{
+    Q_OBJECT
+
+public:
+    LogUtils() {}
+    virtual ~LogUtils() {}
+
+    /**
+     * @brief The LogType enum Log level for printing the debug log
+     */
+    enum LogType { Debug, Information, Warning, Critical, Fatal };
+    Q_ENUM(LogType)
 };
 
 #endif // UTILS_H
