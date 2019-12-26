@@ -51,7 +51,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     ffmpeg_init();
 
-    connect(_ffmpeg,SIGNAL(binaryChanged()),this,SLOT(ffmpeg_init()));
+    connect(_ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()));
 
     _freezeUI = false;
 

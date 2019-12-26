@@ -20,7 +20,11 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     // Load Renderers info (to be passed to other widgets)
     _ffmpeg = ff;
     _ae = new AfterEffects( this );
-
+    //FFmpeg
+    connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
+    //After Effects
+    connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
 
     // === UI SETUP ===
 
@@ -50,13 +54,19 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     toolBarClicked = false;
     mainToolBar->installEventFilter(this);
 
+    log("Init - Add settings widget", LogUtils::Debug);
+
     //settings widget
     settingsWidget = new UISettingsWidget(_ffmpeg, _ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
+    log("Init - Add queue widget", LogUtils::Debug);
+
     //queue widget
     queueWidget = new UIQueueWidget(_ffmpeg, this);
     queueLayout->addWidget(queueWidget);
+
+    log("Init - Appearance", LogUtils::Debug);
 
     //add fonts
     QFontDatabase::addApplicationFont(":/fonts/calibri");
@@ -78,12 +88,16 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     progressWidget->setGraphicsEffect(effect);
 
+    log("Init - Load Defaults", LogUtils::Debug);
+
     //init UI
     consoleTabs->setCurrentIndex(3);
     mainStackWidget->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
+
+    log("Init - Set Geometry", LogUtils::Debug);
 
     //restore geometry
     settings->beginGroup("mainwindow");
@@ -93,7 +107,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     //move(settings->value("pos", QPoint(200, 200)).toPoint());
     //maximized
 #ifndef Q_OS_MAC
-    this->maximize(settings->value("maximized",false).toBool());
+    //this->maximize(settings->value("maximized",false).toBool());
 #endif
     settings->endGroup();
     //console splitter sizes
@@ -118,6 +132,8 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     }
 
     // ==== Create RenderQueue ====
+
+    log("Init - Create render queue");
 
     _renderQueue = new RenderQueue( _ffmpeg, _ae, this );
 
@@ -147,12 +163,6 @@ void UIMainWindow::mapEvents()
 #ifndef Q_OS_LINUX
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 #endif
-    //FFmpeg
-    connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
-    connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
-
-    //After Effects
-    connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
 
     //settings
     connect(settingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
