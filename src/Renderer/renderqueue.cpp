@@ -16,7 +16,7 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     connect( _ffmpegRenderer, &FFmpegRenderer::console, this, &RenderQueue::ffmpegConsole ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::statusChanged, this, &RenderQueue::ffmpegStatusChanged ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::progress, this, &RenderQueue::ffmpegProgress ) ;
-
+    _ffmpegRenderer->setStopCommand("q\n");
 
     // === After Effects ===
 

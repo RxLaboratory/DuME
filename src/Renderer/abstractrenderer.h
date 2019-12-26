@@ -170,6 +170,9 @@ protected:
     // the elapsed time
     QTime _elapsedTime;
 
+    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
+    virtual void readyRead(QString output);
+
 private slots:
     // gets the output from the render process(es)
     void processStdError();
@@ -193,8 +196,6 @@ private:
 
     // METHODS
 
-    //Called when the process outputs something on stdError or stdOutput. Reimplement this method to interpret the output. It has to emit progress() at the end, and can use setCurrentFrame().
-    void readyRead(QString output);
     //Launches a new process
     void launchProcess(QStringList arguments );
 };

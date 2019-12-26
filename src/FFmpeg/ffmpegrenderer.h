@@ -10,7 +10,7 @@ class FFmpegRenderer : public AbstractRenderer
 public:
     FFmpegRenderer(QString ffmpeg, QObject *parent = nullptr);
 
-private:
+protected:
     //re-implemented from AbstractRenderer to interpret ffmpeg output
     void readyRead(QString output);
 };

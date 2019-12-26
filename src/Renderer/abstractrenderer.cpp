@@ -99,7 +99,6 @@ void AbstractRenderer::stop(int timeout)
     }
 
     emit newLog("Stop command sent. Waiting for processes to shut down.");
-    setStatus( MediaUtils::Stopped );
 
     // wait for timeout and kill all remaining processes
     QTimer::singleShot(timeout, this, SLOT( killRenderProcesses()) );
@@ -228,6 +227,8 @@ void AbstractRenderer::killRenderProcesses()
         rp->deleteLater();
     }
     if (killed) emit newLog("Some processes did not stop correctly and had to be killed. The output file may be corrupted.");
+
+    setStatus( MediaUtils::Stopped );
 }
 
 MediaUtils::Status AbstractRenderer::status() const
