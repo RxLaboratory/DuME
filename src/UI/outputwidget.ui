@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
+    <width>462</width>
     <height>761</height>
    </rect>
   </property>
@@ -60,14 +60,8 @@
        <widget class="QPushButton" name="outputBrowseButton">
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>125</width>
           <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
          </size>
         </property>
         <property name="text">
@@ -120,14 +114,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>125</width>
           <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
          </size>
         </property>
         <property name="currentIndex">
@@ -181,14 +169,8 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>125</width>
           <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
          </size>
         </property>
         <property name="currentIndex">
@@ -242,8 +224,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>616</width>
-        <height>680</height>
+        <width>462</width>
+        <height>677</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
@@ -533,12 +515,6 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
                  <string>Frame rate</string>
                 </property>
@@ -679,12 +655,6 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
                  <string>Codec</string>
                 </property>
@@ -714,7 +684,7 @@
                  <item>
                   <widget class="QComboBox" name="videoCodecsFilterBox">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -723,12 +693,6 @@
                     <size>
                      <width>200</width>
                      <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="frame">
@@ -759,16 +723,10 @@
                  <item>
                   <widget class="QComboBox" name="videoCodecsBox">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>440</width>
-                     <height>16777215</height>
-                    </size>
                    </property>
                    <property name="frame">
                     <bool>false</bool>
@@ -786,14 +744,8 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
-                 <string>Bitrate</string>
+                 <string>Target bitrate</string>
                 </property>
                </widget>
               </item>
@@ -801,12 +753,6 @@
                <widget class="QDoubleSpinBox" name="videoBitRateEdit">
                 <property name="enabled">
                  <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
                 </property>
                 <property name="frame">
                  <bool>false</bool>
@@ -864,6 +810,12 @@
                  </property>
                  <item>
                   <widget class="QSlider" name="videoQualitySlider">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="maximum">
                     <number>100</number>
                    </property>
@@ -908,12 +860,6 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
                  <string>Profile</string>
                 </property>
@@ -925,7 +871,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -965,12 +911,6 @@
                  <size>
                   <width>100</width>
                   <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
@@ -1030,12 +970,6 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
                  <string>Start number</string>
                 </property>
@@ -1046,12 +980,6 @@
            </item>
            <item>
             <widget class="QWidget" name="componentsWidget" native="true">
-             <property name="maximumSize">
-              <size>
-               <width>600</width>
-               <height>16777215</height>
-              </size>
-             </property>
              <layout class="QFormLayout" name="formLayout_10">
               <property name="formAlignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1082,12 +1010,6 @@
                   <height>0</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
                 <property name="text">
                  <string>Alpha</string>
                 </property>
@@ -1099,12 +1021,6 @@
                  <size>
                   <width>100</width>
                   <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
@@ -1136,7 +1052,7 @@
                  <item>
                   <widget class="QComboBox" name="pixFmtFilterBox">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -1145,12 +1061,6 @@
                     <size>
                      <width>200</width>
                      <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>200</width>
-                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="frame">
@@ -1166,7 +1076,7 @@
                  <item>
                   <widget class="QComboBox" name="pixFmtBox">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -1185,12 +1095,6 @@
                  <size>
                   <width>120</width>
                   <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
@@ -1366,6 +1270,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="currentIndex">
                  <number>-1</number>
                 </property>
@@ -1440,16 +1350,16 @@
                  </property>
                  <item>
                   <widget class="QComboBox" name="audioCodecsFilterBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>100</width>
                      <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="frame">
@@ -1475,7 +1385,7 @@
                  <item>
                   <widget class="QComboBox" name="audioCodecsBox">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>

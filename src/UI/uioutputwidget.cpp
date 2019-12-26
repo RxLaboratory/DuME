@@ -928,7 +928,6 @@ void UIOutputWidget::selectDefaultPixFmt()
                     break;
                 }
             }
-
         }
     }
 }
@@ -987,6 +986,7 @@ void UIOutputWidget::updateAudioVideoOptions()
     if (videoTranscodeButton->isChecked())
     {
         resizeWidget->show();
+        componentsWidget->show();
 
         //show/hide codec depending on muxer
         FFMuxer *muxer = _ffmpeg->muxer(formatsBox->currentData().toString());
@@ -1045,6 +1045,7 @@ void UIOutputWidget::updateAudioVideoOptions()
                 videoLoopsButton->show();
                 videoLoopsEdit->show();
             }
+
         }
     }
 
