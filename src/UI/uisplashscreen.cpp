@@ -5,8 +5,9 @@ UISplashScreen::UISplashScreen(const QPixmap &pixmap, Qt::WindowFlags f) : QSpla
 
 }
 
-void UISplashScreen::newMessage(QString message)
+void UISplashScreen::newMessage(QString message, LogUtils::LogType lt)
 {
+    if (lt == LogUtils::Debug) return;
     QString m = "DuFFmpeg v";
     m += APPVERSION;
     m += "\n";
