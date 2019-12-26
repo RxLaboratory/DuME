@@ -1,5 +1,5 @@
 {
-    "duffmpeg": {
+    "dume": {
         "hasAudio": false,
         "hasVideo": true,
         "muxer": {

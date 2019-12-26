@@ -1,5 +1,5 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
             "bitrate": 327680,
             "codecName": "aac",
