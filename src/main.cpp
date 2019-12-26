@@ -35,9 +35,8 @@ int main(int argc, char *argv[])
         settings.setValue("ffmpeg/version","");
     }
 
-
-#ifdef QT_DEBUG
-    //settings.setValue("ffmpeg/version","");
+#ifdef FORCE_FFMPEG_RELOAD
+    settings.setValue("ffmpeg/version","");
 #endif
 
     //load FFmpeg

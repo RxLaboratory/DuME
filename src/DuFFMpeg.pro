@@ -29,6 +29,10 @@ DEFINES += APPVERSION=\\\"0.1.0-Alpha1\\\"
 # Be sure to set it back when you're finished, before committing your changes.
 DEFINES += INIT_AE INIT_FFMPEG
 
+# When working, you may want to force the update of FFmpeg capabilities
+# Uncomment this line to do so. Don't forget to comment it out before comitting your changes
+# DEFINES += FORCE_FFMPEG_RELOAD
+
 SOURCES += \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
