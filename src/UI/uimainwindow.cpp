@@ -230,7 +230,7 @@ void UIMainWindow::progress()
 
     double outputSize = _renderQueue->outputSize();
     QString outputSizeText = "";
-    if ( outputSize < 1024/1024/1024/10 )
+    if ( outputSize < 10*1024*1024*1024.0 )
     {
         outputSize = outputSize / 1024/1024;
         outputSizeText = QString::number(int(outputSize*100)/100) + " MB";
@@ -242,11 +242,23 @@ void UIMainWindow::progress()
     }
     outputSizeLabel->setText( outputSizeText );
 
-    outputBitrateLabel->setText( QString::number(int(_renderQueue->outputBitrate() /1000/10)/100) + "Mbps" );
+    double outputBitrate = _renderQueue->outputBitrate();
+    QString outputBitrateText = "";
+    if ( outputBitrate < 10000000 )
+    {
+        outputBitrate = outputBitrate / 1000;
+        outputBitrateText = QString::number(int(outputBitrate*100)/100) + " kbps";
+    }
+    else
+    {
+        outputBitrate = outputBitrate /1000/1000;
+        outputBitrateText = QString::number(int(outputBitrate*100)/100) + " Mbps";
+    }
+    outputBitrateLabel->setText( outputBitrateText );
 
     double expectedSize = _renderQueue->expectedSize();
     QString expectedSizeText = "";
-    if ( expectedSize < 1024/1024/1024/10 )
+    if ( expectedSize < 10*1024*1024*1024.0 )
     {
         expectedSize = expectedSize /1024/1024;
         expectedSizeText = QString::number(int(expectedSize*100)/100) + " MB";
@@ -435,6 +447,7 @@ void UIMainWindow::maximize()
 
 void UIMainWindow::closeEvent(QCloseEvent *event)
 {
+    _renderQueue->stop(6000);
     //save ui geometry
     settings->beginGroup("mainwindow");
     settings->setValue("size", size());

@@ -31,7 +31,7 @@ void FFmpegRenderer::readyRead(QString output)
 
         //bitrate
         int bitrateKB = bitrate.toInt();
-        _outputBitrate = bitrateKB * 1024 * 8;
+        _outputBitrate = bitrateKB * 1000;
 
         //speed
         _encodingSpeed = speed.toDouble();
