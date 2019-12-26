@@ -55,8 +55,8 @@ public:
     void setFileName(QString fileName);
     void setVideoCodec(FFCodec *codec);
     void setAudioCodec(FFCodec *codec);
-    void setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::Bits);
-    void setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    void setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::bps);
+    void setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::bps);
     void setSize(double size, MediaUtils::SizeUnit unit = MediaUtils::Bytes);
     void setFFmpegOptions(QList<QStringList> options);
     void setVideo(bool video = true);
@@ -89,8 +89,8 @@ public:
     FFCodec *videoCodec();
     FFCodec *audioCodec();
     FFPixFormat *pixFormat();
-    double audioBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Bits);
-    double videoBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Bits);
+    double audioBitrate(MediaUtils::BitrateUnit unit = MediaUtils::bps);
+    double videoBitrate(MediaUtils::BitrateUnit unit = MediaUtils::bps);
     double size(MediaUtils::SizeUnit unit = MediaUtils::Bytes);
     QList<QStringList> ffmpegOptions();
     bool hasVideo();
