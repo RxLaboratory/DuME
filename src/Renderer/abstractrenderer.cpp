@@ -99,6 +99,7 @@ void AbstractRenderer::stop(int timeout)
     }
 
     emit newLog("Stop command sent. Waiting for processes to shut down.");
+    setStatus( MediaUtils::Stopped );
 
     // wait for timeout and kill all remaining processes
     QTimer::singleShot(timeout, this, SLOT( killRenderProcesses()) );
@@ -221,16 +222,18 @@ void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
 void AbstractRenderer::killRenderProcesses()
 {   
     bool killed = false;
-    while ( _renderProcesses.count() >= 0 )
+    while ( _renderProcesses.count() > 0 )
     {
         QProcess *rp = _renderProcesses.takeLast();
-        rp->kill();
+        if (rp->state() != QProcess::NotRunning)
+        {
+            rp->kill();
+            emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
+            killed = true;
+        }
         rp->deleteLater();
-        emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
-        killed = true;
     }
     if (killed) emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
-    setStatus( MediaUtils::Stopped );
 }
 
 MediaUtils::Status AbstractRenderer::status() const
