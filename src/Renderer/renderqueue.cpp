@@ -13,6 +13,7 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     // Connections
     connect( _ffmpeg, &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
+    connect( _ffmpegRenderer, &FFmpegRenderer::console, this, &RenderQueue::ffmpegConsole ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::statusChanged, this, &RenderQueue::ffmpegStatusChanged ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::progress, this, &RenderQueue::ffmpegProgress ) ;
 
@@ -26,6 +27,7 @@ RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *pa
     // Connections
     connect( _ae, &AfterEffects::binaryChanged, _aeRenderer, &AERenderer::setBinary ) ;
     connect( _aeRenderer, &AERenderer::newLog, this, &RenderQueue::aeLog ) ;
+    connect( _aeRenderer, &AERenderer::console, this, &RenderQueue::aeConsole ) ;
     connect( _aeRenderer, &AERenderer::statusChanged, this, &RenderQueue::aeStatusChanged ) ;
     connect( _aeRenderer, &AERenderer::progress, this, &RenderQueue::aeProgress ) ;
 

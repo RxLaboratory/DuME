@@ -346,7 +346,7 @@ void AbstractRenderer::setCurrentFrame(int currentFrame)
 
 void AbstractRenderer::readyRead(QString output)
 {
-    emit newLog( output );
+    emit console( output );
     emit progress();
 }
 

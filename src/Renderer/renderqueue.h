@@ -146,6 +146,8 @@ signals:
      * @brief newLog Emitted when some debug logs are available
      */
     void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
+    void ffmpegConsole( QString );
+    void aeConsole( QString );
 
     // === QUEUE ===
 

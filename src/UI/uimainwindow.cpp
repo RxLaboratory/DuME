@@ -22,6 +22,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     _ae = new AfterEffects( this );
     //FFmpeg
     connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect( _ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
     //After Effects
     connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
@@ -91,7 +92,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     log("Init - Load Defaults", LogUtils::Debug);
 
     //init UI
-    consoleTabs->setCurrentIndex(3);
+    consoleTabs->setCurrentIndex(0);
     mainStackWidget->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
@@ -136,23 +137,15 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     log("Init - Create render queue");
 
     _renderQueue = new RenderQueue( _ffmpeg, _ae, this );
+    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::Status)), this, SLOT(renderQueueStatusChanged(MediaUtils::Status)) );
+    connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
+    connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
+    connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
 
     //accept drops
     setAcceptDrops(true);
 
-    //map events
-    mapEvents();
-}
-
-void UIMainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
-{
-    log( "FFmpeg | " + l, lt);
-}
-
-void UIMainWindow::mapEvents()
-{
-    // === MAP EVENTS ===
-    log("Init - Map events");
+    // final connections
 
     //connect maximize and minimize buttons
 #ifdef Q_OS_WIN
@@ -170,10 +163,23 @@ void UIMainWindow::mapEvents()
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
-    //RenderQueue
-    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::Status)), this, SLOT(renderQueueStatusChanged(MediaUtils::Status)) );
-    connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
-    connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
+    log("Ready!");
+
+}
+
+void UIMainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
+{
+    log( "FFmpeg | " + l, lt);
+}
+
+void UIMainWindow::ffmpegConsole(QString c)
+{
+    //add date
+    QTime currentTime = QTime::currentTime();
+
+    //log
+    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + c );
+    consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
 void UIMainWindow::ffmpeg_init()
@@ -317,20 +323,15 @@ void UIMainWindow::log(QString log, LogUtils::LogType type)
         typeString = " === Fatal === ";
     }
 
-    //status bar
-    mainStatusBar->showMessage(log);
-
-    //add date
-    QTime currentTime = QTime::currentTime();
-
-    //console
-    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + log);
-    consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
-
     //log
     if ( type != LogUtils::Debug )
     {
-        debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + "\n" + log);
+        //status bar
+        mainStatusBar->showMessage(log);
+
+        //add date
+        QTime currentTime = QTime::currentTime();
+        debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
         debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
     }
 }

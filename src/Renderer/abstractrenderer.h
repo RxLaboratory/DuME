@@ -135,6 +135,7 @@ signals:
      * @brief progress Emitted regularly when the renderer is rendering, to tell there are new informations about the progress
      */
     void progress();
+    void console( QString );
 
 public slots:
     // CONFIGURE RENDERER

@@ -37,6 +37,7 @@ public:
 private slots:
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
+    void ffmpegConsole( QString c);
     /**
      * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
      */
@@ -68,10 +69,7 @@ private:
     QSettings *settings;
 
     // ====== UI ========
-    /**
-     * @brief mapEvents Maps all events from the Objects and UI
-     */
-    void mapEvents();
+
     UIQueueWidget *queueWidget;
     void updateCSS(QString cssFileName);
     /**
