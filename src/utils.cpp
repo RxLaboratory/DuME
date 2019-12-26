@@ -107,6 +107,58 @@ public:
         else if ( status == Error ) return "An error has occured.";
         else return "Unknown status";
     }
+    /**
+     * @brief sizeString converts a size in bytes to a human-readable string
+     * @param size
+     * @return
+     */
+    static QString sizeString(qint64 size)
+    {
+        QString sizeText = "";
+
+        if ( size < 1024*1024*10.0 )
+        {
+            size = size / 1024;
+            sizeText = QString::number( int(size*100)/100) + " kB";
+        }
+        else if ( size < 1024*1024*1024*10.0 )
+        {
+            size = size / 1024 / 1024;
+            sizeText = QString::number( int(size*100)/100) + " MB";
+        }
+        else
+        {
+            size = size / 1024 / 1024 / 1024;
+            sizeText = QString::number( int(size*100)/100) + " GB";
+        }
+        return sizeText;
+    }
+
+    static QString bitrateString(qint64 bitrate)
+    {
+        QString sizeText = "";
+
+        if ( bitrate < 1024*10.0 )
+        {
+            sizeText = QString::number( int(bitrate*100)/100) + " bps";
+        }
+        else if ( bitrate < 1024*1024*10.0 )
+        {
+            bitrate = bitrate / 1024;
+            sizeText = QString::number( int(bitrate*100)/100) + " kbps";
+        }
+        else if ( bitrate < 1024*1024*1024*10.0 )
+        {
+            bitrate = bitrate / 1024 / 1024;
+            sizeText = QString::number( int(bitrate*100)/100) + " Mbps";
+        }
+        else
+        {
+            bitrate = bitrate / 1024 / 1024 / 1024;
+            sizeText = QString::number( int(bitrate*100)/100) + " Gbps";
+        }
+        return sizeText;
+    }
 };
 
 class LogUtils
