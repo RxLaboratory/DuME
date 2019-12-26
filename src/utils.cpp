@@ -53,7 +53,7 @@ public:
     /**
      * @brief The unit used for bitrates
      */
-    enum BitrateUnit { Bits, Kbps, Mbps};
+    enum BitrateUnit { bps, Kbps, Mbps};
     Q_ENUM(BitrateUnit)
 
     /**
@@ -86,6 +86,27 @@ public:
         return false;
     }
 
+    /**
+     * @brief statusString Converts the status as a human readable string to be used in the UI
+     * @param status
+     * @return
+     */
+    static QString statusString(MediaUtils::Status status)
+    {
+        if ( status == Initializing ) return "Initializing...";
+        else if ( status == Waiting ) return "Ready";
+        else if ( status == Launching ) return "Launching...";
+        else if ( status == Encoding ) return "Running...";
+        else if ( status == FramesConversion ) return "Conerting frames...";
+        else if ( status == FFmpegEncoding ) return "FFmpeg encoding process...";
+        else if ( status == AERendering ) return "After Effects rendering process...";
+        else if ( status == BlenderRendering ) return "Blender rendering process...";
+        else if ( status == Cleaning ) return "Cleaning...";
+        else if ( status == Finished ) return "Process finished!";
+        else if ( status == Stopped ) return "Process has been stopped.";
+        else if ( status == Error ) return "An error has occured.";
+        else return "Unknown status";
+    }
 };
 
 class LogUtils
