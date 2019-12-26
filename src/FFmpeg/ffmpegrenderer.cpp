@@ -1,5 +1,7 @@
 #include "ffmpegrenderer.h"
 
+#include <QtDebug>
+
 FFmpegRenderer::FFmpegRenderer(QString ffmpeg, QObject *parent) : AbstractRenderer(parent)
 {
     setBinary( ffmpeg );
@@ -9,6 +11,8 @@ void FFmpegRenderer::readyRead(QString output)
 {
     QRegularExpression reProgress("(?:frame= *(\\d+).*fps= *(\\d+).*)?size= *(?:(\\d+)kB)?.*time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d).*bitrate= *(?:(\\d+).\\d+kbits)?.*speed= *(\\d+.\\d*)x");
     QRegularExpressionMatch match = reProgress.match(output);
+
+    qDebug() << "Progress";
 
     //if progress, update UI
     if (match.hasMatch())
@@ -34,4 +38,6 @@ void FFmpegRenderer::readyRead(QString output)
 
         emit progress();
     }
+
+    emit console(output);
 }

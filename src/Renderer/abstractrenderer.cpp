@@ -108,7 +108,7 @@ void AbstractRenderer::stop(int timeout)
 void AbstractRenderer::processStdError()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process);
+    int id = _renderProcesses.indexOf(process) + 1;
     QString log = "Process " + QString::number(id) + ": " + process->readAllStandardError();
     readyRead( log );
     emit newLog( log, LogUtils::Debug );
@@ -117,7 +117,7 @@ void AbstractRenderer::processStdError()
 void AbstractRenderer::processStdOutput()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process);
+    int id = _renderProcesses.indexOf(process) + 1;
     QString log = "Process " + QString::number(id) + ": " + process->readAllStandardOutput();
     readyRead( log );
     emit newLog( log, LogUtils::Debug );
@@ -126,38 +126,32 @@ void AbstractRenderer::processStdOutput()
 void AbstractRenderer::processStarted()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process);
+    int id = _renderProcesses.indexOf(process) + 1;
 
     emit newLog("Process " + QString::number( id ) + " started.");
 }
 
-void AbstractRenderer::processFinished()
+void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    //check which processes have finished
-    QList<int> finishedProcesses;
-    QString debugFinishedProcesses = "Processes: ";
-    for(int i = 0; i < _renderProcesses.count(); i++)
+    // Get the process
+    QProcess* process = qobject_cast<QProcess*>(sender());
+    int id = _renderProcesses.indexOf(process);
+
+    if (exitStatus == QProcess::NormalExit)
     {
-        if( _renderProcesses[i]->state() == QProcess::NotRunning )
-        {
-            finishedProcesses << i;
-            if (i > 0) debugFinishedProcesses += ", ";
-            debugFinishedProcesses += QString::number(i);
-        }
+        emit newLog("Process " + QString::number(id + 1) + " has exited with code " + QString::number(exitCode) + ".", LogUtils::Debug);
+    }
+    if (exitStatus == QProcess::CrashExit)
+    {
+        emit newLog("Process " + QString::number(id + 1) + " has crashed with code " + QString::number(exitCode) + ". Some output files may be corrupted", LogUtils::Warning);
     }
 
-    emit newLog( debugFinishedProcesses + " have finished." );
+    _renderProcesses.removeAt(id);
+    process->deleteLater();
 
     //if all processes have finished
-    if ( finishedProcesses.count() == _renderProcesses.count() )
+    if ( _renderProcesses.count() == 0 )
     {
-        //remove all processes
-        while( _renderProcesses.count() > 0 )
-        {
-            QProcess *process = _renderProcesses.takeLast();
-            process->deleteLater();
-        }
-
         setStatus( MediaUtils::Finished );
     }
 }
@@ -165,7 +159,7 @@ void AbstractRenderer::processFinished()
 void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process);
+    int id = _renderProcesses.indexOf(process) + 1;
 
     QString error;
     if (e == QProcess::FailedToStart)
@@ -233,7 +227,7 @@ void AbstractRenderer::killRenderProcesses()
         }
         rp->deleteLater();
     }
-    if (killed) emit newLog("Some processes did not stop correctly and had to be killed. The output file which may be corrupted.");
+    if (killed) emit newLog("Some processes did not stop correctly and had to be killed. The output file may be corrupted.");
 }
 
 MediaUtils::Status AbstractRenderer::status() const
@@ -249,6 +243,7 @@ void AbstractRenderer::setBinary(const QString &binaryFileName)
 
 void AbstractRenderer::setStatus(MediaUtils::Status status)
 {
+    if (status == _status) return;
     _status = status;
     emit statusChanged( _status );
 }
@@ -359,9 +354,9 @@ void AbstractRenderer::launchProcess( QStringList arguments )
     QProcess *renderer = new QProcess(this);
     connect( renderer, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));
     connect( renderer, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));
-    connect( renderer, SIGNAL(processStarted()), this, SLOT(processStarted()));
-    connect( renderer, SIGNAL(processFinished(int)), this, SLOT(processFinished()));
-    connect( renderer, SIGNAL(processErrorOccurred(QProcess::ProcessError)), this, SLOT(processErrorOccurred(QProcess::ProcessError)));
+    connect( renderer, SIGNAL(started()), this, SLOT(processStarted()));
+    connect( renderer, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
+    connect( renderer, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(processErrorOccurred(QProcess::ProcessError)));
 
     //launch
     renderer->setProgram( _binaryFileName );

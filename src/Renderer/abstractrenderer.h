@@ -175,7 +175,7 @@ private slots:
     void processStdError();
     void processStdOutput();
     void processStarted();
-    void processFinished();
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void processErrorOccurred(QProcess::ProcessError e);
     // kills all render processes
     void killRenderProcesses();

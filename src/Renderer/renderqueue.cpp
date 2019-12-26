@@ -46,6 +46,7 @@ RenderQueue::~RenderQueue()
 
 void RenderQueue::setStatus(MediaUtils::Status st)
 {
+    if( st == _status) return;
     _status = st;
     emit statusChanged(_status);
 }
