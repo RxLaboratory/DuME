@@ -2,7 +2,14 @@
 
 AbstractRendererInfo::AbstractRendererInfo(QObject *parent) : QObject(parent)
 {
+    _output = "";
+    _status = MediaUtils::Waiting;
+    _process = new QProcess();
 
+    //Connect process
+    connect(_process,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
+    connect(_process,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
+    connect(_process,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 }
 
 QString AbstractRendererInfo::binary() const
@@ -21,6 +28,7 @@ bool AbstractRendererInfo::setBinary(QString binary)
     if(fileExists)
     {
         _binary = binary;
+        _process->setProgram( binary );
         emit binaryChanged( binary );
         return true;
     }
@@ -31,7 +39,87 @@ bool AbstractRendererInfo::setBinary(QString binary)
     }
 }
 
+bool AbstractRendererInfo::runCommand(QString commands, int timeout, QIODevice::OpenModeFlag of)
+{
+    //detect arguments
+    QRegularExpression re("(\"[^\"]*\"|[\\S]+)");
+    QRegularExpressionMatchIterator i = re.globalMatch(commands);
+    QStringList commandList;
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        QString command = match.captured(1);
+        command.replace("\"","");
+        commandList << command;
+    }
+    return runCommand(commandList, timeout, of);
+}
+
+bool AbstractRendererInfo::runCommand(QStringList commands, int timeout, QIODevice::OpenModeFlag of)
+{
+    _output = "";
+    _process->setArguments(commands);
+    _process->start(of);
+    return _process->waitForFinished(timeout);
+}
+
 void AbstractRendererInfo::log(QString l, LogUtils::LogType lt)
 {
     emit newLog( l, lt );
+}
+
+void AbstractRendererInfo::stdError()
+{
+    QString output = _process->readAllStandardError();
+    readyRead(output);
+}
+
+void AbstractRendererInfo::stdOutput()
+{
+    QString output = _process->readAllStandardOutput();
+    readyRead(output);
+}
+
+void AbstractRendererInfo::errorOccurred(QProcess::ProcessError e)
+{
+    QString error;
+    if (e == QProcess::FailedToStart)
+    {
+        error = "Failed to start process.";
+    }
+    else if (e == QProcess::Crashed)
+    {
+        error = "Process just crashed.";
+    }
+    else if (e == QProcess::Timedout)
+    {
+        error = "Process operation timed out.";
+    }
+    else if (e == QProcess::WriteError)
+    {
+        error = "Process write Error.";
+    }
+    else if (e == QProcess::ReadError)
+    {
+        error = "Cannot read process output.";
+    }
+    else if (e == QProcess::UnknownError)
+    {
+        error = "An unknown process error occured.";
+    }
+
+    emit newLog( error, LogUtils::Critical );
+    _lastErrorMessage = error;
+    _status = MediaUtils::Error;
+}
+
+QString AbstractRendererInfo::lastErrorMessage() const
+{
+    return _lastErrorMessage;
+}
+
+void AbstractRendererInfo::readyRead(QString output)
+{
+    emit newLog( output, LogUtils::Debug );
+    emit console( output );
+    _output += output;
 }

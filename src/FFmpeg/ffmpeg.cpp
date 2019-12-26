@@ -8,21 +8,10 @@
 FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 {
     _status = MediaUtils::Initializing;
-    _lastErrorMessage = "";
-
-    // The Process
-    ffmpegProcess = new QProcess(this);
-
-    // The output
-    _ffmpegOutput = "";
-
-    //Connect process
-    connect(ffmpegProcess,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
-    connect(ffmpegProcess,SIGNAL(readyReadStandardOutput()),this,SLOT(stdOutput()));
-    connect(ffmpegProcess,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(errorOccurred(QProcess::ProcessError)));
 
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
+    _version = settings.value("ffmpeg/version","").toString();
 
 #ifdef Q_OS_LINUX
     QString defaultFFmpegPath = "ffmpeg";
@@ -33,8 +22,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     if (path == "") setBinary(settings.value("ffmpeg/path",defaultFFmpegPath).toString(), false);
     else setBinary(path, false);
-
-    _version = settings.value("ffmpeg/version","").toString();
 }
 
 FFmpeg::~FFmpeg()
@@ -47,7 +34,6 @@ bool FFmpeg::setBinary(QString path, bool initialize)
     if ( path == binary() ) return false;
     if ( AbstractRendererInfo::setBinary(path) )
     {
-        ffmpegProcess->setProgram(path);
         settings.setValue("ffmpeg/path", path );
         if (initialize) init();
         emit binaryChanged( path );
@@ -57,28 +43,6 @@ bool FFmpeg::setBinary(QString path, bool initialize)
     return false;
 }
 
-void FFmpeg::runCommand(QString commands, QIODevice::OpenModeFlag of)
-{
-    //detect arguments
-    QRegularExpression re("(\"[^\"]*\"|[\\S]+)");
-    QRegularExpressionMatchIterator i = re.globalMatch(commands);
-    QStringList commandList;
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        QString command = match.captured(1);
-        command.replace("\"","");
-        commandList << command;
-    }
-    runCommand(commandList, of);
-}
-
-void FFmpeg::runCommand(QStringList commands, QIODevice::OpenModeFlag of)
-{
-    _ffmpegOutput = "";
-    ffmpegProcess->setArguments(commands);
-    ffmpegProcess->start(of);
-}
-
 void FFmpeg::init()
 {   
 #if INIT_FFMPEG //used when developping to skip ffmpeg loading
@@ -86,51 +50,45 @@ void FFmpeg::init()
 
     //get version
     emit newLog( "Checking version" );
-    runCommand( "" );
     QString newVersion = "";
-    if (ffmpegProcess->waitForFinished(1000))
+    if (runCommand( "", 1000))
     {
-        newVersion = gotVersion(_ffmpegOutput);
+        newVersion = gotVersion(_output);
     }
 
     //get pixFormats
     emit newLog( "Loading Pixel Formats" );
-    runCommand( "-pix_fmts" );
-    if (ffmpegProcess->waitForFinished(10000))
+    if (runCommand( "-pix_fmts", 10000))
     {
-        gotPixFormats( _ffmpegOutput, newVersion );
+        gotPixFormats( _output, newVersion );
     }
 
     //get codecs
     emit newLog( "Loading Codecs" );
-    runCommand( "-codecs" );
-    if (ffmpegProcess->waitForFinished(10000))
+    if (runCommand( "-codecs" , 10000))
     {
-        gotCodecs( _ffmpegOutput, newVersion );
+        gotCodecs( _output, newVersion );
     }
 
     //get muxers
     emit newLog( "Loading Muxers" );
-    runCommand( "-formats" );
-    if (ffmpegProcess->waitForFinished(10000))
+    if (runCommand( "-formats" , 10000))
     {
-        gotMuxers( _ffmpegOutput, newVersion );
+        gotMuxers( _output, newVersion );
     }
 
     //get long help
     emit newLog( "Loading Documentation" );
-    runCommand( "-h long" );
-    if (ffmpegProcess->waitForFinished(3000))
+    if (runCommand( "-h long", 3000))
     {
-        _longHelp = _ffmpegOutput;
+        _longHelp = _output;
     }
 
     //get help
     _help = settings.value("ffmpeg/help","").toString();
-    runCommand( "-h" );
-    if (ffmpegProcess->waitForFinished(3000))
+    if (runCommand( "-h", 3000))
     {
-        _help = _ffmpegOutput;
+        _help = _output;
     }
 
     _version = newVersion;
@@ -233,63 +191,11 @@ QString FFmpeg::analyseMedia(QString mediaPath)
 {
     QStringList args("-i");
     args << QDir::toNativeSeparators(mediaPath);
-    ffmpegProcess->setArguments(args);
-    ffmpegProcess->start(QIODevice::ReadOnly);
-    if (ffmpegProcess->waitForFinished(3000))
+    if ( runCommand( args, 3000) )
     {
-        return _ffmpegOutput;
+        return _output;
     }
     return "";
-}
-
-void FFmpeg::stdError()
-{
-    QString output = ffmpegProcess->readAllStandardError();
-    readyRead(output);
-}
-
-void FFmpeg::stdOutput()
-{
-    QString output = ffmpegProcess->readAllStandardOutput();
-    readyRead(output);
-}
-
-void FFmpeg::errorOccurred(QProcess::ProcessError e)
-{
-    QString error;
-    if (e == QProcess::FailedToStart)
-    {
-        error = "Failed to start process.";
-    }
-    else if (e == QProcess::Crashed)
-    {
-        error = "Process just crashed.";
-    }
-    else if (e == QProcess::Timedout)
-    {
-        error = "Process operation timed out.";
-    }
-    else if (e == QProcess::WriteError)
-    {
-        error = "Process write Error.";
-    }
-    else if (e == QProcess::ReadError)
-    {
-        error = "Cannot read process output.";
-    }
-    else if (e == QProcess::UnknownError)
-    {
-        error = "An unknown process error occured.";
-    }
-
-    emit newLog( error, LogUtils::Critical );
-    _lastErrorMessage = error;
-    _status = MediaUtils::Error;
-}
-
-QString FFmpeg::lastErrorMessage() const
-{
-    return _lastErrorMessage;
 }
 
 MediaUtils::Status FFmpeg::status() const
@@ -359,12 +265,9 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 //get default codecs
                 QStringList args("-h");
                 args << "muxer=" + m->name();
-                ffmpegProcess->setArguments(args);
-                ffmpegProcess->start(QIODevice::ReadOnly);
-
-                if (ffmpegProcess->waitForFinished(3000))
+                if (runCommand(args,3000))
                 {
-                    QStringList lines = _ffmpegOutput.split("\n");
+                    QStringList lines = _output.split("\n");
 
                     QRegularExpression reVideo("Default video codec:\\s*(.+)\\.");
                     QRegularExpression reAudio("Default audio codec:\\s*(.+)\\.");
@@ -663,11 +566,9 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                     QStringList args("-h");
                     if (co->isEncoder()) args << "encoder=" + co->name();
                     else args << "decoder=" + co->name();
-                    ffmpegProcess->setArguments(args);
-                    ffmpegProcess->start(QIODevice::ReadOnly);
-                    if (ffmpegProcess->waitForFinished(3000))
+                    if ( runCommand(args, 3000))
                     {
-                        QStringList lines = _ffmpegOutput.split("\n");
+                        QStringList lines = _output.split("\n");
                         if (lines.count() > 0)
                         {
                             QRegularExpression rePixFmt("Supported pixel formats: (.+)");
@@ -892,11 +793,5 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     emit newLog("Sorting pixel formats...");
     std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
 
-}
-
-void FFmpeg::readyRead(QString output)
-{
-    emit newLog( output, LogUtils::Debug );
-    _ffmpegOutput += output;
 }
 

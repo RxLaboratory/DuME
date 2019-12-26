@@ -1,11 +1,9 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#include <QProcess>
 #include <QSettings>
 #include <QObject>
 #include <QDir>
-#include <QRegularExpression>
 
 #include "Renderer/abstractrendererinfo.h"
 
@@ -116,11 +114,6 @@ public:
      * @return
      */
     MediaUtils::Status status() const;
-    /**
-     * @brief lastErrorMessage The last error if any.
-     * @return
-     */
-    QString lastErrorMessage() const;
 
 public slots:
     /**
@@ -129,37 +122,15 @@ public slots:
      * @return true if the exe is found
      */
     bool setBinary(QString path, bool initialize = true);
-    /**
-     * @brief runCommand Runs FFmpeg with the commands
-     * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
-     */
-    void runCommand(QString commands, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
-    /**
-     * @brief runCommand Runs FFmpeg with the commands
-     * @param commands The arguments
-     */
-    void runCommand(QStringList commands, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
     void init();
-
-private slots:
-    //FFmpeg signals
-    void stdError();
-    void stdOutput();
-    void errorOccurred(QProcess::ProcessError e);
 
 private:
 
     // === ATTRIBUTES ===
 
     QSettings settings;
-    // The ffmpeg process
-    QProcess *ffmpegProcess;
     // The ffmpeg version
     QString _version;
-    // The Status
-    MediaUtils::Status _status;
-    // The last error if any (used if the error happens before signals could be connected)
-    QString _lastErrorMessage;
 
     // The list of video encoders
     QList<FFCodec *> _videoEncoders;
@@ -177,8 +148,6 @@ private:
     QString _help;
     // The documentation
     QString _longHelp;
-    // The output from the process
-    QString _ffmpegOutput;
 
     //=== Process outputs ===
     /**
@@ -204,11 +173,6 @@ private:
      * @param newVersion The version of ffmpeg from which tt output comes from
      */
     void gotPixFormats(QString output, QString newVersion);
-    /**
-     * @brief readyRead Called when FFmpeg outputs somehting on stdError or stdOutput
-     * @param The output from FFmpeg
-     */
-    void readyRead(QString output);
 
 };
 
