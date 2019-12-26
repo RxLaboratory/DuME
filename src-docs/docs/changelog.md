@@ -10,6 +10,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - The consoles (log, ffmpeg console) have been improved.
 - The color transform modes (gamma) have been renamed to be easier to understand (e.g. sRGB instead of IECXXXX).
 - The default color transform when transcoding EXR files is now sRGB by default. This should be adjusted according to the output format, which will be automated in the future.
+- The input information displayed when dropping a file onto DuME is a lot more detailed.
 
 ## 0.0.9-Alpha
 
