@@ -257,7 +257,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Color transfer (Gamma)</string>
+            <string>Apply color space</string>
            </property>
           </widget>
          </item>
