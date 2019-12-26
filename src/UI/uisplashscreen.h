@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSplashScreen>
+#include <QtDebug>
 
 #include "utils.cpp"
 
