@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # The current version
-DEFINES += APPVERSION=\\\"1.0.0-Beta1\\\"
+DEFINES += APPVERSION=\\\"0.1.0-Alpha1\\\"
 
 # For speeding up launch time when working, you can comment this line out.
 # Be sure to set it back when you're finished, before committing your changes.

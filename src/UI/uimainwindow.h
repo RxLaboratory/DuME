@@ -31,6 +31,9 @@ class UIMainWindow : public QMainWindow, private Ui::MainWindow
 public:
     explicit UIMainWindow(FFmpeg *ff, QWidget *parent = nullptr);
 
+    void maximize(bool max);
+    void maximize();
+
 private slots:
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
@@ -57,9 +60,6 @@ private slots:
     void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionSettings_triggered(bool checked);
-
-    void maximize(bool max);
-    void maximize();
 
 private:
     /**

@@ -107,7 +107,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     //move(settings->value("pos", QPoint(200, 200)).toPoint());
     //maximized
 #ifndef Q_OS_MAC
-    //this->maximize(settings->value("maximized",false).toBool());
+    maximize( settings->value("maximized",false).toBool() );
 #endif
     settings->endGroup();
     //console splitter sizes
@@ -412,12 +412,16 @@ void UIMainWindow::maximize(bool max)
 {
     if (!max)
     {
+#ifdef Q_OS_WIN
         maximizeButton->setIcon(QIcon(":/icons/maximize"));
+#endif
         this->showNormal();
     }
     else
     {
+#ifdef Q_OS_WIN
         maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
+#endif
         this->showMaximized();
     }
 }
