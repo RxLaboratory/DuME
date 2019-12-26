@@ -41,9 +41,10 @@ int main(int argc, char *argv[])
 #endif
 
     //load FFmpeg
-    splash.newMessage("Initializing FFmpeg...");
+    splash.newMessage("Loading FFmpeg...");
     FFmpeg *ffmpeg = new FFmpeg();
     QObject::connect(ffmpeg,&FFmpeg::newLog,&splash,&UISplashScreen::newMessage);
+    splash.newMessage("Initializing FFmpeg...");
     ffmpeg->init();
 
     //build UI and show
