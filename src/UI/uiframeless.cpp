@@ -15,34 +15,30 @@ UIFrameLess::UIFrameLess(QMainWindow *target) :
 }
 
 bool UIFrameLess::eventFilter(QObject *o, QEvent*e) {
-    if (e->type() == QEvent::MouseMove ||
-        e->type() == QEvent::HoverMove ||
-        e->type() == QEvent::Leave ||
-        e->type() == QEvent::MouseButtonPress ||
-        e->type() == QEvent::MouseButtonRelease) {
-
-        switch (e->type()) {
-        case QEvent::MouseMove:
-            mouseMove(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        case QEvent::HoverMove:
-            mouseHover(static_cast<QHoverEvent*>(e));
-            return true;
-            break;
-        case QEvent::Leave:
-            mouseLeave(e);
-            return true;
-            break;
-        case QEvent::MouseButtonPress:
-            mousePress(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        case QEvent::MouseButtonRelease:
-            mouseRealese(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        }
+    if (e->type() == QEvent::MouseMove)
+    {
+        mouseMove(static_cast<QMouseEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::HoverMove)
+    {
+        mouseHover(static_cast<QHoverEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::Leave)
+    {
+        mouseLeave(e);
+        return true;
+    }
+    else if (e->type() == QEvent::MouseButtonPress)
+    {
+        mousePress(static_cast<QMouseEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::MouseButtonRelease)
+    {
+        mouseRealese(static_cast<QMouseEvent*>(e));
+        return true;
     }
     else {
         return _target->eventFilter(o, e);
