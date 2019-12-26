@@ -2,6 +2,15 @@
 
 This is the list of what has changed since the first public version of *DuFFmpeg*.
 
+## 0.1.0-Alpha
+
+### General Improvements
+
+- Complete code refactor. The application is now easier to maintain, and the groundwork is better for further development and new features. The application should be more stable.
+- The consoles (log, ffmpeg console) have been improved.
+- The color transform modes (gamma) have been renamed to be easier to understand (e.g. sRGB instead of IECXXXX).
+- The default color transform when transcoding EXR files is now sRGB by default. This should be adjusted according to the output format, which will be automated in the future.
+
 ## 0.0.9-Alpha
 
 ### General Improvements
