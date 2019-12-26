@@ -73,7 +73,7 @@ void RenderQueue::ffmpegStatusChanged( MediaUtils::Status status )
     }
     else if ( status == MediaUtils::Error )
     {
-        emit newLog("An unexpected FFmpeg error has occured.");
+        emit newLog("An unexpected FFmpeg error has occured.", LogUtils::Critical );
         postRenderCleanUp( MediaUtils::Error );
     }
 }
@@ -89,7 +89,7 @@ void RenderQueue::ffmpegProgress()
     _outputBitrate = _ffmpegRenderer->outputBitrate();
     _expectedSize = _ffmpegRenderer->expectedSize();
     _encodingSpeed = _ffmpegRenderer->encodingSpeed();
-    _timeRemaining = _ffmpegRenderer->timeRemaining();
+    _remainingTime = _ffmpegRenderer->timeRemaining();
     _elapsedTime = _ffmpegRenderer->elapsedTime();
     emit progress();
 }
@@ -375,9 +375,49 @@ void RenderQueue::aeProgress()
     _outputBitrate = _aeRenderer->outputBitrate();
     _expectedSize = _aeRenderer->expectedSize();
     _encodingSpeed = _aeRenderer->encodingSpeed();
-    _timeRemaining = _aeRenderer->timeRemaining();
+    _remainingTime = _aeRenderer->timeRemaining();
     _elapsedTime = _aeRenderer->elapsedTime();
     emit progress();
+}
+
+QTime RenderQueue::elapsedTime() const
+{
+    return _elapsedTime;
+}
+
+QTime RenderQueue::remainingTime() const
+{
+    return _remainingTime;
+}
+
+double RenderQueue::encodingSpeed() const
+{
+    return _encodingSpeed;
+}
+
+double RenderQueue::expectedSize() const
+{
+    return _expectedSize;
+}
+
+double RenderQueue::outputBitrate() const
+{
+    return _outputBitrate;
+}
+
+double RenderQueue::outputSize( ) const
+{
+    return _outputSize;
+}
+
+int RenderQueue::currentFrame() const
+{
+    return _currentFrame;
+}
+
+int RenderQueue::numFrames() const
+{
+    return _numFrames;
 }
 
 MediaUtils::Status RenderQueue::status() const
@@ -385,7 +425,7 @@ MediaUtils::Status RenderQueue::status() const
     return _status;
 }
 
-QueueItem *RenderQueue::getCurrentItem()
+QueueItem *RenderQueue::currentItem()
 {
     return _currentItem;
 }
@@ -594,7 +634,7 @@ void RenderQueue::aeStatusChanged( MediaUtils::Status status )
     }
     else if ( status == MediaUtils::Error )
     {
-        emit newLog("An unexpected After Effects error has occured.");
+        emit newLog("An unexpected After Effects error has occured.", LogUtils::Critical);
         postRenderCleanUp( MediaUtils::Error );
     }
 }

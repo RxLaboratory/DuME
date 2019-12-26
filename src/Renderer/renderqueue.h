@@ -39,7 +39,7 @@ public:
      * @brief getCurrentInputInfos Gets the item currently being encoded
      * @return The queue item
      */
-    QueueItem *getCurrentItem();
+    QueueItem *currentItem();
     /**
      * @brief encode Launches the encoding of the current queue
      */
@@ -93,6 +93,49 @@ public:
      * @param timeout Kills the process after timeout if it does not respond. In milliseconds.
      */
     void stop(int timeout = 10000);
+
+    // PROGRESS INFO
+
+    /**
+    * @brief getNumFrames The Number of frames to render
+    * @return
+    */
+    int numFrames() const;
+    /**
+     * @brief getCurrentFrame The frame being rendered
+     * @return
+     */
+    int currentFrame() const;
+    /**
+     * @brief getOutputSize The size of the rendered frames/file
+     * @return
+     */
+    double outputSize() const;
+    /**
+     * @brief getOutputBitrate The bitrate of the output
+     * @return
+     */
+    double outputBitrate( ) const;
+    /**
+     * @brief getExpectedSize The expected final size
+     * @return
+     */
+    double expectedSize() const;
+    /**
+     * @brief getEncodingSpeed The speed of the encoding
+     * @return
+     */
+    double encodingSpeed() const;
+    /**
+     * @brief getTimeRemaining The time remiaining before the end of the encoding
+     * @return
+     */
+    QTime remainingTime() const;
+    /**
+     * @brief getElapsedTime The elapsed time since encoding has started
+     * @return
+     */
+    QTime elapsedTime() const;
 
 signals:
     /**
@@ -182,7 +225,7 @@ private:
     // the speed of the encoding compared to the speed of the video
     double _encodingSpeed;
     // the time remaining before rendering completion
-    QTime _timeRemaining;
+    QTime _remainingTime;
     // the elapsed time
     QTime _elapsedTime;
 
