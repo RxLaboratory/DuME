@@ -12,4 +12,5 @@ void UISplashScreen::newMessage(QString message, LogUtils::LogType lt)
     m += APPVERSION;
     m += "\n";
     showMessage(m + message, Qt::AlignBottom, Qt::black);
+    qDebug() << message;
 }
