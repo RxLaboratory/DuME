@@ -86,7 +86,7 @@ bool AfterEffects::setBinary(QString name)
         }
     }
 
-    if ( name == "Latest" )
+    if ( name == "Latest" && _versions.count() > 0 )
     {
         _useLatest = true;
         settings.setValue( "aerender/useLatest", true );
