@@ -91,6 +91,10 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     resize(settings->value("size", QSize(850, 850)).toSize());
     //position
     //move(settings->value("pos", QPoint(200, 200)).toPoint());
+    //maximized
+#ifndef Q_OS_MAC
+    this->maximize(settings->value("maximized",false).toBool());
+#endif
     settings->endGroup();
     //console splitter sizes
     settings->beginGroup("consolesplitter");
@@ -165,7 +169,7 @@ void UIMainWindow::mapEvents()
 void UIMainWindow::ffmpeg_init()
 {
     //get help
-    helpEdit->setText(_ffmpeg->getLongHelp());
+    helpEdit->setText(_ffmpeg->longHelp());
     queuePage->setEnabled(true);
 }
 
@@ -174,131 +178,105 @@ void UIMainWindow::aeLog(QString l, LogUtils::LogType lt)
     log("After Effects Info | " + l, lt);
 }
 
-void UIMainWindow::ffmpeg_debugLog(QString log)
+void UIMainWindow::progress()
 {
-    log("FFmpeg: " + log);
-}
-
-void UIMainWindow::ffmpeg_errorOccurred(QString e)
-{
-    log("FFmpeg error: " + e,Warning);
-    mainStatusBar->showMessage("An FFmpeg error has occured, see the console and the debug log.");
-}
-
-void UIMainWindow::ffmpeg_started(FFQueueItem *item)
-{
-    //TODO disable corresponding queue widget
-
-    reInitCurrentProgress();
-    //Get input infos from first video input
-    foreach(MediaInfo *input, item->getInputMedias())
+    //get input info
+    QueueItem *item = _renderQueue->currentItem();
+    QString filename = "";
+    int numFrames = _renderQueue->numFrames();
+    if ( item != nullptr )
     {
-        if (input->hasVideo())
+        foreach(MediaInfo *input, item->getInputMedias())
         {
-            QFileInfo inputFile(input->fileName());
-            mainStatusBar->clearMessage();
-            statusLabel->setText("Transcoding: " + inputFile.fileName());
+            if ( input->hasVideo() )
+            {
+                QFileInfo inputFile(input->fileName());
+                mainStatusBar->clearMessage();
+                filename = inputFile.fileName();
 
-            //adjust progress
-            currentEncodingNameLabel->setText(inputFile.fileName());
-            if (input->duration() > 0) progressBar->setMaximum(input->duration() * input->videoFramerate());
-            else if (input->isImageSequence()) progressBar->setMaximum(input->frames().count());
-            else progressBar->setMaximum(0);
+                //adjust progress
 
-            break;
+                if (numFrames == 0)
+                {
+                    if ( input->duration() > 0 ) numFrames = input->duration() * input->videoFramerate();
+                    else if ( input->isImageSequence() ) numFrames = input->frames().count();
+                }
+                break;
+            }
         }
     }
-}
 
-void UIMainWindow::ffmpeg_finished(FFQueueItem *item)
-{
-    progressBar->setValue(0);
-    progressBar->setMaximum(1);
-    //TODO add item to history
-}
+    currentEncodingNameLabel->setText( filename );
 
-void UIMainWindow::ffmpeg_statusChanged(FFmpeg::Status status)
-{
-    if (status == FFmpeg::Waiting)
+    progressBar->setMaximum( numFrames );
+
+    progressBar->setValue( _renderQueue->currentFrame() );
+
+    double outputSize = _renderQueue->outputSize();
+    QString outputSizeText = "";
+    if ( outputSize < 1024/1024/1024/10 )
     {
-        actionGo->setEnabled(true);
-        actionStop->setEnabled(false);
-        mainStatusBar->clearMessage();
-        statusLabel->setText("Ready.");
-        actionStatus->setText("Ready");
-        log("== WAITING ==");
-        queueWidget->setEnabled(true);
-        setCursor(Qt::ArrowCursor);
+        outputSize = outputSize / 1024/1024;
+        outputSizeText = QString::number(int(outputSize*100)/100) + " MB";
     }
-    else if (status == FFmpeg::Encoding)
+    else
     {
+        outputSize = outputSize /1024/1024/1024;
+        outputSizeText = QString::number(int(outputSize*100)/100) + " GB";
+    }
+    outputSizeLabel->setText( outputSizeText );
+
+    outputBitrateLabel->setText( QString::number(int(_renderQueue->outputBitrate() /1000/10)/100) + "Mbps" );
+
+    double expectedSize = _renderQueue->expectedSize();
+    QString expectedSizeText = "";
+    if ( expectedSize < 1024/1024/1024/10 )
+    {
+        expectedSize = expectedSize /1024/1024;
+        expectedSizeText = QString::number(int(expectedSize*100)/100) + " MB";
+    }
+    else
+    {
+        expectedSize = expectedSize /1024/1024/1024;
+        expectedSizeText = QString::number(int(expectedSize*100)/100) + " GB";
+    }
+    expectedSizeLabel->setText ( expectedSizeText );
+
+    speedLabel->setText( QString::number(int(_renderQueue->encodingSpeed()*100)/100) + "x");
+
+    timeRemainingLabel->setText( _renderQueue->remainingTime().toString("hh:mm:ss"));
+
+    timeLabel->setText( _renderQueue->elapsedTime().toString("hh:mm:ss") );
+
+}
+
+void UIMainWindow::renderQueueStatusChanged(MediaUtils::Status status)
+{
+    QString stText = MediaUtils::statusString( status );
+    actionStatus->setText( stText );
+    statusLabel->setText( stText );
+    log( stText );
+
+
+    if( MediaUtils::isBusy( status ) )
+    {
+        queuePage->setEnabled( false );
         actionGo->setEnabled(false);
         actionStop->setEnabled(true);
         mainStatusBar->clearMessage();
-        statusLabel->setText("Transcoding...");
-        actionStatus->setText("Transcoding...");
-        log("== TRANSCODING ==");
-        queueWidget->setEnabled(false);
         setCursor(Qt::BusyCursor);
     }
-    else if (status == FFmpeg::Error)
+    else
     {
+        queuePage->setEnabled( true );
+
+        reInitCurrentProgress();
+
         actionGo->setEnabled(true);
         actionStop->setEnabled(false);
-        statusLabel->setText("Ready.");
-        actionStatus->setText("An error occured");
-        log("== AN ERROR OCCURED ==");
-        queueWidget->setEnabled(true);
+        mainStatusBar->clearMessage();
         setCursor(Qt::ArrowCursor);
     }
-    else if (status == FFmpeg::AERendering)
-    {
-        actionGo->setEnabled(false);
-        actionStop->setEnabled(true);
-        statusLabel->setText("Rendering.");
-        actionStatus->setText("Rendering (Ae)...");
-        log("== RENDERING (Ae) ==");
-        queueWidget->setEnabled(false);
-        setCursor(Qt::BusyCursor);
-    }
-    else if (status == FFmpeg::Cleaning)
-    {
-        actionGo->setEnabled(false);
-        actionStop->setEnabled(true);
-        statusLabel->setText("Cleaning.");
-        actionStatus->setText("Cleaning...");
-        log("== CLEANING ==");
-        queueWidget->setEnabled(true);
-        setCursor(Qt::ArrowCursor);
-    }
-}
-
-void UIMainWindow::ffmpeg_progress()
-{
-#ifdef QT_DEBUG
-    qDebug() << "== Encoding Progress ==";
-#endif
-    //size
-    int outputSize = _ffmpeg->getOutputSize(MediaInfo::MB);
-    outputSizeLabel->setText(QString::number(outputSize) + " MB");
-    //bitrate
-    int bitrate = _ffmpeg->getOutputBitrate(MediaInfo::Mbps);
-    outputBitrateLabel->setText(QString::number(bitrate) + " Mbps");
-    //time elapsed
-    QTime elapsed = _ffmpeg->getElapsedTime();
-    timeLabel->setText(elapsed.toString("hh:mm:ss"));
-
-#ifdef QT_DEBUG
-    qDebug() << elapsed.toString("hh:mm:ss") << QString::number(outputSize) + " MB";
-#endif
-    log("=== Encoding progress: output file size: " + QString::number(outputSize) + "MB");
-    //speed
-    speedLabel->setText(QString::number(_ffmpeg->getEncodingSpeed()) + "x");
-    //time remaining
-    QTime remaining = _ffmpeg->getTimeRemaining();
-    timeRemainingLabel->setText(remaining.toString("hh:mm:ss"));
-    //progress bar
-    progressBar->setValue(_ffmpeg->getCurrentFrame());
 }
 
 void UIMainWindow::log(QString log, LogUtils::LogType type)
@@ -367,14 +345,14 @@ void UIMainWindow::on_actionGo_triggered()
 
     //Launch!
     log("=== Beginning encoding ===");
-    _ffmpeg->encode(input,output);
+    _renderQueue->encode(input,output);
 }
 
 void UIMainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
-    _ffmpeg->stop(6000);
+    _renderQueue->stop(6000);
 }
 
 void UIMainWindow::on_actionSettings_triggered(bool checked)
@@ -394,7 +372,7 @@ void UIMainWindow::updateCSS(QString cssFileName)
     QStringList cssFiles(cssFileName);
     //check if there's a duffmpeg file to include
     QFileInfo cssFileInfo(cssFileName);
-    QString includeName = cssFileInfo.completeBaseName() + "-duffmpeg";
+    QString includeName = cssFileInfo.completeBaseName() + "-dume";
     QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
     QFile includeFile(includePath);
     includePath = cssFileInfo.path() + "/" + includeName;
@@ -409,21 +387,20 @@ void UIMainWindow::updateCSS(QString cssFileName)
 
 void UIMainWindow::reInitCurrentProgress()
 {
-    outputSizeLabel->setText("0 MB");
-    outputBitrateLabel->setText("0 Mbps");
-    timeLabel->setText("00:00:00");
+    progressBar->setMaximum( 1 );
+    progressBar->setValue( 0 );
+    outputSizeLabel->setText( "0 MB" );
+    outputBitrateLabel->setText( "0 bps" );
+    expectedSizeLabel->setText( "0 MB" );
+    speedLabel->setText("x");
     timeRemainingLabel->setText("00:00:00");
-    speedLabel->setText("0x");
-    currentEncodingNameLabel->setText("");
-    progressBar->setMaximum(100);
-    progressBar->setValue(0);
+    timeLabel->setText("00:00:00");
 }
 
 #ifndef Q_OS_MAC
-void UIMainWindow::maximize()
+void UIMainWindow::maximize(bool max)
 {
-    //TODO save setting
-    if (this->isMaximized())
+    if (!max)
     {
         maximizeButton->setIcon(QIcon(":/icons/maximize"));
         this->showNormal();
@@ -433,9 +410,12 @@ void UIMainWindow::maximize()
         maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
         this->showMaximized();
     }
-
 }
 
+void UIMainWindow::maximize()
+{
+    maximize(!this->isMaximized());
+}
 #endif
 
 void UIMainWindow::closeEvent(QCloseEvent *event)
@@ -444,6 +424,7 @@ void UIMainWindow::closeEvent(QCloseEvent *event)
     settings->beginGroup("mainwindow");
     settings->setValue("size", size());
     settings->setValue("pos", pos());
+    settings->setValue("maximized",this->isMaximized());
     settings->endGroup();
     settings->beginGroup("consolesplitter");
     settings->setValue("consolesize",consoleSplitter->sizes()[0]);

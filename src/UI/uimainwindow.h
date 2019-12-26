@@ -44,19 +44,21 @@ private slots:
 
     // Queue
     void progress();
+    void renderQueueStatusChanged(MediaUtils::Status status);
+
+    // CONSOLE
+    void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
     void on_ffmpegCommandsButton_clicked();
-
-    // CONSOLE
-    void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
     // ACTIONS
     void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionSettings_triggered(bool checked);
 
+    void maximize(bool max);
     void maximize();
 
 private:
