@@ -40,12 +40,12 @@ public:
      * @brief outputSize The expected output file size
      * @return
      */
-    double outputSize(MediaUtils::SizeUnit unit = MediaUtils::MB) const;
+    double outputSize( ) const;
     /**
      * @brief outputBitrate The output bitrate
      * @return
      */
-    double outputBitrate(MediaUtils::BitrateUnit unit = MediaUtils::Kbps) const;
+    double outputBitrate() const;
     /**
      * @brief encodingSpeed The rendering speed, compared to the media duration
      * @return

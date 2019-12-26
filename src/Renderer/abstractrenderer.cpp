@@ -33,22 +33,13 @@ QTime AbstractRenderer::startTime() const
     return _startTime;
 }
 
-double AbstractRenderer::outputSize(MediaUtils::SizeUnit unit) const
+double AbstractRenderer::outputSize( ) const
 {
-    if (unit == MediaUtils::Bytes) return _outputSize;
-    else if (unit == MediaUtils::KB) return _outputSize/1024;
-    else if (unit == MediaUtils::MB) return _outputSize/1024/1024;
-    else if (unit == MediaUtils::GB) return _outputSize/1024/1024/1024;
-
     return _outputSize;
 }
 
-double AbstractRenderer::outputBitrate(MediaUtils::BitrateUnit unit) const
+double AbstractRenderer::outputBitrate( ) const
 {
-    if (unit == MediaUtils::Bits) return _outputBitrate;
-    else if (unit == MediaUtils::Kbps) return _outputBitrate/1000;
-    else if (unit == MediaUtils::Mbps) return _outputBitrate/1000/1000;
-
     return _outputBitrate;
 }
 
