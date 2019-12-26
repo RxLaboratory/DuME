@@ -43,7 +43,7 @@ public:
 protected:
     bool eventFilter(QObject *o, QEvent *e) override;
     void mouseHover(QHoverEvent*);
-    void mouseLeave(QEvent*);
+    void mouseLeave();
     void mousePress(QMouseEvent*);
     void mouseRealese(QMouseEvent*);
     void mouseMove(QMouseEvent*);

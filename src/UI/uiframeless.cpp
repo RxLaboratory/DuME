@@ -27,7 +27,7 @@ bool UIFrameLess::eventFilter(QObject *o, QEvent*e) {
     }
     else if (e->type() == QEvent::Leave)
     {
-        mouseLeave(e);
+        mouseLeave();
         return true;
     }
     else if (e->type() == QEvent::MouseButtonPress)
@@ -49,7 +49,7 @@ void UIFrameLess::mouseHover(QHoverEvent *e) {
     updateCursorShape(_target->mapToGlobal(e->pos()));
 }
 
-void UIFrameLess::mouseLeave(QEvent *e) {
+void UIFrameLess::mouseLeave() {
     if (!_leftButtonPressed) {
         _target->unsetCursor();
     }
