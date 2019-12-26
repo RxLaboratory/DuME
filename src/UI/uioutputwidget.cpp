@@ -187,12 +187,16 @@ void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
-    init();
-
     delete _mediaInfo;
     _mediaInfo = mediaInfo;
     mediaInfo->setParent(this);
 
+    updateMediaInfo();
+}
+
+void UIOutputWidget::updateMediaInfo()
+{
+    init();
 
     //MUXER
     FFMuxer *muxer = _mediaInfo->muxer();
@@ -343,7 +347,6 @@ void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)
         if (option.count() > 0) value = option[1];
         addNewParam(name,value);
     }
-
 }
 
 QString UIOutputWidget::getOutputPath()
@@ -780,6 +783,7 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
         audioCodecsFilterBox->setCurrentIndex(0);
 
         _mediaInfo->loadPreset(presetsBox->currentData().toString());
+        updateMediaInfo();
 
         _loadingPreset = false;
     }

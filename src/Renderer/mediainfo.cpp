@@ -173,6 +173,9 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
     }
     else return;
 
+    qDebug() << "Loading preset:";
+    qDebug() << json;
+
     QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
 
     //validate file
@@ -245,6 +248,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
         opt << optionObj.value("value").toString();
         addFFmpegOption(opt);
     }
+    qDebug() << "Preset loaded.";
 }
 
 void MediaInfo::setVideoWidth(int width)

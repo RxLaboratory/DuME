@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTemporaryDir>
+#include <QtDebug>
 
 #include "FFmpeg/ffmpeg.h"
 #include "utils.cpp"

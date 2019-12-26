@@ -17,6 +17,7 @@ public:
     explicit UIOutputWidget(FFmpeg *ff, int id, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
+    void updateMediaInfo();
     QString getOutputPath();
 
 signals:
