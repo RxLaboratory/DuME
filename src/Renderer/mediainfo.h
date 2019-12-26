@@ -90,9 +90,9 @@ public:
     FFCodec *videoCodec();
     FFCodec *audioCodec();
     FFPixFormat *pixFormat();
-    double audioBitrate(MediaUtils::BitrateUnit unit = MediaUtils::bps);
-    double videoBitrate(MediaUtils::BitrateUnit unit = MediaUtils::bps);
-    double size(MediaUtils::SizeUnit unit = MediaUtils::Bytes);
+    qint64 audioBitrate();
+    qint64 videoBitrate();
+    qint64 size();
     QList<QStringList> ffmpegOptions();
     bool hasVideo();
     bool hasAudio();
@@ -112,6 +112,9 @@ public:
     QTemporaryDir *cacheDir() const;
     bool aeUseRQueue() const;
     QString ffmpegSequenceName() const;
+    qint64 bitrate() const;
+    float pixAspect() const;
+    float videoAspect() const;
 
     //utils
     QString exportPreset();
@@ -149,6 +152,10 @@ private:
      */
     qint64 _size;
     /**
+     * @brief _bitrate The global bitrate
+     */
+    qint64 _bitrate;
+    /**
      * @brief _video Wether the file contains video
      */
     bool _video;
@@ -179,11 +186,19 @@ private:
     /**
      * @brief _videoBitrate The video bitrate
      */
-    int _videoBitrate;
+    qint64 _videoBitrate;
     /**
      * @brief _pixFormat The pixel format
      */
     FFPixFormat *_pixFormat;
+    /**
+     * @brief _pixRatio Pixel aspect ratio
+     */
+    float _pixAspect;
+    /**
+     * @brief _videoAspect Video aspect ratio
+     */
+    float _videoAspect;
     /**
      * @brief _audioCodec The norm or codec used for decoding or encoding audio
      */
@@ -195,7 +210,7 @@ private:
     /**
      * @brief _audioBitrate The audio bitrate
      */
-    int _audioBitrate;
+    qint64 _audioBitrate;
     /**
      * @brief _fileName The filename of the media
      */

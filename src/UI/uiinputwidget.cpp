@@ -92,13 +92,14 @@ void UIInputWidget::openFile(QString file)
         mediaInfoString += "\nStart Frame Number: " + QString::number( _mediaInfo->startNumber() );
     }
 
-    double size = _mediaInfo->size( MediaUtils::MB );
-    int roundedSize = int ( size*1000+0.5 );
-    size = roundedSize/1000;
-    mediaInfoString += "\nSize: " + QString::number(size) + " MB";
+    qint64 size = _mediaInfo->size( );
+    mediaInfoString += "\nSize: " + MediaUtils::sizeString( size );
 
     if ( !_mediaInfo->isAep() )
     {
+        qint64 bitrate = _mediaInfo->bitrate();
+        mediaInfoString += "\nGlobal bitrate: " + MediaUtils::bitrateString( bitrate );
+
         mediaInfoString += "\nContains video: ";
         if (_mediaInfo->hasVideo()) mediaInfoString += "yes";
         else mediaInfoString += "no";
@@ -117,14 +118,11 @@ void UIInputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->videoCodec()->prettyName();
             }
             mediaInfoString += "\nResolution: " + QString::number(_mediaInfo->videoWidth()) + "x" + QString::number(_mediaInfo->videoHeight());
+            mediaInfoString += "\nVideo Aspect: " + QString::number( int( _mediaInfo->videoAspect()*100+0.5 ) / 100.0) + ":1";
             mediaInfoString += "\nFramerate: " + QString::number(_mediaInfo->videoFramerate()) + " fps";
-            int bitrate = int( _mediaInfo->videoBitrate( MediaUtils::Mbps ) );
-            if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " Mbps";
-            else
-            {
-                bitrate = int( _mediaInfo->videoBitrate( MediaUtils::Kbps ) );
-                if (bitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(bitrate) + " kbps";
-            }
+            qint64 bitrate = _mediaInfo->videoBitrate( );
+            if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
+            mediaInfoString += "\nPixel Aspect: " + QString::number( int(_mediaInfo->pixAspect()*100+0.5)/ 100.0) + ":1";
             if (_mediaInfo->pixFormat() != nullptr)
             {
                 mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->name();
@@ -141,7 +139,7 @@ void UIInputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->audioCodec()->prettyName();
             }
             mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
-            int abitrate = int( _mediaInfo->audioBitrate( MediaUtils::Kbps ) );
+            int abitrate = int( _mediaInfo->audioBitrate( ) );
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
         }
     }

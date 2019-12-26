@@ -61,10 +61,10 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
     {
         setAep(true);
         _extensions << "aep" << "aet" << "aepx";
-        _size = mediaFile.size();
     }
 
     _fileName = QDir::toNativeSeparators( mediaFile.absoluteFilePath() ) ;
+    _size = mediaFile.size();
 
 
     QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
@@ -76,7 +76,7 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
     QRegularExpression reVideoStream("Stream #.+Video: (.+)");
     QRegularExpression reSequenceStream("Stream #.+Video: .+, (\\d+)x(\\d+)");
     QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
-    QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d), )?(?:(N\\/A), )?");
+    QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d),\\sstart:\\s\\d+.\\d+, bitrate:\\s(\\d+))?(?:(N\\/A), )?");
 
     bool input = false;
     foreach(QString info,infos)
@@ -96,13 +96,14 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
         match = reDuration.match(info);
         if (match.hasMatch())
         {
-            if (match.captured(4) != "N/A")
+            if (match.captured(5) != "N/A")
             {
                 //set duration
                 int durationH = match.captured(1).toInt();
                 int durationM = match.captured(2).toInt();
                 double durationS = match.captured(3).toDouble();
                 _duration = durationH*60*60+durationM*60+durationS;
+                _bitrate = match.captured(4).toInt()*1000;
             }
             else
             {
@@ -116,19 +117,17 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
         if (match.hasMatch())
         {
             QString details = match.captured(1);
-            QStringList detailsList = details.split(", ");
+            QRegularExpression reDetails("([^,]*\\([^)]*\\)|[^,]*),\\s*([^,]*\\([^)]*\\)|[^,]*), (\\d+)x(\\d+) \\[SAR (\\d+):(\\d+) DAR (\\d+):(\\d+)][^,]*(?:,\\s*(\\d+)[^,]*,\\s+(\\d+) fps)?");
+            match = reDetails.match(details);
 
-            QRegularExpression reVideoSize(", (\\d+)x(\\d+).*, ");
-            QRegularExpression reVideoFrameRate(", (\\d{1,3}(?:\\.\\d{0,3})?) fps");
-            QString codec = detailsList[0].split(" ")[0];
-            _videoCodec = new FFCodec(codec);
-            QString pf = detailsList[1];
-            _pixFormat = new FFPixFormat(pf);
-            QRegularExpressionMatch videoSizeMatch = reVideoSize.match(details);
-            _videoWidth = videoSizeMatch.captured(1).toInt();
-            _videoHeight = videoSizeMatch.captured(2).toInt();
-            QRegularExpressionMatch videoFrameRateMatch = reVideoFrameRate.match(details);
-            _videoFramerate = videoFrameRateMatch.captured(1).toDouble();
+            _videoCodec = new FFCodec(match.captured(1));
+            _pixFormat = new FFPixFormat(match.captured(2));
+            _videoWidth = match.captured(3).toInt();
+            _videoHeight = match.captured(4).toInt();
+            _pixAspect = match.captured(5).toFloat() / match.captured(6).toFloat();
+            _videoAspect = match.captured(7).toFloat() / match.captured(8).toFloat();
+            _videoBitrate = match.captured(9).toInt()*1024;
+            _videoFramerate = match.captured(10).toDouble();
             if ( int( _videoFramerate ) == 0 ) _videoFramerate = 24;
             _video = true;
             continue;
@@ -395,29 +394,19 @@ FFCodec *MediaInfo::audioCodec()
     return _audioCodec;
 }
 
-double MediaInfo::audioBitrate(MediaUtils::BitrateUnit unit)
+qint64 MediaInfo::audioBitrate()
 {
-    double bitrate = _audioBitrate;
-    if (unit == MediaUtils::Kbps) bitrate = bitrate/1024;
-    if (unit == MediaUtils::Mbps) bitrate = bitrate/1024/1024;
-    return bitrate;
+    return _audioBitrate;
 }
 
-double MediaInfo::videoBitrate(MediaUtils::BitrateUnit unit)
+qint64 MediaInfo::videoBitrate()
 {
-    double bitrate = _videoBitrate;
-    if (unit == MediaUtils::Kbps) bitrate = bitrate/1024;
-    if (unit == MediaUtils::Mbps) bitrate = bitrate/1024/1024;
-    return bitrate;
+    return _videoBitrate;
 }
 
-double MediaInfo::size(MediaUtils::SizeUnit unit)
+qint64 MediaInfo::size()
 {
-    double s = _size;
-    if (unit == MediaUtils::KB) s = s/1024;
-    else if (unit == MediaUtils::MB) s = s/1024/1024;
-    else if (unit == MediaUtils::GB) s = s/1024/1024/1024;
-    return s;
+    return _size;
 }
 
 QList<QStringList> MediaInfo::ffmpegOptions()
@@ -569,6 +558,21 @@ void MediaInfo::exportPreset(QString jsonPath)
         jsonFile.write(exportPreset().toUtf8());
         jsonFile.close();
     }
+}
+
+float MediaInfo::videoAspect() const
+{
+    return _videoAspect;
+}
+
+float MediaInfo::pixAspect() const
+{
+    return _pixAspect;
+}
+
+qint64 MediaInfo::bitrate() const
+{
+    return _bitrate;
 }
 
 QString MediaInfo::ffmpegSequenceName() const

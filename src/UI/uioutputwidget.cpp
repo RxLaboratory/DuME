@@ -265,11 +265,11 @@ void UIOutputWidget::updateMediaInfo()
             frameRateButton->setChecked(true);
             frameRateEdit->setValue(framerate);
         }
-        double bitrate = _mediaInfo->videoBitrate(MediaUtils::Mbps);
+        qint64 bitrate = _mediaInfo->videoBitrate( );
         if (bitrate != 0.0)
         {
             videoBitrateButton->setChecked(true);
-            videoBitRateEdit->setValue(bitrate);
+            videoBitRateEdit->setValue(bitrate/1024/1024);
         }
         int quality = _mediaInfo->videoQuality();
         if (quality > -1)
@@ -326,11 +326,11 @@ void UIOutputWidget::updateMediaInfo()
                 }
             }
         }
-        double bitrate = _mediaInfo->audioBitrate(MediaUtils::Kbps);
-        if (bitrate != 0.0)
+        qint64 bitrate = _mediaInfo->audioBitrate( );
+        if (bitrate != 0)
         {
             audioBitrateButton->setChecked(true);
-            audioBitRateEdit->setValue(int( bitrate ));
+            audioBitRateEdit->setValue(bitrate/1024);
         }
     }
     else
