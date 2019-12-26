@@ -34,6 +34,8 @@ private slots:
     void on_outputTab_tabBarClicked(int index);
     void log(QString log, LogUtils::LogType lt = LogUtils::Information );
 
+    void on_splitter_splitterMoved();
+
 private:
     QSettings _settings;
     FFmpeg *_ffmpeg;
