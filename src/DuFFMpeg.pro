@@ -94,7 +94,7 @@ FORMS += \
     UI/toolbarspacer.ui
 
 RESOURCES += \
-    resources/resources.qrc
+    resources.qrc
 
 DISTFILES += \
     resources/ico.rc
