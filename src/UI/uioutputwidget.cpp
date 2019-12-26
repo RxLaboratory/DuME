@@ -57,7 +57,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     //Set defaults
 
-    on_presetsFilterBox_activated(0);
+    on_presetsFilterBox_activated();
     //hide/show supported/unsupported options
     updateAudioVideoOptions();
 }
@@ -789,7 +789,7 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
 
 void UIOutputWidget::on_presetsFilterBox_activated()
 {
-    loadPresets(QSettings().value("presets/path","").toString());
+    loadPresets( );
 }
 
 void UIOutputWidget::on_alphaButton_toggled(bool checked)
