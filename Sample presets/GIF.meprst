@@ -1,29 +1,27 @@
 {
-    "duffmpeg": {
+    "dume": {
         "hasAudio": false,
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "jpg",
-                "jpeg"
+                "gif"
             ],
-            "isSequence": true,
-            "name": "mjpeg",
-            "prettyName": "JPEG Sequence"
+            "isSequence": false,
+            "name": "gif",
+            "prettyName": "GIF Animation"
         },
         "options": [
         ],
-        "version": "0.0.2-Alpha2",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "mjpeg",
-            "codecPrettyName": "Motion JPEG ",
+            "codecName": "gif",
+            "codecPrettyName": "GIF ",
             "framerate": 0,
             "height": 0,
-            "loop": -1,
+            "loop": 0,
             "profile": -1,
             "quality": -1,
-            "startNumber": 0,
             "width": 0
         }
     }

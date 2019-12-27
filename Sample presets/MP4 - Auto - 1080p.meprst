@@ -1,5 +1,5 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
             "bitrate": 0,
             "codecName": "aac",
@@ -18,7 +18,7 @@
         },
         "options": [
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
             "codecName": "h264",

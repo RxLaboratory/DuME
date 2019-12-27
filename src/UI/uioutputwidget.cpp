@@ -746,6 +746,10 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
             _freezeUI = false;
             return;
         }
+
+        //add extension if none
+        if ( QFileInfo(saveFileName).suffix() == "" ) saveFileName += ".meprst";
+
         //update infos
         getMediaInfo();
         //export

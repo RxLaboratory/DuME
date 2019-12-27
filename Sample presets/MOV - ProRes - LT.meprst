@@ -1,9 +1,9 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
             "bitrate": 0,
-            "codecName": "aac",
-            "codecPrettyName": "AAC ",
+            "codecName": "alac",
+            "codecPrettyName": "ALAC ",
             "sampling": 0
         },
         "hasAudio": true,
@@ -17,20 +17,16 @@
             "prettyName": "QuickTime / MOV"
         },
         "options": [
-            {
-                "name": "-format",
-                "value": "hap_q"
-            }
         ],
-        "version": "0.0.2-Alpha2",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "hap",
-            "codecPrettyName": "Vidvox Hap\r",
+            "codecName": "prores",
+            "codecPrettyName": "Apple ProRes ",
             "framerate": 0,
             "height": 0,
             "loop": -1,
-            "profile": -1,
+            "profile": 1,
             "quality": -1,
             "width": 0
         }

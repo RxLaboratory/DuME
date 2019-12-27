@@ -1,7 +1,7 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
-            "bitrate": 327680,
+            "bitrate": 0,
             "codecName": "aac",
             "codecPrettyName": "AAC ",
             "sampling": 0
@@ -10,24 +10,28 @@
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "mp4"
+                "mov"
             ],
             "isSequence": false,
-            "name": "mp4",
-            "prettyName": "MP4 (MPEG-4 Part 14)"
+            "name": "mov",
+            "prettyName": "QuickTime / MOV"
         },
         "options": [
+            {
+                "name": "-format",
+                "value": "hap"
+            }
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "h264",
-            "codecPrettyName": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 ",
+            "codecName": "hap",
+            "codecPrettyName": "Vidvox Hap\r",
             "framerate": 0,
             "height": 0,
             "loop": -1,
             "profile": -1,
-            "quality": 95,
+            "quality": -1,
             "width": 0
         }
     }

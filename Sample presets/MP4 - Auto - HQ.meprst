@@ -1,33 +1,33 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
-            "bitrate": 0,
-            "codecName": "alac",
-            "codecPrettyName": "ALAC ",
+            "bitrate": 327680,
+            "codecName": "aac",
+            "codecPrettyName": "AAC ",
             "sampling": 0
         },
         "hasAudio": true,
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "mov"
+                "mp4"
             ],
             "isSequence": false,
-            "name": "mov",
-            "prettyName": "QuickTime / MOV"
+            "name": "mp4",
+            "prettyName": "MP4 (MPEG-4 Part 14)"
         },
         "options": [
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "prores",
-            "codecPrettyName": "Apple ProRes ",
+            "codecName": "h264",
+            "codecPrettyName": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 ",
             "framerate": 0,
             "height": 0,
             "loop": -1,
-            "profile": 3,
-            "quality": -1,
+            "profile": -1,
+            "quality": 95,
             "width": 0
         }
     }

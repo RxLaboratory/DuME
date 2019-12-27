@@ -28,10 +28,10 @@ void MediaInfo::reInit(bool removeFileName)
     _videoCodec = nullptr;
     _videoWidth = 0;
     _videoHeight = 0;
-    _videoFramerate = 24.0;
+    _videoFramerate = 0.0;
     _videoBitrate = 0;
     _pixAspect = 1;
-    _videoAspect = 1.7777778;
+    _videoAspect = 0.0;
     _pixFormat = nullptr;
     _audioCodec = nullptr;
     _audioSamplingRate = 0;
@@ -179,8 +179,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
     }
     else return;
 
-    qDebug() << "Loading preset:";
-    qDebug() << json;
+    qDebug() << "Loading preset: " + presetFile.completeBaseName();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8());
 
@@ -469,7 +468,7 @@ QString MediaInfo::exportPreset()
     muxerObj.insert("name",muxerName);
     muxerObj.insert("prettyName",muxerPrettyName);
     muxerObj.insert("isSequence",muxerIsSequence);
-    QJsonArray muxerExtensions = QJsonArray::fromStringList(extensions());
+    QJsonArray muxerExtensions = QJsonArray::fromStringList( _extensions );
     muxerObj.insert("extensions",muxerExtensions);
     //insert
     mediaObj.insert("muxer",muxerObj);
@@ -508,7 +507,7 @@ QString MediaInfo::exportPreset()
         //start number
         videoObj.insert("startNumber",_startNumber);
         //pixel format
-        videoObj.insert("pixelFormat",_pixFormat->name());
+        if ( _pixFormat != nullptr ) videoObj.insert("pixelFormat",_pixFormat->name());
         //unmult
         videoObj.insert("premultipliedAlpha",_premultipliedAlpha);
 
@@ -556,11 +555,17 @@ QString MediaInfo::exportPreset()
     QJsonObject mainObj;
     mainObj.insert("dume",mediaObj);
     QJsonDocument jsonDoc(mainObj);
+
+    qDebug() << "Generated Preset: ";
+    qDebug() << jsonDoc;
+
     return jsonDoc.toJson();
 }
 
 void MediaInfo::exportPreset(QString jsonPath)
 {
+    qDebug() << "Saving Preset: " + jsonPath;
+
     QFile jsonFile(jsonPath);
     if (jsonFile.open(QIODevice::WriteOnly))
     {

@@ -12,7 +12,7 @@
         },
         "options": [
         ],
-        "version": "0.0.2-Alpha2",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
             "codecName": "png",

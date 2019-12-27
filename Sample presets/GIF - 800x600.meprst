@@ -1,5 +1,5 @@
 {
-    "duffmpeg": {
+    "dume": {
         "hasAudio": false,
         "hasVideo": true,
         "muxer": {
@@ -12,13 +12,13 @@
         },
         "options": [
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
             "codecName": "gif",
             "codecPrettyName": "GIF ",
             "framerate": 0,
-            "height": 450,
+            "height": 600,
             "loop": 0,
             "profile": -1,
             "quality": -1,

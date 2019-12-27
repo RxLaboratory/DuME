@@ -1,28 +1,32 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
             "bitrate": 0,
-            "codecName": "copy",
-            "codecPrettyName": "Copy audio stream",
+            "codecName": "aac",
+            "codecPrettyName": "AAC ",
             "sampling": 0
         },
         "hasAudio": true,
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "mp4"
+                "mov"
             ],
             "isSequence": false,
-            "name": "mp4",
-            "prettyName": "MP4 (MPEG-4 Part 14)"
+            "name": "mov",
+            "prettyName": "QuickTime / MOV"
         },
         "options": [
+            {
+                "name": "-format",
+                "value": "hap_alpha"
+            }
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "copy",
-            "codecPrettyName": "Copy video stream",
+            "codecName": "hap",
+            "codecPrettyName": "Vidvox Hap\r",
             "framerate": 0,
             "height": 0,
             "loop": -1,

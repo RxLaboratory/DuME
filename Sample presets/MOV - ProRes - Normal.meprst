@@ -1,5 +1,5 @@
 {
-    "duffmpeg": {
+    "dume": {
         "audio": {
             "bitrate": 0,
             "codecName": "alac",
@@ -18,7 +18,7 @@
         },
         "options": [
         ],
-        "version": "0.0.1-Alpha1",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
             "codecName": "prores",
@@ -26,7 +26,7 @@
             "framerate": 0,
             "height": 0,
             "loop": -1,
-            "profile": 0,
+            "profile": 2,
             "quality": -1,
             "width": 0
         }

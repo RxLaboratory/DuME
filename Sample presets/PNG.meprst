@@ -1,22 +1,22 @@
 {
-    "duffmpeg": {
+    "dume": {
         "hasAudio": false,
         "hasVideo": true,
         "muxer": {
             "extensions": [
-                "tga"
+                "png"
             ],
             "isSequence": true,
-            "name": "targa",
-            "prettyName": "TARGA (Truevision Targa) Sequence"
+            "name": "png",
+            "prettyName": "PNG (Portable Network Graphics) Sequence"
         },
         "options": [
         ],
-        "version": "0.0.2-Alpha2",
+        "version": "0.1.0",
         "video": {
             "bitrate": 0,
-            "codecName": "targa",
-            "codecPrettyName": "Truevision Targa image\r",
+            "codecName": "png",
+            "codecPrettyName": "PNG ",
             "framerate": 0,
             "height": 0,
             "loop": -1,
