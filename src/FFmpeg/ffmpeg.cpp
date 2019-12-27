@@ -353,7 +353,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
             emit newLog("Loading muxer:" + name);
             if (name == "") continue;
 
-            FFMuxer *m = new FFMuxer(name,prettyName,this);
+            FFMuxer *m = new FFMuxer(name,prettyName,this);  
             _muxers << m;
 
             //get default codecs
@@ -364,7 +364,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
             m->setDefaultAudioCodec(audioEncoder( defltAudioCodec ));
 
             QString extensions = settings.value("extensions").toString();
-            m->setExtensions(extensions.split(","));
+            QStringList extensionsList = extensions.split(",");
+            if (extensionsList[0] != "") m->setExtensions(extensionsList);
         }
 
         settings.endArray();
