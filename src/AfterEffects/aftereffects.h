@@ -30,6 +30,10 @@ public slots:
      * @param name The name of the process to use.
      */
     bool setBinary(QString name);
+    //Sets the DuME Render Templates for After Effects
+    bool setDuMETemplates();
+    // Restores the original render templates
+    void restoreOriginalTemplates();
 
 private:
 
@@ -43,6 +47,8 @@ private:
     QString _currentName;
     // Wether to use the latest version
     bool _useLatest;
+    // The version currently used
+    AfterEffectsVersion *_currentVersion;
 
     // === METHODS ===
 

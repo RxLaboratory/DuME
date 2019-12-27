@@ -31,6 +31,8 @@ class UIMainWindow : public QMainWindow, private Ui::MainWindow
 public:
     explicit UIMainWindow(FFmpeg *ff, QWidget *parent = nullptr);
 
+public slots:
+
     void maximize(bool max);
     void maximize();
 
@@ -45,6 +47,7 @@ private slots:
 
     // AE
     void aeLog(QString l, LogUtils::LogType lt = LogUtils::Information);
+    void aeConsole( QString c);
 
     // Queue
     void progress();

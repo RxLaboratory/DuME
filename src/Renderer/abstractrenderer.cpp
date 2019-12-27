@@ -1,4 +1,5 @@
 #include "abstractrenderer.h"
+#include <QtDebug>
 
 AbstractRenderer::AbstractRenderer(QObject *parent) : QObject(parent)
 {
@@ -21,6 +22,9 @@ AbstractRenderer::AbstractRenderer(QObject *parent) : QObject(parent)
     _binaryFileName = "";
 
     _stopCommand = "";
+
+    _output = "";
+    _timer = QElapsedTimer();
 }
 
 int AbstractRenderer::currentFrame() const
@@ -72,6 +76,8 @@ void AbstractRenderer::start( QStringList arguments, int numThreads )
 {
     setStatus( MediaUtils::Launching );
 
+    _timer.start();
+
     emit newLog("Launching " + QString::number( numThreads ) + " processes.");
     for (int i = 0; i < numThreads; i++ )
     {
@@ -107,19 +113,15 @@ void AbstractRenderer::stop(int timeout)
 void AbstractRenderer::processStdError()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process) + 1;
-    QString log = "Process " + QString::number(id) + ": " + process->readAllStandardError();
-    readyRead( log );
-    emit newLog( log, LogUtils::Debug );
+    QString log = process->readAllStandardError();
+    processOutput( log );
 }
 
 void AbstractRenderer::processStdOutput()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
-    int id = _renderProcesses.indexOf(process) + 1;
-    QString log = "Process " + QString::number(id) + ": " + process->readAllStandardOutput();
-    readyRead( log );
-    emit newLog( log, LogUtils::Debug );
+    QString log = process->readAllStandardOutput();
+    processOutput( log );
 }
 
 void AbstractRenderer::processStarted()
@@ -231,6 +233,22 @@ void AbstractRenderer::killRenderProcesses()
     setStatus( MediaUtils::Stopped );
 }
 
+void AbstractRenderer::processOutput(QString output)
+{
+    if (_timer.hasExpired(100))
+    {
+        _output += output;
+        readyRead(_output);
+        emit newLog( _output, LogUtils::Debug );
+        _output = "";
+        _timer.restart();
+    }
+    else
+    {
+        _output += output;
+    }
+}
+
 MediaUtils::Status AbstractRenderer::status() const
 {
     return _status;
@@ -283,6 +301,8 @@ void AbstractRenderer::setCurrentFrame(int currentFrame)
 {
     _currentFrame = currentFrame;
 
+    qDebug() << "Progress: " + QString::number( _currentFrame );
+
     if (_currentFrame == 0)
     {
         _outputSize = 0;
@@ -307,7 +327,7 @@ void AbstractRenderer::setCurrentFrame(int currentFrame)
 
     //get file(s)
     //check if it's a sequence
-    QRegularExpression regExDigits("{(#+)}");
+    QRegularExpression regExDigits("({#+})");
     QRegularExpressionMatch regExDigitsMatch = regExDigits.match( _outputFileName );
     QFileInfo infoOutput( _outputFileName );
     // get all frames

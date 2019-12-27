@@ -62,6 +62,8 @@ bool AfterEffects::setBinary(QString name)
 {
     emit newLog("Selecting the After Effects renderer");
 
+    _currentVersion = nullptr;
+
 #if INIT_AE //used when developping to skip Ae loading
 
     if ( name == "Custom" )
@@ -72,8 +74,6 @@ bool AfterEffects::setBinary(QString name)
         {
             _versions << ae;
             name = ae->name();
-            settings.setValue( "aerender/useLatest", false );
-            settings.setValue( "aerender/version", "Custom" );
             _useLatest = false;
         }
         else
@@ -81,8 +81,6 @@ bool AfterEffects::setBinary(QString name)
             emit newLog( "Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString(), LogUtils::Warning );
             //revert to use latest
             name = "Latest";
-
-
         }
     }
 
@@ -92,6 +90,11 @@ bool AfterEffects::setBinary(QString name)
         settings.setValue( "aerender/useLatest", true );
         name = _versions.last()->name();
         settings.setValue( "aerender/version", "Latest" );
+    }
+    else
+    {
+        settings.setValue( "aerender/useLatest", false );
+        settings.setValue( "aerender/version", name);
     }
 
     for (int i = 0; i < _versions.count(); i++)
@@ -104,6 +107,7 @@ bool AfterEffects::setBinary(QString name)
             {
                 emit newLog("After Effects set to renderer: " + _versions[i]->name() );
                 _currentName = name;
+                _currentVersion = _versions[i];
                 return true;
             }
         }
@@ -113,6 +117,17 @@ bool AfterEffects::setBinary(QString name)
     return false;
 
 #endif
+}
+
+bool AfterEffects::setDuMETemplates()
+{
+    if ( _currentVersion != nullptr ) return _currentVersion->setDuMETemplates();
+    else return false;
+}
+
+void AfterEffects::restoreOriginalTemplates()
+{
+    if ( _currentVersion != nullptr ) _currentVersion->restoreOriginalTemplates();
 }
 
 bool AfterEffects::useLatest() const

@@ -520,6 +520,9 @@ void RenderQueue::postRenderCleanUp( MediaUtils::Status lastStatus )
     {
         setStatus( MediaUtils::Cleaning );
 
+        //restore ae templates
+        if ( _status == MediaUtils::AERendering ) _ae->restoreOriginalTemplates();
+
         finishCurrentItem( lastStatus );
 
         encodeNextItem();
@@ -683,6 +686,9 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
         {
             audioArguments.clear();
         }
+
+        // Add our templates for rendering
+        _ae->setDuMETemplates();
     }
 
     emit newLog("Beginning After Effects rendering\nUsing aerender commands:\n" + arguments.join(" | "));

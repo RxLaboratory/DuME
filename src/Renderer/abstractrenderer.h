@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QProcess>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QRegularExpression>
 #include <QFileInfoList>
 #include <QDir>
@@ -189,6 +190,12 @@ private:
     QString _binaryFileName;
     // The status
     MediaUtils::Status _status;
+    // The output
+    QString _output;
+    // Process the outputs
+    void processOutput(QString output);
+    // A timer to process outputs only if a certain amount of time has passed
+    QElapsedTimer _timer;
 
     // CONFIGURATION
 

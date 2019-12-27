@@ -1,8 +1,5 @@
 #include "aftereffectsversion.h"
-
-#ifdef QT_DEBUG
- #include <QtDebug>
-#endif
+#include <QtDebug>
 
 AfterEffectsVersion::AfterEffectsVersion(QString path, QObject *parent) : QObject(parent)
 {
@@ -36,28 +33,32 @@ void AfterEffectsVersion::findDataPath()
     foreach(QString dataPath, dataPaths)
     {
         dataPath = dataPath.replace("/Duduf/DuME","");
+        dataPath = dataPath.replace("/Rainbox Laboratory/DuME","");
 
-        emit newLog( "Searching Ae Data in: " + dataPath );
+        dataPath = dataPath  + "/Adobe";
+
+        qDebug() << "Searching Ae Data in: " + dataPath ;
 
         QDir test(dataPath);
-        if (QDir(test.absolutePath() + "/Adobe/After Effects").exists())
+        QFileInfoList testDirs = test.entryInfoList( QStringList("After Effects*"), QDir::Dirs );
+        bool found = false;
+        foreach( QFileInfo testDir, testDirs)
         {
-            _dataPath = test.absolutePath() + "/Adobe/After Effects";
-            break;
+            QString testPath = testDir.absoluteFilePath() +  "/" + QString::number( _version.majorVersion() ) + "." + QString::number( _version.minorVersion() );
+            if (QDir( testPath ).exists())
+            {
+                _dataPath = testPath;
+                found = true;
+                break;
+            }
         }
-    }
-
-    //if found, append version
-    if (_dataPath != "")
-    {
-        _dataPath += "/" + QString::number( _version.majorVersion() ) + "." + QString::number( _version.minorVersion() );
+        if (found) break;
     }
 
 #endif
 
     //TODO MAC OS
-
-    emit newLog( "AE Data Location: " + _dataPath );
+    qDebug() <<  "AE Data Location: " + _dataPath;
 }
 
 QString AfterEffectsVersion::dataPath() const
@@ -126,12 +127,17 @@ void AfterEffectsVersion::init()
 bool AfterEffectsVersion::setDuMETemplates()
 {
     //load render settings and output modules
+    qDebug() << "Setting DuME After Effects render templates in " + _dataPath;
 
     //if found, replace templates
     if (_dataPath == "") return false;
 
     QDir aeDataDir(_dataPath);
-    if (!aeDataDir.exists()) return false;
+    if (!aeDataDir.exists())
+    {
+        qDebug() << "Invalid Data Path";
+        return false;
+    }
 
 
     // if CS6 and before (<= 11.0), prefs file
@@ -151,6 +157,8 @@ qDebug() << settingsFilePaths;
             {
                 QString bakPath = _dataPath + "/" + settingsFilePath + ".bak";
                 QString origPath = _dataPath + "/" + settingsFilePath;
+
+                qDebug() << "Replacing " + origPath;
 
                 //rename original file
                 FileUtils::move(origPath,bakPath);
@@ -182,6 +190,8 @@ qDebug() << outputFilePaths;
                 QString bakPath = _dataPath + "/" + settingsFilePath + ".bak";
                 QString origPath = _dataPath + "/" + settingsFilePath;
 
+                qDebug() << "Replacing " + origPath;
+
                 //rename original file
                 FileUtils::move(origPath,bakPath);
 
@@ -198,6 +208,8 @@ qDebug() << outputFilePaths;
                 QString bakPath = _dataPath + "/" + outputFilePath + ".bak";
                 QString origPath = _dataPath + "/" + outputFilePath;
 
+                qDebug() << "Replacing " + origPath;
+
                 //rename original file
                 FileUtils::move(origPath,bakPath);
 
@@ -207,6 +219,9 @@ qDebug() << outputFilePaths;
         }
 
     }
+
+    qDebug() << "Templates succesfully added";
+
     return true;
 }
 

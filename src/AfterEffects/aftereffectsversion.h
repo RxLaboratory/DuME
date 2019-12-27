@@ -45,16 +45,17 @@ public:
      */
     QVersionNumber version() const;
 
+    //Sets the DuME Render Templates for After Effects
+    bool setDuMETemplates();
+    // Restores the original render templates
+    void restoreOriginalTemplates();
+
 signals:
     void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
 
 
 private slots:
     void init();
-    //Sets the DuME Render Templates for After Effects
-    bool setDuMETemplates();
-    // Restores the original render templates
-    void restoreOriginalTemplates();
 
 private:
     // The name of this renderer process

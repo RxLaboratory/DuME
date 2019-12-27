@@ -133,7 +133,7 @@ void UISettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 
     if (QDir(arg1).exists())
     {
-        settings.setValue("aerender/cache", path );
+        settings.setValue("aerender/cache", path + "DuME" );
         aeCacheEdit->setText(path);
     }
     _freezeUI = false;

@@ -26,6 +26,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
     //After Effects
     connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
+    connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
@@ -140,6 +141,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::Status)), this, SLOT(renderQueueStatusChanged(MediaUtils::Status)) );
     connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
     connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
+    connect(_renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
     connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
 
     //accept drops
@@ -194,6 +196,16 @@ void UIMainWindow::aeLog(QString l, LogUtils::LogType lt)
     log("After Effects Info | " + l, lt);
 }
 
+void UIMainWindow::aeConsole(QString c)
+{
+    //add date
+    QTime currentTime = QTime::currentTime();
+
+    //log
+    aeConsoleEdit->setText(aeConsoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + c );
+    aeConsoleEdit->verticalScrollBar()->setSliderPosition(aeConsoleEdit->verticalScrollBar()->maximum());
+}
+
 void UIMainWindow::progress()
 {
     //get input info
@@ -204,7 +216,7 @@ void UIMainWindow::progress()
     {
         foreach(MediaInfo *input, item->getInputMedias())
         {
-            if ( input->hasVideo() )
+            if ( input->hasVideo() || input->isAep() )
             {
                 QFileInfo inputFile(input->fileName());
                 mainStatusBar->clearMessage();
@@ -299,7 +311,7 @@ void UIMainWindow::renderQueueStatusChanged(MediaUtils::Status status)
         queuePage->setEnabled( true );
 
         reInitCurrentProgress();
-
+        currentEncodingNameLabel->setText("");
         actionGo->setEnabled(true);
         actionStop->setEnabled(false);
         mainStatusBar->clearMessage();

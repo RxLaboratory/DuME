@@ -52,6 +52,8 @@
         <file alias="render15">resources/after-effects/-indep-render-15</file>
         <file alias="render13">resources/after-effects/-indep-render-13</file>
         <file alias="render14">resources/after-effects/-indep-render-14</file>
+        <file alias="render16">resources/after-effects/-indep-render-16</file>
+        <file alias="render17">resources/after-effects/-indep-render-17</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="calibri">resources/fonts/calibri.ttf</file>
