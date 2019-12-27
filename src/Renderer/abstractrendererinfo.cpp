@@ -22,7 +22,7 @@ bool AbstractRendererInfo::setBinary(QString binary)
     bool fileExists = true;
 
 #ifdef Q_OS_WIN
-    fileExists = QFile(path).exists();
+    fileExists = QFile(binary).exists();
 #endif
 
     if(fileExists)

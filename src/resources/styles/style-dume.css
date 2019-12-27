@@ -31,6 +31,7 @@ QSplitter::handle:horizontal {
     background-color: @color-dark-alternate;
     border: none;
     border-radius: 0px;
+    color: @color-less-light;
 }
 
 
