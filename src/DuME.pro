@@ -41,7 +41,6 @@ SOURCES += \
     Renderer/abstractrendererinfo.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
-    duexr.cpp \
     FFmpeg/ffmpegrenderer.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
@@ -70,7 +69,6 @@ HEADERS += \
     Renderer/abstractrendererinfo.h \
     Renderer/queueitem.h \
     Renderer/renderqueue.h \
-    duexr.h \
     FFmpeg/ffmpegrenderer.h \
     Renderer/mediainfo.h \
     FFmpeg/ffmpeg.h \
@@ -107,8 +105,8 @@ RC_FILE = resources/ico.rc
 
 # OpenImageIO
 
-unix:!macx: LIBS += -lOpenImageIO \
-    -lOpenImageIO_Util
+# unix:!macx: LIBS += -lOpenImageIO \
+#    -lOpenImageIO_Util
 
-INCLUDEPATH += /usr/include/OpenImageIO
-DEPENDPATH += /usr/include/OpenImageIO
+#INCLUDEPATH += /usr/include/OpenImageIO
+#DEPENDPATH += /usr/include/OpenImageIO
