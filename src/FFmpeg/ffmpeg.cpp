@@ -103,18 +103,25 @@ QList<FFMuxer *> FFmpeg::muxers()
     return _muxers;
 }
 
-FFMuxer *FFmpeg::muxer(QString name)
+FFMuxer *FFmpeg::muxer(QString nameOrExtension)
 {
     foreach(FFMuxer *muxer,_muxers)
     {
-        if (muxer->name().toLower() == name.trimmed().toLower())
+        if (muxer->name().toLower() == nameOrExtension.trimmed().toLower())
         {
             return muxer;
         }
     }
     foreach(FFMuxer *muxer,_muxers)
     {
-        if (muxer->prettyName() == name)
+        if (muxer->prettyName() == nameOrExtension)
+        {
+            return muxer;
+        }
+    }
+    foreach(FFMuxer *muxer,_muxers)
+    {
+        if (muxer->extensions().contains(nameOrExtension))
         {
             return muxer;
         }

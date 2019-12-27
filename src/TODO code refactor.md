@@ -1,4 +1,5 @@
-- [ ] Drop file: load muxer (from file extension)
+- [x] Drop file: load muxer (from file extension)
 - [ ] Fix muxers incorrect sorting
 - [ ] Check pix format when loading preset
+- [ ] Update example presets and internal presets
 - [ ] Test AE Render

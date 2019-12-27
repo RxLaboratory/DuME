@@ -78,7 +78,15 @@ void UIInputWidget::openFile(QString file)
         if (fileInfo.suffix() == "aepx") mediaInfoString += "\n\nAfter Effects XML project.";
     }
 
-    mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+    if ( _mediaInfo->muxer() != nullptr )
+    {
+        mediaInfoString += "\n\nFile format: " + _mediaInfo->muxer()->prettyName();
+    }
+    else
+    {
+        mediaInfoString += "\n\nContainers: " + _mediaInfo->extensions().join(",");
+    }
+
 
     if (_mediaInfo->duration() != 0.0)
     {

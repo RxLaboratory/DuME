@@ -61,7 +61,9 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
 {
     reInit();
 
-    if (mediaFile.suffix() == "aep" || mediaFile.suffix() == "aet" || mediaFile.suffix() == "aepx")
+    QString extension = mediaFile.suffix();
+
+    if (extension == "aep" || extension == "aet" || extension == "aepx")
     {
         setAep(true);
         _extensions << "aep" << "aet" << "aepx";
@@ -69,6 +71,8 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
 
     _fileName = QDir::toNativeSeparators( mediaFile.absoluteFilePath() ) ;
     _size = mediaFile.size();
+
+    _muxer = _ffmpeg->muxer(extension);
 
 
     QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );

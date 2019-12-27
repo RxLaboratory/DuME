@@ -36,7 +36,7 @@ public:
      * @param name
      * @return
      */
-    FFMuxer *muxer(QString name);
+    FFMuxer *muxer(QString nameOrExtension);
     /**
      * @brief getMuxerDefaultCodec Checks what is the default codec for this muxer
      * @param muxer
