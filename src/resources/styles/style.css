@@ -48,16 +48,19 @@ QLabel:disabled {
 
 QPlainTextEdit, QTextBrowser, QTextEdit, QLineEdit {
         background-color: @color-medium;
-	color: @color-light;
+        color: @color-light;
 	padding: @edit-padding;
 	padding-bottom: 5px;
 	border: @border-size solid @color-medium;
 	border-radius: @border-radius;
 }
 
+QPlainTextEdit, QTextBrowser, QTextEdit {
+    color: @color-less-light;
+}
+
 QPlainTextEdit:hover, QTextBrowser:hover, QTextEdit:hover  {
         background-color: @color-dark;
-	color: @color-dark;
 	border-color:  @color-light;
 }
 
