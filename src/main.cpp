@@ -35,9 +35,9 @@ int main(int argc, char *argv[])
         settings.setValue("ffmpeg/version","");
     }
 
-#ifdef FORCE_FFMPEG_RELOAD
-    settings.setValue("ffmpeg/version","");
-#endif
+    // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD. COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
+    // settings.setValue("ffmpeg/version","");
+
 
     //load FFmpeg
     splash.newMessage("Loading FFmpeg...");

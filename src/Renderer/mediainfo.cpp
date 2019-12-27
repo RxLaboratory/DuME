@@ -229,6 +229,8 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
         if (!videoObj.value("premultipliedAlpha").isUndefined()) _premultipliedAlpha = videoObj.value("premultipliedAlpha").toBool();
         else _premultipliedAlpha = true;
         _pixFormat = _ffmpeg->pixFormat( videoObj.value("pixelFormat").toString() );
+        if ( _pixFormat == nullptr ) qDebug() << "Aucun";
+        else qDebug() << _pixFormat->prettyName();
     }
 
     //audio

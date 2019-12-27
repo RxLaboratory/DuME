@@ -737,6 +737,8 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
         //create the new array
         settings.beginWriteArray("ffmpeg/pixFmts");
 
+        int num = -1;
+
         for (int i = 0 ; i < pixFmts.count() ; i++)
         {
             QString pixFmt = pixFmts[i];
@@ -766,7 +768,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
                 _pixFormats << pf;
 
                 //save it to settings
-                settings.setArrayIndex(i);
+                settings.setArrayIndex(num++);
                 settings.setValue("name", name);
                 settings.setValue("numComponents", numComponents);
                 settings.setValue("bpp", bpp);
