@@ -286,6 +286,10 @@ void MediaInfo::setDuration(double duration)
 void MediaInfo::setFileName(QString fileName)
 {
     _fileName = fileName;
+    if (_muxer != nullptr)
+    {
+        if ( _muxer->isSequence() ) loadSequence();
+    }
 }
 
 void MediaInfo::setVideoCodec(FFCodec *codec)
@@ -339,6 +343,11 @@ void MediaInfo::setAudio(bool audio)
 void MediaInfo::setMuxer(FFMuxer *muxer)
 {
     _muxer = muxer;
+    if (muxer->isSequence())
+    {
+        _imageSequence = true;
+        loadSequence();
+    }
 }
 
 void MediaInfo::addFFmpegOption(QStringList option)
@@ -716,9 +725,6 @@ void MediaInfo::loadSequence()
     QRegularExpression reDigits("(\\d+)");
     QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
 
-    //if we didn't find any digit in the name, nothing to do
-    if (!reDigitsMatch.hasNext()) return;
-
     //get all files of same type in folder
     QDir containingDir(dirPath);
     QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
@@ -821,6 +827,7 @@ void MediaInfo::loadSequence()
     QRegularExpression regExDigits("{(#+)}");
     QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(_fileName);
     _ffmpegSequenceName = _fileName;
+
     while (regExDigitsMatch.hasNext())
     {
          QRegularExpressionMatch match = regExDigitsMatch.next();

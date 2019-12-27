@@ -104,6 +104,8 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     QStringList arguments("-stats");
     arguments << "-y";
 
+    MediaInfo *firstOutput = item->getOutputMedias()[0];
+
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
     {
@@ -128,6 +130,11 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (input->trc() != "")
         {
             arguments << "-apply_trc" << input->trc();
+        }
+        else if (input->extensions()[0] == "exr_pipe")
+        {
+            if (firstOutput->isImageSequence()) arguments << "-apply_trc" << "iec61966_2_1"; //sRGB
+            else arguments << "-apply_trc" << "bt709"; //Rec709
         }
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
@@ -338,14 +345,14 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         }
 
         //file
-        QString outputPath = QDir::toNativeSeparators(output->fileName());
+        QString outputPath = QDir::toNativeSeparators( output->fileName() );
 
         //if sequence, digits
         if (output->muxer() != nullptr)
         {
             if (output->isImageSequence())
             {
-                outputPath = output->ffmpegSequenceName();
+                outputPath = QDir::toNativeSeparators( output->ffmpegSequenceName() );
             }
         }
 
@@ -617,9 +624,8 @@ void RenderQueue::aeStatusChanged( MediaUtils::Status status )
             //set file and launch
             QString prevTrc = input->trc();
             double frameRate = input->videoFramerate();
-            input->updateInfo( _ffmpeg->analyseMedia(aeTempPath + "/" + files[0]));
-            if (prevTrc == "") input->setTrc("gamma22");
-            else input->setTrc(prevTrc);
+            input->updateInfo( QFileInfo(aeTempPath + "/" + files[0]));
+            if (prevTrc != "") input->setTrc(prevTrc);
             if (int( frameRate ) != 0) input->setVideoFramerate(frameRate);
 
             //reInsert at first place in renderqueue
@@ -657,7 +663,7 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     if (!input->aeUseRQueue())
     {
         //get the cache dir
-        QTemporaryDir *aeTempDir = new QTemporaryDir( settings.value("aerender/cache","" ).toString());
+        QTemporaryDir *aeTempDir = new QTemporaryDir( settings.value("aerender/cache","" ).toString() + "/DuME_Cache" );
         input->setCacheDir(aeTempDir);
 
         //if a comp name is specified, render this comp

@@ -376,12 +376,6 @@ void UIInputWidget::updateOptions()
         frameRateEdit->show();
     }
 
-    //trc (gamma) buttons
-    if (extension == "exr_pipe" || _mediaInfo->isAep())
-    {
-        trcBox->setCurrentText("sRGB");
-    }
-
     //exr prerender
     if (extension == "exr_pipe")
     {
