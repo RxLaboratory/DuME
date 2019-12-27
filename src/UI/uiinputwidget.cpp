@@ -125,7 +125,7 @@ void UIInputWidget::openFile(QString file)
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(_mediaInfo->pixAspect()*100+0.5)/ 100.0) + ":1";
             if (_mediaInfo->pixFormat() != nullptr)
             {
-                mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->name();
+                mediaInfoString += "\nPixel Format: " + _mediaInfo->pixFormat()->prettyName();
                 if (_mediaInfo->pixFormat()->hasAlpha()) mediaInfoString += "\nAlpha: yes";
                 else mediaInfoString += "\nAlpha: no";
             }
@@ -139,8 +139,12 @@ void UIInputWidget::openFile(QString file)
                 mediaInfoString += _mediaInfo->audioCodec()->prettyName();
             }
             mediaInfoString += "\nSampling rate: " + QString::number(_mediaInfo->audioSamplingRate()) + " Hz";
+            if (_mediaInfo->audioChannels() != "")
+            {
+                mediaInfoString += "\nChannels: " + _mediaInfo->audioChannels();
+            }
             int abitrate = int( _mediaInfo->audioBitrate( ) );
-            if (abitrate != 0) mediaInfoString += "\nBitrate: " + QString::number(abitrate) + " kbps";
+            if (abitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(abitrate);
         }
     }
 

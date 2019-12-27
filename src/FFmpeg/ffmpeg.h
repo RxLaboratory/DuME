@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QObject>
 #include <QDir>
+#include <QtDebug>
 
 #include "Renderer/abstractrendererinfo.h"
 

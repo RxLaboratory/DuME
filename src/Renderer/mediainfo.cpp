@@ -21,6 +21,7 @@ void MediaInfo::reInit(bool removeFileName)
     _muxer = nullptr;
     _duration = 0.0;
     _size = 0;
+    _bitrate = 0;
     _video = false;
     _audio = false;
     _imageSequence = false;
@@ -29,10 +30,13 @@ void MediaInfo::reInit(bool removeFileName)
     _videoHeight = 0;
     _videoFramerate = 24.0;
     _videoBitrate = 0;
+    _pixAspect = 1;
+    _videoAspect = 1.7777778;
     _pixFormat = nullptr;
     _audioCodec = nullptr;
     _audioSamplingRate = 0;
     _audioBitrate = 0;
+    _audioChannels = "";
     _frames.clear();
     _videoQuality = -1;
     _videoProfile = -1;
@@ -73,9 +77,8 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
 
     //regexes to get infos
     QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
-    QRegularExpression reVideoStream("Stream #.+Video: (.+)");
-    QRegularExpression reSequenceStream("Stream #.+Video: .+, (\\d+)x(\\d+)");
-    QRegularExpression reAudioStream("Stream #.+Audio: .+, (\\d{4,6}) Hz");
+    QRegularExpression reVideoStream("\\s*Stream #.+Video:\\s*([^,]*\\([^)]*\\)|[^,]*),\\s*([^,]*\\([^)]*\\)|[^,]*), (\\d+)x(\\d+) \\[SAR (\\d+):(\\d+) DAR (\\d+):(\\d+)][^,]*(?:,\\s*(\\d+)[^,]*,\\s+(\\d+) fps)?");
+    QRegularExpression reAudioStream("\\s*Stream #.+Audio:\\s*([^,]*\\([^)]*\\)|[^,]*),\\s*(\\d*)\\s*Hz, ([^,]+),(?:.*,\\s*(?:(\\d+)\\s*kb\\/s)?)?");
     QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d),\\sstart:\\s\\d+.\\d+, bitrate:\\s(\\d+))?(?:(N\\/A), )?");
 
     bool input = false;
@@ -116,12 +119,15 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
         match = reVideoStream.match(info);
         if (match.hasMatch())
         {
-            QString details = match.captured(1);
-            QRegularExpression reDetails("([^,]*\\([^)]*\\)|[^,]*),\\s*([^,]*\\([^)]*\\)|[^,]*), (\\d+)x(\\d+) \\[SAR (\\d+):(\\d+) DAR (\\d+):(\\d+)][^,]*(?:,\\s*(\\d+)[^,]*,\\s+(\\d+) fps)?");
-            match = reDetails.match(details);
+            QString codec = match.captured(1).left( match.captured(1).indexOf("(") );
 
-            _videoCodec = new FFCodec(match.captured(1));
-            _pixFormat = new FFPixFormat(match.captured(2));
+            _videoCodec = _ffmpeg->videoEncoder( codec );
+            if ( _videoCodec == nullptr ) _videoCodec = new FFCodec( codec );
+
+            QString pixFormat = match.captured(2).left( match.captured(2).indexOf("(") );
+            _pixFormat = _ffmpeg->pixFormat( pixFormat );
+            if ( _pixFormat == nullptr ) _pixFormat = new FFPixFormat( pixFormat );
+
             _videoWidth = match.captured(3).toInt();
             _videoHeight = match.captured(4).toInt();
             _pixAspect = match.captured(5).toFloat() / match.captured(6).toFloat();
@@ -133,24 +139,21 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
             continue;
         }
 
-        //test image sequence
-        match = reSequenceStream.match(info);
-        if (match.hasMatch())
-        {
-            //set size
-            _videoWidth = match.captured(1).toInt();
-            _videoHeight = match.captured(2).toInt();
-            _videoFramerate = 24;
-            _video = true;
-            continue;
-        }
-
         //test audio stream
         match = reAudioStream.match(info);
         if (match.hasMatch())
         {
-            //set sampling rate
-            _audioSamplingRate = match.captured(1).toInt();
+            QString codec = match.captured(1).left( match.captured(1).indexOf("(") );
+
+            _audioCodec = _ffmpeg->audioEncoder( codec );
+            if ( _audioCodec == nullptr ) _audioCodec = new FFCodec( codec );
+
+            _audioSamplingRate = match.captured(2).toInt();
+
+            _audioChannels = match.captured(3);
+
+            _audioBitrate = match.captured(4).toInt()*1024;
+
             _audio = true;
             continue;
         }
@@ -560,6 +563,11 @@ void MediaInfo::exportPreset(QString jsonPath)
     }
 }
 
+QString MediaInfo::audioChannels() const
+{
+    return _audioChannels;
+}
+
 float MediaInfo::videoAspect() const
 {
     return _videoAspect;
@@ -693,7 +701,6 @@ void MediaInfo::loadSequence()
     QString baseName = baseFileInfo.completeBaseName();
     QString dirPath = baseFileInfo.path();
 
-
     //find digits in the name
     QRegularExpression reDigits("(\\d+)");
     QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
@@ -773,6 +780,7 @@ void MediaInfo::loadSequence()
             QString pattern = left + "(\\d+)" + right;
             QRegularExpression re(pattern);
             _startNumber = 999999999;
+            _size = 0;
             foreach(QFileInfo f,files)
             {
                 QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
@@ -785,6 +793,7 @@ void MediaInfo::loadSequence()
                     _size += f.size();
                 }
             }
+            _bitrate = ( _size * 8 ) / ( _frames.count()/24 );
             if (_startNumber == 999999999) _startNumber = 0;
             //update filename with ffmpeg convention
             QString digitsBlock = "";

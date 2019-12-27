@@ -107,7 +107,14 @@ FFMuxer *FFmpeg::muxer(QString name)
 {
     foreach(FFMuxer *muxer,_muxers)
     {
-        if (muxer->name() == name)
+        if (muxer->name().toLower() == name.trimmed().toLower())
+        {
+            return muxer;
+        }
+    }
+    foreach(FFMuxer *muxer,_muxers)
+    {
+        if (muxer->prettyName() == name)
         {
             return muxer;
         }
@@ -154,25 +161,39 @@ FFCodec *FFmpeg::videoEncoder(QString name)
 {
     foreach(FFCodec *codec,_videoEncoders)
     {
-        if (codec->name() == name) return codec;
+        if (codec->name().toLower() == name.trimmed().toLower()) return codec;
+    }
+    foreach(FFCodec *codec,_videoEncoders)
+    {
+        if (codec->prettyName() == name) return codec;
     }
     return nullptr;
 }
 
 FFCodec *FFmpeg::audioEncoder(QString name)
 {
+    name = name.trimmed();
     foreach(FFCodec *codec,_audioEncoders)
     {
-        if (codec->name() == name) return codec;
+        if (codec->name().toLower() == name.trimmed().toLower()) return codec;
+    }
+    foreach(FFCodec *codec,_audioEncoders)
+    {
+        if (codec->prettyName() == name) return codec;
     }
     return nullptr;
 }
 
 FFPixFormat *FFmpeg::pixFormat(QString name)
 {
+    name = name.trimmed();
     foreach(FFPixFormat *pf,_pixFormats)
     {
-        if (pf->name() == name) return pf;
+        if (pf->name().toLower() == name.trimmed().toLower()) return pf;
+    }
+    foreach(FFPixFormat *pf,_pixFormats)
+    {
+        if (pf->prettyName() == name) return pf;
     }
     return nullptr;
 }

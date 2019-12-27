@@ -85,6 +85,7 @@ public:
     int videoHeight();
     double videoFramerate();
     int audioSamplingRate();
+    QString audioChannels() const;
     double duration();
     QString fileName();
     FFCodec *videoCodec();
@@ -118,7 +119,7 @@ public:
 
     //utils
     QString exportPreset();
-    void exportPreset(QString jsonPath);
+    void exportPreset(QString jsonPath); 
 
 signals:
 
@@ -203,6 +204,10 @@ private:
      * @brief _audioCodec The norm or codec used for decoding or encoding audio
      */
     FFCodec *_audioCodec;
+    /**
+     * @brief _audioChannels The type of channels: mono/stereo/5.1
+     */
+    QString _audioChannels;
     /**
      * @brief _audioSamplingRate The audio sampling in kHz
      */
