@@ -1,4 +1,4 @@
 - [ ] Drop file: load muxer (from file extension)
 - [ ] Fix muxers incorrect sorting
-- [ ] Test AE Render
 - [ ] Check pix format when loading preset
+- [ ] Test AE Render
