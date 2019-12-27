@@ -548,7 +548,7 @@ QString MediaInfo::exportPreset()
     mediaObj.insert("options",options);
 
     QJsonObject mainObj;
-    mainObj.insert("duffmpeg",mediaObj);
+    mainObj.insert("dume",mediaObj);
     QJsonDocument jsonDoc(mainObj);
     return jsonDoc.toJson();
 }

@@ -76,7 +76,7 @@
         <x>0</x>
         <y>0</y>
         <width>473</width>
-        <height>478</height>
+        <height>479</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
@@ -315,7 +315,7 @@
             </size>
            </property>
            <property name="toolTip">
-            <string>Set the number of threads to use for the rendering process handled by DuFFmpeg</string>
+            <string>Set the number of threads to use for the rendering process handled by DuME</string>
            </property>
            <property name="text">
             <string>Set threads</string>

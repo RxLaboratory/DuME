@@ -393,7 +393,7 @@ void UIMainWindow::on_actionSettings_triggered(bool checked)
 void UIMainWindow::updateCSS(QString cssFileName)
 {
     QStringList cssFiles(cssFileName);
-    //check if there's a duffmpeg file to include
+    //check if there's a dume file to include
     QFileInfo cssFileInfo(cssFileName);
     QString includeName = cssFileInfo.completeBaseName() + "-dume";
     QString includePath = cssFileInfo.path() + "/" + includeName + ".css";

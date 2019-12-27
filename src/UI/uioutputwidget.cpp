@@ -740,7 +740,7 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
         presetsBox->setCurrentIndex(0);
 
         //ask for file
-        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.dffp *.json);;All Files (*.*)");
+        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
         if (saveFileName == "")
         {
             _freezeUI = false;
@@ -759,7 +759,7 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
     {
         presetsBox->setCurrentIndex(0);
 
-        QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.dffp *.json);;All Files (*.*)");
+        QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
         if (openFileName == "")
         {
             _freezeUI = false;
@@ -1335,9 +1335,9 @@ void UIOutputWidget::loadPresets()
     //list users
     if (index == 0 || index == 2)
     {
-        QString userPresetsPath = settings.value("presets/path",QDir::homePath() + "/DuFFmpeg Presets/").toString();
-        QStringList filters("*.dffp");
-        filters << "*.json";
+        QString userPresetsPath = settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString();
+        QStringList filters("*.meprst");
+        filters << "*.json" << "*.dffp";
         foreach (QString preset, QDir(userPresetsPath).entryList(filters,QDir::Files))
         {
             presets << userPresetsPath + "/" + preset;
