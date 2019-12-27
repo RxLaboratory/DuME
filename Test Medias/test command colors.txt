@@ -1,8 +1,15 @@
-ffmpeg -y -framerate 24 -start_number 0 -color_primaries film -color_trc iec61966-2-4 -colorspace rgb -color_range pc -i "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest_%5d.png" -f mp4 -vcodec h264 -crf 7 -pix_fmt yuv420p -x264opts b_pyramid=0 "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest.mp4"
+PMG to mp4
+ffmpeg -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709  -i '/home/duduf/DEV_SRC/DuME/Test Medias/PNG/MediaTest_%5d.png' -pix_fmt yuv420p '/home/duduf/DEV_SRC/DuME/Test Medias/MediaTest-ffmpeg.mp4'
 
-ffmpeg -y -framerate 24 -start_number 0 -i "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest_%5d.png" -f mp4 -vcodec h264 -crf 7 -pix_fmt yuv420p -x264opts b_pyramid=0 "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest.mp4"
+or simpler
+ffmpeg -colorspace bt709 -i '/home/duduf/DEV_SRC/DuME/Test Medias/PNG/MediaTest_%5d.png' -pix_fmt yuv420p '/home/duduf/DEV_SRC/DuME/Test Medias/MediaTest-ffmpeg.mp4'
 
-ffmpeg -y -framerate 24 -start_number 0 -i "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest_%5d.png" -f mp4 -vcodec h264 -crf 7 -pix_fmt yuv420p -x264opts b_pyramid=0 -color_trc bt709 -color_primaries film "F:\DEV_SRC\DuME\Test Medias\PNG\MediaTest.mp4"
+EXR to mp4 (not perfect, gamma a bit off. try other trc)
+ffmpeg -apply_trc iec61966_2_1 -colorspace bt709 -i '/home/duduf/DEV_SRC/DuME/Test Medias/EXR (Ae)/MediaTest_%5d.exr' -pix_fmt yuv420p '/home/duduf/DEV_SRC/DuME/Test Medias/MediaTest-ffmpeg.mp4'
+
+
+
+range   space / primaries / trc
 
 
  -color_primaries   <int>        ED.V..... color primaries (from 1 to INT_MAX) (default unknown)
