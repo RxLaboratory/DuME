@@ -4,13 +4,10 @@ Rendering and transcoding medias.
 ## Dependencies
 
 - Qt >= 5.9.8
-- OpenImageIO >= 1.7
+- OpenImageIO >= 2.0
 - FFmpeg executable binary >= 3.4
 
 ## Build
-
-***WARNING* DuME is currently under heavy refactory, and the code as it is today won't compile.**  
-This work should be finished in a few days.
 
 First, get and install the dependencies:  
 [Install Qt](https://www.qt.io/download-open-source) along with Qt Creator,  
