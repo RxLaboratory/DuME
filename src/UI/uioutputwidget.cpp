@@ -12,27 +12,31 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 {
     _freezeUI = true;
     _loadingPreset = false;
+
     setupUi(this);
 
-    //add some nice shadows
-    resizeWidget->setGraphicsEffect(new UIDropShadow);
-    frameRateWidget->setGraphicsEffect(new UIDropShadow);
-    mainVideoCodecWidget->setGraphicsEffect(new UIDropShadow);
-    sequenceWidget->setGraphicsEffect(new UIDropShadow);
-    componentsWidget->setGraphicsEffect(new UIDropShadow);
-
-    samplingWidget->setGraphicsEffect(new UIDropShadow);
-    mainAudioCodecWidget->setGraphicsEffect(new UIDropShadow);
-
-    outputTabs->setCurrentIndex(0);
-
+    // FFmpeg
     _ffmpeg = ff;
+    connect( _ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
+    // Keep the id
     _index = id;
-    _mediaInfo = new MediaInfo(_ffmpeg, this);
-    _currentMuxer = nullptr;
-    _currentAudioCodec = nullptr;
-    _currentVideoCodec = nullptr;
-    _inputHasAlpha = false;
+    // Associated MediaInfo
+    _mediaInfo = new MediaInfo( _ffmpeg, this);
+
+    // CREATE BLOCKS
+
+    BlockResize *br = new BlockResize( _mediaInfo );
+    blockResize = new UIBlockWidget( "Resize", br, videoTab);
+    videoLayout->insertWidget(1, blockResize );
+
+    // CREATE MENUS and ACTIONS
+
+    QMenu *videoMenu = new QMenu();
+    addVideoBlockButton->setMenu( videoMenu );
+
+    videoMenu->addAction( actionResize );
+    connect( actionResize, SIGNAL( triggered(bool) ), blockResize, SLOT( setVisible(bool) ) );
+    connect( blockResize, SIGNAL( activated(bool) ), actionResize, SLOT( setChecked( bool ) ) );
 
     //populate sampling box
     //TODO Get from ffmpeg
@@ -51,12 +55,10 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     ffmpeg_init();
 
-    connect(_ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()));
-
     _freezeUI = false;
 
     //Set defaults
-
+    outputTabs->setCurrentIndex(0);
     on_presetsFilterBox_activated();
     //hide/show supported/unsupported options
     updateAudioVideoOptions();
@@ -70,7 +72,7 @@ void UIOutputWidget::init()
 
     //video
     videoTranscodeButton->setChecked(true);
-    resizeButton->setChecked(false);
+    blockResize->hide();
     frameRateButton->setChecked(false);
     videoCodecButton->setChecked(false);
     videoBitrateButton->setChecked(false);
@@ -144,7 +146,7 @@ void UIOutputWidget::updateMediaInfo()
     //VIDEO
     if (_mediaInfo->hasVideo())
     {
-        _currentVideoCodec = _mediaInfo->videoCodec();
+        FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
         if (_currentVideoCodec != nullptr)
         {
             if (_currentVideoCodec->name() == "copy") videoCopyButton->setChecked(true);
@@ -180,9 +182,7 @@ void UIOutputWidget::updateMediaInfo()
         int height = _mediaInfo->videoHeight();
         if (width != 0 && height != 0)
         {
-            resizeButton->setChecked(true);
-            videoWidthButton->setValue(width);
-            videoHeightButton->setValue(height);
+            blockResize->show();
         }
         double framerate = _mediaInfo->videoFramerate();
         if (framerate != 0.0)
@@ -220,7 +220,7 @@ void UIOutputWidget::updateMediaInfo()
     //AUDIO
     if (_mediaInfo->hasAudio())
     {
-        _currentAudioCodec = _mediaInfo->audioCodec();
+        FFCodec *_currentAudioCodec = _mediaInfo->audioCodec();
         if (_currentAudioCodec != nullptr)
         {
             if (_currentAudioCodec->name() == "copy") audioCopyButton->setChecked(true);
@@ -284,6 +284,7 @@ void UIOutputWidget::on_videoTranscodeButton_toggled( bool checked )
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
     if ( checked )
     {
+        addVideoBlockButton->setEnabled( true );
         _mediaInfo->setVideo(true);
         if ( videoCodecButton->isChecked() )
         {
@@ -297,11 +298,13 @@ void UIOutputWidget::on_videoTranscodeButton_toggled( bool checked )
     else if ( videoCopyButton->isChecked() )
     {
         _mediaInfo->setVideo(true);
+        addVideoBlockButton->setEnabled( false );
         _mediaInfo->setVideoCodec( _ffmpeg->videoEncoder("copy") );
     }
     else
     {
         _mediaInfo->setVideo(false);
+        addVideoBlockButton->setEnabled( false );
         _mediaInfo->setVideoCodec( nullptr );
     }
     updateAudioVideoOptions();
@@ -333,26 +336,6 @@ void UIOutputWidget::on_audioTranscodeButton_toggled( bool checked )
         _mediaInfo->setAudioCodec( nullptr );
     }
     updateAudioVideoOptions();
-}
-
-void UIOutputWidget::on_resizeButton_toggled(bool checked)
-{
-    videoWidthButton->setEnabled(checked);
-    videoHeightButton->setEnabled(checked);
-    widthLabel->setEnabled(checked);
-    heightLabel->setEnabled(checked);
-    aspectRatioLabel->setEnabled(checked);
-    if (checked)
-    {
-        _mediaInfo->setVideoWidth( videoWidthButton->value() );
-        _mediaInfo->setVideoHeight( videoHeightButton->value() );
-    }
-    else
-    {
-        _mediaInfo->setVideoWidth( 0 );
-        _mediaInfo->setVideoHeight( 0 );
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void UIOutputWidget::on_frameRateButton_toggled(bool checked)
@@ -449,7 +432,6 @@ void UIOutputWidget::on_videoQualitySlider_valueChanged(int value)
 
 void UIOutputWidget::on_videoWidthButton_valueChanged(int val)
 {
-    aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 
     //warnings depending on codec
@@ -461,7 +443,6 @@ void UIOutputWidget::on_videoWidthButton_valueChanged(int val)
 
 void UIOutputWidget::on_videoHeightButton_valueChanged(int val)
 {
-    aspectRatio();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 
     //warnings depending on codec
@@ -475,7 +456,7 @@ void UIOutputWidget::on_videoCodecsBox_currentIndexChanged( )
 {
     updateAudioVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    _currentVideoCodec = _ffmpeg->videoEncoder(videoCodecsBox->currentData().toString());
+    FFCodec *_currentVideoCodec = _ffmpeg->videoEncoder(videoCodecsBox->currentData().toString());
     pixFmtFilterBox->setCurrentIndex(0);
 
     _mediaInfo->setVideoCodec( _currentVideoCodec );
@@ -503,7 +484,7 @@ void UIOutputWidget::on_videoCodecsBox_currentIndexChanged( )
 
 void UIOutputWidget::on_audioCodecsBox_currentIndexChanged()
 {
-    _currentAudioCodec = _ffmpeg->audioEncoder(audioCodecsBox->currentData().toString());
+    FFCodec *_currentAudioCodec = _ffmpeg->audioEncoder(audioCodecsBox->currentData().toString());
     _mediaInfo->setAudioCodec( _currentAudioCodec );
 }
 
@@ -590,7 +571,7 @@ void UIOutputWidget::on_addParam_clicked()
 void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
     if (index == -1) return;
-    _currentMuxer = _ffmpeg->muxer(formatsBox->currentData().toString());
+    FFMuxer *_currentMuxer = _ffmpeg->muxer(formatsBox->currentData().toString());
 
     _mediaInfo->setMuxer( _currentMuxer );
 
@@ -833,7 +814,8 @@ void UIOutputWidget::on_presetsFilterBox_activated()
 void UIOutputWidget::on_alphaButton_toggled(bool checked)
 {
     ffmpeg_loadPixFmts(true);
-    if (_inputHasAlpha && checked)
+    // TODO move unmult option to the input? What if multiple inputs?
+    /*if (_inputHasAlpha && checked)
     {
         unmultButton->show();
         _mediaInfo->setPremultipliedAlpha( !unmultButton->isChecked() );
@@ -842,19 +824,7 @@ void UIOutputWidget::on_alphaButton_toggled(bool checked)
     {
         unmultButton->hide();
         _mediaInfo->setPremultipliedAlpha( true );
-    }
-}
-
-void UIOutputWidget::aspectRatio()
-{
-    double width = videoWidthButton->value();
-    double height = videoHeightButton->value();
-    double ratio =  width / height;
-    //round it to 3 digits
-    int roundedRatio = int(ratio*100+0.5);
-    ratio = roundedRatio;
-    ratio = ratio/100;
-    aspectRatioLabel->setText(QString::number(ratio) + ":1");
+    }*/
 }
 
 void UIOutputWidget::updateOutputExtension(QString outputPath)
@@ -867,6 +837,8 @@ void UIOutputWidget::updateOutputExtension(QString outputPath)
     outputName = outputName.replace(QRegularExpression("_?{#+}"),"");
 
     QString newExt = "";
+
+    FFMuxer *_currentMuxer = _mediaInfo->muxer();
 
     if (_currentMuxer != nullptr)
     {
@@ -899,6 +871,8 @@ void UIOutputWidget::updateOutputExtension(QString outputPath)
 
 void UIOutputWidget::selectDefaultVideoCodec()
 {
+    FFMuxer *_currentMuxer = _mediaInfo->muxer();
+
     if (_currentMuxer == nullptr) return;
 
     FFCodec *videoCodec = _ffmpeg->muxerDefaultCodec(_currentMuxer, FFCodec::Video);
@@ -920,6 +894,7 @@ void UIOutputWidget::selectDefaultVideoCodec()
 
 void UIOutputWidget::selectDefaultAudioCodec()
 {
+    FFMuxer *_currentMuxer = _mediaInfo->muxer();
     if (_currentMuxer == nullptr) return;
 
     FFCodec *audioCodec = _ffmpeg->muxerDefaultCodec(_currentMuxer, FFCodec::Audio);
@@ -939,6 +914,7 @@ void UIOutputWidget::selectDefaultAudioCodec()
 
 void UIOutputWidget::selectDefaultPixFmt()
 {
+    FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
     if (_currentVideoCodec == nullptr) return;
 
     FFPixFormat *pixFmt = _currentVideoCodec->defaultPixFormat();
@@ -976,7 +952,7 @@ void UIOutputWidget::updateAudioVideoOptions()
 {
     //VIDEO
     mainVideoCodecWidget->hide();
-    resizeWidget->hide();
+    blockResize->hide();
     frameRateWidget->hide();
     sequenceWidget->hide();
     componentsWidget->hide();
@@ -1025,7 +1001,6 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     if (videoTranscodeButton->isChecked())
     {
-        resizeWidget->show();
         componentsWidget->show();
 
         //show/hide codec depending on muxer
@@ -1119,6 +1094,14 @@ void UIOutputWidget::updateAudioVideoOptions()
     if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
     if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
     if (unmultButton->isHidden()) unmultButton->setChecked(false);
+
+
+
+    //TEMP - Hide all to test blocks
+    componentsWidget->hide();
+    frameRateWidget->hide();
+    mainVideoCodecWidget->hide();
+    sequenceWidget->hide();
 }
 
 void UIOutputWidget::addNewParam(QString name, QString value)
@@ -1142,7 +1125,6 @@ void UIOutputWidget::addNewParam(QString name, QString value)
 void UIOutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
-    _currentMuxer = nullptr;
     _mediaInfo->reInit( false );
     ffmpeg_loadCodecs();
     ffmpeg_loadMuxers();
@@ -1226,6 +1208,7 @@ void UIOutputWidget::ffmpeg_loadPixFmts(bool init)
 
     //get pixFmts
     pixFmtBox->clear();
+    FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
     if (_currentVideoCodec == nullptr)
     {
         _freezeUI = false;
@@ -1293,11 +1276,6 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     updateOutputExtension(outputPath);
 
     //if not checked, update fields
-    if (!resizeButton->isChecked())
-    {
-        videoWidthButton->setValue(input->videoWidth());
-        videoHeightButton->setValue(input->videoHeight());
-    }
     if (!frameRateButton->isChecked())
     {
         frameRateEdit->setValue(input->videoFramerate());
@@ -1321,25 +1299,21 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     {
         if (input->pixFormat()->hasAlpha())
         {
-            _inputHasAlpha = true;
             if (alphaButton->isChecked()) unmultButton->show();
             else unmultButton->hide();
         }
         else
         {
-            _inputHasAlpha = false;
             unmultButton->hide();
         }
     }
     else
     {
-        _inputHasAlpha = false;
         unmultButton->hide();
     }
 
     if (input->isAep())
     {
-        _inputHasAlpha = true;
         if (alphaButton->isChecked()) unmultButton->show();
         else unmultButton->hide();
     }

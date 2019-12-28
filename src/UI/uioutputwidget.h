@@ -4,12 +4,15 @@
 #include "ui_outputwidget.h"
 
 #include "Renderer/mediainfo.h"
+
+// BLOCKS
 #include "UI/Blocks/uiblockwidget.h"
 #include "UI/Blocks/blockresize.h"
 
 #include <QFileDialog>
 #include <QSettings>
 #include <QStringList>
+#include <QMenu>
 
 class UIOutputWidget : public QWidget, private Ui::OutputWidget
 {
@@ -40,7 +43,6 @@ public slots:
 private slots:
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
-    void on_resizeButton_toggled(bool checked);
     void on_frameRateButton_toggled(bool checked);
     void on_samplingButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
@@ -70,26 +72,18 @@ private slots:
     void on_audioCodecsBox_currentIndexChanged();
     void on_pixFmtFilterBox_currentIndexChanged();
     void on_alphaButton_toggled(bool checked);
-
     void on_samplingBox_currentIndexChanged(int index);
-
     void on_videoProfileBox_currentIndexChanged(int index);
-
     void on_startNumberEdit_valueChanged(int arg1);
-
     void on_pixFmtBox_currentIndexChanged(int index);
-
     void on_videoBitRateEdit_valueChanged(double arg1);
-
     void on_audioBitRateEdit_valueChanged(int arg1);
-
     void on_unmultButton_toggled(bool checked);
 
 private:
-    /**
-     * @brief aspectRatio Computes the aspect ratio of the video
-     */
-    void aspectRatio();
+    // BLOCKS
+    UIBlockWidget *blockResize;
+
     void updateOutputExtension(QString outputPath);
     void selectDefaultVideoCodec();
     void selectDefaultAudioCodec();
@@ -103,10 +97,6 @@ private:
     MediaInfo *_mediaInfo;
     QList<QLineEdit *> _customParamEdits;
     QList<QLineEdit *> _customValueEdits;
-    FFMuxer *_currentMuxer;
-    FFCodec *_currentVideoCodec;
-    FFCodec *_currentAudioCodec;
-    bool _inputHasAlpha;
 
     bool _freezeUI;
     bool _loadingPreset;

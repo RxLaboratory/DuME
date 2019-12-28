@@ -164,6 +164,8 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
     }
 
     if (_imageSequence) loadSequence();
+
+    emit changed();
 }
 
 void MediaInfo::loadPreset(QFileInfo presetFile)
@@ -256,31 +258,38 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
         addFFmpegOption(opt);
     }
     qDebug() << "Preset loaded.";
+
+    emit changed();
 }
 
 void MediaInfo::setVideoWidth(int width)
 {
     _videoWidth = width;
+    emit changed();
 }
 
 void MediaInfo::setVideoHeight(int height)
 {
     _videoHeight = height;
+    emit changed();
 }
 
 void MediaInfo::setVideoFramerate(double fps)
 {
     _videoFramerate = fps;
+    emit changed();
 }
 
 void MediaInfo::setAudioSamplingRate(int sampling)
 {
     _audioSamplingRate = sampling;
+    emit changed();
 }
 
 void MediaInfo::setDuration(double duration)
 {
     _duration = duration;
+    emit changed();
 }
 
 void MediaInfo::setFileName(QString fileName)
@@ -290,16 +299,19 @@ void MediaInfo::setFileName(QString fileName)
     {
         if ( _muxer->isSequence() ) loadSequence();
     }
+    emit changed();
 }
 
 void MediaInfo::setVideoCodec(FFCodec *codec)
 {
     _videoCodec = codec;
+    emit changed();
 }
 
 void MediaInfo::setAudioCodec(FFCodec *codec)
 {
     _audioCodec = codec;
+    emit changed();
 }
 
 void MediaInfo::setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit)
@@ -307,6 +319,7 @@ void MediaInfo::setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit)
     if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
     else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
     _videoBitrate = int( bitrate );
+    emit changed();
 }
 
 void MediaInfo::setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit)
@@ -314,6 +327,7 @@ void MediaInfo::setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit)
     if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
     else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
     _audioBitrate = int( bitrate );
+    emit changed();
 }
 
 void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
@@ -323,21 +337,25 @@ void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
     else if (unit == MediaUtils::MB) size = size*1024*1024;
     else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
     _size = qint64( size );
+    emit changed();
 }
 
 void MediaInfo::setFFmpegOptions(QList<QStringList> options)
 {
     _ffmpegOptions = options;
+    emit changed();
 }
 
 void MediaInfo::setVideo(bool video)
 {
     _video = video;
+    emit changed();
 }
 
 void MediaInfo::setAudio(bool audio)
 {
     _audio = audio;
+    emit changed();
 }
 
 void MediaInfo::setMuxer(FFMuxer *muxer)
@@ -348,11 +366,13 @@ void MediaInfo::setMuxer(FFMuxer *muxer)
         _imageSequence = true;
         loadSequence();
     }
+    emit changed();
 }
 
 void MediaInfo::addFFmpegOption(QStringList option)
 {
     _ffmpegOptions << option;
+    emit changed();
 }
 
 void MediaInfo::removeFFmpegOptions(QString optionName)
@@ -364,11 +384,13 @@ void MediaInfo::removeFFmpegOptions(QString optionName)
             _ffmpegOptions.removeAt(i);
         }
     }
+    emit changed();
 }
 
 void MediaInfo::clearFFmpegOptions()
 {
     _ffmpegOptions.clear();
+    emit changed();
 }
 
 int MediaInfo::videoWidth()
@@ -616,6 +638,7 @@ QTemporaryDir *MediaInfo::cacheDir() const
 void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir)
 {
     _cacheDir = aepTempDir;
+    emit changed();
 }
 
 bool MediaInfo::aeUseRQueue() const
@@ -626,6 +649,7 @@ bool MediaInfo::aeUseRQueue() const
 void MediaInfo::setAeUseRQueue(bool aeUseRQueue)
 {
     _aeUseRQueue = aeUseRQueue;
+    emit changed();
 }
 
 int MediaInfo::aepRqindex() const
@@ -636,6 +660,7 @@ int MediaInfo::aepRqindex() const
 void MediaInfo::setAepRqindex(int aepRqindex)
 {
     _aepRqindex = aepRqindex;
+    emit changed();
 }
 
 int MediaInfo::aepNumThreads() const
@@ -646,6 +671,7 @@ int MediaInfo::aepNumThreads() const
 void MediaInfo::setAepNumThreads(int aepNumThreads)
 {
     _aepNumThreads = aepNumThreads;
+    emit changed();
 }
 
 QString MediaInfo::aepCompName() const
@@ -656,6 +682,7 @@ QString MediaInfo::aepCompName() const
 void MediaInfo::setAepCompName(const QString &aepCompName)
 {
     _aepCompName = aepCompName;
+    emit changed();
 }
 
 bool MediaInfo::isAep() const
@@ -666,6 +693,7 @@ bool MediaInfo::isAep() const
 void MediaInfo::setAep(bool isAep)
 {
     _isAep = isAep;
+    emit changed();
 }
 
 QString MediaInfo::trc() const
@@ -676,6 +704,7 @@ QString MediaInfo::trc() const
 void MediaInfo::setTrc(const QString &trc)
 {
     _trc = trc;
+    emit changed();
 }
 
 bool MediaInfo::premultipliedAlpha() const
@@ -686,6 +715,7 @@ bool MediaInfo::premultipliedAlpha() const
 void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha)
 {
     _premultipliedAlpha = premultipliedAlpha;
+    emit changed();
 }
 
 FFPixFormat *MediaInfo::pixFormat()
@@ -696,6 +726,7 @@ FFPixFormat *MediaInfo::pixFormat()
 void MediaInfo::setPixFormat(FFPixFormat *pixFormat)
 {
     _pixFormat = pixFormat;
+    emit changed();
 }
 
 QStringList MediaInfo::frames() const
@@ -706,6 +737,7 @@ QStringList MediaInfo::frames() const
 void MediaInfo::setFrames(const QStringList &frames)
 {
     _frames = frames;
+    emit changed();
 }
 
 void MediaInfo::loadSequence()
@@ -847,6 +879,7 @@ int MediaInfo::startNumber() const
 void MediaInfo::setStartNumber(int startNumber)
 {
     _startNumber = startNumber;
+    emit changed();
 }
 
 int MediaInfo::videoQuality() const
@@ -857,6 +890,7 @@ int MediaInfo::videoQuality() const
 void MediaInfo::setVideoQuality(int quality)
 {
     _videoQuality = quality;
+    emit changed();
 }
 
 int MediaInfo::videoProfile() const
@@ -867,6 +901,7 @@ int MediaInfo::videoProfile() const
 void MediaInfo::setVideoProfile(int profile)
 {
     _videoProfile = profile;
+    emit changed();
 }
 
 int MediaInfo::loop() const
@@ -877,6 +912,7 @@ int MediaInfo::loop() const
 void MediaInfo::setLoop(int loop)
 {
     _loop = loop;
+    emit changed();
 }
 
 

@@ -10,6 +10,18 @@ class BlockResize : public UIBlockContent, private Ui::BlockResize
 
 public:
     explicit BlockResize(MediaInfo *mediaInfo, QWidget *parent = nullptr);
+
+public slots:
+    void setActivated( bool activate );
+    void update();
+
+private slots:
+    void on_videoWidthButton_valueChanged(int arg1);
+
+    void on_videoHeightButton_valueChanged(int arg1);
+
+private:
+    void aspectRatio();
 };
 
 #endif // BLOCKRESIZE_H

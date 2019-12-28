@@ -25,14 +25,18 @@ public:
     explicit UIBlockContent(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 
 public slots:
-    // reimplement this in the blocks to update mediainfo when (de)activated
+    // reimplement this in the blocks to update the MediaInfo when (de)activated
     virtual void setActivated( bool activate );
+    // reimplement this in the blocks to update the UI from the MediaInfo when it changes
+    virtual void update();
 
 signals:
 
+protected:
+    MediaInfo *_mediaInfo;
+
 private:
     bool _activated;
-    MediaInfo *_mediaInfo;
 
 };
 

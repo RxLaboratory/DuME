@@ -122,6 +122,10 @@ public:
     void exportPreset(QString jsonPath); 
 
 signals:
+    /**
+     * @brief changed Emitted when some parameters have been changed.
+     */
+    void changed();
 
 public slots:
 
