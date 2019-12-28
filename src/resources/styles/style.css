@@ -103,6 +103,25 @@ QPushButton:pressed:hover {
 	color: @color-light;
 }
 
+#closeButton {
+    border: @border-size solid rgba(0,0,0,0);
+    color: @color-light;
+    background-color: rgba(0,0,0,0);
+    padding: @button-padding;
+    border-radius: @border-radius;
+}
+
+#closeButton:hover {
+        background-color: @color-light;
+        color: @color-dark;
+        border-color:  @color-light;
+}
+
+#closeButton:pressed:hover {
+        background-color: @color-dark;
+        color: @color-light;
+}
+
 /* CHECKBOX AND RADIOBUTTON */
 
 QCheckBox, QRadioButton {

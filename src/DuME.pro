@@ -39,6 +39,9 @@ SOURCES += \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
+    UI/Blocks/blockresize.cpp \
+    UI/Blocks/uiblockcontent.cpp \
+    UI/Blocks/uiblockwidget.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
     FFmpeg/ffmpeg.cpp \
@@ -73,6 +76,9 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
+    UI/Blocks/blockresize.h \
+    UI/Blocks/uiblockcontent.h \
+    UI/Blocks/uiblockwidget.h \
     UI/uidropshadow.h \
     UI/uiframeless.h \
     UI/uiinputwidget.h \
@@ -85,6 +91,8 @@ HEADERS += \
     UI/uitoolbarspacer.h
 
 FORMS += \
+    UI/Blocks/blockresize.ui \
+    UI/Blocks/uiblockwidget.ui \
     UI/mainwindow.ui \
     UI/outputwidget.ui \
     UI/settingswidget.ui \

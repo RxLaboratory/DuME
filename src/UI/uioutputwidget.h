@@ -4,6 +4,8 @@
 #include "ui_outputwidget.h"
 
 #include "Renderer/mediainfo.h"
+#include "UI/Blocks/uiblockwidget.h"
+#include "UI/Blocks/blockresize.h"
 
 #include <QFileDialog>
 #include <QSettings>
