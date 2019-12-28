@@ -28,7 +28,7 @@ Here, all color parameters are set to make sure everything is correct, but the r
 
 ## Converting from linear RGB *EXR*
 
-To convert from *EXR*, in theory, the right `-apply_trc` option has to be set. Strangely, `-apply_trc bt709` does not result in the right gamma to output *.mp4* files, the colors with this option being a bit to dark. `iec61966_2_1 ` (sRGB) is closer but still a bit too dark The result with the colors the closest to the input file is by using `smpte428_1` (which is used in the 4K DCI specs), but there is still a slight difference in the colors (and not just the transfer curve).
+To convert from *EXR*, in theory, the right `-apply_trc` option has to be set. Strangely, `-apply_trc bt709` does not result in the right gamma to output *.mp4* files, the colors with this option being a bit too dark. `iec61966_2_1 ` (sRGB) is closer but still a bit too dark The result with the colors the closest to the input file is by using `smpte428_1` (which is used in the 4K DCI specs), but there is still a slight difference in the colors (and not just the transfer curve).
 
 Without the option at all, the transfer curve (gamma) is not right (darker), even if the colors are the right ones.
 
