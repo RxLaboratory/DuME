@@ -1,28 +1,32 @@
-# Manage and convert input colors
+# Manage and convert colors
 
 From several tests we've made to and from *YUV (420, 422, 444)* / linear *RGB* / *sRGB* using *mp4*, *PNG* and *EXR* files, these are the options to be used for color conversion between these formats, using FFmpeg > 4.1.
 
-## EXR
+All these options will be automatically set in DuME, but the user has to be able to override them in the UI, probably in an *advanced* section for the input. If they are changed in the input section, by default DuME will also write them in the ouput file, unless the user unchecks the option.
 
-For *openEXR* files, which are stored as linear RGB, a specific `-apply_trc` option needs to be added to the other color options in order to convert the colors to the right format *in theory*. From several tests, we've noticed that this option (with FFmpeg 4.1 at least) does not work propertly, but it can be replaced with custom LUTs to apply a specific gamma value.
+## Converting to sRGB (*JPG* or *PNG* in our tests)
 
-## Working examples
+From our tests, it seems there's no need to add the color options, even if the input file is YUV.
 
-### Converting to *mp4 - yuv420p*
+This command seems to work fo any input format, except *EXR* which needs the correct `-apply_trc` option or gamma adjustments. Read the section entitled *Converting from EXR* below.
 
-This command seems to work fo any input format, except *EXR* which needs the correct `-apply_trc` option or gamma adjustments. Read the section entitled *Converting to mp4 - yuv420p from EXR* below.
+    ffmpeg -i 'Media.mp4' 'Media.jpg'
 
-#### Simple
+## Converting to YUV (*mp4* in our tests)
+
+This command seems to work fo any input format, except *EXR* which needs the correct `-apply_trc` option or gamma adjustments. Read the section entitled *Converting from EXR* below.
+
+Simple command:
 
     ffmpeg -colorspace bt709 -i 'Media.png' -pix_fmt yuv420p 'Media.mp4'
 
-#### Complete
+Complete command:
 
     ffmpeg -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709  -i '/home/duduf/DEV_SRC/DuME/Test Medias/PNG/MediaTest_%5d.png' -pix_fmt yuv420p -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 '/home/duduf/DEV_SRC/DuME/Test Medias/MediaTest-ffmpeg.mp4'
 
 Here, all color parameters are set to make sure everything is correct, but the result is exactly the same as the simple version, in terms of color. Note that the color parameters are set also for the output, in order to have them in the metadata and to make FFProbe/FFmpeg report them correctly, but it is not needed to store the actual colors.
 
-### Converting to *mp4 - yuv420p* from EXR
+## Converting from linear RGB *EXR*
 
 To convert from *EXR*, in theory, the right `-apply_trc` option has to be set. Strangely, `-apply_trc bt709` does not result in the right gamma to output *.mp4* files, the colors with this option being a bit to dark. `iec61966_2_1 ` (sRGB) is closer but still a bit too dark The result with the colors the closest to the input file is by using `smpte428_1` (which is used in the 4K DCI specs), but there is still a slight difference in the colors (and not just the transfer curve).
 
@@ -30,17 +34,19 @@ Without the option at all, the transfer curve (gamma) is not right (darker), eve
 
 As it seems the `-apply_trc` option does not work correctly (and exists only for *EXR*), we've tried applying our own LUT to adjust the gamma. From our tests, applying a gamma value of 1/2.4 (~0.417) results in the right gamma and colors in the *mp4* output file. To apply this LUT, use this command: `-vf "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)"`.
 
-#### 
+To YUV (*mp4*) (Simple):
 
-    ffmpeg -colorspace bt709 -i 'Media.exr' -vf "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)" -pix_fmt yuv420p -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 'Media.mp4'
+    ffmpeg -colorspace bt709 -i 'Media.exr' -vf "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)" 'Media.mp4'
 
-#### Complete
+To YUV (*mp4*) (Complete):
 
     ffmpeg -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 -i 'Media.exr' -vf "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)" -pix_fmt yuv420p -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 'Media.mp4'
 
-Here, all color parameters are set to make sure everything is correct, but the result is exactly the same as the simple version, in terms of color. Note that the color parameters are set also for the output, in order to have them in the metadata and to make FFProbe/FFmpeg report them correctly, but it is not needed to store the actual colors.
+To RGB (*png*):
 
-#### Tests
+    ffmpeg -i 'Media.exr' -vf "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)" 'Media.png'
+
+## Tests
 
 Here are the tests we've run to make sure the files are rendered with the same colors both for the input and the output.
 
@@ -126,7 +132,7 @@ Note: if they are passed to the output file, it seems they do nothing to the act
 - unspecified                  ED.V..... Unspecified
 - mpeg                         ED.V..... MPEG (219*2^(n-8))
 - jpeg                         ED.V..... JPEG (2^n-1)
-### apply_trc
+### apply_trc (EXR only, does not seem to work correctly)
 - bt709                        .D.V.... BT.709
 - gamma                        .D.V.... gamma
 - gamma22                      .D.V.... BT.470 M
@@ -143,5 +149,3 @@ Note: if they are passed to the output file, it seems they do nothing to the act
 - bt2020_12bit                 .D.V.... BT.2020 - 12 bit
 - smpte2084                    .D.V.... SMPTE ST 2084
 - smpte428_1                   .D.V.... SMPTE ST 428-1
-
-ffmpeg -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 -i '/home/duduf/DEV_SRC/DuME/Test Medias/EXR (Ae)/MediaTest_%5d.exr' -vf "lutrgb=r=gammaval(0.4762):g=gammaval(0.4762):b=gammaval(0.4762)" -pix_fmt yuv420p -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 '/home/duduf/DEV_SRC/DuME/Test Medias/MediaTest-ffmpeg.mp4'
