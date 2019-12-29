@@ -39,7 +39,7 @@ To achieve this goal, the development of the application follows these guideline
 - Burn subtitles in picture.
 - Burn Metadata in picture (Timecode...).
 
-## About DuFFmpeg
+## About DuME
 
 If you like this free software, please support the developer on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.
 
