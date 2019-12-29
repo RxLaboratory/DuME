@@ -308,32 +308,40 @@ void MediaInfo::setVideoCodec(FFCodec *codec)
     emit changed();
 }
 
+void MediaInfo::setVideoCodec(QString codecName)
+{
+    if (codecName == "") _videoCodec = nullptr;
+    else _videoCodec = _ffmpeg->videoEncoder( codecName );
+}
+
 void MediaInfo::setAudioCodec(FFCodec *codec)
 {
     _audioCodec = codec;
     emit changed();
 }
 
-void MediaInfo::setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit)
+void MediaInfo::setAudioCodec(QString codecName)
 {
-    if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
-    else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
-    _videoBitrate = int( bitrate );
+    if (codecName == "") _videoCodec = nullptr;
+    else _videoCodec = _ffmpeg->audioEncoder( codecName );
+}
+
+void MediaInfo::setVideoBitrate(qint64 bitrate)
+{
+    _videoBitrate = bitrate;
     emit changed();
 }
 
-void MediaInfo::setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit)
+void MediaInfo::setAudioBitrate(qint64 bitrate)
 {
-    if (unit == MediaUtils::Kbps) bitrate = bitrate*1024;
-    else if (unit == MediaUtils::Mbps) bitrate = bitrate*1024*1024;
-    _audioBitrate = int( bitrate );
+    _audioBitrate = bitrate;
     emit changed();
 }
 
 void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
 {
 
-    if (unit == MediaUtils::KB) size = size*1024;
+    if (unit == MediaUtils::kB) size = size*1024;
     else if (unit == MediaUtils::MB) size = size*1024*1024;
     else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
     _size = qint64( size );

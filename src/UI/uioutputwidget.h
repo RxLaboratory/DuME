@@ -8,6 +8,9 @@
 // BLOCKS
 #include "UI/Blocks/uiblockwidget.h"
 #include "UI/Blocks/blockresize.h"
+#include "UI/Blocks/blockframerate.h"
+#include "UI/Blocks/blockvideocodec.h"
+#include "UI/Blocks/blockvideobitrate.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -43,26 +46,18 @@ public slots:
 private slots:
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
-    void on_frameRateButton_toggled(bool checked);
     void on_samplingButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
-    void on_frameRateBox_activated(const QString &arg1);
-    void on_frameRateEdit_valueChanged(double arg1);
     void on_videoQualitySlider_valueChanged(int value);
-    void on_videoWidthButton_valueChanged(int val);
-    void on_videoHeightButton_valueChanged(int val);
-    void on_videoCodecsFilterBox_currentIndexChanged();
     void on_audioCodecsFilterBox_currentIndexChanged();
     void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged();
-    void on_videoCodecButton_toggled(bool checked);
-    void on_videoBitrateButton_toggled(bool checked);
-    void on_videoQualityButton_toggled(bool checked);
     void on_audioCodecButton_toggled(bool checked);
     void on_audioBitrateButton_toggled(bool checked);
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated();
+    //TODO some code to move here
     void on_videoCodecsBox_currentIndexChanged();
     void on_videoProfileButton_toggled(bool checked);
     void on_videoLoopsButton_toggled(bool checked);
@@ -82,7 +77,18 @@ private slots:
 
 private:
     // BLOCKS
+    UIBlockWidget *addVideoBlock(UIBlockContent *content, QAction *action);
     UIBlockWidget *blockResize;
+    BlockResize *blockResizeContent;
+    UIBlockWidget *blockFrameRate;
+    BlockFrameRate *blockFrameRateContent;
+    UIBlockWidget *blockVideoCodec;
+    BlockVideoCodec *blockVideoCodecContent;
+    UIBlockWidget *blockVideoBitrate;
+    BlockVideoBitrate *blockVideoBitrateContent;
+
+    // MENUS
+    QMenu *videoMenu;
 
     void updateOutputExtension(QString outputPath);
     void selectDefaultVideoCodec();

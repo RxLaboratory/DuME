@@ -28,6 +28,16 @@ void BlockResize::update()
     if (h > 0) videoHeightButton->setValue( h );
 }
 
+void BlockResize::setWidth(int w)
+{
+    videoWidthButton->setValue( w );
+}
+
+void BlockResize::setHeight(int h)
+{
+    videoHeightButton->setValue( h );
+}
+
 void BlockResize::aspectRatio()
 {
     double width = videoWidthButton->value();

@@ -14,10 +14,10 @@ public:
 public slots:
     void setActivated( bool activate );
     void update();
-
+    void setWidth( int w );
+    void setHeight( int h );
 private slots:
     void on_videoWidthButton_valueChanged(int arg1);
-
     void on_videoHeightButton_valueChanged(int arg1);
 
 private:

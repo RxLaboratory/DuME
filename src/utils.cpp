@@ -53,13 +53,13 @@ public:
     /**
      * @brief The unit used for bitrates
      */
-    enum BitrateUnit { bps, Kbps, Mbps};
+    enum BitrateUnit { bps, kbps, Mbps};
     Q_ENUM(BitrateUnit)
 
     /**
      * @brief The unit used for sizes
      */
-    enum SizeUnit { Bytes, KB, MB, GB};
+    enum SizeUnit { Bytes, kB, MB, GB};
     Q_ENUM(SizeUnit)
 
     /**
@@ -158,6 +158,56 @@ public:
             sizeText = QString::number( int(bitrate*100)/100) + " Gbps";
         }
         return sizeText;
+    }
+
+    /**
+     * @brief convertBitrate Converts a bitrate from bps to another unit.
+     * @param to
+     * @return
+     */
+    static double convertFromBps( qint64 value, BitrateUnit to )
+    {
+        if (to == kbps) return value / 1000;
+        if (to == Mbps) return value / 1000000;
+        return value;
+    }
+
+    /**
+     * @brief convertBitrate Converts a file size from Bytes to another unit.
+     * @param to
+     * @return
+     */
+    static double convertFromBytes( qint64 value, SizeUnit to )
+    {
+        if (to == kB) return value / 1024;
+        if (to == MB) return value / 1024 / 1024;
+        if (to == GB) return value / 1024 / 1024 / 1024;
+        return value;
+    }
+
+    /**
+     * @brief convertBitrate Converts a bitrate to bps from another unit.
+     * @param to
+     * @return
+     */
+    static qint64 convertToBps( qint64 value, BitrateUnit from )
+    {
+        if (from == kbps) return value * 1000;
+        if (from == Mbps) return value * 1000000;
+        return value;
+    }
+
+    /**
+     * @brief convertBitrate Converts a file size to Bytes from another unit.
+     * @param to
+     * @return
+     */
+    static qint64 convertToBytes( qint64 value, SizeUnit from )
+    {
+        if (from == kB) return value * 1024;
+        if (from == MB) return value * 1024 * 1024;
+        if (from == GB) return value * 1024 * 1024 * 1024;
+        return value;
     }
 };
 

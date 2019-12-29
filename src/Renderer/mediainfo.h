@@ -55,9 +55,11 @@ public:
     void setDuration(double duration);
     void setFileName(QString fileName);
     void setVideoCodec(FFCodec *codec);
+    void setVideoCodec(QString codecName);
     void setAudioCodec(FFCodec *codec);
-    void setVideoBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::bps);
-    void setAudioBitrate(double bitrate, MediaUtils::BitrateUnit unit = MediaUtils::bps);
+    void setAudioCodec(QString codecName);
+    void setVideoBitrate(qint64 bitrate);
+    void setAudioBitrate(qint64 bitrate);
     void setSize(double size, MediaUtils::SizeUnit unit = MediaUtils::Bytes);
     void setFFmpegOptions(QList<QStringList> options);
     void setVideo(bool video = true);
