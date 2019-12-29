@@ -26,16 +26,23 @@ void BlockResize::update()
     int h = _mediaInfo->videoHeight();
     if (w > 0) videoWidthButton->setValue( w );
     if (h > 0) videoHeightButton->setValue( h );
+    aspectRatio();
 }
 
 void BlockResize::setWidth(int w)
 {
+    _freezeUI = true;
     videoWidthButton->setValue( w );
+    aspectRatio();
+    _freezeUI = false;
 }
 
 void BlockResize::setHeight(int h)
 {
+    _freezeUI = true;
     videoHeightButton->setValue( h );
+    aspectRatio();
+    _freezeUI = false;
 }
 
 void BlockResize::aspectRatio()
@@ -52,10 +59,12 @@ void BlockResize::aspectRatio()
 
 void BlockResize::on_videoWidthButton_valueChanged(int arg1)
 {
-    aspectRatio();
+    if (_freezeUI) return;
+    _mediaInfo->setVideoWidth( arg1 );
 }
 
 void BlockResize::on_videoHeightButton_valueChanged(int arg1)
 {
-    aspectRatio();
+    if (_freezeUI) return;
+    _mediaInfo->setVideoHeight( arg1 );
 }

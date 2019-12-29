@@ -34,6 +34,10 @@ signals:
 
 protected:
     MediaInfo *_mediaInfo;
+    bool _freezeUI;
+
+private slots:
+    void changed();
 
 private:
     bool _activated;

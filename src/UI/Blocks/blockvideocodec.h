@@ -18,12 +18,9 @@ private slots:
     void listCodecs();
     void on_videoCodecsFilterBox_currentIndexChanged(int index);
     void on_videoCodecsBox_currentIndexChanged(int index);
-    void on_videoCodecButton_clicked(bool checked);
 
 private:
-    bool _freezeUI;
     FFmpeg *_ffmpeg;
-
     void setCodec(QString name);
 };
 

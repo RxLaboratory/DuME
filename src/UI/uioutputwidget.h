@@ -11,6 +11,7 @@
 #include "UI/Blocks/blockframerate.h"
 #include "UI/Blocks/blockvideocodec.h"
 #include "UI/Blocks/blockvideobitrate.h"
+#include "UI/Blocks/blockvideoprofile.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -48,7 +49,6 @@ private slots:
     void on_audioTranscodeButton_toggled(bool checked);
     void on_samplingButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
-    void on_videoQualitySlider_valueChanged(int value);
     void on_audioCodecsFilterBox_currentIndexChanged();
     void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
@@ -58,8 +58,7 @@ private slots:
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated();
     //TODO some code to move here
-    void on_videoCodecsBox_currentIndexChanged();
-    void on_videoProfileButton_toggled(bool checked);
+    //void on_videoCodecsBox_currentIndexChanged();
     void on_videoLoopsButton_toggled(bool checked);
     void on_videoLoopsEdit_valueChanged(int arg1);
     void on_startNumberButton_clicked(bool checked);
@@ -68,10 +67,8 @@ private slots:
     void on_pixFmtFilterBox_currentIndexChanged();
     void on_alphaButton_toggled(bool checked);
     void on_samplingBox_currentIndexChanged(int index);
-    void on_videoProfileBox_currentIndexChanged(int index);
     void on_startNumberEdit_valueChanged(int arg1);
     void on_pixFmtBox_currentIndexChanged(int index);
-    void on_videoBitRateEdit_valueChanged(double arg1);
     void on_audioBitRateEdit_valueChanged(int arg1);
     void on_unmultButton_toggled(bool checked);
 
@@ -86,6 +83,8 @@ private:
     BlockVideoCodec *blockVideoCodecContent;
     UIBlockWidget *blockVideoBitrate;
     BlockVideoBitrate *blockVideoBitrateContent;
+    UIBlockWidget *blockVideoProfile;
+    BlockVideoProfile *blockVideoProfileContent;
 
     // MENUS
     QMenu *videoMenu;

@@ -2,10 +2,13 @@
 
 UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, QWidget *parent) : QWidget(parent)
 {
+    _freezeUI = true;
     _activated = false;
     _mediaInfo = mediaInfo;
 
-    connect( _mediaInfo, SIGNAL( changed() ), this, SLOT( update() ) );
+    connect( _mediaInfo, SIGNAL( changed() ), this, SLOT( changed() ) );
+
+    _freezeUI = false;
 }
 
 void UIBlockContent::setActivated(bool activate)
@@ -16,4 +19,11 @@ void UIBlockContent::setActivated(bool activate)
 void UIBlockContent::update()
 {
 
+}
+
+void UIBlockContent::changed()
+{
+    _freezeUI = true;
+    update();
+    _freezeUI = false;
 }

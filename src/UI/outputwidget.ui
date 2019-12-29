@@ -268,7 +268,7 @@
           <attribute name="title">
            <string>Video</string>
           </attribute>
-          <layout class="QVBoxLayout" name="videoLayout" stretch="0,0,0,0,1">
+          <layout class="QVBoxLayout" name="videoLayout" stretch="0,0,0,1">
            <property name="spacing">
             <number>3</number>
            </property>
@@ -366,264 +366,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="mainVideoCodecWidget" native="true">
-             <layout class="QFormLayout" name="formLayout_6">
-              <property name="horizontalSpacing">
-               <number>3</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>3</number>
-              </property>
-              <property name="leftMargin">
-               <number>3</number>
-              </property>
-              <property name="topMargin">
-               <number>3</number>
-              </property>
-              <property name="rightMargin">
-               <number>3</number>
-              </property>
-              <property name="bottomMargin">
-               <number>3</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="videoCodecButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Codec</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QWidget" name="videoCodecWidget" native="true">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <property name="spacing">
-                  <number>3</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QComboBox" name="videoCodecsFilterBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>200</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="frame">
-                    <bool>false</bool>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Default</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Lossy</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Lossless</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>I-Frame</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="videoCodecsBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="frame">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="videoBitrateButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Target bitrate</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QDoubleSpinBox" name="videoBitRateEdit">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="frame">
-                 <bool>false</bool>
-                </property>
-                <property name="suffix">
-                 <string> Auto</string>
-                </property>
-                <property name="maximum">
-                 <double>300.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>0.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="videoQualityButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Quality</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QWidget" name="videoQualityWidget" native="true">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_2">
-                 <property name="spacing">
-                  <number>3</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QSlider" name="videoQualitySlider">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximum">
-                    <number>100</number>
-                   </property>
-                   <property name="singleStep">
-                    <number>10</number>
-                   </property>
-                   <property name="value">
-                    <number>75</number>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="qualityLabel">
-                   <property name="minimumSize">
-                    <size>
-                     <width>150</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>150</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Excellent</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="videoProfileButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Profile</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="videoProfileBox">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="frame">
-                 <bool>false</bool>
-                </property>
-               </widget>
               </item>
              </layout>
             </widget>
@@ -1278,7 +1020,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Codec options</string>
+    <string>Codec</string>
    </property>
    <property name="toolTip">
     <string>Select and adjust the video codec</string>
@@ -1299,6 +1041,20 @@
    </property>
    <property name="shortcut">
     <string>Q</string>
+   </property>
+  </action>
+  <action name="actionProfile">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the profile of the video codec</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
  </widget>

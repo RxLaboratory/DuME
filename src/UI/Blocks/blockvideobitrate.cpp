@@ -3,9 +3,7 @@
 BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     UIBlockContent(mediaInfo,parent)
 {
-    _freezeUI = true;
     setupUi(this);
-    _freezeUI = false;
 }
 
 void BlockVideoBitrate::setActivated(bool activate)
@@ -16,8 +14,6 @@ void BlockVideoBitrate::setActivated(bool activate)
 
 void BlockVideoBitrate::update()
 {
-    _freezeUI = true;
-
     // bitrate
     int b = _mediaInfo->videoBitrate( );
     if ( b == 0)
@@ -69,12 +65,11 @@ void BlockVideoBitrate::update()
             qualityLabel->setText("Very bad | " + QString::number(q) + "%");
         }
     }
-
-    _freezeUI = false;
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)
 {
+    if (_freezeUI) return;
     if (checked)
     {
         _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 24, MediaUtils::Mbps ) );
@@ -94,6 +89,7 @@ void BlockVideoBitrate::on_videoBitRateEdit_valueChanged(double arg1)
 
 void BlockVideoBitrate::on_videoQualityButton_clicked(bool checked)
 {
+    if (_freezeUI) return;
     if (checked)
     {
         _mediaInfo->setVideoQuality( 90 );

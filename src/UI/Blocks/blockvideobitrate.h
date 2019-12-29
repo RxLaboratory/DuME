@@ -17,11 +17,7 @@ private slots:
     void on_videoBitrateButton_clicked(bool checked);
     void on_videoBitRateEdit_valueChanged(double arg1);
     void on_videoQualityButton_clicked(bool checked);
-
     void on_videoQualitySlider_valueChanged(int value);
-
-private:
-    bool _freezeUI;
 };
 
 #endif // BLOCKVIDEOBITRATE_H

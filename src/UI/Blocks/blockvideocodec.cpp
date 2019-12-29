@@ -3,21 +3,18 @@
 BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
     UIBlockContent(mediaInfo, parent)
 {
-    _freezeUI = true;
-
     setupUi(this);
 
     _ffmpeg = ffmpeg;
     connect( _ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
     listCodecs();
-
-    _freezeUI = false;
 }
 
 void BlockVideoCodec::listCodecs()
 {
     _freezeUI = true;
 
+    QString prevSelection = videoCodecsBox->currentData(Qt::UserRole).toString();
     videoCodecsBox->clear();
 
     QList<FFCodec *> encoders = _ffmpeg->videoEncoders();
@@ -38,7 +35,7 @@ void BlockVideoCodec::listCodecs()
         }
     }
 
-    selectDefaultVideoCodec();
+    setCodec( prevSelection );
 
     _freezeUI = false;
 }
@@ -46,6 +43,8 @@ void BlockVideoCodec::listCodecs()
 void BlockVideoCodec::setCodec(QString name)
 {
     _freezeUI = true;
+
+    if ( name == "" ) selectDefaultVideoCodec();
 
     for (int v = 0; v < videoCodecsBox->count() ; v++)
     {
@@ -83,7 +82,7 @@ void BlockVideoCodec::selectDefaultVideoCodec()
 
     //Select Default Codec
 
-    if (videoCodec != nullptr)
+    if ( videoCodec != nullptr )
     {
         setCodec( videoCodec->name() );
     }
@@ -105,8 +104,6 @@ void BlockVideoCodec::setActivated(bool activate)
 
 void BlockVideoCodec::update()
 {
-    _freezeUI = true;
-
     listCodecs();
 
     // set codec
@@ -114,17 +111,12 @@ void BlockVideoCodec::update()
     if (c == nullptr)
     {
         selectDefaultVideoCodec();
-        videoCodecButton->setChecked( false );
         return;
     }
     else
     {
         setCodec( c->name() );
-        videoCodecButton->setChecked( true );
     }
-
-
-    _freezeUI = false;
 }
 
 void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
@@ -137,19 +129,4 @@ void BlockVideoCodec::on_videoCodecsBox_currentIndexChanged(int index)
 {
     if ( _freezeUI ) return;
     _mediaInfo->setVideoCodec( videoCodecsBox->itemData(index, Qt::UserRole).toString() );
-}
-
-void BlockVideoCodec::on_videoCodecButton_clicked(bool checked)
-{
-    if ( _freezeUI ) return;
-
-    if (checked)
-    {
-        _mediaInfo->setVideoCodec( videoCodecsBox->currentData( Qt::UserRole ).toString() );
-    }
-    else
-    {
-        _mediaInfo->setVideoCodec( nullptr );
-    }
-
 }

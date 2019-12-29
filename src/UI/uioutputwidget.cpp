@@ -37,9 +37,56 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockVideoCodec = addVideoBlock( blockVideoCodecContent, actionVideoCodec );
     blockVideoBitrateContent = new BlockVideoBitrate( _mediaInfo );
     blockVideoBitrate = addVideoBlock( blockVideoBitrateContent, actionVideoBitrate );
+    blockVideoProfileContent = new BlockVideoProfile( _mediaInfo );
+    blockVideoProfile = addVideoBlock( blockVideoProfileContent, actionProfile );
 
     //TODO connect mediainfo changed to h264 width/height check
     //TODO connect mediainfo changed to blocks availability
+
+    /*
+    if (!muxer->isSequence() && muxer->name() != "gif")
+    {
+        mainVideoCodecWidget->show();
+        videoCodecButton->show();
+        videoCodecWidget->show();
+        videoBitrateButton->show();
+        videoBitRateEdit->show();
+    }
+
+    if (muxer->isSequence())
+    {
+        sequenceWidget->show();
+        startNumberButton->show();
+        startNumberEdit->show();
+    }
+
+            //prores
+            if (codec->name() == "prores")
+            {
+                mainVideoCodecWidget->show();
+                videoProfileBox->clear();
+                videoProfileBox->addItem("Proxy",0);
+                videoProfileBox->addItem("LT",1);
+                videoProfileBox->addItem("Normal",2);
+                videoProfileBox->addItem("HQ",3);
+                videoProfileButton->show();
+                videoProfileBox->show();
+            }
+            //h264
+            else if (codec->name() == "h264")
+            {
+                mainVideoCodecWidget->show();
+                videoQualityButton->show();
+                videoQualityWidget->show();
+            }
+            //gif
+            else if (codec->name() == "gif")
+            {
+                sequenceWidget->show();
+                videoLoopsButton->show();
+                videoLoopsEdit->show();
+            }
+    */
 
     //populate sampling box
     //TODO Get from ffmpeg
@@ -77,11 +124,11 @@ void UIOutputWidget::init()
     videoTranscodeButton->setChecked(true);
     blockResize->hide();
     blockFrameRate->hide();
-    videoCodecButton->setChecked(false);
-    videoBitrateButton->setChecked(false);
+    blockVideoCodec->hide();
+    blockVideoBitrate->hide();
+    blockVideoProfile->hide();
+
     videoLoopsButton->setChecked(false);
-    videoProfileButton->setChecked(false);
-    videoQualityButton->setChecked(false);
 
     //audio
     audioTranscodeButton->setChecked(true);
@@ -156,15 +203,6 @@ void UIOutputWidget::updateMediaInfo()
             else
             {
                 videoTranscodeButton->setChecked(true);
-                videoCodecButton->setChecked(true);
-                for(int i = 0 ; i  < videoCodecsBox->count() ; i++)
-                {
-                    if (videoCodecsBox->itemData(i).toString() == _currentVideoCodec->name())
-                    {
-                        videoCodecsBox->setCurrentIndex(i);
-                        break;
-                    }
-                }
                 //set pixFmt
                 FFPixFormat *pf = _mediaInfo->pixFormat();
                 if (pf != nullptr)
@@ -182,31 +220,15 @@ void UIOutputWidget::updateMediaInfo()
             }
         }
 
+        blockVideoCodec->setVisible( _mediaInfo->videoCodec() != nullptr );
+        blockVideoBitrate->setVisible( _mediaInfo->videoBitrate() != 0.0 );
+        blockVideoProfile->setVisible( _mediaInfo->videoProfile() != -1 );
         int width = _mediaInfo->videoWidth();
         int height = _mediaInfo->videoHeight();
         blockResize->setVisible( width != 0 && height != 0 );
+        blockFrameRate->setVisible( _mediaInfo->videoFramerate() != 0.0 );
 
-        double framerate = _mediaInfo->videoFramerate();
-        blockFrameRate->setVisible( framerate != 0.0 );
 
-        qint64 bitrate = _mediaInfo->videoBitrate( );
-        if (bitrate != 0.0)
-        {
-            videoBitrateButton->setChecked(true);
-            videoBitRateEdit->setValue(bitrate/1024/1024);
-        }
-        int quality = _mediaInfo->videoQuality();
-        if (quality > -1)
-        {
-            videoQualityButton->setChecked(true);
-            videoQualitySlider->setValue(quality);
-        }
-        int profile = _mediaInfo->videoProfile();
-        if (profile > -1)
-        {
-            videoProfileButton->setChecked(true);
-            videoProfileBox->setCurrentIndex(profile);
-        }
         unmultButton->setChecked(!_mediaInfo->premultipliedAlpha());
 
     }
@@ -285,14 +307,6 @@ void UIOutputWidget::on_videoTranscodeButton_toggled( bool checked )
     {
         addVideoBlockButton->setEnabled( true );
         _mediaInfo->setVideo(true);
-        if ( videoCodecButton->isChecked() )
-        {
-            _mediaInfo->setVideoCodec( _ffmpeg->videoEncoder( videoCodecsBox->currentData(Qt::UserRole).toString()));
-        }
-        else
-        {
-            _mediaInfo->setVideoCodec( nullptr );
-        }
     }
     else if ( videoCopyButton->isChecked() )
     {
@@ -359,34 +373,7 @@ void UIOutputWidget::on_outputBrowseButton_clicked()
     updateOutputExtension(outputPath);
 }
 
-void UIOutputWidget::on_videoQualitySlider_valueChanged(int value)
-{
-    if (value >= 90)
-    {
-        qualityLabel->setText("(Visually) Lossless | " + QString::number(value) + "%");
-    }
-    else if (value >= 75)
-    {
-        qualityLabel->setText("Very good | " + QString::number(value) + "%");
-    }
-    else if (value >= 50)
-    {
-        qualityLabel->setText("Good | " + QString::number(value) + "%");
-    }
-    else if (value >= 25)
-    {
-        qualityLabel->setText("Bad | " + QString::number(value) + "%");
-    }
-    else
-    {
-        qualityLabel->setText("Very bad | " + QString::number(value) + "%");
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-
-    _mediaInfo->setVideoQuality( value );
-}
-
-void UIOutputWidget::on_videoCodecsBox_currentIndexChanged( )
+/*void UIOutputWidget::on_videoCodecsBox_currentIndexChanged( )
 {
     updateAudioVideoOptions();
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -415,27 +402,12 @@ void UIOutputWidget::on_videoCodecsBox_currentIndexChanged( )
     else alphaButton->hide();
 
     ffmpeg_loadPixFmts(true);
-}
+}*/
 
 void UIOutputWidget::on_audioCodecsBox_currentIndexChanged()
 {
     FFCodec *_currentAudioCodec = _ffmpeg->audioEncoder(audioCodecsBox->currentData().toString());
     _mediaInfo->setAudioCodec( _currentAudioCodec );
-}
-
-void UIOutputWidget::on_videoProfileButton_toggled(bool checked)
-{
-    if (checked)
-    {
-        videoProfileBox->setEnabled(true);
-        _mediaInfo->setVideoProfile(videoProfileBox->currentData().toInt());
-    }
-    else
-    {
-        videoProfileBox->setEnabled(false);
-        _mediaInfo->setVideoProfile( -1 );
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void UIOutputWidget::on_videoLoopsButton_toggled(bool checked)
@@ -666,7 +638,6 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
         _freezeUI = false;
         //set filters to all
         formatsFilterBox->setCurrentIndex(0);
-        videoCodecsFilterBox->setCurrentIndex(0);
         audioCodecsFilterBox->setCurrentIndex(0);
 
         _mediaInfo->loadPreset(presetsBox->currentData().toString());
@@ -800,7 +771,9 @@ void UIOutputWidget::selectDefaultPixFmt()
 void UIOutputWidget::updateAudioVideoOptions()
 {
     //VIDEO
-    mainVideoCodecWidget->hide();
+    blockVideoCodec->hide();
+    blockVideoBitrate->hide();
+    blockVideoProfile->hide();
     blockResize->hide();
     blockFrameRate->hide();
     sequenceWidget->hide();
@@ -812,18 +785,6 @@ void UIOutputWidget::updateAudioVideoOptions()
     //hide all details
 
     //VIDEO
-    //codec
-    videoCodecButton->hide();
-    videoCodecWidget->hide();
-    //bitrate
-    videoBitrateButton->hide();
-    videoBitRateEdit->hide();
-    //quality
-    videoQualityButton->hide();
-    videoQualityWidget->hide();
-    //profile
-    videoProfileButton->hide();
-    videoProfileBox->hide();
 
     //loop
     videoLoopsButton->hide();
@@ -846,59 +807,6 @@ void UIOutputWidget::updateAudioVideoOptions()
     if (videoTranscodeButton->isChecked())
     {
         componentsWidget->show();
-
-        //show/hide codec depending on muxer
-        FFMuxer *muxer = _ffmpeg->muxer(formatsBox->currentData().toString());
-        if (muxer != nullptr)
-        {
-            if (!muxer->isSequence() && muxer->name() != "gif")
-            {
-                mainVideoCodecWidget->show();
-                videoCodecButton->show();
-                videoCodecWidget->show();
-                videoBitrateButton->show();
-                videoBitRateEdit->show();
-            }
-
-            if (muxer->isSequence())
-            {
-                sequenceWidget->show();
-                startNumberButton->show();
-                startNumberEdit->show();
-            }
-        }
-
-        FFCodec *codec = _ffmpeg->videoEncoder(videoCodecsBox->currentData().toString());
-        if (codec != nullptr)
-        {
-            //prores
-            if (codec->name() == "prores")
-            {
-                mainVideoCodecWidget->show();
-                videoProfileBox->clear();
-                videoProfileBox->addItem("Proxy",0);
-                videoProfileBox->addItem("LT",1);
-                videoProfileBox->addItem("Normal",2);
-                videoProfileBox->addItem("HQ",3);
-                videoProfileButton->show();
-                videoProfileBox->show();
-            }
-            //h264
-            else if (codec->name() == "h264")
-            {
-                mainVideoCodecWidget->show();
-                videoQualityButton->show();
-                videoQualityWidget->show();
-            }
-            //gif
-            else if (codec->name() == "gif")
-            {
-                sequenceWidget->show();
-                videoLoopsButton->show();
-                videoLoopsEdit->show();
-            }
-
-        }
     }
 
     if (audioTranscodeButton->isChecked())
@@ -920,10 +828,7 @@ void UIOutputWidget::updateAudioVideoOptions()
     }
 
     //uncheck what is hidden
-    if (videoCodecButton->isHidden()) videoCodecButton->setChecked(false);
-    if (videoBitrateButton->isHidden()) videoBitrateButton->setChecked(false);
-    if (videoQualityButton->isHidden()) videoQualityButton->setChecked(false);
-    if (videoProfileButton->isHidden()) videoProfileButton->setChecked(false);
+
     if (videoLoopsButton->isHidden()) videoLoopsButton->setChecked(false);
     if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
@@ -935,7 +840,6 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     //TEMP - Hide all to test blocks
     componentsWidget->hide();
-    mainVideoCodecWidget->hide();
     sequenceWidget->hide();
 }
 
@@ -1204,11 +1108,6 @@ void UIOutputWidget::on_samplingBox_currentIndexChanged(int index)
     _mediaInfo->setAudioSamplingRate( samplingBox->itemData(index, Qt::UserRole).toInt() );
 }
 
-void UIOutputWidget::on_videoProfileBox_currentIndexChanged(int index)
-{
-    _mediaInfo->setVideoProfile( videoProfileBox->itemData(index, Qt::UserRole).toInt() );
-}
-
 void UIOutputWidget::on_startNumberEdit_valueChanged(int arg1)
 {
     _mediaInfo->setStartNumber( arg1 );
@@ -1217,11 +1116,6 @@ void UIOutputWidget::on_startNumberEdit_valueChanged(int arg1)
 void UIOutputWidget::on_pixFmtBox_currentIndexChanged(int index)
 {
     _mediaInfo->setPixFormat( _ffmpeg->pixFormat( pixFmtBox->itemData(index, Qt::UserRole).toString()) );
-}
-
-void UIOutputWidget::on_videoBitRateEdit_valueChanged(double arg1)
-{
-    _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( arg1, MediaUtils::Mbps ) );
 }
 
 void UIOutputWidget::on_audioBitRateEdit_valueChanged(int arg1)

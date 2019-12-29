@@ -43,6 +43,7 @@ SOURCES += \
     UI/Blocks/blockresize.cpp \
     UI/Blocks/blockvideobitrate.cpp \
     UI/Blocks/blockvideocodec.cpp \
+    UI/Blocks/blockvideoprofile.cpp \
     UI/Blocks/uiblockcontent.cpp \
     UI/Blocks/uiblockwidget.cpp \
     main.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     UI/Blocks/blockresize.h \
     UI/Blocks/blockvideobitrate.h \
     UI/Blocks/blockvideocodec.h \
+    UI/Blocks/blockvideoprofile.h \
     UI/Blocks/uiblockcontent.h \
     UI/Blocks/uiblockwidget.h \
     UI/uidropshadow.h \
@@ -101,6 +103,7 @@ FORMS += \
     UI/Blocks/blockresize.ui \
     UI/Blocks/blockvideobitrate.ui \
     UI/Blocks/blockvideocodec.ui \
+    UI/Blocks/blockvideoprofile.ui \
     UI/Blocks/uiblockwidget.ui \
     UI/mainwindow.ui \
     UI/outputwidget.ui \
