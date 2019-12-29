@@ -268,7 +268,7 @@
           <attribute name="title">
            <string>Video</string>
           </attribute>
-          <layout class="QVBoxLayout" name="videoLayout" stretch="0,0,0,1">
+          <layout class="QVBoxLayout" name="videoLayout" stretch="0,0,1">
            <property name="spacing">
             <number>3</number>
            </property>
@@ -366,100 +366,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="sequenceWidget" native="true">
-             <layout class="QFormLayout" name="formLayout_9">
-              <property name="horizontalSpacing">
-               <number>3</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>3</number>
-              </property>
-              <property name="leftMargin">
-               <number>3</number>
-              </property>
-              <property name="topMargin">
-               <number>3</number>
-              </property>
-              <property name="rightMargin">
-               <number>3</number>
-              </property>
-              <property name="bottomMargin">
-               <number>3</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="videoLoopsButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Loops</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="videoLoopsEdit">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="frame">
-                 <bool>false</bool>
-                </property>
-                <property name="suffix">
-                 <string> No loop</string>
-                </property>
-                <property name="minimum">
-                 <number>-1</number>
-                </property>
-                <property name="maximum">
-                 <number>65536</number>
-                </property>
-                <property name="value">
-                 <number>-1</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="startNumberEdit">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="frame">
-                 <bool>false</bool>
-                </property>
-                <property name="suffix">
-                 <string/>
-                </property>
-                <property name="minimum">
-                 <number>0</number>
-                </property>
-                <property name="maximum">
-                 <number>999999</number>
-                </property>
-                <property name="value">
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="startNumberButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Start number</string>
-                </property>
-               </widget>
               </item>
              </layout>
             </widget>
@@ -1055,6 +961,34 @@
    </property>
    <property name="shortcut">
     <string>P</string>
+   </property>
+  </action>
+  <action name="actionLoops">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Loops</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the number of loops for the video</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
+   </property>
+  </action>
+  <action name="actionStartNumber">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Sequence start number</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the number of the first frame of the sequence</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
    </property>
   </action>
  </widget>

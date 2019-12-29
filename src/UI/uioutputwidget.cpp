@@ -39,6 +39,10 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockVideoBitrate = addVideoBlock( blockVideoBitrateContent, actionVideoBitrate );
     blockVideoProfileContent = new BlockVideoProfile( _mediaInfo );
     blockVideoProfile = addVideoBlock( blockVideoProfileContent, actionProfile );
+    blockLoopsContent = new BlockLoops( _mediaInfo );
+    blockLoops = addVideoBlock( blockLoopsContent, actionLoops );
+    blockStartNumberContent = new BlockStartNumber( _mediaInfo );
+    blockStartNumber = addVideoBlock( blockStartNumberContent, actionStartNumber );
 
     //TODO connect mediainfo changed to h264 width/height check
     //TODO connect mediainfo changed to blocks availability
@@ -127,8 +131,7 @@ void UIOutputWidget::init()
     blockVideoCodec->hide();
     blockVideoBitrate->hide();
     blockVideoProfile->hide();
-
-    videoLoopsButton->setChecked(false);
+    blockLoops->hide();
 
     //audio
     audioTranscodeButton->setChecked(true);
@@ -188,10 +191,6 @@ void UIOutputWidget::updateMediaInfo()
             }
         }
     }
-    //loop
-    int loop = _mediaInfo->loop();
-    videoLoopsEdit->setValue(loop);
-    if (loop > -1) videoLoopsButton->setChecked(true);
 
     //VIDEO
     if (_mediaInfo->hasVideo())
@@ -227,7 +226,7 @@ void UIOutputWidget::updateMediaInfo()
         int height = _mediaInfo->videoHeight();
         blockResize->setVisible( width != 0 && height != 0 );
         blockFrameRate->setVisible( _mediaInfo->videoFramerate() != 0.0 );
-
+        blockLoops->setVisible( _mediaInfo->loop() != -1 );
 
         unmultButton->setChecked(!_mediaInfo->premultipliedAlpha());
 
@@ -408,50 +407,6 @@ void UIOutputWidget::on_audioCodecsBox_currentIndexChanged()
 {
     FFCodec *_currentAudioCodec = _ffmpeg->audioEncoder(audioCodecsBox->currentData().toString());
     _mediaInfo->setAudioCodec( _currentAudioCodec );
-}
-
-void UIOutputWidget::on_videoLoopsButton_toggled(bool checked)
-{
-    if (checked)
-    {
-        videoLoopsEdit->setValue(0);
-        videoLoopsEdit->setEnabled(true);
-        _mediaInfo->setLoop( 0 );
-    }
-    else
-    {
-        videoLoopsEdit->setValue(-1);
-        videoLoopsEdit->setEnabled(false);
-        _mediaInfo->setLoop( -1 );
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-}
-
-void UIOutputWidget::on_videoLoopsEdit_valueChanged(int arg1)
-{
-    if (arg1 == -1) videoLoopsEdit->setSuffix(" No loop");
-    else if (arg1 == 0) videoLoopsEdit->setSuffix(" Infinite");
-    else videoLoopsEdit->setSuffix(" loops");
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-
-    _mediaInfo->setLoop( arg1 );
-}
-
-void UIOutputWidget::on_startNumberButton_clicked(bool checked)
-{
-    if (checked)
-    {
-        startNumberEdit->setValue(0);
-        startNumberEdit->setEnabled(true);
-        _mediaInfo->setStartNumber( 0 );
-    }
-    else
-    {
-        startNumberEdit->setValue(0);
-        startNumberEdit->setEnabled(false);
-        _mediaInfo->setStartNumber( 0 );
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void UIOutputWidget::on_pixFmtFilterBox_currentIndexChanged()
@@ -776,7 +731,7 @@ void UIOutputWidget::updateAudioVideoOptions()
     blockVideoProfile->hide();
     blockResize->hide();
     blockFrameRate->hide();
-    sequenceWidget->hide();
+    blockStartNumber->hide();
     componentsWidget->hide();
     //AUDIO
     samplingWidget->hide();
@@ -785,13 +740,6 @@ void UIOutputWidget::updateAudioVideoOptions()
     //hide all details
 
     //VIDEO
-
-    //loop
-    videoLoopsButton->hide();
-    videoLoopsEdit->hide();
-    //start number
-    startNumberButton->hide();
-    startNumberEdit->hide();
 
     //unmult
     unmultButton->hide();
@@ -829,10 +777,8 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     //uncheck what is hidden
 
-    if (videoLoopsButton->isHidden()) videoLoopsButton->setChecked(false);
     if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
-    if (startNumberButton->isHidden()) startNumberButton->setChecked(false);
     if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
     if (unmultButton->isHidden()) unmultButton->setChecked(false);
 
@@ -840,7 +786,6 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     //TEMP - Hide all to test blocks
     componentsWidget->hide();
-    sequenceWidget->hide();
 }
 
 void UIOutputWidget::addNewParam(QString name, QString value)
@@ -1106,11 +1051,6 @@ void UIOutputWidget::loadPresets()
 void UIOutputWidget::on_samplingBox_currentIndexChanged(int index)
 {
     _mediaInfo->setAudioSamplingRate( samplingBox->itemData(index, Qt::UserRole).toInt() );
-}
-
-void UIOutputWidget::on_startNumberEdit_valueChanged(int arg1)
-{
-    _mediaInfo->setStartNumber( arg1 );
 }
 
 void UIOutputWidget::on_pixFmtBox_currentIndexChanged(int index)
