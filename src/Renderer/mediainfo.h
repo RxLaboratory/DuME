@@ -73,6 +73,7 @@ public:
     void setStartNumber(int startNumber);
     void setFrames(const QStringList &frames);
     void setPixFormat(FFPixFormat *pixFormat);
+    void setPixFormat(QString name);
     void setPremultipliedAlpha(bool premultipliedAlpha);
     void setTrc(const QString &trc);
     void setAep(bool isAep);
@@ -92,6 +93,7 @@ public:
     double duration();
     QString fileName();
     FFCodec *videoCodec();
+    FFCodec *defaultVideoCodec() const;
     FFCodec *audioCodec();
     FFPixFormat *pixFormat();
     qint64 audioBitrate();

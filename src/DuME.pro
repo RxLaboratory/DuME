@@ -42,6 +42,7 @@ SOURCES += \
     UI/Blocks/blockalpha.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
+    UI/Blocks/blockpixformat.cpp \
     UI/Blocks/blockresize.cpp \
     UI/Blocks/blockstartnumber.cpp \
     UI/Blocks/blockvideobitrate.cpp \
@@ -86,6 +87,7 @@ HEADERS += \
     UI/Blocks/blockalpha.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
+    UI/Blocks/blockpixformat.h \
     UI/Blocks/blockresize.h \
     UI/Blocks/blockstartnumber.h \
     UI/Blocks/blockvideobitrate.h \
@@ -108,6 +110,7 @@ FORMS += \
     UI/Blocks/blockalpha.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
+    UI/Blocks/blockpixformat.ui \
     UI/Blocks/blockresize.ui \
     UI/Blocks/blockstartnumber.ui \
     UI/Blocks/blockvideobitrate.ui \

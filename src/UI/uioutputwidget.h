@@ -15,6 +15,7 @@
 #include "UI/Blocks/blockloops.h"
 #include "UI/Blocks/blockstartnumber.h"
 #include "UI/Blocks/blockalpha.h"
+#include "UI/Blocks/blockpixformat.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -29,7 +30,6 @@ public:
     explicit UIOutputWidget(FFmpeg *ff, int id, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
-    void updateMediaInfo();
     QString getOutputPath();
 
 signals:
@@ -43,7 +43,6 @@ public slots:
     void ffmpeg_init();
     void ffmpeg_loadCodecs();
     void ffmpeg_loadMuxers();
-    void ffmpeg_loadPixFmts(bool init = false);
     void newInputMedia(MediaInfo *input);
     void loadPresets();
 
@@ -62,11 +61,8 @@ private slots:
     void on_presetsFilterBox_activated();
     //TODO some code to move here
     //void on_videoCodecsBox_currentIndexChanged();
-    void on_pixFmtButton_toggled(bool checked);
     void on_audioCodecsBox_currentIndexChanged();
-    void on_pixFmtFilterBox_currentIndexChanged();
     void on_samplingBox_currentIndexChanged(int index);
-    void on_pixFmtBox_currentIndexChanged(int index);
     void on_audioBitRateEdit_valueChanged(int arg1);
 
 private:
@@ -88,14 +84,14 @@ private:
     BlockStartNumber *blockStartNumberContent;
     UIBlockWidget *blockAlpha;
     BlockAlpha *blockAlphaContent;
+    UIBlockWidget *blockPixFormat;
+    BlockPixFormat *blockPixFormatContent;
 
     // MENUS
     QMenu *videoMenu;
 
     void updateOutputExtension(QString outputPath);
-    void selectDefaultVideoCodec();
     void selectDefaultAudioCodec();
-    void selectDefaultPixFmt();
     void updateAudioVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();

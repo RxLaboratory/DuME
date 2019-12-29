@@ -45,6 +45,10 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockStartNumber = addVideoBlock( blockStartNumberContent, actionStartNumber );
     blockAlphaContent = new BlockAlpha( _mediaInfo );
     blockAlpha = addVideoBlock( blockAlphaContent, actionAlpha );
+    blockPixFormatContent = new BlockPixFormat( _mediaInfo );
+    blockPixFormat = addVideoBlock( blockPixFormatContent, actionPixelFormat );
+
+    videoLayout->addStretch();
 
     //TODO connect mediainfo changed to h264 width/height check
     //TODO connect mediainfo changed to blocks availability
@@ -169,129 +173,7 @@ void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
-    delete _mediaInfo;
-    _mediaInfo = mediaInfo;
-    mediaInfo->setParent(this);
-
-    updateMediaInfo();
-}
-
-void UIOutputWidget::updateMediaInfo()
-{
-    init();
-
-    //MUXER
-    FFMuxer *muxer = _mediaInfo->muxer();
-    if (muxer != nullptr)
-    {
-        for (int i = 0;i < formatsBox->count() ; i++)
-        {
-            if (formatsBox->itemData(i).toString() == muxer->name())
-            {
-                formatsBox->setCurrentIndex(i);
-                break;
-            }
-        }
-    }
-
-    //VIDEO
-    if (_mediaInfo->hasVideo())
-    {
-        FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
-        if (_currentVideoCodec != nullptr)
-        {
-            if (_currentVideoCodec->name() == "copy") videoCopyButton->setChecked(true);
-            else
-            {
-                videoTranscodeButton->setChecked(true);
-                //set pixFmt
-                FFPixFormat *pf = _mediaInfo->pixFormat();
-                if (pf != nullptr)
-                {
-                    pixFmtButton->setChecked(true);
-                    for(int i = 0 ; i  < pixFmtBox->count() ; i++)
-                    {
-                        if (pixFmtBox->itemData(i).toString() == pf->name())
-                        {
-                            pixFmtBox->setCurrentIndex(i);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        blockVideoCodec->setVisible( _mediaInfo->videoCodec() != nullptr );
-        blockVideoBitrate->setVisible( _mediaInfo->videoBitrate() != 0.0 );
-        blockVideoProfile->setVisible( _mediaInfo->videoProfile() != -1 );
-        int width = _mediaInfo->videoWidth();
-        int height = _mediaInfo->videoHeight();
-        blockResize->setVisible( width != 0 && height != 0 );
-        blockFrameRate->setVisible( _mediaInfo->videoFramerate() != 0.0 );
-        blockLoops->setVisible( _mediaInfo->loop() != -1 );
-
-    }
-    else
-    {
-        noVideoButton->setChecked(true);
-    }
-
-
-    //AUDIO
-    if (_mediaInfo->hasAudio())
-    {
-        FFCodec *_currentAudioCodec = _mediaInfo->audioCodec();
-        if (_currentAudioCodec != nullptr)
-        {
-            if (_currentAudioCodec->name() == "copy") audioCopyButton->setChecked(true);
-            else
-            {
-                audioTranscodeButton->setChecked(true);
-                audioCodecButton->setChecked(true);
-                for(int i = 0 ; i  < audioCodecsBox->count() ; i++)
-                {
-                    if (audioCodecsBox->itemData(i).toString() == _currentAudioCodec->name())
-                    {
-                        audioCodecsBox->setCurrentIndex(i);
-                        break;
-                    }
-                }
-            }
-        }
-        int sampling = _mediaInfo->audioSamplingRate();
-        if (sampling != 0)
-        {
-            samplingButton->setChecked(true);
-            for(int i = 0 ; i < samplingBox->count() ; i++)
-            {
-                if (samplingBox->itemData(i).toInt() == sampling)
-                {
-                    samplingBox->setCurrentIndex(i);
-                    break;
-                }
-            }
-        }
-        qint64 bitrate = _mediaInfo->audioBitrate( );
-        if (bitrate != 0)
-        {
-            audioBitrateButton->setChecked(true);
-            audioBitRateEdit->setValue(bitrate/1024);
-        }
-    }
-    else
-    {
-        noAudioButton->setChecked(true);
-    }
-
-
-    //CUSTOM
-    foreach (QStringList option , _mediaInfo->ffmpegOptions())
-    {
-        QString name = option[0];
-        QString value = "";
-        if (option.count() > 0) value = option[1];
-        addNewParam(name,value);
-    }
+    //TODO copy mediaInfo to the current one
 }
 
 QString UIOutputWidget::getOutputPath()
@@ -409,11 +291,6 @@ void UIOutputWidget::on_audioCodecsBox_currentIndexChanged()
     _mediaInfo->setAudioCodec( _currentAudioCodec );
 }
 
-void UIOutputWidget::on_pixFmtFilterBox_currentIndexChanged()
-{
-    ffmpeg_loadPixFmts();
-}
-
 void UIOutputWidget::on_audioCodecsFilterBox_currentIndexChanged()
 {
     ffmpeg_loadCodecs();
@@ -479,24 +356,6 @@ void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
 void UIOutputWidget::on_formatsFilterBox_currentIndexChanged()
 {
     ffmpeg_loadMuxers();
-}
-
-void UIOutputWidget::on_pixFmtButton_toggled(bool checked)
-{
-    if (checked)
-    {
-        pixFmtFilterBox->setItemText(0,"All bit depths");
-        pixFmtWidget->setEnabled(true);
-        _mediaInfo->setPixFormat( _ffmpeg->pixFormat( pixFmtBox->currentData(Qt::UserRole).toString() ));
-    }
-    else
-    {
-        pixFmtFilterBox->setCurrentIndex(0);
-        ffmpeg_loadPixFmts();
-        pixFmtFilterBox->setItemText(0,"Default");
-        pixFmtWidget->setEnabled(false);
-        _mediaInfo->setPixFormat( nullptr );
-    }
 }
 
 void UIOutputWidget::on_audioCodecButton_toggled(bool checked)
@@ -582,7 +441,6 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
         _freezeUI = false;
         //load
         _mediaInfo->loadPreset(openFileName);
-        updateMediaInfo();
         _loadingPreset = false;
     }
     //load preset
@@ -596,7 +454,6 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
         audioCodecsFilterBox->setCurrentIndex(0);
 
         _mediaInfo->loadPreset(presetsBox->currentData().toString());
-        updateMediaInfo();
 
         _loadingPreset = false;
     }
@@ -671,42 +528,6 @@ void UIOutputWidget::selectDefaultAudioCodec()
     }
 }
 
-void UIOutputWidget::selectDefaultPixFmt()
-{
-    FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
-    if (_currentVideoCodec == nullptr) return;
-
-    FFPixFormat *pixFmt = _currentVideoCodec->defaultPixFormat();
-
-    //Select Default Pix Format
-
-    bool ok = false;
-    if (pixFmt != nullptr)
-    {
-        for (int i = 0; i < pixFmtBox->count() ; i++)
-        {
-            if (pixFmtBox->itemData(i).toString() == pixFmt->name())
-            {
-                pixFmtBox->setCurrentIndex(i);
-                ok = true;
-                break;
-            }
-        }
-        if (!ok)
-        {
-            int bpc = pixFmt->bitsPerComponent();
-            for (int i = 0; i < pixFmtBox->count() ; i++)
-            {
-                if (pixFmtBox->itemText(i).indexOf("@" + QString::number(bpc) + "bpc") > 0)
-                {
-                    pixFmtBox->setCurrentIndex(i);
-                    break;
-                }
-            }
-        }
-    }
-}
-
 void UIOutputWidget::updateAudioVideoOptions()
 {
     //VIDEO
@@ -716,7 +537,7 @@ void UIOutputWidget::updateAudioVideoOptions()
     blockResize->hide();
     blockFrameRate->hide();
     blockStartNumber->hide();
-    componentsWidget->hide();
+    blockPixFormat->hide();
     //AUDIO
     samplingWidget->hide();
     mainAudioCodecWidget->hide();
@@ -732,11 +553,6 @@ void UIOutputWidget::updateAudioVideoOptions()
     //bitrate
     audioBitrateButton->hide();
     audioBitRateEdit->hide();
-
-    if (videoTranscodeButton->isChecked())
-    {
-        componentsWidget->show();
-    }
 
     if (audioTranscodeButton->isChecked())
     {
@@ -760,11 +576,7 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
-    if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
 
-
-    //TEMP - Hide all to test blocks
-    componentsWidget->hide();
 }
 
 void UIOutputWidget::addNewParam(QString name, QString value)
@@ -853,72 +665,6 @@ void UIOutputWidget::ffmpeg_loadMuxers()
     }
     _freezeUI = false;
     on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
-}
-
-void UIOutputWidget::ffmpeg_loadPixFmts(bool init)
-{
-    _freezeUI = true;
-
-    //get pixFmts
-    pixFmtBox->clear();
-    FFCodec *_currentVideoCodec = _mediaInfo->videoCodec();
-    if (_currentVideoCodec == nullptr)
-    {
-        _freezeUI = false;
-        return;
-    }
-    QList<FFPixFormat *> pixFmts = _currentVideoCodec->pixFormats();
-    if (pixFmts.count() == 0)
-    {
-        _freezeUI = false;
-        return;
-    }
-
-    QStringList filters = QStringList();
-
-    foreach (FFPixFormat *pixFmt, pixFmts)
-    {
-
-        QString filter = QString::number(pixFmt->bitsPerPixel()) + "bits (" + QString::number(pixFmt->numComponents()) + " channels @" + QString::number(pixFmt->bitsPerComponent()) + "bpc)" ;
-        bool addToList = pixFmt->prettyName().indexOf(pixFmtFilterBox->currentText()) > 0 || pixFmtFilterBox->currentIndex() == 0;
-
-        //check if there is alpha
-        /*if (alphaButton->isVisible())
-        {
-            if (pixFmt->hasAlpha() && alphaButton->isChecked())
-            {
-                //add pix fmt in list
-                if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
-                if (!filters.contains(filter)) filters << filter;
-            }
-            else if (!pixFmt->hasAlpha() && !alphaButton->isChecked())
-            {
-                //add pix fmt in list
-                if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
-                if (!filters.contains(filter)) filters << filter;
-            }
-        }
-        else
-        {
-            if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
-            if (!filters.contains(filter)) filters << filter;
-        }*/
-    }
-
-    if (init)
-    {
-        filters.sort();
-        //remove old
-        pixFmtFilterBox->clear();
-        pixFmtFilterBox->addItem("All bit depths",QVariant(0));
-        foreach(QString filter,filters)
-        {
-            pixFmtFilterBox->addItem(filter);
-        }
-    }
-
-    selectDefaultPixFmt();
-    _freezeUI = false;
 }
 
 void UIOutputWidget::newInputMedia(MediaInfo *input)
@@ -1029,11 +775,6 @@ void UIOutputWidget::loadPresets()
 void UIOutputWidget::on_samplingBox_currentIndexChanged(int index)
 {
     _mediaInfo->setAudioSamplingRate( samplingBox->itemData(index, Qt::UserRole).toInt() );
-}
-
-void UIOutputWidget::on_pixFmtBox_currentIndexChanged(int index)
-{
-    _mediaInfo->setPixFormat( _ffmpeg->pixFormat( pixFmtBox->itemData(index, Qt::UserRole).toString()) );
 }
 
 void UIOutputWidget::on_audioBitRateEdit_valueChanged(int arg1)

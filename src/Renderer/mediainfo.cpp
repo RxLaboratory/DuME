@@ -310,8 +310,7 @@ void MediaInfo::setVideoCodec(FFCodec *codec)
 
 void MediaInfo::setVideoCodec(QString codecName)
 {
-    if (codecName == "") _videoCodec = nullptr;
-    else _videoCodec = _ffmpeg->videoEncoder( codecName );
+    setVideoCodec( _ffmpeg->videoEncoder( codecName ) );
 }
 
 void MediaInfo::setAudioCodec(FFCodec *codec)
@@ -434,6 +433,12 @@ QString MediaInfo::fileName()
 FFCodec *MediaInfo::videoCodec()
 {
     return _videoCodec;
+}
+
+FFCodec *MediaInfo::defaultVideoCodec() const
+{
+    if (_muxer != nullptr) return _muxer->defaultVideoCodec();
+    return nullptr;
 }
 
 FFCodec *MediaInfo::audioCodec()
@@ -618,7 +623,7 @@ bool MediaInfo::hasAlpha() const
     if (_pixFormat != nullptr) return _pixFormat->hasAlpha();
 
     FFCodec *vc = _videoCodec;
-    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) vc = defaultVideoCodec();
     if (vc == nullptr) return false;
 
     FFPixFormat *pf = vc->defaultPixFormat();
@@ -719,7 +724,7 @@ void MediaInfo::setAlpha(bool alpha)
             }
         }
     }
-qDebug() << alpha;
+
     emit changed();
 }
 
@@ -843,9 +848,20 @@ FFPixFormat *MediaInfo::pixFormat()
 
 void MediaInfo::setPixFormat(FFPixFormat *pixFormat)
 {
+    bool alpha = hasAlpha();
     _pixFormat = pixFormat;
+    if (_pixFormat == nullptr)
+    {
+        setAlpha(alpha);
+    }
     emit changed();
 }
+
+void MediaInfo::setPixFormat(QString name)
+{
+    setPixFormat( _ffmpeg->pixFormat(name) );
+}
+
 
 QStringList MediaInfo::frames() const
 {

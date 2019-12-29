@@ -42,9 +42,7 @@ void BlockVideoCodec::listCodecs()
 
 void BlockVideoCodec::setCodec(QString name)
 {
-    _freezeUI = true;
-
-    if ( name == "" ) selectDefaultVideoCodec();
+    if ( name == "" ) setDefaultVideoCodec();
 
     for (int v = 0; v < videoCodecsBox->count() ; v++)
     {
@@ -66,19 +64,13 @@ void BlockVideoCodec::setCodec(QString name)
             return;
         }
     }
-
-    _freezeUI = false;
 }
 
-void BlockVideoCodec::selectDefaultVideoCodec()
+void BlockVideoCodec::setDefaultVideoCodec()
 {
     _freezeUI = true;
 
-    FFMuxer *_currentMuxer = _mediaInfo->muxer();
-
-    if ( _currentMuxer == nullptr ) return;
-
-    FFCodec *videoCodec = _ffmpeg->muxerDefaultCodec(_currentMuxer, FFCodec::Video);
+    FFCodec *videoCodec = _mediaInfo->defaultVideoCodec();
 
     //Select Default Codec
 
@@ -104,13 +96,11 @@ void BlockVideoCodec::setActivated(bool activate)
 
 void BlockVideoCodec::update()
 {
-    listCodecs();
-
     // set codec
     FFCodec *c = _mediaInfo->videoCodec();
     if (c == nullptr)
     {
-        selectDefaultVideoCodec();
+        setDefaultVideoCodec();
         return;
     }
     else
