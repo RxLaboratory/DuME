@@ -20,6 +20,9 @@ public:
                  };
     Q_DECLARE_FLAGS(Abilities, Ability)
 
+    enum ColorSpace { RGB, YUV, Other };
+    Q_ENUM( ColorSpace )
+
     /**
      * @brief FFPixFormat Constructs a pixFormat instance for FFmpeg
      * @param name The internal name used by FFmpeg
@@ -34,7 +37,6 @@ public:
      * @param abilities The abilities of the pixFmt
      */
     FFPixFormat(QString name, QString prettyName, int numComponents, int bitsPerPixel, Abilities abilities, QObject *parent = nullptr);
-
 
     void setAbilities(Abilities &abilities);
 
@@ -52,9 +54,7 @@ public:
     int numComponents() const;
     int bitsPerComponent() const;
     bool hasAlpha() const;
-
-
-
+    ColorSpace colorSpace() const;
 
 private:
     Abilities _abilities;
@@ -62,6 +62,7 @@ private:
     int _bitsPerPixel;
     int _bitsPerComponent;
     bool _hasAlpha;
+    ColorSpace _colorSpace;
 
 };
 

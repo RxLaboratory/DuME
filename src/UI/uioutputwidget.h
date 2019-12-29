@@ -14,6 +14,7 @@
 #include "UI/Blocks/blockvideoprofile.h"
 #include "UI/Blocks/blockloops.h"
 #include "UI/Blocks/blockstartnumber.h"
+#include "UI/Blocks/blockalpha.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -64,11 +65,9 @@ private slots:
     void on_pixFmtButton_toggled(bool checked);
     void on_audioCodecsBox_currentIndexChanged();
     void on_pixFmtFilterBox_currentIndexChanged();
-    void on_alphaButton_toggled(bool checked);
     void on_samplingBox_currentIndexChanged(int index);
     void on_pixFmtBox_currentIndexChanged(int index);
     void on_audioBitRateEdit_valueChanged(int arg1);
-    void on_unmultButton_toggled(bool checked);
 
 private:
     // BLOCKS
@@ -87,6 +86,8 @@ private:
     BlockLoops *blockLoopsContent;
     UIBlockWidget *blockStartNumber;
     BlockStartNumber *blockStartNumberContent;
+    UIBlockWidget *blockAlpha;
+    BlockAlpha *blockAlphaContent;
 
     // MENUS
     QMenu *videoMenu;

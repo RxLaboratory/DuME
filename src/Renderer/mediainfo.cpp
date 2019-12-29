@@ -613,6 +613,116 @@ void MediaInfo::exportPreset(QString jsonPath)
     }
 }
 
+bool MediaInfo::hasAlpha() const
+{
+    if (_pixFormat != nullptr) return _pixFormat->hasAlpha();
+
+    FFCodec *vc = _videoCodec;
+    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) return false;
+
+    FFPixFormat *pf = vc->defaultPixFormat();
+    if (pf != nullptr) return pf->hasAlpha();
+
+    return false;
+}
+
+bool MediaInfo::canHaveAlpha() const
+{
+    FFCodec *vc = _videoCodec;
+    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) return false;
+
+    foreach (FFPixFormat *pf, vc->pixFormats())
+    {
+        if (pf->hasAlpha()) return true;
+    }
+    return false;
+}
+
+void MediaInfo::setAlpha(bool alpha)
+{
+    //select a pixfmt which has an alpha, the closest to the current one (or default)
+    FFPixFormat *pf = _pixFormat;
+    FFCodec *vc = _videoCodec;
+    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) return;
+
+    if ( pf == nullptr ) pf = vc->defaultPixFormat();
+    if ( pf == nullptr && vc->pixFormats().count() > 0) pf = vc->pixFormats()[0];
+    if ( pf == nullptr ) return;
+    if ( pf->hasAlpha() != alpha )
+    {
+        //find the closest one with(out) alpha
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                                if( p->bitsPerComponent() == pf->bitsPerComponent() )
+                                {
+                                    _pixFormat = p;
+                                    break;
+                                }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                            {
+                                _pixFormat = p;
+                                break;
+                            }
+
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                        {
+                            _pixFormat = p;
+                            break;
+                        }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                    {
+                        _pixFormat = p;
+                        break;
+                    }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                {
+                    _pixFormat = p;
+                    break;
+                }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+            {
+                _pixFormat = p;
+                break;
+            }
+        }
+    }
+qDebug() << alpha;
+    emit changed();
+}
+
 QString MediaInfo::audioChannels() const
 {
     return _audioChannels;

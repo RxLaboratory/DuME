@@ -43,6 +43,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockLoops = addVideoBlock( blockLoopsContent, actionLoops );
     blockStartNumberContent = new BlockStartNumber( _mediaInfo );
     blockStartNumber = addVideoBlock( blockStartNumberContent, actionStartNumber );
+    blockAlphaContent = new BlockAlpha( _mediaInfo );
+    blockAlpha = addVideoBlock( blockAlphaContent, actionAlpha );
 
     //TODO connect mediainfo changed to h264 width/height check
     //TODO connect mediainfo changed to blocks availability
@@ -227,8 +229,6 @@ void UIOutputWidget::updateMediaInfo()
         blockResize->setVisible( width != 0 && height != 0 );
         blockFrameRate->setVisible( _mediaInfo->videoFramerate() != 0.0 );
         blockLoops->setVisible( _mediaInfo->loop() != -1 );
-
-        unmultButton->setChecked(!_mediaInfo->premultipliedAlpha());
 
     }
     else
@@ -609,22 +609,6 @@ void UIOutputWidget::on_presetsFilterBox_activated()
     loadPresets( );
 }
 
-void UIOutputWidget::on_alphaButton_toggled(bool checked)
-{
-    ffmpeg_loadPixFmts(true);
-    // TODO move unmult option to the input? What if multiple inputs?
-    /*if (_inputHasAlpha && checked)
-    {
-        unmultButton->show();
-        _mediaInfo->setPremultipliedAlpha( !unmultButton->isChecked() );
-    }
-    else
-    {
-        unmultButton->hide();
-        _mediaInfo->setPremultipliedAlpha( true );
-    }*/
-}
-
 void UIOutputWidget::updateOutputExtension(QString outputPath)
 {
     if (outputPath == "") return;
@@ -741,9 +725,6 @@ void UIOutputWidget::updateAudioVideoOptions()
 
     //VIDEO
 
-    //unmult
-    unmultButton->hide();
-
     //AUDIO
     //codec
     audioCodecButton->hide();
@@ -780,8 +761,6 @@ void UIOutputWidget::updateAudioVideoOptions()
     if (audioCodecButton->isHidden()) audioCodecButton->setChecked(false);
     if (audioBitrateButton->isHidden()) audioBitrateButton->setChecked(false);
     if (pixFmtButton->isHidden()) pixFmtButton->setChecked(false);
-    if (unmultButton->isHidden()) unmultButton->setChecked(false);
-
 
 
     //TEMP - Hide all to test blocks
@@ -904,7 +883,7 @@ void UIOutputWidget::ffmpeg_loadPixFmts(bool init)
         bool addToList = pixFmt->prettyName().indexOf(pixFmtFilterBox->currentText()) > 0 || pixFmtFilterBox->currentIndex() == 0;
 
         //check if there is alpha
-        if (alphaButton->isVisible())
+        /*if (alphaButton->isVisible())
         {
             if (pixFmt->hasAlpha() && alphaButton->isChecked())
             {
@@ -923,7 +902,7 @@ void UIOutputWidget::ffmpeg_loadPixFmts(bool init)
         {
             if (addToList) pixFmtBox->addItem(pixFmt->prettyName(),QVariant(pixFmt->name()));
             if (!filters.contains(filter)) filters << filter;
-        }
+        }*/
     }
 
     if (init)
@@ -957,6 +936,28 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     }
     if (blockFrameRate->isHidden()) blockFrameRateContent->setFrameRate( input->videoFramerate() );
 
+    if (input->pixFormat() != nullptr)
+    {
+        if (input->pixFormat()->hasAlpha())
+        {
+            actionAlpha->setEnabled( true );
+        }
+        else
+        {
+            actionAlpha->setEnabled( false );
+            blockAlpha->hide();
+        }
+    }
+    else
+    {
+        actionAlpha->setEnabled( true );
+    }
+
+    if (input->isAep())
+    {
+        actionAlpha->setEnabled( true );
+    }
+
     if (!samplingButton->isChecked())
     {
         int sampling = input->audioSamplingRate();
@@ -969,29 +970,6 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
         else if (sampling == 48000) samplingBox->setCurrentIndex(6);
         else if (sampling == 88200) samplingBox->setCurrentIndex(7);
         else if (sampling == 96000) samplingBox->setCurrentIndex(8);
-    }
-
-    if (input->pixFormat() != nullptr)
-    {
-        if (input->pixFormat()->hasAlpha())
-        {
-            if (alphaButton->isChecked()) unmultButton->show();
-            else unmultButton->hide();
-        }
-        else
-        {
-            unmultButton->hide();
-        }
-    }
-    else
-    {
-        unmultButton->hide();
-    }
-
-    if (input->isAep())
-    {
-        if (alphaButton->isChecked()) unmultButton->show();
-        else unmultButton->hide();
     }
 
     //If ae render queue
@@ -1061,11 +1039,6 @@ void UIOutputWidget::on_pixFmtBox_currentIndexChanged(int index)
 void UIOutputWidget::on_audioBitRateEdit_valueChanged(int arg1)
 {
     _mediaInfo->setAudioBitrate( MediaUtils::convertToBps( arg1, MediaUtils::kbps ) );
-}
-
-void UIOutputWidget::on_unmultButton_toggled(bool checked)
-{
-    _mediaInfo->setPremultipliedAlpha( !checked );
 }
 
 UIBlockWidget *UIOutputWidget::addVideoBlock(UIBlockContent *content, QAction *action )

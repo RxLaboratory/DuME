@@ -39,6 +39,7 @@ SOURCES += \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
+    UI/Blocks/blockalpha.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
     UI/Blocks/blockresize.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
+    UI/Blocks/blockalpha.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
     UI/Blocks/blockresize.h \
@@ -103,6 +105,7 @@ HEADERS += \
     UI/uitoolbarspacer.h
 
 FORMS += \
+    UI/Blocks/blockalpha.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
     UI/Blocks/blockresize.ui \

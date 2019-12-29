@@ -81,6 +81,7 @@ public:
     void setAepRqindex(int aepRqindex);
     void setCacheDir(QTemporaryDir *cacheDir);
     void setAeUseRQueue(bool aeUseRQueue);
+    void setAlpha(bool alpha);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -118,10 +119,12 @@ public:
     qint64 bitrate() const;
     float pixAspect() const;
     float videoAspect() const;
+    bool hasAlpha() const;
+    bool canHaveAlpha() const;
 
     //utils
     QString exportPreset();
-    void exportPreset(QString jsonPath); 
+    void exportPreset(QString jsonPath);  
 
 signals:
     /**
