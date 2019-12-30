@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -36,97 +36,101 @@
     <number>5</number>
    </property>
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="horizontalSpacing">
-      <number>3</number>
+    <widget class="QSpinBox" name="videoWidthButton">
+     <property name="frame">
+      <bool>false</bool>
      </property>
-     <property name="verticalSpacing">
-      <number>3</number>
+     <property name="suffix">
+      <string> px</string>
      </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="widthLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QSpinBox" name="videoWidthButton">
-       <property name="frame">
-        <bool>false</bool>
-       </property>
-       <property name="suffix">
-        <string> px</string>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>10000</number>
-       </property>
-       <property name="value">
-        <number>1920</number>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="heightLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Height</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QSpinBox" name="videoHeightButton">
-       <property name="frame">
-        <bool>false</bool>
-       </property>
-       <property name="suffix">
-        <string> px</string>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>10000</number>
-       </property>
-       <property name="value">
-        <number>1080</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="lockButton">
-     <property name="text">
-      <string>Lock Ratio</string>
+     <property name="prefix">
+      <string>Width: </string>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>1920</number>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="aspectRatioLabel">
-     <property name="enabled">
+    <widget class="QSpinBox" name="videoHeightButton">
+     <property name="frame">
       <bool>false</bool>
      </property>
-     <property name="text">
-      <string>1.78:1</string>
+     <property name="suffix">
+      <string> px</string>
+     </property>
+     <property name="prefix">
+      <string>Height: </string>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>1080</number>
      </property>
     </widget>
    </item>
   </layout>
+  <action name="actionHD1080">
+   <property name="text">
+    <string>HD ( 1080p )</string>
+   </property>
+  </action>
+  <action name="actionHD720">
+   <property name="text">
+    <string>HD ( 720p )</string>
+   </property>
+  </action>
+  <action name="actionKeepRatio">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Keep ratio</string>
+   </property>
+  </action>
+  <action name="action2KFlat">
+   <property name="text">
+    <string>2K Flat ( 1998x1080 )</string>
+   </property>
+  </action>
+  <action name="action2KScope">
+   <property name="text">
+    <string>2K Scope ( 2048x858 ) </string>
+   </property>
+  </action>
+  <action name="action4KFlat">
+   <property name="text">
+    <string>4K Flat ( 3996x2160 )</string>
+   </property>
+  </action>
+  <action name="action4KScope">
+   <property name="text">
+    <string>4K Scope ( 4096x1716 )</string>
+   </property>
+  </action>
+  <action name="actionDSM4K">
+   <property name="text">
+    <string>DSM 4K ( 4096x2160 )</string>
+   </property>
+  </action>
+  <action name="actionDSM2K">
+   <property name="text">
+    <string>DSM 2K ( 2048x1080 )</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

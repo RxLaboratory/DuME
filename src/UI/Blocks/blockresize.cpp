@@ -4,6 +4,17 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     UIBlockContent(mediaInfo, parent)
 {
     setupUi(this);
+
+    _presets->addAction( actionKeepRatio );
+    _presets->addSeparator();
+    _presets->addAction( actionHD720 );
+    _presets->addAction( actionHD1080 );
+    _presets->addAction( action2KFlat );
+    _presets->addAction( action2KScope );
+    _presets->addAction( actionDSM2K );
+    _presets->addAction( action4KFlat );
+    _presets->addAction( action4KScope );
+    _presets->addAction( actionDSM4K );
 }
 
 void BlockResize::setActivated(bool activate)
@@ -26,7 +37,6 @@ void BlockResize::update()
     int h = _mediaInfo->videoHeight();
     if (w > 0) videoWidthButton->setValue( w );
     if (h > 0) videoHeightButton->setValue( h );
-    aspectRatio();
     checkSizes( );
 }
 
@@ -34,7 +44,6 @@ void BlockResize::setWidth(int w)
 {
     _freezeUI = true;
     videoWidthButton->setValue( w );
-    aspectRatio();
     checkSizes( );
     _freezeUI = false;
 }
@@ -43,41 +52,54 @@ void BlockResize::setHeight(int h)
 {
     _freezeUI = true;
     videoHeightButton->setValue( h );
-    aspectRatio();
     checkSizes( );
     _freezeUI = false;
 }
 
-void BlockResize::aspectRatio()
+QString BlockResize::aspectRatio()
 {
     double width = videoWidthButton->value();
     double height = videoHeightButton->value();
-    double ratio =  width / height;
+    _currentRatio =  width / height;
     //round it to 3 digits
-    int roundedRatio = int(ratio*100+0.5);
-    ratio = roundedRatio;
+    int roundedRatio = int(_currentRatio*100+0.5);
+    float ratio = roundedRatio;
     ratio = ratio/100;
-    aspectRatioLabel->setText(QString::number(ratio) + ":1");
+    return QString::number(ratio) + ":1";
 }
 
-void BlockResize::on_videoWidthButton_valueChanged(int arg1)
+void BlockResize::on_videoWidthButton_editingFinished( )
 {
     if (_freezeUI) return;
-    _mediaInfo->setVideoWidth( arg1 );
-    checkSizes( );
+    double w = videoWidthButton->value();
+    double h = videoHeightButton->value();
+    if ( actionKeepRatio->isChecked() )
+    {
+        h = w / _currentRatio;
+    }
+    _mediaInfo->setVideoWidth( w );
+    _mediaInfo->setVideoHeight( h );
 }
 
-void BlockResize::on_videoHeightButton_valueChanged(int arg1)
+void BlockResize::on_videoHeightButton_editingFinished()
 {
     if (_freezeUI) return;
-    _mediaInfo->setVideoHeight( arg1 );
-    checkSizes( );
+    double h = videoHeightButton->value();
+    double w = videoWidthButton->value();
+    if ( actionKeepRatio->isChecked() )
+    {
+        w = h * _currentRatio;
+    }
+    _mediaInfo->setVideoWidth( w );
+    _mediaInfo->setVideoHeight( h );
 }
 
 void BlockResize::checkSizes( )
 {
     int w = videoWidthButton->value();
     int h = videoHeightButton->value();
+    emit status( aspectRatio() );
+
     if ( h % 2 != 0 || w % 2 != 0 )
     {
         FFCodec *c = _mediaInfo->videoCodec();
@@ -88,8 +110,69 @@ void BlockResize::checkSizes( )
             emit status("h264 needs even numbers.");
         }
     }
-    else
-    {
-        emit status( ""  );
-    }
 }
+
+void BlockResize::setSize( int w, int h)
+{
+    if ( actionKeepRatio->isChecked() )
+    {
+        double wi = w;
+        double he = h;
+        double ratio = wi / he;
+
+        if ( _currentRatio > ratio )
+        {
+            h = wi / _currentRatio ;
+        }
+        else
+        {
+            w = he * _currentRatio ;
+        }
+    }
+
+    _mediaInfo->setVideoWidth( w );
+    _mediaInfo->setVideoHeight( h );
+}
+
+void BlockResize::on_actionHD720_triggered()
+{
+    setSize( 1280, 720 );
+}
+
+void BlockResize::on_actionHD1080_triggered()
+{
+    setSize( 1920, 1080 );
+}
+
+void BlockResize::on_action2KFlat_triggered()
+{
+    setSize( 1998, 1080 );
+}
+
+void BlockResize::on_action2KScope_triggered()
+{
+    setSize( 2048, 858 );
+}
+
+void BlockResize::on_actionDSM2K_triggered()
+{
+    setSize( 2048, 1080 );
+}
+
+void BlockResize::on_action4KFlat_triggered()
+{
+    setSize( 3996, 2160 );
+}
+
+void BlockResize::on_action4KScope_triggered()
+{
+    setSize( 4096, 1716 );
+}
+
+void BlockResize::on_actionDSM4K_triggered()
+{
+    setSize( 4096, 2160 );
+}
+
+
+

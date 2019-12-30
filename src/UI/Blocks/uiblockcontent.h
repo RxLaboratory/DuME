@@ -2,6 +2,7 @@
 #define UIBLOCKCONTENT_H
 
 #include <QWidget>
+#include <QMenu>
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
@@ -23,6 +24,7 @@ class UIBlockContent : public QWidget
     Q_OBJECT
 public:
     explicit UIBlockContent(MediaInfo *mediaInfo, QWidget *parent = nullptr);
+    QMenu* getPresets() const;
 
 public slots:
     // reimplement this in the blocks to update the MediaInfo when (de)activated
@@ -36,6 +38,7 @@ signals:
 protected:
     MediaInfo *_mediaInfo;
     bool _freezeUI;
+    QMenu *_presets;
 
 private slots:
     void changed();

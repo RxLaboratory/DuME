@@ -11,6 +11,9 @@ UIBlockWidget::UIBlockWidget(QString title, UIBlockContent *content,QWidget *par
     _content = content;
     _content->setParent(this);
     mainLayout->addWidget(_content);
+    QMenu *presets = _content->getPresets();
+    if (presets->actions().count() > 0) presetsButton->setMenu(presets);
+    else presetsButton->hide();
 
     connect(content, SIGNAL(status(QString)), this, SLOT(setStatus(QString)) );
 
