@@ -323,8 +323,8 @@ void MediaInfo::setAudioCodec(FFCodec *codec)
 
 void MediaInfo::setAudioCodec(QString codecName)
 {
-    if (codecName == "") _videoCodec = nullptr;
-    else _videoCodec = _ffmpeg->audioEncoder( codecName );
+    if (codecName == "") _audioCodec = nullptr;
+    else _audioCodec = _ffmpeg->audioEncoder( codecName );
 }
 
 void MediaInfo::setVideoBitrate(qint64 bitrate)
