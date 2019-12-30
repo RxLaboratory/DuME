@@ -13,11 +13,8 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="horizontalSpacing">
-    <number>3</number>
-   </property>
-   <property name="verticalSpacing">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
     <number>3</number>
    </property>
    <property name="leftMargin">
@@ -32,24 +29,8 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QCheckBox" name="frameRateButton">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Frame rate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
+   <item>
     <widget class="QComboBox" name="frameRateBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -129,11 +110,8 @@
      </item>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item>
     <widget class="QDoubleSpinBox" name="frameRateEdit">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
      <property name="frame">
       <bool>false</bool>
      </property>

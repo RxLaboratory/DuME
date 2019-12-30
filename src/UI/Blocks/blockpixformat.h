@@ -17,9 +17,12 @@ private slots:
     void on_pixFmtFilterBox_currentIndexChanged(int index);
     void on_pixFmtBox_currentIndexChanged(int index);
 private:
-    void listPixFormats(bool init = false);
+    void listPixFormats();
+    void filterPixFormats();
     void setDefaultPixFormat();
-    void setPixFormat(QString name);
+    void setPixFormat(QString name,  bool tryWithoutFilter = true );
+    QList<FFPixFormat *> _pixFormats;
+    void setFilter(QString name);
 };
 
 #endif // BLOCKPIXFORMAT_H

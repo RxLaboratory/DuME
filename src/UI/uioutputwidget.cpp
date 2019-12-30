@@ -57,6 +57,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockSampling = addBlock( blockSamplingContent, actionSampling );
     blockAudioCodecContent = new BlockAudioCodec( _ffmpeg, _mediaInfo );
     blockAudioCodec = addBlock( blockAudioCodecContent, actionAudioCodec );
+    blockAudioBitrateContent = new BlockAudioBitrate( _mediaInfo );
+    blockAudioBitrate = addBlock( blockAudioBitrateContent, actionAudioBitrate );
 
     //TODO connect mediainfo changed to h264 width/height check
     //TODO connect mediainfo changed to blocks availability
@@ -130,8 +132,11 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     _freezeUI = false;
 
     //Set defaults
-    outputTabs->setCurrentIndex(0);
     on_presetsFilterBox_activated();
+
+    qDebug() << "created";
+    if ( _mediaInfo->videoCodec() != nullptr )
+        qDebug() << _mediaInfo->videoCodec()->name();
 }
 
 void UIOutputWidget::init()
@@ -150,10 +155,10 @@ void UIOutputWidget::init()
     blockLoops->hide();
 
     //audio
+    audioTranscodeButton->setChecked(true);
     blockSampling->hide();
     blockAudioCodec->hide();
-    audioTranscodeButton->setChecked(true);
-    audioBitrateButton->setChecked(false);
+    blockAudioBitrate->hide();
 
     //params
     qDeleteAll(_customParamEdits);
@@ -302,25 +307,6 @@ void UIOutputWidget::on_formatsFilterBox_currentIndexChanged()
     ffmpeg_loadMuxers();
 }
 
-void UIOutputWidget::on_audioBitrateButton_toggled(bool checked)
-{
-    if (checked)
-    {
-        audioBitRateEdit->setValue(320);
-        audioBitRateEdit->setSuffix(" Kbps");
-        audioBitRateEdit->setEnabled(true);
-        _mediaInfo->setAudioBitrate( MediaUtils::convertToBps( 320, MediaUtils::kbps ));
-    }
-    else
-    {
-        audioBitRateEdit->setValue(0);
-        audioBitRateEdit->setSuffix(" Auto");
-        audioBitRateEdit->setEnabled(false);
-        _mediaInfo->setAudioBitrate( 0 );
-    }
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-}
-
 void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
     if (index == 0) return;
@@ -451,7 +437,6 @@ void UIOutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
     _mediaInfo->reInit( false );
-    //ffmpeg_loadCodecs();
     ffmpeg_loadMuxers();
     _freezeUI = false;
 }
@@ -577,11 +562,6 @@ void UIOutputWidget::loadPresets()
     presetsBox->addItem("Save as...");
 
     _freezeUI = false;
-}
-
-void UIOutputWidget::on_audioBitRateEdit_valueChanged(int arg1)
-{
-    _mediaInfo->setAudioBitrate( MediaUtils::convertToBps( arg1, MediaUtils::kbps ) );
 }
 
 UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action )
