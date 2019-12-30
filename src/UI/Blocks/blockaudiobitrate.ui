@@ -52,6 +52,31 @@
     </widget>
    </item>
   </layout>
+  <action name="action128">
+   <property name="text">
+    <string>128 kbps</string>
+   </property>
+  </action>
+  <action name="action256">
+   <property name="text">
+    <string>256 kbps</string>
+   </property>
+  </action>
+  <action name="action320">
+   <property name="text">
+    <string>320 kbps</string>
+   </property>
+  </action>
+  <action name="action196">
+   <property name="text">
+    <string>196 kbps</string>
+   </property>
+  </action>
+  <action name="actionAuto">
+   <property name="text">
+    <string>Auto</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
