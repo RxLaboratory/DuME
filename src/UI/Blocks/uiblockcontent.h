@@ -31,6 +31,7 @@ public slots:
     virtual void update();
 
 signals:
+    void status(QString);
 
 protected:
     MediaInfo *_mediaInfo;

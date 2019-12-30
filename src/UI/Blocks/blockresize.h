@@ -22,6 +22,7 @@ private slots:
 
 private:
     void aspectRatio();
+    void checkSizes();
 };
 
 #endif // BLOCKRESIZE_H

@@ -12,7 +12,14 @@ UIBlockWidget::UIBlockWidget(QString title, UIBlockContent *content,QWidget *par
     _content->setParent(this);
     mainLayout->addWidget(_content);
 
+    connect(content, SIGNAL(status(QString)), this, SLOT(setStatus(QString)) );
+
     this->hide();
+}
+
+void UIBlockWidget::setStatus(QString status)
+{
+    statusLabel->setText(status);
 }
 
 void UIBlockWidget::showEvent(QShowEvent *event)
