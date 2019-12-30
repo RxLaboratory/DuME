@@ -19,7 +19,7 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockResize::setActivated(bool activate)
 {
-    if (activate)
+    if (!activate)
     {
         _mediaInfo->setVideoWidth( 0 );
         _mediaInfo->setVideoHeight( 0 );
@@ -35,8 +35,8 @@ void BlockResize::update()
 {
     int w = _mediaInfo->videoWidth();
     int h = _mediaInfo->videoHeight();
-    if (w > 0) videoWidthButton->setValue( w );
-    if (h > 0) videoHeightButton->setValue( h );
+    videoWidthButton->setValue( w );
+    videoHeightButton->setValue( h );
     checkSizes( );
 }
 
