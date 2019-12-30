@@ -80,25 +80,6 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
         startNumberEdit->show();
     }
 
-            //prores
-            if (codec->name() == "prores")
-            {
-                mainVideoCodecWidget->show();
-                videoProfileBox->clear();
-                videoProfileBox->addItem("Proxy",0);
-                videoProfileBox->addItem("LT",1);
-                videoProfileBox->addItem("Normal",2);
-                videoProfileBox->addItem("HQ",3);
-                videoProfileButton->show();
-                videoProfileBox->show();
-            }
-            //h264
-            else if (codec->name() == "h264")
-            {
-                mainVideoCodecWidget->show();
-                videoQualityButton->show();
-                videoQualityWidget->show();
-            }
             //gif
             else if (codec->name() == "gif")
             {

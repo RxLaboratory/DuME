@@ -17,63 +17,146 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockVideoBitrate::setActivated(bool activate)
 {
-    _mediaInfo->setVideoBitrate( 0 );
-    _mediaInfo->setVideoQuality( -1 );
+    if (activate)
+    {
+        if (videoBitrateButton->isChecked())
+        {
+            _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( videoBitRateEdit->value(), MediaUtils::Mbps ) );
+        }
+        else
+        {
+            _mediaInfo->setVideoBitrate( 0 );
+        }
+
+        if (videoQualityButton->isChecked())
+        {
+            _mediaInfo->setVideoQuality( videoQualitySlider->value() );
+        }
+        else
+        {
+            _mediaInfo->setVideoQuality( -1 );
+        }
+    }
+    else
+    {
+        _mediaInfo->setVideoBitrate( 0 );
+        _mediaInfo->setVideoQuality( -1 );
+    }
 }
 
 void BlockVideoBitrate::update()
 {
+    FFCodec *c = _mediaInfo->videoCodec();
+    if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
+    if ( c == nullptr ) return;
+
+    FFMuxer *m = _mediaInfo->muxer();
+    if ( m == nullptr ) return;
+
+    bool useQuality = c->name() == "h264";
+    bool useBitrate = c->name() != "gif" && !m->isSequence();
+
+    //Display
+    if ( useBitrate && useQuality )
+    {
+        videoBitRateEdit->show();
+        videoBitrateButton->show();
+        videoBitrateButton->setEnabled( true );
+
+        videoQualityButton->show();
+        videoQualityWidget->show();
+        videoQualityButton->setEnabled( true );
+    }
+    else if (useQuality)
+    {
+        videoBitRateEdit->hide();
+        videoBitrateButton->hide();
+
+        videoQualityButton->show();
+        videoQualityWidget->show();
+        videoQualityButton->setEnabled( false );
+    }
+    else if (useBitrate)
+    {
+        videoBitRateEdit->show();
+        videoBitrateButton->show();
+        videoBitrateButton->setEnabled( false );
+
+        videoQualityButton->hide();
+        videoQualityWidget->hide();
+    }
+    else
+    {
+        videoBitRateEdit->hide();
+        videoBitrateButton->hide();
+        videoQualityButton->hide();
+        videoQualityWidget->hide();
+        return;
+    }
+
     // bitrate
-    int b = _mediaInfo->videoBitrate( );
-    if ( b == 0)
+    if ( useBitrate )
     {
-        videoBitRateEdit->setValue( 0 ) ;
-        videoBitRateEdit->setEnabled( false );
-        videoBitrateButton->setChecked( false );
-    }
-    else
-    {
-        videoBitRateEdit->setValue( MediaUtils::convertFromBps( b, MediaUtils::Mbps ) );
+        int b = _mediaInfo->videoBitrate( );
         videoBitRateEdit->setEnabled( true );
-        videoBitrateButton->setChecked( true );
-    }
-
-    // quality
-    int q = _mediaInfo->videoQuality();
-    if (q == -1)
-    {
-        videoQualitySlider->setValue( 90 );
-        qualityLabel->setText("Excellent");
-        videoQualityButton->setChecked( false );
-        videoQualityWidget->setEnabled(false);
-    }
-    else
-    {
-        videoQualityButton->setChecked( true );
-        videoQualitySlider->setValue( q );
-        videoQualityWidget->setEnabled( true );
-
-        if (q >= 90)
+        if ( b == 0 )
         {
-            qualityLabel->setText("(Visually) Lossless | " + QString::number(q) + "%");
-        }
-        else if (q >= 75)
-        {
-            qualityLabel->setText("Very good | " + QString::number(q) + "%");
-        }
-        else if (q >= 50)
-        {
-            qualityLabel->setText("Good | " + QString::number(q) + "%");
-        }
-        else if (q >= 25)
-        {
-            qualityLabel->setText("Bad | " + QString::number(q) + "%");
+            videoBitRateEdit->setValue( 0 ) ;
+            videoBitRateEdit->setSuffix( " Auto" );
+            if (useQuality)
+            {
+                videoBitRateEdit->setEnabled( false );
+                videoBitrateButton->setChecked( false );
+            }
         }
         else
         {
-            qualityLabel->setText("Very bad | " + QString::number(q) + "%");
+            videoBitRateEdit->setValue( MediaUtils::convertFromBps( b, MediaUtils::Mbps ) );
+            videoBitRateEdit->setSuffix( " Mbps" );
+            videoBitrateButton->setChecked( true );
         }
     }
+
+    if ( useQuality )
+    {
+        // quality
+        int q = _mediaInfo->videoQuality();
+        if (q == -1)
+        {
+            videoQualitySlider->setValue( 90 );
+            qualityLabel->setText("Excellent");
+            videoQualityButton->setChecked( false );
+            videoQualityWidget->setEnabled( false );
+        }
+        else
+        {
+            videoQualityButton->setChecked( true );
+            videoQualitySlider->setValue( q );
+            videoQualityWidget->setEnabled( true );
+
+            if (q >= 90)
+            {
+                qualityLabel->setText("(Visually) Lossless | " + QString::number(q) + "%");
+            }
+            else if (q >= 75)
+            {
+                qualityLabel->setText("Very good | " + QString::number(q) + "%");
+            }
+            else if (q >= 50)
+            {
+                qualityLabel->setText("Good | " + QString::number(q) + "%");
+            }
+            else if (q >= 25)
+            {
+                qualityLabel->setText("Bad | " + QString::number(q) + "%");
+            }
+            else
+            {
+                qualityLabel->setText("Very bad | " + QString::number(q) + "%");
+            }
+        }
+    }
+
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)
@@ -90,10 +173,10 @@ void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)
     }
 }
 
-void BlockVideoBitrate::on_videoBitRateEdit_valueChanged(double arg1)
+void BlockVideoBitrate::on_videoBitRateEdit_editingFinished()
 {
     if (_freezeUI) return;
-    _mediaInfo->setVideoBitrate( arg1 );
+    _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( videoBitRateEdit->value(), MediaUtils::Mbps ) );
 }
 
 void BlockVideoBitrate::on_videoQualityButton_clicked(bool checked)

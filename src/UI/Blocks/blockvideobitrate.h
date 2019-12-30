@@ -15,7 +15,7 @@ public slots:
     void update();
 private slots:
     void on_videoBitrateButton_clicked(bool checked);
-    void on_videoBitRateEdit_valueChanged(double arg1);
+    void on_videoBitRateEdit_editingFinished();
     void on_videoQualityButton_clicked(bool checked);
     void on_videoQualitySlider_valueChanged(int value);
     void on_actionPerfect_95_triggered();
