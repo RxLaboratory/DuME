@@ -149,6 +149,46 @@
     </widget>
    </item>
   </layout>
+  <action name="actionPerfect_95">
+   <property name="text">
+    <string>Perfect ( 95% )</string>
+   </property>
+  </action>
+  <action name="actionAuto">
+   <property name="text">
+    <string>Auto</string>
+   </property>
+  </action>
+  <action name="actionGood_60">
+   <property name="text">
+    <string>Good ( 60% )</string>
+   </property>
+  </action>
+  <action name="actionProxy_30">
+   <property name="text">
+    <string>Proxy ( 30% )</string>
+   </property>
+  </action>
+  <action name="actionBad_20">
+   <property name="text">
+    <string>Bad ( 20% )</string>
+   </property>
+  </action>
+  <action name="actionBlu_Ray">
+   <property name="text">
+    <string>Blu-Ray ( 25 Mbps average )</string>
+   </property>
+  </action>
+  <action name="actionDVD">
+   <property name="text">
+    <string>DVD ( 7Mbps average )</string>
+   </property>
+  </action>
+  <action name="actionStreaming_12_Mbps">
+   <property name="text">
+    <string>Streaming ( 12 Mbps )</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

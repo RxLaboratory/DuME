@@ -18,6 +18,14 @@ private slots:
     void on_videoBitRateEdit_valueChanged(double arg1);
     void on_videoQualityButton_clicked(bool checked);
     void on_videoQualitySlider_valueChanged(int value);
+    void on_actionPerfect_95_triggered();
+    void on_actionAuto_triggered();
+    void on_actionGood_60_triggered();
+    void on_actionProxy_30_triggered();
+    void on_actionBad_20_triggered();
+    void on_actionBlu_Ray_triggered();
+    void on_actionDVD_triggered();
+    void on_actionStreaming_12_Mbps_triggered();
 };
 
 #endif // BLOCKVIDEOBITRATE_H

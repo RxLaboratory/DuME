@@ -4,6 +4,15 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     UIBlockContent(mediaInfo,parent)
 {
     setupUi(this);
+
+    _presets->addAction( actionPerfect_95 );
+    _presets->addAction( actionAuto );
+    _presets->addAction( actionGood_60 );
+    _presets->addAction( actionProxy_30 );
+    _presets->addAction( actionBad_20 );
+    _presets->addAction( actionBlu_Ray );
+    _presets->addAction( actionStreaming_12_Mbps );
+    _presets->addAction( actionDVD );
 }
 
 void BlockVideoBitrate::setActivated(bool activate)
@@ -105,4 +114,52 @@ void BlockVideoBitrate::on_videoQualitySlider_valueChanged(int value)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoQuality( value );
+}
+
+void BlockVideoBitrate::on_actionPerfect_95_triggered()
+{
+    _mediaInfo->setVideoBitrate( 0 );
+    _mediaInfo->setVideoQuality( 95 );
+}
+
+void BlockVideoBitrate::on_actionAuto_triggered()
+{
+    _mediaInfo->setVideoBitrate( 0 );
+    _mediaInfo->setVideoQuality( -1 );
+}
+
+void BlockVideoBitrate::on_actionGood_60_triggered()
+{
+    _mediaInfo->setVideoBitrate( 0 );
+    _mediaInfo->setVideoQuality( 60 );
+}
+
+void BlockVideoBitrate::on_actionProxy_30_triggered()
+{
+    _mediaInfo->setVideoBitrate( 0 );
+    _mediaInfo->setVideoQuality( 30 );
+}
+
+void BlockVideoBitrate::on_actionBad_20_triggered()
+{
+    _mediaInfo->setVideoBitrate( 0 );
+    _mediaInfo->setVideoQuality( 20 );
+}
+
+void BlockVideoBitrate::on_actionBlu_Ray_triggered()
+{
+    _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 25, MediaUtils::Mbps ) );
+    _mediaInfo->setVideoQuality( -1 );
+}
+
+void BlockVideoBitrate::on_actionDVD_triggered()
+{
+    _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 7, MediaUtils::Mbps ) );
+    _mediaInfo->setVideoQuality( -1 );
+}
+
+void BlockVideoBitrate::on_actionStreaming_12_Mbps_triggered()
+{
+    _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 12, MediaUtils::Mbps ) );
+    _mediaInfo->setVideoQuality( -1 );
 }
