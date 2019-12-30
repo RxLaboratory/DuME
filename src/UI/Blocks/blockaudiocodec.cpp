@@ -19,7 +19,7 @@ void BlockAudioCodec::setActivated(bool activate)
 {
     _freezeUI = true;
 
-    if (activate)
+    if ( activate && audioCodecsFilterBox->currentIndex() != 0)
     {
         _mediaInfo->setAudioCodec( audioCodecsBox->currentData(Qt::UserRole).toString() );
     }
@@ -53,15 +53,13 @@ void BlockAudioCodec::setDefaultCodec()
 {
     _freezeUI = true;
 
-    audioCodecsFilterBox->setCurrentIndex(0);
+    audioCodecsFilterBox->setCurrentIndex( 0 );
     listCodecs();
-
-    _freezeUI = true;
 
     FFCodec *c = _mediaInfo->defaultAudioCodec();
     if (c != nullptr)
     {
-        setCodec( c->name() );
+        setCodec( c->name(), false );
     }
     else
     {
@@ -90,7 +88,7 @@ void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
     //try without filter
     if ( tryWithoutFilter )
     {
-        audioCodecsFilterBox->setCurrentIndex( 0 );
+        audioCodecsFilterBox->setCurrentIndex( 1 );
         listCodecs();
         setCodec( name, false );
     }
@@ -111,7 +109,7 @@ void BlockAudioCodec::listCodecs()
 
     foreach (FFCodec *c, _ffmpeg->audioEncoders() )
     {
-        if ( audioCodecsFilterBox->currentIndex() == 0 || audioCodecsFilterBox->currentIndex() == 1 || (audioCodecsFilterBox->currentIndex() == 3 && c->isLossless()) || (audioCodecsFilterBox->currentIndex() == 2 && c->isLossy()))
+        if ( audioCodecsFilterBox->currentIndex() <= 1 || (audioCodecsFilterBox->currentIndex() == 3 && c->isLossless()) || (audioCodecsFilterBox->currentIndex() == 2 && c->isLossy()))
         {
             audioCodecsBox->addItem( c->prettyName(), c->name() );
         }
