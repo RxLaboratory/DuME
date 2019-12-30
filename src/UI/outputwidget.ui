@@ -251,9 +251,12 @@
          <number>5</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="noVideoButton">
+         <widget class="QCheckBox" name="videoButton">
           <property name="text">
            <string>Video</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -321,9 +324,12 @@
          <number>5</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="noAudioButton">
+         <widget class="QCheckBox" name="audioButton">
           <property name="text">
            <string>Audio</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -397,7 +403,7 @@
         <x>0</x>
         <y>0</y>
         <width>511</width>
-        <height>333</height>
+        <height>336</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">

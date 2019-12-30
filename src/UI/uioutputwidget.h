@@ -49,6 +49,8 @@ public slots:
     void loadPresets();
 
 private slots:
+    void updateBlocksAvailability();
+
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
@@ -57,8 +59,8 @@ private slots:
     void on_formatsFilterBox_currentIndexChanged();
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated();
-    //TODO some code to move here
-    //void on_videoCodecsBox_currentIndexChanged();
+    void on_videoButton_clicked(bool checked);
+    void on_audioButton_clicked(bool checked);
 
 private:
     // BLOCKS

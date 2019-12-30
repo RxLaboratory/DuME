@@ -40,6 +40,7 @@ public:
      * @param mediaFilePath The media file. For a frame sequence, it can be any frame from the sequence
      */
     void updateInfo(QFileInfo mediaFile);
+    void updateInfo(MediaInfo *other, bool updateFilename = false);
     void loadPreset(QFileInfo presetFile);
     /**
      * @brief reInit Reinit all to default values
@@ -124,6 +125,8 @@ public:
     float videoAspect() const;
     bool hasAlpha() const;
     bool canHaveAlpha() const;
+    bool copyVideo() const;
+    bool copyAudio() const;
 
     //utils
     QString exportPreset();

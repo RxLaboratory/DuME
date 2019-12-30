@@ -170,6 +170,52 @@ void MediaInfo::updateInfo(QFileInfo mediaFile)
     emit changed();
 }
 
+void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename)
+{
+    // GENERAL
+    if (updateFilename) _fileName = other->fileName();
+    _extensions = other->extensions();
+    _muxer = other->muxer();
+    _duration = other->duration();
+    _size = other->size();
+    _bitrate = other->bitrate();
+    _video = other->hasVideo();
+    _audio = other->hasAudio();
+    _imageSequence = other->isImageSequence();
+    _videoCodec = other->videoCodec();
+    _videoWidth = other->videoWidth();
+    _videoHeight = other->videoHeight();
+    _videoFramerate = other->videoHeight();
+    _videoBitrate = other->videoBitrate();
+    _pixAspect = other->pixAspect();
+    _videoAspect = other->videoAspect();
+    _pixFormat = other->pixFormat();
+    _audioCodec = other->audioCodec();
+    _audioSamplingRate = other->audioSamplingRate();
+    _audioBitrate = other->audioBitrate();
+    _audioChannels = other->audioChannels();
+    _frames = other->frames();
+    _videoQuality = other->videoQuality();
+    _videoProfile = other->videoProfile();
+    _loop = other->loop();
+    _startNumber = other->startNumber();
+    _premultipliedAlpha = other->premultipliedAlpha();
+    _trc = other->trc();
+    // GENERAL Encoding/decoding parameters
+    _cacheDir = other->cacheDir();
+    // FFMPEG Encoding/decoding
+    _ffmpegOptions = other->ffmpegOptions();
+    _ffmpegSequenceName = other->ffmpegSequenceName();
+    // AFTER EFFECTS Encoding/decoding
+    _isAep = other->isAep();
+    _aepCompName = other->aepCompName();
+    _aepNumThreads = other->aepNumThreads();
+    _aepRqindex = other->aepRqindex();
+    _aeUseRQueue = other->aeUseRQueue();
+
+    emit changed();
+}
+
 void MediaInfo::loadPreset(QFileInfo presetFile)
 {
     QFile jsonFile( presetFile.absoluteFilePath() );
@@ -372,8 +418,14 @@ void MediaInfo::setMuxer(FFMuxer *muxer)
     _muxer = muxer;
     if (muxer->isSequence())
     {
+        _audio = false;
         _imageSequence = true;
         loadSequence();
+    }
+    else
+    {
+        _audio = muxer->isAudio();
+        _video = muxer->isVideo();
     }
     emit changed();
 }
@@ -637,7 +689,7 @@ bool MediaInfo::hasAlpha() const
     FFPixFormat *pf = vc->defaultPixFormat();
     if (pf != nullptr) return pf->hasAlpha();
 
-    return false;
+    return _isAep;
 }
 
 bool MediaInfo::canHaveAlpha() const
@@ -650,7 +702,22 @@ bool MediaInfo::canHaveAlpha() const
     {
         if (pf->hasAlpha()) return true;
     }
-    return false;
+
+    return _isAep;
+}
+
+bool MediaInfo::copyVideo() const
+{
+    FFCodec *vc = _videoCodec;
+    if (vc == nullptr) return false;
+    return vc->name() == "copy";
+}
+
+bool MediaInfo::copyAudio() const
+{
+    FFCodec *ac = _audioCodec;
+    if (ac == nullptr) return false;
+    return ac->name() == "copy";
 }
 
 void MediaInfo::setAlpha(bool alpha)
