@@ -309,7 +309,7 @@ QToolButton {
 	border: none;
 	border-color:  @color-medium;
 	padding: @button-padding;
-	background-color: @color-medium;
+        background-color: rgba(0,0,0,0);
 	margin:@margin;
 	border-radius: @border-radius;
 }
