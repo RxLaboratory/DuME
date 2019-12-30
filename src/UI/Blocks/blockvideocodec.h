@@ -10,7 +10,6 @@ class BlockVideoCodec : public UIBlockContent, private Ui::BlockVideoCodec
 
 public:
     explicit BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent = nullptr);
-    void setDefaultVideoCodec();
 public slots:
     void setActivated( bool activate );
     void update();
@@ -18,10 +17,10 @@ private slots:
     void listCodecs();
     void on_videoCodecsFilterBox_currentIndexChanged(int index);
     void on_videoCodecsBox_currentIndexChanged(int index);
-
 private:
     FFmpeg *_ffmpeg;
-    void setCodec(QString name);
+    void setDefaultCodec();
+    void setCodec(QString name, bool tryWithoutFilter = true );
 };
 
 #endif // BLOCKVIDEOCODEC_H

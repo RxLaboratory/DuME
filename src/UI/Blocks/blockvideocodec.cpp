@@ -3,71 +3,77 @@
 BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
     UIBlockContent(mediaInfo, parent)
 {
+    _freezeUI = true;
+
     setupUi(this);
 
     _ffmpeg = ffmpeg;
     connect( _ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
+
     listCodecs();
+
+    _freezeUI = false;
 }
 
 void BlockVideoCodec::listCodecs()
 {
     _freezeUI = true;
-
     QString prevSelection = videoCodecsBox->currentData(Qt::UserRole).toString();
     videoCodecsBox->clear();
 
-    QList<FFCodec *> encoders = _ffmpeg->videoEncoders();
-    if (encoders.count() == 0)
-    {
-        _freezeUI = false;
-        return;
-    }
-
     int videoFilter = videoCodecsFilterBox->currentIndex();
 
-    foreach(FFCodec *encoder,encoders)
+    foreach(FFCodec *encoder, _ffmpeg->videoEncoders())
     {
         if (encoder->name() == "copy") continue;
-        if (videoFilter <= 0 || (videoFilter == 1 && encoder->isLossy()) || (videoFilter == 2 && encoder->isLossless()) || (videoFilter == 3 && encoder->isIframe()))
+        if (videoFilter <= 1 || (videoFilter == 2 && encoder->isLossy()) || (videoFilter == 3 && encoder->isLossless()) || (videoFilter == 4 && encoder->isIframe()))
         {
-            videoCodecsBox->addItem( encoder->prettyName(),QVariant(encoder->name()) );
+            videoCodecsBox->addItem( encoder->prettyName(), encoder->name() );
         }
     }
 
-    setCodec( prevSelection );
+    //try to reselect it
+    setCodec( prevSelection, false );
 
     _freezeUI = false;
 }
 
-void BlockVideoCodec::setCodec(QString name)
+void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
 {
-    if ( name == "" ) setDefaultVideoCodec();
+    _freezeUI = true;
 
     for (int v = 0; v < videoCodecsBox->count() ; v++)
     {
-        if (videoCodecsBox->itemData(v).toString() == name)
+        if (videoCodecsBox->itemData(v, Qt::UserRole).toString() == name)
         {
             videoCodecsBox->setCurrentIndex(v);
+            _freezeUI = false;
             return;
         }
     }
 
-    //Try again without filters
-    videoCodecsFilterBox->setCurrentIndex(0);
-    listCodecs();
-    for (int v = 0; v < videoCodecsBox->count() ; v++)
+    //try without filter
+    if ( tryWithoutFilter )
     {
-        if (videoCodecsBox->itemData(v).toString() == name)
-        {
-            videoCodecsBox->setCurrentIndex(v);
-            return;
-        }
+        videoCodecsFilterBox->setCurrentIndex( 1 );
+        listCodecs();
+        setCodec( name, false );
     }
+    else // set none
+    {
+        videoCodecsBox->setCurrentIndex( -1 );
+    }
+
+    _freezeUI = false;
 }
 
-void BlockVideoCodec::setDefaultVideoCodec()
+void BlockVideoCodec::setDefaultCodec()
 {
+    _freezeUI = true;
+
+    videoCodecsFilterBox->setCurrentIndex( 0 );
+    listCodecs();
+
     _freezeUI = true;
 
     FFCodec *videoCodec = _mediaInfo->defaultVideoCodec();
@@ -76,15 +82,23 @@ void BlockVideoCodec::setDefaultVideoCodec()
 
     if ( videoCodec != nullptr )
     {
-        setCodec( videoCodec->name() );
+        setCodec( videoCodec->name(), false );
     }
+    else
+    {
+        videoCodecsBox->setCurrentIndex( -1 );
+    }
+
+    videoCodecsBox->setEnabled( false );
 
     _freezeUI = false;
 }
 
 void BlockVideoCodec::setActivated(bool activate)
 {
-    if ( activate )
+    _freezeUI = true;
+
+    if ( activate && videoCodecsFilterBox->currentIndex() != 0 )
     {
         _mediaInfo->setVideoCodec( videoCodecsBox->currentData(Qt::UserRole).toString() );
     }
@@ -92,27 +106,42 @@ void BlockVideoCodec::setActivated(bool activate)
     {
         _mediaInfo->setVideoCodec( nullptr );
     }
+
+    _freezeUI = false;
 }
 
 void BlockVideoCodec::update()
 {
+   //listCodecs();
+    _freezeUI = true;
+
     // set codec
     FFCodec *c = _mediaInfo->videoCodec();
-    if (c == nullptr)
+
+    if ( c == nullptr )
     {
-        setDefaultVideoCodec();
-        return;
+        setDefaultCodec();
     }
     else
     {
         setCodec( c->name() );
     }
+
+    _freezeUI = false;
 }
 
 void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
-    if ( _freezeUI ) return;
-    listCodecs();
+    if (_freezeUI ) return;
+    if (index == 0)
+    {
+        _mediaInfo->setVideoCodec( nullptr );
+    }
+    else
+    {
+        listCodecs();
+        videoCodecsBox->setEnabled( true );
+    }
 }
 
 void BlockVideoCodec::on_videoCodecsBox_currentIndexChanged(int index)
