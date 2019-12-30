@@ -16,6 +16,8 @@
 #include "UI/Blocks/blockstartnumber.h"
 #include "UI/Blocks/blockalpha.h"
 #include "UI/Blocks/blockpixformat.h"
+#include "UI/Blocks/blocksampling.h"
+#include "UI/Blocks/blockaudiocodec.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -41,7 +43,6 @@ signals:
 
 public slots:
     void ffmpeg_init();
-    void ffmpeg_loadCodecs();
     void ffmpeg_loadMuxers();
     void newInputMedia(MediaInfo *input);
     void loadPresets();
@@ -49,25 +50,20 @@ public slots:
 private slots:
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
-    void on_samplingButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
-    void on_audioCodecsFilterBox_currentIndexChanged();
     void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged();
-    void on_audioCodecButton_toggled(bool checked);
-    void on_audioBitrateButton_toggled(bool checked);
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated();
     //TODO some code to move here
     //void on_videoCodecsBox_currentIndexChanged();
-    void on_audioCodecsBox_currentIndexChanged();
-    void on_samplingBox_currentIndexChanged(int index);
     void on_audioBitRateEdit_valueChanged(int arg1);
 
+    void on_audioBitrateButton_toggled(bool checked);
 private:
     // BLOCKS
-    UIBlockWidget *addVideoBlock(UIBlockContent *content, QAction *action);
+    UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
     UIBlockWidget *blockResize;
     BlockResize *blockResizeContent;
     UIBlockWidget *blockFrameRate;
@@ -86,13 +82,15 @@ private:
     BlockAlpha *blockAlphaContent;
     UIBlockWidget *blockPixFormat;
     BlockPixFormat *blockPixFormatContent;
+    UIBlockWidget *blockSampling;
+    BlockSampling *blockSamplingContent;
+    UIBlockWidget *blockAudioCodec;
+    BlockAudioCodec *blockAudioCodecContent;
 
     // MENUS
-    QMenu *videoMenu;
+    QMenu *blocksMenu;
 
     void updateOutputExtension(QString outputPath);
-    void selectDefaultAudioCodec();
-    void updateAudioVideoOptions();
     void addNewParam(QString name = "",QString value = "");
     void init();
 

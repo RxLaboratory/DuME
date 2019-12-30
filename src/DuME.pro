@@ -40,10 +40,12 @@ SOURCES += \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
     UI/Blocks/blockalpha.cpp \
+    UI/Blocks/blockaudiocodec.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
     UI/Blocks/blockpixformat.cpp \
     UI/Blocks/blockresize.cpp \
+    UI/Blocks/blocksampling.cpp \
     UI/Blocks/blockstartnumber.cpp \
     UI/Blocks/blockvideobitrate.cpp \
     UI/Blocks/blockvideocodec.cpp \
@@ -85,10 +87,12 @@ HEADERS += \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
     UI/Blocks/blockalpha.h \
+    UI/Blocks/blockaudiocodec.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
     UI/Blocks/blockpixformat.h \
     UI/Blocks/blockresize.h \
+    UI/Blocks/blocksampling.h \
     UI/Blocks/blockstartnumber.h \
     UI/Blocks/blockvideobitrate.h \
     UI/Blocks/blockvideocodec.h \
@@ -108,10 +112,12 @@ HEADERS += \
 
 FORMS += \
     UI/Blocks/blockalpha.ui \
+    UI/Blocks/blockaudiocodec.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
     UI/Blocks/blockpixformat.ui \
     UI/Blocks/blockresize.ui \
+    UI/Blocks/blocksampling.ui \
     UI/Blocks/blockstartnumber.ui \
     UI/Blocks/blockvideobitrate.ui \
     UI/Blocks/blockvideocodec.ui \

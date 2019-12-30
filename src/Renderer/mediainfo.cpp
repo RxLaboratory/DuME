@@ -55,6 +55,8 @@ void MediaInfo::reInit(bool removeFileName)
     _aepNumThreads = 1;
     _aepRqindex = 1;
     _aeUseRQueue = false;
+
+    emit changed();
 }
 
 void MediaInfo::updateInfo(QFileInfo mediaFile)
@@ -444,6 +446,12 @@ FFCodec *MediaInfo::defaultVideoCodec() const
 FFCodec *MediaInfo::audioCodec()
 {
     return _audioCodec;
+}
+
+FFCodec *MediaInfo::defaultAudioCodec() const
+{
+    if (_muxer != nullptr) return _muxer->defaultAudioCodec();
+    return nullptr;
 }
 
 qint64 MediaInfo::audioBitrate()
