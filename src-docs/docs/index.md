@@ -1,13 +1,13 @@
-# DuFFmpeg Introduction
+# DuME Introduction
 
-**_DuFFmpeg_ is a Free and Open Source Media Encoder**.  
+**_DuME_ is a Free and Open Source Media Encoder**.  
 It is fast, versatile, and easy-to-use.  
 It is developped as a Graphical User Interface (GUI) for [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile command-line media encoder.  
-*DuFFmpeg* is also able to render and transcode *Adobe After Effects* projects and to render [*Blender*](http://blender.org) scenes.
+*DuME* is also able to render and transcode *Adobe After Effects* projects and to render [*Blender*](http://blender.org) scenes.
 
 ## Description
 
-The goal of DuFFmpeg is to be as **easy to use** as possible even for beginners, without any compromise on **functionnality for advanced users**.
+The goal of DuME is to be as **easy to use** as possible even for beginners, without any compromise on **functionnality for advanced users**.
 
 To achieve this goal, the development of the application follows these guidelines:
 
@@ -39,9 +39,9 @@ To achieve this goal, the development of the application follows these guideline
 - Burn subtitles in picture.
 - Burn Metadata in picture (Timecode...).
 
-## About DuFFmpeg
+## About DuME
 
-If you like this free software, please support the developper on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.
+If you like this free software, please support the developer on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.
 
 ### Licenses:
 
@@ -49,7 +49,7 @@ If you like this free software, please support the developper on Patreon: http:/
 
 This program makes use of *FFmpeg* and *Qt*.
 
-***DuFFmpeg* Copyright (c) 2017-2019 Nicolas Dufresne and Contributors**  
+***DuME* Copyright (c) 2017-2019 Nicolas Dufresne and Contributors**  
 ***FFmpeg* Copyright (c) the FFmpeg developers**  
 ***Qt* Copyright (c) The Qt Company**
 
