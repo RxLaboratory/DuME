@@ -18,6 +18,7 @@
 #include "UI/Blocks/blockpixformat.h"
 #include "UI/Blocks/blocksampling.h"
 #include "UI/Blocks/blockaudiocodec.h"
+#include "UI/Blocks/blockaudiobitrate.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -58,9 +59,7 @@ private slots:
     void on_presetsFilterBox_activated();
     //TODO some code to move here
     //void on_videoCodecsBox_currentIndexChanged();
-    void on_audioBitRateEdit_valueChanged(int arg1);
 
-    void on_audioBitrateButton_toggled(bool checked);
 private:
     // BLOCKS
     UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
@@ -86,6 +85,8 @@ private:
     BlockSampling *blockSamplingContent;
     UIBlockWidget *blockAudioCodec;
     BlockAudioCodec *blockAudioCodecContent;
+    UIBlockWidget *blockAudioBitrate;
+    BlockAudioBitrate *blockAudioBitrateContent;
 
     // MENUS
     QMenu *blocksMenu;

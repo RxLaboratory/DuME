@@ -40,6 +40,7 @@ SOURCES += \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
     UI/Blocks/blockalpha.cpp \
+    UI/Blocks/blockaudiobitrate.cpp \
     UI/Blocks/blockaudiocodec.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
@@ -87,6 +88,7 @@ HEADERS += \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
     UI/Blocks/blockalpha.h \
+    UI/Blocks/blockaudiobitrate.h \
     UI/Blocks/blockaudiocodec.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
@@ -112,6 +114,7 @@ HEADERS += \
 
 FORMS += \
     UI/Blocks/blockalpha.ui \
+    UI/Blocks/blockaudiobitrate.ui \
     UI/Blocks/blockaudiocodec.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
