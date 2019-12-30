@@ -30,87 +30,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QComboBox" name="frameRateBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="currentIndex">
-      <number>5</number>
-     </property>
-     <property name="frame">
-      <bool>false</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>Custom</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>8 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>12 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>15 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>23.976 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>24 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>25 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>29.97 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>30 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>50 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>59.94 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>60 fps</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>120 fps</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
     <widget class="QDoubleSpinBox" name="frameRateEdit">
      <property name="frame">
       <bool>false</bool>
@@ -118,8 +37,14 @@
      <property name="suffix">
       <string> fps</string>
      </property>
+     <property name="decimals">
+      <number>3</number>
+     </property>
      <property name="minimum">
       <double>1.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>10000.000000000000000</double>
      </property>
      <property name="value">
       <double>24.000000000000000</double>
@@ -127,6 +52,66 @@
     </widget>
    </item>
   </layout>
+  <action name="action8_fps">
+   <property name="text">
+    <string>8 fps</string>
+   </property>
+  </action>
+  <action name="action12_fps">
+   <property name="text">
+    <string>12 fps</string>
+   </property>
+  </action>
+  <action name="action15_fps">
+   <property name="text">
+    <string>15 fps</string>
+   </property>
+  </action>
+  <action name="action23_976_fps">
+   <property name="text">
+    <string>23.976 fps</string>
+   </property>
+  </action>
+  <action name="action24_fps">
+   <property name="text">
+    <string>24 fps</string>
+   </property>
+  </action>
+  <action name="action25_fps">
+   <property name="text">
+    <string>25 fps</string>
+   </property>
+  </action>
+  <action name="action29_97_fps">
+   <property name="text">
+    <string>29.97 fps</string>
+   </property>
+  </action>
+  <action name="action30_fps">
+   <property name="text">
+    <string>30 fps</string>
+   </property>
+  </action>
+  <action name="action50_fps">
+   <property name="text">
+    <string>50 fps</string>
+   </property>
+  </action>
+  <action name="action59_94_fps">
+   <property name="text">
+    <string>59.94 fps</string>
+   </property>
+  </action>
+  <action name="action60_fps">
+   <property name="text">
+    <string>60 fps</string>
+   </property>
+  </action>
+  <action name="action120_fps">
+   <property name="text">
+    <string>120 fps</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
