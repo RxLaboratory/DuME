@@ -20,6 +20,21 @@ void BlockVideoProfile::setActivated(bool activate)
 
 void BlockVideoProfile::update()
 {
+    //Update profiles list
+    videoProfileBox->clear();
+
+    FFCodec *c = _mediaInfo->videoCodec();
+    if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
+    if ( c == nullptr ) return;
+
+    if ( c->name() == "prores" )
+    {
+        videoProfileBox->addItem("Proxy", 0);
+        videoProfileBox->addItem("LT", 1);
+        videoProfileBox->addItem("Normal", 2);
+        videoProfileBox->addItem("HQ", 3);
+    }
+
     videoProfileBox->setCurrentIndex( _mediaInfo->videoProfile() );
 }
 
