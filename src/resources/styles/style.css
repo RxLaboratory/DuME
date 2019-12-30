@@ -370,6 +370,7 @@ SearchWidget QPushButton {
 
 QToolButton:pressed:hover,  QToolBar QPushButton:pressed:hover {
         background-color: @color-dark;
+        color: @color-medium;
 }
 
 QToolButton:hover,  QToolBar QPushButton:hover {
