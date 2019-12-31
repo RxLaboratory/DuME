@@ -42,6 +42,7 @@ SOURCES += \
     UI/Blocks/blockalpha.cpp \
     UI/Blocks/blockaudiobitrate.cpp \
     UI/Blocks/blockaudiocodec.cpp \
+    UI/Blocks/blockcustom.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
     UI/Blocks/blockpixformat.cpp \
@@ -100,6 +101,7 @@ HEADERS += \
     UI/Blocks/blockvideobitrate.h \
     UI/Blocks/blockvideocodec.h \
     UI/Blocks/blockvideoprofile.h \
+    UI/Blocks/blockcustom.h \
     UI/Blocks/uiblockcontent.h \
     UI/Blocks/uiblockwidget.h \
     UI/uibigcombobox.h \
@@ -127,6 +129,7 @@ FORMS += \
     UI/Blocks/blockvideobitrate.ui \
     UI/Blocks/blockvideocodec.ui \
     UI/Blocks/blockvideoprofile.ui \
+    UI/Blocks/blockcustom.ui \
     UI/Blocks/uiblockwidget.ui \
     UI/mainwindow.ui \
     UI/outputwidget.ui \
