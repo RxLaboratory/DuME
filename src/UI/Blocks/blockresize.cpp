@@ -7,6 +7,7 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
 
     _presets->addAction( actionKeepRatio );
     _presets->addSeparator();
+    _presets->addAction( actionAdaptRatio );
     _presets->addAction( actionHD720 );
     _presets->addAction( actionHD1080 );
     _presets->addAction( action2KFlat );
@@ -37,6 +38,11 @@ void BlockResize::update()
     int h = _mediaInfo->videoHeight();
     videoWidthButton->setValue( w );
     videoHeightButton->setValue( h );
+    if ( w == 0 ) videoWidthButton->setSuffix( " Same as input" );
+    else videoWidthButton->setSuffix( " px" );
+    if ( h == 0 ) videoHeightButton->setSuffix( " Same as input" );
+    else videoHeightButton->setSuffix( " px" );
+
     checkSizes( );
 }
 
@@ -60,6 +66,11 @@ QString BlockResize::aspectRatio()
 {
     double width = videoWidthButton->value();
     double height = videoHeightButton->value();
+    if ( height == 0.0 )
+    {
+        _currentRatio = -1;
+        return "";
+    }
     _currentRatio =  width / height;
     //round it to 3 digits
     int roundedRatio = int(_currentRatio*100+0.5);
@@ -73,7 +84,7 @@ void BlockResize::on_videoWidthButton_editingFinished( )
     if (_freezeUI) return;
     double w = videoWidthButton->value();
     double h = videoHeightButton->value();
-    if ( actionKeepRatio->isChecked() )
+    if ( actionKeepRatio->isChecked() && _currentRatio != -1 )
     {
         h = w / _currentRatio;
     }
@@ -86,7 +97,7 @@ void BlockResize::on_videoHeightButton_editingFinished()
     if (_freezeUI) return;
     double h = videoHeightButton->value();
     double w = videoWidthButton->value();
-    if ( actionKeepRatio->isChecked() )
+    if ( actionKeepRatio->isChecked() && _currentRatio != -1 )
     {
         w = h * _currentRatio;
     }
@@ -114,7 +125,7 @@ void BlockResize::checkSizes( )
 
 void BlockResize::setSize( int w, int h)
 {
-    if ( actionKeepRatio->isChecked() )
+    if ( actionAdaptRatio->isChecked() && _currentRatio != -1)
     {
         double wi = w;
         double he = h;

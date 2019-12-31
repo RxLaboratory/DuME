@@ -47,7 +47,7 @@
       <string>Width: </string>
      </property>
      <property name="minimum">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="maximum">
       <number>10000</number>
@@ -69,7 +69,7 @@
       <string>Height: </string>
      </property>
      <property name="minimum">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="maximum">
       <number>10000</number>
@@ -129,6 +129,14 @@
   <action name="actionDSM2K">
    <property name="text">
     <string>DSM 2K ( 2048x1080 )</string>
+   </property>
+  </action>
+  <action name="actionAdaptRatio">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Adapt to current ratio</string>
    </property>
   </action>
  </widget>
