@@ -20,6 +20,9 @@
 #include "UI/Blocks/blockaudiocodec.h"
 #include "UI/Blocks/blockaudiobitrate.h"
 
+// OTHER UI
+#include "UI/uidropshadow.h"
+
 #include <QFileDialog>
 #include <QSettings>
 #include <QStringList>

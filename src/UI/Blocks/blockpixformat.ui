@@ -54,7 +54,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="pixFmtBox">
+    <widget class="UIBigComboBox" name="pixFmtBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -68,6 +68,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UIBigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/uibigcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

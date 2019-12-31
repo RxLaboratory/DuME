@@ -53,6 +53,7 @@ SOURCES += \
     UI/Blocks/blockvideoprofile.cpp \
     UI/Blocks/uiblockcontent.cpp \
     UI/Blocks/uiblockwidget.cpp \
+    UI/uibigcombobox.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
     FFmpeg/ffmpeg.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     UI/Blocks/blockvideoprofile.h \
     UI/Blocks/uiblockcontent.h \
     UI/Blocks/uiblockwidget.h \
+    UI/uibigcombobox.h \
     UI/uidropshadow.h \
     UI/uiframeless.h \
     UI/uiinputwidget.h \

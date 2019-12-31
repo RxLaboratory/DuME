@@ -1,7 +1,4 @@
 #include "uioutputwidget.h"
-#include "uidropshadow.h"
-
-#include <QGraphicsDropShadowEffect>
 
 #ifdef QT_DEBUG
 #include <QtDebug>

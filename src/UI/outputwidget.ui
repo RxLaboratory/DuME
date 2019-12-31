@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
+    <width>389</width>
     <height>494</height>
    </rect>
   </property>
@@ -31,7 +31,13 @@
    </property>
    <item>
     <widget class="QWidget" name="topWidget" native="true">
-     <layout class="QFormLayout" name="formLayout">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QFormLayout" name="topLayout">
       <property name="horizontalSpacing">
        <number>3</number>
       </property>
@@ -52,6 +58,12 @@
       </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="outputBrowseButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>125</width>
@@ -68,6 +80,12 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="outputEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -82,7 +100,7 @@
       <item row="1" column="0">
        <widget class="QComboBox" name="presetsFilterBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -118,6 +136,12 @@
       </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="presetsBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <item>
          <property name="text">
           <string>Custom</string>
@@ -138,7 +162,7 @@
       <item row="2" column="0">
        <widget class="QComboBox" name="formatsFilterBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -188,7 +212,20 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="formatsBox"/>
+       <widget class="UIBigComboBox" name="formatsBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>1</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -290,7 +327,7 @@
           <item>
            <widget class="QRadioButton" name="videoCopyButton">
             <property name="text">
-             <string>Copy Stream</string>
+             <string>Copy</string>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -363,7 +400,7 @@
           <item>
            <widget class="QRadioButton" name="audioCopyButton">
             <property name="text">
-             <string>Copy Stream</string>
+             <string>Copy</string>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -402,7 +439,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>511</width>
+        <width>389</width>
         <height>336</height>
        </rect>
       </property>
@@ -664,6 +701,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UIBigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/uibigcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
