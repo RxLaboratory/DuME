@@ -361,6 +361,10 @@ QToolButton {
 	border-radius: @border-radius;
 }
 
+QToolButton::menu-indicator {
+    image: none;
+    }
+
 QToolBar QPushButton {
         background-color: @color-dark;
 	color: @color-medium;

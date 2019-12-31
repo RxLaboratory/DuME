@@ -13,6 +13,10 @@
         <file alias="microkeyboard">resources/icons/microkeyboard-dark.png</file>
         <file alias="microkeyboard_light">resources/icons/microkeyboard-light.png</file>
         <file alias="close-thin">resources/icons/icones-57.svg</file>
+        <file alias="cog">resources/icons/cog.svg</file>
+        <file alias="video">resources/icons/film.svg</file>
+        <file alias="list">resources/icons/list.svg</file>
+        <file alias="audio">resources/icons/music.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>

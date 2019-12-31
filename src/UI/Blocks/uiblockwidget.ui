@@ -118,6 +118,10 @@
           <property name="text">
            <string>Options</string>
           </property>
+          <property name="icon">
+           <iconset resource="../../resources.qrc">
+            <normaloff>:/icons/cog</normaloff>:/icons/cog</iconset>
+          </property>
           <property name="popupMode">
            <enum>QToolButton::InstantPopup</enum>
           </property>

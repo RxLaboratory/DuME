@@ -256,13 +256,17 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>+</string>
+        <string>Settings</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/list</normaloff>:/icons/list</iconset>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
        </property>
        <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
+        <enum>Qt::ToolButtonFollowStyle</enum>
        </property>
       </widget>
      </item>
@@ -700,6 +704,30 @@
     <string>B</string>
    </property>
   </action>
+  <action name="actionVideo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/video</normaloff>:/icons/video</iconset>
+   </property>
+   <property name="text">
+    <string>Video</string>
+   </property>
+  </action>
+  <action name="actionAudio">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/audio</normaloff>:/icons/audio</iconset>
+   </property>
+   <property name="text">
+    <string>Audio</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -708,6 +736,8 @@
    <header>UI/uibigcombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

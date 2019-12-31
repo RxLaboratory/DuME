@@ -78,9 +78,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     QFontDatabase::addApplicationFont(":/fonts/calibri_light_italic");
     QFontDatabase::addApplicationFont(":/fonts/calibri_bold_italic");
 
-    //set style
-    updateCSS(":/styles/default");
-
     //add nice shadows
     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
     effect->setBlurRadius(20);
@@ -164,6 +161,10 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
+
+    //set style
+    updateCSS(":/styles/default");
+    mainToolBar->setToolButtonStyle( Qt::ToolButtonFollowStyle );
 
     log("Ready!");
 
