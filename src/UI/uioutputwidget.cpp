@@ -1,9 +1,5 @@
 #include "uioutputwidget.h"
 
-#ifdef QT_DEBUG
-#include <QtDebug>
-#endif
-
 UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
@@ -58,6 +54,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockAudioCodec = addBlock( blockAudioCodecContent, actionAudioCodec );
     blockAudioBitrateContent = new BlockAudioBitrate( _mediaInfo );
     blockAudioBitrate = addBlock( blockAudioBitrateContent, actionAudioBitrate );
+    blocksMenu->addAction( actionOther );
+    blocksMenu->addAction( actionAddCustom );
 
     init();
 
@@ -71,6 +69,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
 void UIOutputWidget::init()
 {
+    _mediaInfo->reInit();
+
     //main
     formatsFilterBox->setCurrentText("");
     formatsBox->setCurrentIndex(0);
@@ -91,10 +91,8 @@ void UIOutputWidget::init()
     blockAudioBitrate->hide();
 
     //params
-    qDeleteAll(_customParamEdits);
-    qDeleteAll(_customValueEdits);
-    _customParamEdits.clear();
-    _customValueEdits.clear();
+    qDeleteAll(_customParams);
+    _customParams.clear();
 }
 
 void UIOutputWidget::ffmpeg_init()
@@ -138,13 +136,13 @@ void UIOutputWidget::ffmpeg_loadMuxers()
 MediaInfo *UIOutputWidget::getMediaInfo()
 {
     //ADD CUSTOM PARAMS
-    for (int i = 0 ; i < _customParamEdits.count() ; i++)
+    foreach ( BlockCustom *b, _customParams )
     {
-        QString param = _customParamEdits[i]->text();
+        QString param = b->value();
         if (param != "")
         {
             QStringList option(param);
-            option << _customValueEdits[i]->text();
+            option << b->param();
             _mediaInfo->addFFmpegOption(option);
         }
     }
@@ -232,6 +230,33 @@ void UIOutputWidget::updateBlocksAvailability()
     //Audio Bitrate
     if(!okAudio) blockAudioBitrate->hide();
     actionAudioBitrate->setVisible(okAudio);
+
+    //Customs
+    //remove previous
+    qDeleteAll( _customParams );
+    _customParams.clear();
+    //add others
+    foreach( QStringList option, _mediaInfo->ffmpegOptions() )
+    {
+        addNewParam( option[0], option[1] );
+    }
+}
+
+void UIOutputWidget::customParamActivated(bool activated)
+{
+    //TODO check in other deletions if it's the UIBlockWidget which is deleted and not only the BlockCustom
+    if (!activated)
+    {
+        for ( int i = 0; i < _customParams.count(); i++)
+        {
+            if (sender() == _customParams[i]->parentWidget()->parentWidget())
+            {
+                QWidget *w = _customParams.takeAt(i)->parentWidget()->parentWidget();
+                w->deleteLater();
+                return;
+            }
+        }
+    }
 }
 
 void UIOutputWidget::on_videoButton_clicked(bool checked)
@@ -271,12 +296,6 @@ void UIOutputWidget::on_outputBrowseButton_clicked()
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
     updateOutputExtension(outputPath);
-}
-
-void UIOutputWidget::on_addParam_clicked()
-{
-    addNewParam();
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
@@ -443,19 +462,14 @@ void UIOutputWidget::updateOutputExtension(QString outputPath)
 void UIOutputWidget::addNewParam(QString name, QString value)
 {
     //add a param and a value
-    QLineEdit *customParam = new QLineEdit(this);
-    customParam->setPlaceholderText("-param");
-    customParam->setText(name);
-    customParam->setMinimumWidth(100);
-    customParam->setMaximumWidth(100);
-    //the value edit
-    QLineEdit *customValue = new QLineEdit(this);
-    customValue->setPlaceholderText("Value");
-    customValue->setText(value);
-    //add to layout and lists
-    customOptionsLayout->insertRow(1,customParam,customValue);
-    _customParamEdits << customParam;
-    _customValueEdits << customValue;
+    qDebug() << "New Custom param: " + name + " " + value;
+    BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
+    UIBlockWidget *bw = new UIBlockWidget( "FFmpeg parameter", block, blocksWidget );
+    blocksLayout->addWidget( bw );
+    bw->show();
+    connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
+    //add to list
+    _customParams << block;
 }
 
 void UIOutputWidget::newInputMedia(MediaInfo *input)
@@ -547,4 +561,7 @@ UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action
     return b;
 }
 
-
+void UIOutputWidget::on_actionAddCustom_triggered()
+{
+    addNewParam();
+}

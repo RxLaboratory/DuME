@@ -1,14 +1,15 @@
 #include "blockcustom.h"
 
-BlockCustom::BlockCustom(QWidget *parent) :
-    QWidget(parent)
+BlockCustom::BlockCustom(MediaInfo *mediaInfo, QWidget *parent) :
+    UIBlockContent(mediaInfo,parent)
 {
     setupUi(this);
 }
 
-BlockCustom::BlockCustom(QString p, QString v, QWidget *parent) :
-    QWidget(parent)
+BlockCustom::BlockCustom(MediaInfo *mediaInfo, QString p, QString v, QWidget *parent) :
+    UIBlockContent(mediaInfo,parent)
 {
+    setupUi(this);
     paramEdit->setText( p );
     valueEdit->setText( v );
 }

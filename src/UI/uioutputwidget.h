@@ -19,6 +19,7 @@
 #include "UI/Blocks/blocksampling.h"
 #include "UI/Blocks/blockaudiocodec.h"
 #include "UI/Blocks/blockaudiobitrate.h"
+#include "UI/Blocks/blockcustom.h"
 
 // OTHER UI
 #include "UI/uidropshadow.h"
@@ -53,17 +54,18 @@ public slots:
 
 private slots:
     void updateBlocksAvailability();
+    void customParamActivated(bool activated);
 
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
-    void on_addParam_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged();
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated();
     void on_videoButton_clicked(bool checked);
     void on_audioButton_clicked(bool checked);
+    void on_actionAddCustom_triggered();
 
 private:
     // BLOCKS
@@ -103,8 +105,7 @@ private:
     QSettings settings;
     FFmpeg *_ffmpeg;
     MediaInfo *_mediaInfo;
-    QList<QLineEdit *> _customParamEdits;
-    QList<QLineEdit *> _customValueEdits;
+    QList<BlockCustom *> _customParams;
 
     bool _freezeUI;
     bool _loadingPreset;
