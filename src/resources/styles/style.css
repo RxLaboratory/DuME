@@ -59,14 +59,8 @@ QPlainTextEdit, QTextBrowser, QTextEdit {
     color: @color-less-light;
 }
 
-QPlainTextEdit:hover, QTextBrowser:hover, QTextEdit:hover  {
+QPlainTextEdit:hover, QTextBrowser:hover, QTextEdit:hover, QLineEdit:hover  {
         background-color: @color-dark;
-	border-color:  @color-light;
-}
-
-QLineEdit:hover {
-        background-color: @color-light;
-	color: @color-dark;
 	border-color:  @color-light;
 }
 
@@ -139,6 +133,8 @@ QCheckBox:disabled, QRadioButton:disabled {
         color: @color-medium;
 }
 
+/* QMenu non-exclusive indicator = check box style indicator (see QActionGroup::setExclusive) */
+/* exclusive indicator = radio button style indicator (see QActionGroup::setExclusive) */
 QCheckBox::indicator, QRadioButton::indicator {
         background-color: @color-medium;
 	width: @handle-size;
@@ -147,29 +143,54 @@ QCheckBox::indicator, QRadioButton::indicator {
 	border-radius: @border-radius;
 }
 
-QCheckBox::indicator:disabled, QRadioButton::indicator:disabled {
+QMenu::indicator {
+    width: @handle-size;
+    height: @handle-size;
+    border: none;
+}
+
+QMenu::indicator:non-exclusive {
+    background-color: @color-dark;
+    width: @handle-size;
+    height: @handle-size;
+    border: none;
+    border-radius: @border-radius;
+}
+
+QMenu::icon:checked { /* appearance of a 'checked' icon */
+  background: @color-dark;
+  border: none;
+}
+
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled, QMenu::indicator:non-exclusive:disabled {
         background-color: @color-dark;
 	border-color: @color-dark;
 }
 
-QCheckBox::indicator:disabled:checked, QRadioButton::indicator:disabled:checked {
+QCheckBox::indicator:disabled:checked, QRadioButton::indicator:disabled:checked, QMenu::indicator:non-exclusive:disabled:checked {
         background-color: @color-medium;
+        border-color: @color-dark;
 }
 
-QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+QCheckBox::indicator:hover, QRadioButton::indicator:hover, QMenu::indicator:non-exclusive:hover {
         background-color: @color-less-light;
 	border-color: @color-less-light;
 }
 
-QCheckBox::indicator:hover:pressed, QRadioButton::indicator:hover:pressed {
+QCheckBox::indicator:hover:pressed, QRadioButton::indicator:hover:pressed, QMenu::indicator:non-exclusive:hover:pressed {
         background-color: @color-light;
 }
 
 QCheckBox::indicator:checked, QRadioButton::indicator:checked {
         background-color: @color-light;
+        border-color: @color-light;
 }
 
-QCheckBox::indicator:checked:hover, QRadioButton::indicator:checked:hover {
+QMenu::indicator:non-exclusive:checked {
+    background-color: @color-less-light;
+}
+
+QCheckBox::indicator:checked:hover, QRadioButton::indicator:checked:hover, QMenu::indicator:non-exclusive:checked:hover {
         background-color: @color-light;
 }
 
@@ -185,25 +206,17 @@ QSpinBox, QDoubleSpinBox {
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {
-        background-color: @color-light;
-	color: @color-dark;
 	border-color:  @color-light;
+        background-color: @color-dark;
 }
 
-QSpinBox::up-button, QDoubleSpinBox::up-button {
+QSpinBox::up-button, QDoubleSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::down-button {
         border:none;
 	background-color:@color-medium;
 	border-left: @border-size solid @color-dark;
 	border-bottom: 1px solid @color-dark;
 	border-top-right-radius: @border-radius;
-}
-
-QSpinBox::down-button, QDoubleSpinBox::down-button {
-        border:none;
-	background-color:@color-medium;
-	border-top: 1px solid @color-dark;
-	border-left: @border-size solid @color-dark;
-	border-bottom-right-radius: @border-radius;
+        color: @color-dark;
 }
 
 QSpinBox::up-button:hover,  QSpinBox::down-button:hover, QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
@@ -288,6 +301,40 @@ QComboBox QAbstractItemView {
         border: @border-size solid @color-dark;
         padding:@button-padding;
         color: @color-light;
+}
+
+/* MENUS */
+
+QMenu {
+  background-color: @color-dark;
+  padding: @edit-padding;
+}
+
+QMenu::item {
+    color: @color-light;
+    border: @border-size solid transparent;
+    padding-left: 23px;
+    padding-bottom: @margin;
+    margin-left: @margin;
+}
+
+QMenu::item:disabled {
+    color: @color-less-light;
+}
+
+
+QMenu::item:selected {
+  background: @color-light;
+  color: @color-dark;
+}
+
+QMenu::separator {
+  height: 1px ;
+  background: @color-less-dark;
+  margin-left: @handle-size;
+  margin-right: @margin ;
+  margin-top: @margin ;
+  margin-bottom: @margin ;
 }
 
 /* TOOLBAR */
@@ -666,3 +713,5 @@ QProgressBar::chunk {
         background-color: @color-light;
 	width: 1px;
 }
+
+

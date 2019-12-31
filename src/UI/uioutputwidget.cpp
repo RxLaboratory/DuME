@@ -26,7 +26,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     // CREATE MENUS
 
-    blocksMenu = new QMenu();
+    blocksMenu = new QMenu(this);
     blocksMenu->setTearOffEnabled(true);
     addBlockButton->setMenu( blocksMenu );
 
@@ -35,7 +35,9 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     audioWidget->setGraphicsEffect( new UIDropShadow() );
 
     // CREATE BLOCKS
-    blocksMenu->addSection("Video");
+    QAction *actionVideo = new QAction("Video");
+    actionVideo->setEnabled(false);
+    blocksMenu->addAction(actionVideo);
     blockResizeContent = new BlockResize( _mediaInfo );
     blockResize = addBlock( blockResizeContent, actionResize );
     blockFrameRateContent = new BlockFrameRate( _mediaInfo );
@@ -54,7 +56,9 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockAlpha = addBlock( blockAlphaContent, actionAlpha );
     blockPixFormatContent = new BlockPixFormat( _mediaInfo );
     blockPixFormat = addBlock( blockPixFormatContent, actionPixelFormat );
-    blocksMenu->addSection("Audio");
+    QAction *actionAudio = new QAction("Audio");
+    actionAudio->setEnabled(false);
+    blocksMenu->addAction(actionAudio);
     blockSamplingContent = new BlockSampling( _mediaInfo );
     blockSampling = addBlock( blockSamplingContent, actionSampling );
     blockAudioCodecContent = new BlockAudioCodec( _ffmpeg, _mediaInfo );
