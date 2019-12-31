@@ -56,6 +56,15 @@ void BlockVideoBitrate::update()
     bool useQuality = c->name() == "h264";
     bool useBitrate = c->name() != "gif" && !m->isSequence();
 
+    actionPerfect_95->setVisible( useQuality );
+    actionAuto->setVisible( useQuality );
+    actionGood_60->setVisible( useQuality );
+    actionProxy_30->setVisible( useQuality );
+    actionBad_20->setVisible( useQuality );
+    actionBlu_Ray->setVisible( useBitrate );
+    actionStreaming_12_Mbps->setVisible( useBitrate );
+    actionDVD->setVisible( useBitrate );
+
     //Display
     if ( useBitrate && useQuality )
     {
