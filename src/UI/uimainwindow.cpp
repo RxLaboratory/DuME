@@ -38,7 +38,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->addWidget(tbs);
 
     //window buttons for frameless win
-#ifdef Q_OS_WIN
+#ifndef Q_OS_MAC
     // Maximize and minimize only on windows
     this->setWindowFlags(Qt::FramelessWindowHint);
     maximizeButton = new QPushButton(QIcon(":/icons/maximize"),"");
@@ -46,11 +46,11 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->addWidget(minimizeButton);
     mainToolBar->addWidget(maximizeButton);
 #endif
-    //quit button for Mac & Win
-#ifndef Q_OS_LINUX
+    //quit button
+//#ifndef Q_OS_LINUX
     quitButton = new QPushButton(QIcon(":/icons/close"),"");
     mainToolBar->addWidget(quitButton);
-#endif
+//#endif
 
     //drag window
     toolBarClicked = false;
@@ -147,20 +147,21 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     // final connections
 
     //connect maximize and minimize buttons
-#ifdef Q_OS_WIN
+#ifndef Q_OS_MAC
     connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
 #endif
     //connect close button
-#ifndef Q_OS_LINUX
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
-#endif
 
     //settings
     connect(settingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
+
+    //Re-set StyleSheet
+    UIRainbox::updateCSS(":/styles/default", "dume");
 
     log("Ready!");
 
@@ -411,19 +412,18 @@ void UIMainWindow::reInitCurrentProgress()
     timeLabel->setText("00:00:00");
 }
 
-#ifndef Q_OS_MAC
 void UIMainWindow::maximize(bool max)
 {
     if (!max)
     {
-#ifdef Q_OS_WIN
+#ifndef Q_OS_MAC
         maximizeButton->setIcon(QIcon(":/icons/maximize"));
 #endif
         this->showNormal();
     }
     else
     {
-#ifdef Q_OS_WIN
+#ifndef Q_OS_MAC
         maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
 #endif
         this->showMaximized();
@@ -434,7 +434,6 @@ void UIMainWindow::maximize()
 {
     maximize(!this->isMaximized());
 }
-#endif
 
 void UIMainWindow::closeEvent(QCloseEvent *event)
 {
@@ -469,10 +468,10 @@ bool UIMainWindow::eventFilter(QObject *obj, QEvent *event)
   }
   else if (event->type() == QEvent::MouseMove)
   {
+      if (this->isMaximized()) return false;
     QMouseEvent *mouseEvent = (QMouseEvent*)event;
     if (mouseEvent->buttons() & Qt::LeftButton && toolBarClicked)
     {
-        if (this->isMaximized()) this->showNormal();
         this->move(mouseEvent->globalPos() - dragPosition);
         event->accept();
     }

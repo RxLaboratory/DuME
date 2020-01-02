@@ -11,6 +11,7 @@ UIRainbox::UIRainbox()
 
 void UIRainbox::updateCSS( QString cssFileName, QString appName)
 {
+    qApp->setStyleSheet("");
     QStringList cssFiles(cssFileName);
     //check if there's a dume file to include
     QFileInfo cssFileInfo(cssFileName);
