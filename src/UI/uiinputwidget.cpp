@@ -25,6 +25,10 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
     blockEXR = addBlock( blockEXRContent, actionEXR );
     blockAECompContent = new BlockAEComp( _mediaInfo );
     blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition);
+    blockAEThreadsContent = new BlockAEThreads( _mediaInfo );
+    blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads);
+
+    //TODO Fix connections between input and output
 
     updateOptions();
 }
@@ -67,7 +71,6 @@ void UIInputWidget::openFile(QString file)
 
     if ( _mediaInfo->isAep() )
     {
-        _mediaInfo->setAepNumThreads(threadsBox->value());
         if (fileInfo.suffix() == "aep") mediaInfoString += "\n\nAfter Effects project.";
         if (fileInfo.suffix() == "aet") mediaInfoString += "\n\nAfter Effects template.";
         if (fileInfo.suffix() == "aepx") mediaInfoString += "\n\nAfter Effects XML project.";
@@ -186,22 +189,6 @@ void UIInputWidget::on_inputEdit_editingFinished()
     openFile(inputEdit->text());
 }
 
-void UIInputWidget::on_addParamButton_clicked()
-{
-    /*//add a param and a value
-    QLineEdit *customParam = new QLineEdit(this);
-    customParam->setPlaceholderText("-param");
-    customParam->setMinimumWidth(100);
-    customParam->setMaximumWidth(100);
-    //the value edit
-    QLineEdit *customValue = new QLineEdit(this);
-    customValue->setPlaceholderText("Value");
-    //add to layout and lists
-    customParamsLayout->insertRow(customParamsLayout->rowCount(),customParam,customValue);
-    _customParamEdits << customParam;
-    _customValueEdits << customValue;*/
-}
-
 UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
 {
     // create block
@@ -215,29 +202,8 @@ UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
     return b;
 }
 
-void UIInputWidget::on_threadsButton_toggled(bool checked)
-{
-    threadsBox->setEnabled(checked);
-    threadsBox->setValue(QThread::idealThreadCount());
-}
-
-void UIInputWidget::on_threadsBox_valueChanged(int arg1)
-{
-    _mediaInfo->setAepNumThreads(arg1);
-}
-
 void UIInputWidget::updateOptions()
 {
-    //frame rate
-    blockFrameRate->hide();
-    //exr prerender
-    blockEXR->hide();
-    //Aep
-    blockAEComp->hide();
-    threadsBox->hide();
-    threadsButton->hide();
-
-
     //get media default extension (needed to adjust some options)
     QString extension = "";
     if (_mediaInfo->extensions().count() > 0) extension = _mediaInfo->extensions()[0];
@@ -251,27 +217,26 @@ void UIInputWidget::updateOptions()
     else
     {
         actionFramerate->setVisible( false );
+        blockFrameRate->hide();
     }
 
     //exr prerender
     actionEXR->setVisible( extension == "exr_pipe" );
+    blockEXR->hide();
 
     if (_mediaInfo->isAep())
     {
         actionAfter_Effects_composition->setVisible(true);
         blockAEComp->show();
-        threadsBox->show();
-        threadsButton->show();
-        threadsButton->setChecked(false);
-        //for now, using half the threads.
-        //TODO: count depending on RAM (3Go per thread for example)
-        threadsBox->setValue(QThread::idealThreadCount()/2);
+        actionAfter_Effects_threads->setVisible(true);
     }
     else
     {
         actionAfter_Effects_composition->setVisible(false);
         blockAEComp->hide();
+        actionAfter_Effects_threads->setVisible(false);
     }
+    blockAEThreads->hide();
 
     emit newMediaLoaded(_mediaInfo);
 }

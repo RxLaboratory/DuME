@@ -11,6 +11,7 @@
 #include "UI/Blocks/blockexr.h"
 #include "UI/Blocks/blockcolor.h"
 #include "UI/Blocks/blockaecomp.h"
+#include "UI/Blocks/blockaethreads.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -32,10 +33,7 @@ signals:
 
 private slots:
     void on_inputBrowseButton_clicked();
-    void on_addParamButton_clicked();
     void on_inputEdit_editingFinished();
-    void on_threadsButton_toggled(bool checked);
-    void on_threadsBox_valueChanged(int arg1);
 
 private:
     // BLOCKS
@@ -48,6 +46,8 @@ private:
     BlockColor *blockColorContent;
     UIBlockWidget *blockAEComp;
     BlockAEComp *blockAECompContent;
+    UIBlockWidget *blockAEThreads;
+    BlockAEThreads *blockAEThreadsContent;
 
 
     // MENUS
