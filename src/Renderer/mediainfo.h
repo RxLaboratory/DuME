@@ -98,6 +98,7 @@ public:
     FFCodec *audioCodec();
     FFCodec *defaultAudioCodec() const;
     FFPixFormat *pixFormat();
+    FFPixFormat *defaultPixFormat() const;
     qint64 audioBitrate();
     qint64 videoBitrate();
     qint64 size();

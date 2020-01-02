@@ -267,6 +267,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         settings.remove("ffmpeg/muxers");
         //create the new array
         settings.beginWriteArray("ffmpeg/muxers");
+        int n = -1;
 
         for (int i = 0 ; i < muxers.count() ; i++)
         {
@@ -286,7 +287,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 _muxers << m;
 
                 //save to settings
-                settings.setArrayIndex(i);
+                n++;
+                settings.setArrayIndex( n );
                 settings.setValue("name", name);
                 settings.setValue("prettyName", prettyName);
 
@@ -546,6 +548,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
         settings.remove("ffmpeg/codecs");
         //create the new array
         settings.beginWriteArray("ffmpeg/codecs");
+        int n = -1;
 
         for (int i = 0 ; i < codecs.count() ; i++)
         {
@@ -577,7 +580,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                 co->setLossless( lossless );
 
                 //save it to settings
-                settings.setArrayIndex(i);
+                n++;
+                settings.setArrayIndex(n);
                 settings.setValue("codecName", codecName);
                 settings.setValue("codecPrettyName", codecPrettyName);
 
@@ -737,7 +741,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
         //create the new array
         settings.beginWriteArray("ffmpeg/pixFmts");
 
-        int num = -1;
+        int n = -1;
 
         for (int i = 0 ; i < pixFmts.count() ; i++)
         {
@@ -768,7 +772,8 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
                 _pixFormats << pf;
 
                 //save it to settings
-                settings.setArrayIndex(num++);
+                n++;
+                settings.setArrayIndex(n);
                 settings.setValue("name", name);
                 settings.setValue("numComponents", numComponents);
                 settings.setValue("bpp", bpp);

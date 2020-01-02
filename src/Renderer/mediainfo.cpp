@@ -477,7 +477,7 @@ void MediaInfo::setAlpha(bool alpha, bool silent )
                     if (p->isInput() && pf->isInput())
                         if (p->colorSpace() == pf->colorSpace())
                             if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
-                                if( p->bitsPerComponent() == pf->bitsPerComponent() )
+                                if( p->bitsPerPixel() == pf->bitsPerPixel() )
                                 {
                                     _pixFormat = p;
                                     break;
@@ -921,6 +921,19 @@ void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent )
 FFPixFormat *MediaInfo::pixFormat()
 {
     return _pixFormat;
+}
+
+FFPixFormat *MediaInfo::defaultPixFormat() const
+{
+    FFCodec *c = _videoCodec;
+    FFMuxer *m = _muxer;
+    if ( c == nullptr )
+    {
+        if ( m == nullptr ) return nullptr;
+        c = m->defaultVideoCodec();
+        if ( c == nullptr ) return nullptr;
+    }
+    return c->defaultPixFormat();
 }
 
 void MediaInfo::setPixFormat(FFPixFormat *pixFormat, bool silent )

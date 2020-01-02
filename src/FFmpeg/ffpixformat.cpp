@@ -6,9 +6,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    _bitsPerComponent = _bitsPerPixel;
-    if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
-    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
+    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits in " + QString::number(_numComponents) + " channels)" );
 
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
@@ -24,9 +22,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    _bitsPerComponent = _bitsPerPixel;
-    if (_numComponents > 0) _bitsPerComponent = _bitsPerComponent / _numComponents;
-    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits (" + QString::number(_numComponents) + " channels @" + QString::number(_bitsPerComponent) + "bpc)" );
+    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits in " + QString::number(_numComponents) + " channels)" );
 
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
@@ -84,11 +80,6 @@ int FFPixFormat::bitsPerPixel() const
 int FFPixFormat::numComponents() const
 {
     return _numComponents;
-}
-
-int FFPixFormat::bitsPerComponent() const
-{
-    return _bitsPerComponent;
 }
 
 bool FFPixFormat::hasAlpha() const

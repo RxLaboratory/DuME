@@ -67,7 +67,7 @@ void BlockPixFormat::listPixFormats()
     QStringList filters = QStringList();
     foreach( FFPixFormat *p, vc->pixFormats() )
     {
-        QString filter = QString::number(p->bitsPerPixel()) + "bits (" + QString::number(p->numComponents()) + " channels @" + QString::number(p->bitsPerComponent()) + "bpc)" ;
+        QString filter = QString::number(p->bitsPerPixel()) + "bits in " + QString::number(p->numComponents()) + " channels)" ;
         if (!filters.contains(filter)) filters << filter;
     }
 
@@ -117,19 +117,15 @@ void BlockPixFormat::setDefaultPixFormat()
 
     _freezeUI = true;
 
-    FFCodec *videoCodec = _mediaInfo->defaultVideoCodec();
+    FFPixFormat *pf = _mediaInfo->defaultPixFormat();
 
-    if (videoCodec == nullptr)
-    {
-        pixFmtBox->setCurrentIndex( -1 );
-    }
-    else if ( videoCodec->defaultPixFormat() == nullptr )
+    if (pf == nullptr)
     {
         pixFmtBox->setCurrentIndex( -1 );
     }
     else
     {
-        setPixFormat( videoCodec->defaultPixFormat()->name() );
+        setPixFormat( pf->name() );
     }
 
     pixFmtBox->setEnabled( false );
