@@ -278,8 +278,6 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
         if (!videoObj.value("premultipliedAlpha").isUndefined()) _premultipliedAlpha = videoObj.value("premultipliedAlpha").toBool();
         else _premultipliedAlpha = true;
         _pixFormat = _ffmpeg->pixFormat( videoObj.value("pixelFormat").toString() );
-        if ( _pixFormat == nullptr ) qDebug() << "Aucun";
-        else qDebug() << _pixFormat->prettyName();
     }
 
     //audio
@@ -305,115 +303,113 @@ void MediaInfo::loadPreset(QFileInfo presetFile)
         opt << optionObj.value("value").toString();
         addFFmpegOption(opt);
     }
-    qDebug() << "Preset loaded.";
 
     emit changed();
 }
 
-void MediaInfo::setVideoWidth(int width)
+void MediaInfo::setVideoWidth(int width, bool silent )
 {
     _videoWidth = width;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoHeight(int height)
+void MediaInfo::setVideoHeight(int height, bool silent )
 {
     _videoHeight = height;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoFramerate(double fps)
+void MediaInfo::setVideoFramerate(double fps, bool silent )
 {
     _videoFramerate = fps;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setAudioSamplingRate(int sampling)
+void MediaInfo::setAudioSamplingRate(int sampling, bool silent )
 {
     _audioSamplingRate = sampling;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setDuration(double duration)
+void MediaInfo::setDuration(double duration, bool silent )
 {
     _duration = duration;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setFileName(QString fileName)
+void MediaInfo::setFileName(QString fileName, bool silent )
 {
     _fileName = fileName;
     if (_muxer != nullptr)
     {
         if ( _muxer->isSequence() ) loadSequence();
     }
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoCodec(FFCodec *codec)
+void MediaInfo::setVideoCodec(FFCodec *codec, bool silent )
 {
     _videoCodec = codec;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoCodec(QString codecName)
+void MediaInfo::setVideoCodec(QString codecName, bool silent )
 {
-    setVideoCodec( _ffmpeg->videoEncoder( codecName ) );
+    setVideoCodec( _ffmpeg->videoEncoder( codecName ), silent );
 }
 
-void MediaInfo::setAudioCodec(FFCodec *codec)
+void MediaInfo::setAudioCodec(FFCodec *codec, bool silent )
 {
     _audioCodec = codec;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setAudioCodec(QString codecName)
+void MediaInfo::setAudioCodec(QString codecName, bool silent )
 {
-    if (codecName == "") _audioCodec = nullptr;
-    else _audioCodec = _ffmpeg->audioEncoder( codecName );
+    setAudioCodec( _ffmpeg->audioEncoder( codecName ), silent );
 }
 
-void MediaInfo::setVideoBitrate(qint64 bitrate)
+void MediaInfo::setVideoBitrate(qint64 bitrate, bool silent )
 {
     _videoBitrate = bitrate;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setAudioBitrate(qint64 bitrate)
+void MediaInfo::setAudioBitrate(qint64 bitrate, bool silent )
 {
     _audioBitrate = bitrate;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit)
+void MediaInfo::setSize(double size, MediaUtils::SizeUnit unit, bool silent )
 {
 
     if (unit == MediaUtils::kB) size = size*1024;
     else if (unit == MediaUtils::MB) size = size*1024*1024;
     else if (unit == MediaUtils::GB) size = size*1024*1024*1024;
     _size = qint64( size );
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setFFmpegOptions(QList<QStringList> options)
+void MediaInfo::setFFmpegOptions(QList<QStringList> options, bool silent )
 {
     _ffmpegOptions = options;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setVideo(bool video)
+void MediaInfo::setVideo(bool video, bool silent )
 {
     _video = video;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setAudio(bool audio)
+void MediaInfo::setAudio(bool audio, bool silent )
 {
     _audio = audio;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setMuxer(FFMuxer *muxer)
+void MediaInfo::setMuxer(FFMuxer *muxer, bool silent )
 {
     _muxer = muxer;
     if (muxer->isSequence())
@@ -427,16 +423,16 @@ void MediaInfo::setMuxer(FFMuxer *muxer)
         _audio = muxer->isAudio();
         _video = muxer->isVideo();
     }
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::addFFmpegOption(QStringList option)
+void MediaInfo::addFFmpegOption(QStringList option, bool silent )
 {
     _ffmpegOptions << option;
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::removeFFmpegOptions(QString optionName)
+void MediaInfo::removeFFmpegOptions(QString optionName, bool silent )
 {
     for(int i = _ffmpegOptions.count()-1 ; i >= 0 ; i--)
     {
@@ -445,13 +441,96 @@ void MediaInfo::removeFFmpegOptions(QString optionName)
             _ffmpegOptions.removeAt(i);
         }
     }
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::clearFFmpegOptions()
+void MediaInfo::clearFFmpegOptions(bool silent )
 {
     _ffmpegOptions.clear();
-    emit changed();
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAlpha(bool alpha, bool silent )
+{
+    //select a pixfmt which has an alpha, the closest to the current one (or default)
+    FFPixFormat *pf = _pixFormat;
+    FFCodec *vc = _videoCodec;
+    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) return;
+
+    if ( pf == nullptr ) pf = vc->defaultPixFormat();
+    if ( pf == nullptr && vc->pixFormats().count() > 0) pf = vc->pixFormats()[0];
+    if ( pf == nullptr ) return;
+    if ( pf->hasAlpha() != alpha )
+    {
+        //find the closest one with(out) alpha
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                                if( p->bitsPerComponent() == pf->bitsPerComponent() )
+                                {
+                                    _pixFormat = p;
+                                    break;
+                                }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                            {
+                                _pixFormat = p;
+                                break;
+                            }
+
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                        {
+                            _pixFormat = p;
+                            break;
+                        }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                    {
+                        _pixFormat = p;
+                        break;
+                    }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                {
+                    _pixFormat = p;
+                    break;
+                }
+        }
+        foreach ( FFPixFormat *p, vc->pixFormats() )
+        {
+            if ( p->hasAlpha() == alpha )
+            {
+                _pixFormat = p;
+                break;
+            }
+        }
+    }
+
+    if(!silent) emit changed();
 }
 
 int MediaInfo::videoWidth()
@@ -720,89 +799,6 @@ bool MediaInfo::copyAudio() const
     return ac->name() == "copy";
 }
 
-void MediaInfo::setAlpha(bool alpha)
-{
-    //select a pixfmt which has an alpha, the closest to the current one (or default)
-    FFPixFormat *pf = _pixFormat;
-    FFCodec *vc = _videoCodec;
-    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
-    if (vc == nullptr) return;
-
-    if ( pf == nullptr ) pf = vc->defaultPixFormat();
-    if ( pf == nullptr && vc->pixFormats().count() > 0) pf = vc->pixFormats()[0];
-    if ( pf == nullptr ) return;
-    if ( pf->hasAlpha() != alpha )
-    {
-        //find the closest one with(out) alpha
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
-                        if (p->colorSpace() == pf->colorSpace())
-                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
-                                if( p->bitsPerComponent() == pf->bitsPerComponent() )
-                                {
-                                    _pixFormat = p;
-                                    break;
-                                }
-        }
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
-                        if (p->colorSpace() == pf->colorSpace())
-                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
-                            {
-                                _pixFormat = p;
-                                break;
-                            }
-
-        }
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
-                        if (p->colorSpace() == pf->colorSpace())
-                        {
-                            _pixFormat = p;
-                            break;
-                        }
-        }
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
-                    {
-                        _pixFormat = p;
-                        break;
-                    }
-        }
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                {
-                    _pixFormat = p;
-                    break;
-                }
-        }
-        foreach ( FFPixFormat *p, vc->pixFormats() )
-        {
-            if ( p->hasAlpha() == alpha )
-            {
-                _pixFormat = p;
-                break;
-            }
-        }
-    }
-
-    emit changed();
-}
-
 QString MediaInfo::audioChannels() const
 {
     return _audioChannels;
@@ -833,10 +829,10 @@ QTemporaryDir *MediaInfo::cacheDir() const
     return _cacheDir;
 }
 
-void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir)
+void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir, bool silent )
 {
     _cacheDir = aepTempDir;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 bool MediaInfo::aeUseRQueue() const
@@ -844,10 +840,10 @@ bool MediaInfo::aeUseRQueue() const
     return _aeUseRQueue;
 }
 
-void MediaInfo::setAeUseRQueue(bool aeUseRQueue)
+void MediaInfo::setAeUseRQueue(bool aeUseRQueue, bool silent )
 {
     _aeUseRQueue = aeUseRQueue;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 int MediaInfo::aepRqindex() const
@@ -855,10 +851,10 @@ int MediaInfo::aepRqindex() const
     return _aepRqindex;
 }
 
-void MediaInfo::setAepRqindex(int aepRqindex)
+void MediaInfo::setAepRqindex(int aepRqindex, bool silent )
 {
     _aepRqindex = aepRqindex;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 int MediaInfo::aepNumThreads() const
@@ -866,10 +862,10 @@ int MediaInfo::aepNumThreads() const
     return _aepNumThreads;
 }
 
-void MediaInfo::setAepNumThreads(int aepNumThreads)
+void MediaInfo::setAepNumThreads(int aepNumThreads, bool silent )
 {
     _aepNumThreads = aepNumThreads;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 QString MediaInfo::aepCompName() const
@@ -877,10 +873,10 @@ QString MediaInfo::aepCompName() const
     return _aepCompName;
 }
 
-void MediaInfo::setAepCompName(const QString &aepCompName)
+void MediaInfo::setAepCompName(const QString &aepCompName, bool silent )
 {
     _aepCompName = aepCompName;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 bool MediaInfo::isAep() const
@@ -888,10 +884,10 @@ bool MediaInfo::isAep() const
     return _isAep;
 }
 
-void MediaInfo::setAep(bool isAep)
+void MediaInfo::setAep(bool isAep, bool silent )
 {
     _isAep = isAep;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 QString MediaInfo::trc() const
@@ -899,10 +895,10 @@ QString MediaInfo::trc() const
     return _trc;
 }
 
-void MediaInfo::setTrc(const QString &trc)
+void MediaInfo::setTrc(const QString &trc, bool silent )
 {
     _trc = trc;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 bool MediaInfo::premultipliedAlpha() const
@@ -910,10 +906,10 @@ bool MediaInfo::premultipliedAlpha() const
     return _premultipliedAlpha;
 }
 
-void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha)
+void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent )
 {
     _premultipliedAlpha = premultipliedAlpha;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 FFPixFormat *MediaInfo::pixFormat()
@@ -921,7 +917,7 @@ FFPixFormat *MediaInfo::pixFormat()
     return _pixFormat;
 }
 
-void MediaInfo::setPixFormat(FFPixFormat *pixFormat)
+void MediaInfo::setPixFormat(FFPixFormat *pixFormat, bool silent )
 {
     bool alpha = hasAlpha();
     _pixFormat = pixFormat;
@@ -929,24 +925,23 @@ void MediaInfo::setPixFormat(FFPixFormat *pixFormat)
     {
         setAlpha(alpha);
     }
-    emit changed();
+    if(!silent) emit changed();
 }
 
-void MediaInfo::setPixFormat(QString name)
+void MediaInfo::setPixFormat(QString name, bool silent )
 {
-    setPixFormat( _ffmpeg->pixFormat(name) );
+    setPixFormat( _ffmpeg->pixFormat(name), silent );
 }
-
 
 QStringList MediaInfo::frames() const
 {
     return _frames;
 }
 
-void MediaInfo::setFrames(const QStringList &frames)
+void MediaInfo::setFrames(const QStringList &frames, bool silent )
 {
     _frames = frames;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 void MediaInfo::loadSequence()
@@ -1085,10 +1080,10 @@ int MediaInfo::startNumber() const
     return _startNumber;
 }
 
-void MediaInfo::setStartNumber(int startNumber)
+void MediaInfo::setStartNumber(int startNumber, bool silent )
 {
     _startNumber = startNumber;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 int MediaInfo::videoQuality() const
@@ -1096,10 +1091,10 @@ int MediaInfo::videoQuality() const
     return _videoQuality;
 }
 
-void MediaInfo::setVideoQuality(int quality)
+void MediaInfo::setVideoQuality(int quality, bool silent )
 {
     _videoQuality = quality;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 int MediaInfo::videoProfile() const
@@ -1107,10 +1102,10 @@ int MediaInfo::videoProfile() const
     return _videoProfile;
 }
 
-void MediaInfo::setVideoProfile(int profile)
+void MediaInfo::setVideoProfile(int profile, bool silent )
 {
     _videoProfile = profile;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 int MediaInfo::loop() const
@@ -1118,10 +1113,10 @@ int MediaInfo::loop() const
     return _loop;
 }
 
-void MediaInfo::setLoop(int loop)
+void MediaInfo::setLoop(int loop, bool silent )
 {
     _loop = loop;
-    emit changed();
+    if(!silent) emit changed();
 }
 
 
