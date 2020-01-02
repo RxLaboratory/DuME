@@ -12,6 +12,8 @@ class UIBlockWidget : public QWidget, private Ui::UIBlockWidget
 public:
     explicit UIBlockWidget(QString title, UIBlockContent *content, QWidget *parent = nullptr);
 
+    UIBlockContent *content() const;
+
 public slots:
     void setStatus(QString status);
 signals:

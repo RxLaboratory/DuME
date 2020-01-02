@@ -136,13 +136,14 @@ void UIOutputWidget::ffmpeg_loadMuxers()
 MediaInfo *UIOutputWidget::getMediaInfo()
 {
     //ADD CUSTOM PARAMS
-    foreach ( BlockCustom *b, _customParams )
+    foreach ( UIBlockWidget *b, _customParams )
     {
-        QString param = b->value();
+        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
+        QString param = bc->value();
         if (param != "")
         {
             QStringList option(param);
-            option << b->param();
+            option << bc->param();
             _mediaInfo->addFFmpegOption(option);
         }
     }
@@ -244,14 +245,13 @@ void UIOutputWidget::updateBlocksAvailability()
 
 void UIOutputWidget::customParamActivated(bool activated)
 {
-    //TODO check in other deletions if it's the UIBlockWidget which is deleted and not only the BlockCustom
     if (!activated)
     {
         for ( int i = 0; i < _customParams.count(); i++)
         {
-            if (sender() == _customParams[i]->parentWidget()->parentWidget())
+            if (sender() == _customParams[i])
             {
-                QWidget *w = _customParams.takeAt(i)->parentWidget()->parentWidget();
+                QWidget *w = _customParams.takeAt(i);
                 w->deleteLater();
                 return;
             }
@@ -469,7 +469,7 @@ void UIOutputWidget::addNewParam(QString name, QString value)
     bw->show();
     connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
     //add to list
-    _customParams << block;
+    _customParams << bw;
 }
 
 void UIOutputWidget::newInputMedia(MediaInfo *input)

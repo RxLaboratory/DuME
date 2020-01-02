@@ -105,7 +105,7 @@ private:
     QSettings settings;
     FFmpeg *_ffmpeg;
     MediaInfo *_mediaInfo;
-    QList<BlockCustom *> _customParams;
+    QList<UIBlockWidget *> _customParams;
 
     bool _freezeUI;
     bool _loadingPreset;

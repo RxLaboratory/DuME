@@ -43,3 +43,8 @@ void UIBlockWidget::on_closeButton_clicked()
 {
     this->hide();
 }
+
+UIBlockContent *UIBlockWidget::content() const
+{
+    return _content;
+}
