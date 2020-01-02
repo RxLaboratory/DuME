@@ -246,6 +246,14 @@ void UIOutputWidget::updateBlocksAvailability()
     {
         formatsBox->setCurrentIndex(-1);
     }
+
+    mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
+
+    //splitter sizes
+    QList<int>sizes;
+    sizes << 350;
+    sizes << 600;
+    splitter->setSizes(sizes);
 }
 
 void UIOutputWidget::customParamActivated(bool activated)

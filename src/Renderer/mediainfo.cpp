@@ -223,6 +223,107 @@ void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename, bool silent)
     if(!silent) emit changed();
 }
 
+QString MediaInfo::getDescription()
+{
+    //Text
+    QString mediaInfoString = "";
+
+    QFileInfo fileInfo(_fileName);
+
+    if ( _isAep )
+    {
+        if (fileInfo.suffix() == "aep") mediaInfoString += "After Effects project.";
+        if (fileInfo.suffix() == "aet") mediaInfoString += "After Effects template.";
+        if (fileInfo.suffix() == "aepx") mediaInfoString += "After Effects XML project.";
+    }
+
+    if ( _muxer != nullptr )
+    {
+        mediaInfoString += "File format: " + _muxer->prettyName();
+    }
+    else
+    {
+        mediaInfoString += "Containers: " + _extensions.join(",");
+    }
+
+
+    if (_duration != 0.0)
+    {
+        QTime duration(0,0,0);
+        duration = duration.addSecs( int( _duration ) );
+        mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+    }
+    else if (_imageSequence)
+    {
+        mediaInfoString += "\nDuration: " + QString::number(  _frames.count() ) + " frames";
+        mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
+    }
+
+    qint64 size = _size;
+    if (size != 0) mediaInfoString += "\nSize: " + MediaUtils::sizeString( size );
+
+    if ( !_isAep )
+    {
+        qint64 bitrate = _bitrate;
+        if (bitrate != 0) mediaInfoString += "\nGlobal bitrate: " + MediaUtils::bitrateString( bitrate );
+
+        mediaInfoString += "\nContains video: ";
+        if (_video) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+        mediaInfoString += "\nContains audio: ";
+        if (_audio) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+        mediaInfoString += "\nImage sequence: ";
+        if (_imageSequence) mediaInfoString += "yes";
+        else mediaInfoString += "no";
+
+        if (_video)
+        {
+            mediaInfoString += "\n\nVideo codec: ";
+            FFCodec *vc = _videoCodec;
+            if (vc == nullptr) vc = defaultVideoCodec();
+            if (vc != nullptr)
+            {
+                mediaInfoString += vc->prettyName();
+            }
+
+            if (_videoWidth !=0 || _videoHeight != 0 ) mediaInfoString += "\nResolution: " + QString::number(_videoWidth) + "x" + QString::number(_videoHeight);
+            if (_videoAspect != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( _videoAspect*100+0.5 ) / 100.0) + ":1";
+            if (_videoFramerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number(_videoFramerate) + " fps";
+            qint64 bitrate = _videoBitrate;
+            if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
+            mediaInfoString += "\nPixel Aspect: " + QString::number( int(_pixAspect*100+0.5)/ 100.0) + ":1";
+            FFPixFormat *pf = _pixFormat;
+            if ( pf == nullptr ) pf = defaultPixFormat();
+            if (pf != nullptr)
+            {
+                mediaInfoString += "\nPixel Format: " + pf->prettyName();
+                if (pf->hasAlpha()) mediaInfoString += "\nAlpha: yes";
+                else mediaInfoString += "\nAlpha: no";
+            }
+        }
+
+        if (_audio)
+        {
+            mediaInfoString += "\n\nAudio codec: ";
+            FFCodec *ac = _videoCodec;
+            if (ac == nullptr) ac = defaultAudioCodec();
+            if(ac != nullptr)
+            {
+                mediaInfoString += ac->prettyName();
+            }
+            if (_audioSamplingRate != 0) mediaInfoString += "\nSampling rate: " + QString::number(_audioSamplingRate) + " Hz";
+            if (_audioChannels != "")
+            {
+                mediaInfoString += "\nChannels: " + _audioChannels;
+            }
+            int abitrate = int( _audioBitrate );
+            if (abitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(abitrate);
+        }
+    }
+    return mediaInfoString;
+}
+
 void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 {
     QFile jsonFile( presetFile.absoluteFilePath() );

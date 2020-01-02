@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QTemporaryDir>
 #include <QtDebug>
+#include <QTime>
 
 #include "FFmpeg/ffmpeg.h"
 #include "utils.cpp"
@@ -40,12 +41,16 @@ public:
      */
     void updateInfo(QFileInfo mediaFile, bool silent = false);
     void updateInfo(MediaInfo *other, bool updateFilename = false, bool silent = false);
-    void loadPreset(QFileInfo presetFile, bool silent = false);
+    QString getDescription();
     /**
      * @brief reInit Reinit all to default values
      */
     void reInit(bool removeFileName = true, bool silent = false);
-
+    //presets
+    QString exportPreset();
+    void exportPreset(QString jsonPath);
+    void loadPreset(QFileInfo presetFile, bool silent = false);
+    //setters
     void setMuxer(FFMuxer *muxer, bool silent = false);
     void setMuxer(QString name, bool silent = false);
     void setContainer(QStringList container, bool silent = false);
@@ -135,13 +140,6 @@ public:
     QString colorTRC() const;
     QString colorSpace() const;
     QString colorRange() const;
-
-    //utils
-    QString exportPreset();
-    void exportPreset(QString jsonPath);  
-
-
-
 
 signals:
     /**
