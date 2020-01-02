@@ -98,6 +98,7 @@ UISplashScreen::UISplashScreen(const QPixmap &pixmap, QString version, Qt::Windo
     _progressBar->setMinimumWidth( pixmap.width() );
     _progressBar->setMaximumWidth( pixmap.width() );
     _progressBar->move( 0, pixmap.height() - 30);
+    _progressBar->setAlignment(Qt::AlignVCenter);
     //add a label for the version
     _versionLabel = new QLabel(version, this);
     _versionLabel->setMinimumWidth( pixmap.width() );

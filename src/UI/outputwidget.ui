@@ -37,13 +37,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QFormLayout" name="topLayout">
-      <property name="horizontalSpacing">
-       <number>3</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>3</number>
-      </property>
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="0,1">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -56,6 +50,9 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="outputBrowseButton">
         <property name="sizePolicy">
@@ -63,12 +60,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>125</width>
-          <height>0</height>
-         </size>
         </property>
         <property name="text">
          <string>Browse...</string>
@@ -104,12 +95,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>125</width>
-          <height>0</height>
-         </size>
         </property>
         <property name="currentIndex">
          <number>0</number>
@@ -166,12 +151,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>125</width>
-          <height>0</height>
-         </size>
         </property>
         <property name="currentIndex">
          <number>1</number>
