@@ -70,7 +70,6 @@ SOURCES += \
     UI/uiqueuewidget.cpp \
     UI/uirainbox.cpp \
     UI/uisettingswidget.cpp \
-    UI/uisplashscreen.cpp \
     UI/uitoolbarspacer.cpp \
     utils.cpp
 
@@ -113,7 +112,6 @@ HEADERS += \
     UI/uiqueuewidget.h \
     UI/uirainbox.h \
     UI/uisettingswidget.h \
-    UI/uisplashscreen.h \
     UI/uitoolbarspacer.h
 
 FORMS += \
