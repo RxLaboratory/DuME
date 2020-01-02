@@ -12,6 +12,7 @@
 #include "UI/Blocks/blockcolor.h"
 #include "UI/Blocks/blockaecomp.h"
 #include "UI/Blocks/blockaethreads.h"
+#include "UI/Blocks/blockcustom.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -34,7 +35,7 @@ signals:
 private slots:
     void on_inputBrowseButton_clicked();
     void on_inputEdit_editingFinished();
-
+    void on_actionAddCustom_triggered();
 private:
     // BLOCKS
     UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
@@ -49,13 +50,13 @@ private:
     UIBlockWidget *blockAEThreads;
     BlockAEThreads *blockAEThreadsContent;
 
-
     // MENUS
     QMenu *blocksMenu;
 
+    void addNewParam(QString name = "",QString value = "");
+
     MediaInfo *_mediaInfo;
-    QList<QLineEdit *> _customParamEdits;
-    QList<QLineEdit *> _customValueEdits;
+    QList<UIBlockWidget *> _customParams;
     void updateOptions();
 
 };

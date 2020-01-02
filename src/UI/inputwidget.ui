@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -36,6 +36,12 @@
      </property>
      <item>
       <widget class="QLineEdit" name="inputEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -49,6 +55,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="inputBrowseButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Browse...</string>
        </property>
@@ -238,6 +250,17 @@
    </property>
    <property name="shortcut">
     <string>Alt+T</string>
+   </property>
+  </action>
+  <action name="actionAddCustom">
+   <property name="text">
+    <string>Add FFmpeg parameter</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds a custom FFmpeg parameter for this input file</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Z</string>
    </property>
   </action>
  </widget>

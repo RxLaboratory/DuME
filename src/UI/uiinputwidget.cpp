@@ -27,6 +27,7 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
     blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition);
     blockAEThreadsContent = new BlockAEThreads( _mediaInfo );
     blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads);
+    blocksMenu->addAction( actionAddCustom );
 
     //TODO Fix connections between input and output
 
@@ -35,16 +36,15 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
 
 MediaInfo *UIInputWidget::getMediaInfo()
 {
-    //update custom params before returning
-    _mediaInfo->clearFFmpegOptions();
-
-    for (int i = 0 ; i < _customParamEdits.count() ; i++)
+    //ADD CUSTOM PARAMS
+    foreach ( UIBlockWidget *b, _customParams )
     {
-        QString param = _customParamEdits[i]->text();
+        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
+        QString param = bc->value();
         if (param != "")
         {
             QStringList option(param);
-            option << _customValueEdits[i]->text();
+            option << bc->param();
             _mediaInfo->addFFmpegOption(option);
         }
     }
@@ -200,6 +200,24 @@ UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
     connect( b, SIGNAL( activated(bool) ), action, SLOT( setChecked( bool ) ) );
 
     return b;
+}
+
+void UIInputWidget::addNewParam(QString name, QString value)
+{
+    //add a param and a value
+    qDebug() << "New Custom param: " + name + " " + value;
+    BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
+    UIBlockWidget *bw = new UIBlockWidget( "FFmpeg parameter", block, blocksWidget );
+    blocksLayout->addWidget( bw );
+    bw->show();
+    connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
+    //add to list
+    _customParams << bw;
+}
+
+void UIInputWidget::on_actionAddCustom_triggered()
+{
+    addNewParam();
 }
 
 void UIInputWidget::updateOptions()
