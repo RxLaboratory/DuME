@@ -20,6 +20,7 @@
 #include "UI/Blocks/blockaudiocodec.h"
 #include "UI/Blocks/blockaudiobitrate.h"
 #include "UI/Blocks/blockcustom.h"
+#include "UI/Blocks/blockcolor.h"
 
 // OTHER UI
 #include "UI/uidropshadow.h"
@@ -94,13 +95,14 @@ private:
     BlockAudioCodec *blockAudioCodecContent;
     UIBlockWidget *blockAudioBitrate;
     BlockAudioBitrate *blockAudioBitrateContent;
+    UIBlockWidget *blockColor;
+    BlockColor *blockColorContent;
 
     // MENUS
     QMenu *blocksMenu;
 
     void updateOutputExtension(QString outputPath);
     void addNewParam(QString name = "",QString value = "");
-    void init();
 
     QSettings settings;
     FFmpeg *_ffmpeg;

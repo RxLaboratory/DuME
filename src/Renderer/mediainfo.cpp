@@ -43,7 +43,10 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _loop = -1;
     _startNumber = 0;
     _premultipliedAlpha = true;
-    _trc = "";
+    _colorSpace = "";
+    _colorTRC = "";
+    _colorPrimaries = "";
+    _colorRange = "";
     // GENERAL Encoding/decoding parameters
     _cacheDir = nullptr;
     // FFMPEG Encoding/decoding
@@ -53,7 +56,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _isAep = false;
     _aepCompName = "";
     _aepNumThreads = 1;
-    _aepRqindex = 1;
+    _aepRqindex = -1;
     _aeUseRQueue = false;
 
     if(!silent) emit changed();
@@ -201,7 +204,10 @@ void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename, bool silent)
     _loop = other->loop();
     _startNumber = other->startNumber();
     _premultipliedAlpha = other->premultipliedAlpha();
-    _trc = other->trc();
+    _colorSpace = other->colorSpace();
+    _colorTRC = other->colorTRC();
+    _colorPrimaries = other->colorPrimaries();
+    _colorRange = other->colorRange();
     // GENERAL Encoding/decoding parameters
     _cacheDir = other->cacheDir();
     // FFMPEG Encoding/decoding
@@ -277,8 +283,11 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
         setVideoQuality( videoObj.value("quality").toInt(), true );
         setStartNumber( videoObj.value("startNumber").toInt(), true );
         if (!videoObj.value("premultipliedAlpha").isUndefined()) setPremultipliedAlpha( videoObj.value("premultipliedAlpha").toBool(), true );
-        else setPremultipliedAlpha( true, true );
         setPixFormat( videoObj.value("pixelFormat").toString(), true );
+        if (!videoObj.value("colorSpace").isUndefined()) setColorSpace( videoObj.value("colorSpace").toString(), true);
+        if (!videoObj.value("colorRange").isUndefined()) setColorRange( videoObj.value("colorRange").toString(), true);
+        if (!videoObj.value("colorTRC").isUndefined()) setColorTRC( videoObj.value("colorTRC").toString(), true);
+        if (!videoObj.value("colorPrimaries").isUndefined()) setColorPrimaries( videoObj.value("colorSpace").toString(), true);
     }
 
     //audio
@@ -307,6 +316,138 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 
     if(!silent) emit changed();
 }
+
+QString MediaInfo::exportPreset()
+{
+    QJsonObject mediaObj;
+    mediaObj.insert("version", APPVERSION);
+
+    //muxer
+    QJsonObject muxerObj;
+    QString muxerName = "";
+    QString muxerPrettyName = "";
+    bool muxerIsSequence = false;
+    if (_muxer != nullptr)
+    {
+        muxerName = _muxer->name();
+        muxerPrettyName = _muxer->prettyName();
+        muxerIsSequence = _muxer->isSequence();
+    }
+    muxerObj.insert("name",muxerName);
+    muxerObj.insert("prettyName",muxerPrettyName);
+    muxerObj.insert("isSequence",muxerIsSequence);
+    QJsonArray muxerExtensions = QJsonArray::fromStringList( _extensions );
+    muxerObj.insert("extensions",muxerExtensions);
+    //insert
+    mediaObj.insert("muxer",muxerObj);
+
+    //has video / audio
+    mediaObj.insert("hasVideo",hasVideo());
+    mediaObj.insert("hasAudio",hasAudio());
+
+    //video
+    if (hasVideo())
+    {
+        //name
+        QJsonObject videoObj;
+        QString videoCodecName = "default";
+        QString videoCodecPrettyName = "Default codec";
+        if (_videoCodec != nullptr)
+        {
+            videoCodecName = _videoCodec->name();
+            videoCodecPrettyName = _videoCodec->prettyName();
+        }
+        videoObj.insert("codecName",videoCodecName);
+        videoObj.insert("codecPrettyName",videoCodecPrettyName);
+        //resize
+        videoObj.insert("width",_videoWidth);
+        videoObj.insert("height",_videoHeight);
+        //framerate
+        videoObj.insert("framerate",_videoFramerate);
+        //bitrate
+        videoObj.insert("bitrate",_videoBitrate);
+        //quality
+        videoObj.insert("quality",_videoQuality);
+        //loop
+        videoObj.insert("loop",_loop);
+        //profile
+        videoObj.insert("profile",_videoProfile);
+        //start number
+        videoObj.insert("startNumber",_startNumber);
+        //pixel format
+        if ( _pixFormat != nullptr ) videoObj.insert("pixelFormat",_pixFormat->name());
+        //unmult
+        videoObj.insert("premultipliedAlpha",_premultipliedAlpha);
+        //colors
+        videoObj.insert("colorSpace", _colorSpace);
+        videoObj.insert("colorRange", _colorRange);
+        videoObj.insert("colorTRC", _colorTRC);
+        videoObj.insert("colorPrimaries", _colorPrimaries);
+
+        mediaObj.insert("video",videoObj);
+    }
+
+    //audio
+    if (hasAudio())
+    {
+        //name
+        QJsonObject audioObj;
+        QString audioCodecName = "default";
+        QString audioCodecPrettyName = "Default codec";
+        if (_audioCodec != nullptr)
+        {
+            audioCodecName = _audioCodec->name();
+            audioCodecPrettyName = _audioCodec->prettyName();
+        }
+        audioObj.insert("codecName",audioCodecName);
+        audioObj.insert("codecPrettyName",audioCodecPrettyName);
+        //resample
+        audioObj.insert("sampling",_audioSamplingRate);
+        //bitrate
+        audioObj.insert("bitrate",_audioBitrate);
+
+        mediaObj.insert("audio",audioObj);
+    }
+
+    //options
+    QJsonArray options;
+    foreach (QStringList option, _ffmpegOptions) {
+        QJsonObject optionObj;
+        optionObj.insert("name",option[0]);
+        QString optionValue = "";
+        if (option.count() > 1)
+        {
+            optionValue = option[1];
+        }
+        optionObj.insert("value",optionValue);
+        options.append(optionObj);
+    }
+    //insert
+    mediaObj.insert("options",options);
+
+    QJsonObject mainObj;
+    mainObj.insert("dume",mediaObj);
+    QJsonDocument jsonDoc(mainObj);
+
+    qDebug() << "Generated Preset: ";
+    qDebug() << jsonDoc;
+
+    return jsonDoc.toJson();
+}
+
+void MediaInfo::exportPreset(QString jsonPath)
+{
+    qDebug() << "Saving Preset: " + jsonPath;
+
+    QFile jsonFile(jsonPath);
+    if (jsonFile.open(QIODevice::WriteOnly))
+    {
+        jsonFile.write(exportPreset().toUtf8());
+        jsonFile.close();
+    }
+}
+
+// SETTERS
 
 void MediaInfo::setVideoWidth(int width, bool silent )
 {
@@ -539,6 +680,120 @@ void MediaInfo::setAlpha(bool alpha, bool silent )
     if(!silent) emit changed();
 }
 
+void MediaInfo::setColorRange(const QString &colorRange, bool silent)
+{
+    _colorRange = colorRange;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setColorPrimaries(const QString &colorPrimaries, bool silent)
+{
+    _colorPrimaries = colorPrimaries;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setColorTRC(const QString &colorTRC, bool silent)
+{
+    _colorTRC = colorTRC;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setColorSpace(const QString &colorSpace, bool silent)
+{
+    _colorSpace = colorSpace;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir, bool silent )
+{
+    _cacheDir = aepTempDir;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAeUseRQueue(bool aeUseRQueue, bool silent )
+{
+    _aeUseRQueue = aeUseRQueue;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAepRqindex(int aepRqindex, bool silent )
+{
+    _aepRqindex = aepRqindex;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAepNumThreads(int aepNumThreads, bool silent )
+{
+    _aepNumThreads = aepNumThreads;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAepCompName(const QString &aepCompName, bool silent )
+{
+    _aepCompName = aepCompName;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setPixFormat(FFPixFormat *pixFormat, bool silent )
+{
+    bool alpha = hasAlpha();
+    _pixFormat = pixFormat;
+    if (_pixFormat == nullptr)
+    {
+        setAlpha(alpha);
+    }
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setPixFormat(QString name, bool silent )
+{
+    setPixFormat( _ffmpeg->pixFormat(name), silent );
+}
+
+void MediaInfo::setFrames(const QStringList &frames, bool silent )
+{
+    _frames = frames;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setStartNumber(int startNumber, bool silent )
+{
+    _startNumber = startNumber;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setAep(bool isAep, bool silent )
+{
+    _isAep = isAep;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setVideoQuality(int quality, bool silent )
+{
+    _videoQuality = quality;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setVideoProfile(int profile, bool silent )
+{
+    _videoProfile = profile;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setLoop(int loop, bool silent )
+{
+    _loop = loop;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent )
+{
+    _premultipliedAlpha = premultipliedAlpha;
+    if(!silent) emit changed();
+}
+
+// GETTERS
+
 int MediaInfo::videoWidth()
 {
     return _videoWidth;
@@ -638,135 +893,30 @@ FFMuxer *MediaInfo::muxer() const
     return _muxer;
 }
 
-QString MediaInfo::exportPreset()
+QString MediaInfo::colorPrimaries() const
 {
-    QJsonObject mediaObj;
-    mediaObj.insert("version", APPVERSION);
-
-    //muxer
-    QJsonObject muxerObj;
-    QString muxerName = "";
-    QString muxerPrettyName = "";
-    bool muxerIsSequence = false;
-    if (_muxer != nullptr)
-    {
-        muxerName = _muxer->name();
-        muxerPrettyName = _muxer->prettyName();
-        muxerIsSequence = _muxer->isSequence();
-    }
-    muxerObj.insert("name",muxerName);
-    muxerObj.insert("prettyName",muxerPrettyName);
-    muxerObj.insert("isSequence",muxerIsSequence);
-    QJsonArray muxerExtensions = QJsonArray::fromStringList( _extensions );
-    muxerObj.insert("extensions",muxerExtensions);
-    //insert
-    mediaObj.insert("muxer",muxerObj);
-
-    //has video / audio
-    mediaObj.insert("hasVideo",hasVideo());
-    mediaObj.insert("hasAudio",hasAudio());
-
-    //video
-    if (hasVideo())
-    {
-        //name
-        QJsonObject videoObj;
-        QString videoCodecName = "default";
-        QString videoCodecPrettyName = "Default codec";
-        if (_videoCodec != nullptr)
-        {
-            videoCodecName = _videoCodec->name();
-            videoCodecPrettyName = _videoCodec->prettyName();
-        }
-        videoObj.insert("codecName",videoCodecName);
-        videoObj.insert("codecPrettyName",videoCodecPrettyName);
-        //resize
-        videoObj.insert("width",_videoWidth);
-        videoObj.insert("height",_videoHeight);
-        //framerate
-        videoObj.insert("framerate",_videoFramerate);
-        //bitrate
-        videoObj.insert("bitrate",_videoBitrate);
-        //quality
-        videoObj.insert("quality",_videoQuality);
-        //loop
-        videoObj.insert("loop",_loop);
-        //profile
-        videoObj.insert("profile",_videoProfile);
-        //start number
-        videoObj.insert("startNumber",_startNumber);
-        //pixel format
-        if ( _pixFormat != nullptr ) videoObj.insert("pixelFormat",_pixFormat->name());
-        //unmult
-        videoObj.insert("premultipliedAlpha",_premultipliedAlpha);
-
-        mediaObj.insert("video",videoObj);
-    }
-
-    //audio
-    if (hasAudio())
-    {
-        //name
-        QJsonObject audioObj;
-        QString audioCodecName = "default";
-        QString audioCodecPrettyName = "Default codec";
-        if (_audioCodec != nullptr)
-        {
-            audioCodecName = _audioCodec->name();
-            audioCodecPrettyName = _audioCodec->prettyName();
-        }
-        audioObj.insert("codecName",audioCodecName);
-        audioObj.insert("codecPrettyName",audioCodecPrettyName);
-        //resample
-        audioObj.insert("sampling",_audioSamplingRate);
-        //bitrate
-        audioObj.insert("bitrate",_audioBitrate);
-
-        mediaObj.insert("audio",audioObj);
-    }
-
-    //options
-    QJsonArray options;
-    foreach (QStringList option, _ffmpegOptions) {
-        QJsonObject optionObj;
-        optionObj.insert("name",option[0]);
-        QString optionValue = "";
-        if (option.count() > 1)
-        {
-            optionValue = option[1];
-        }
-        optionObj.insert("value",optionValue);
-        options.append(optionObj);
-    }
-    //insert
-    mediaObj.insert("options",options);
-
-    QJsonObject mainObj;
-    mainObj.insert("dume",mediaObj);
-    QJsonDocument jsonDoc(mainObj);
-
-    qDebug() << "Generated Preset: ";
-    qDebug() << jsonDoc;
-
-    return jsonDoc.toJson();
+    return _colorPrimaries;
 }
 
-void MediaInfo::exportPreset(QString jsonPath)
+QString MediaInfo::colorTRC() const
 {
-    qDebug() << "Saving Preset: " + jsonPath;
+    return _colorTRC;
+}
 
-    QFile jsonFile(jsonPath);
-    if (jsonFile.open(QIODevice::WriteOnly))
-    {
-        jsonFile.write(exportPreset().toUtf8());
-        jsonFile.close();
-    }
+QString MediaInfo::colorSpace() const
+{
+    return _colorSpace;
+}
+
+QString MediaInfo::colorRange() const
+{
+    return _colorRange;
 }
 
 bool MediaInfo::hasAlpha() const
 {
     if (_pixFormat != nullptr) return _pixFormat->hasAlpha();
-
+    
     FFCodec *vc = _videoCodec;
     if (vc == nullptr) vc = defaultVideoCodec();
     if (vc == nullptr) return false;
@@ -835,21 +985,9 @@ QTemporaryDir *MediaInfo::cacheDir() const
     return _cacheDir;
 }
 
-void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir, bool silent )
-{
-    _cacheDir = aepTempDir;
-    if(!silent) emit changed();
-}
-
 bool MediaInfo::aeUseRQueue() const
 {
     return _aeUseRQueue;
-}
-
-void MediaInfo::setAeUseRQueue(bool aeUseRQueue, bool silent )
-{
-    _aeUseRQueue = aeUseRQueue;
-    if(!silent) emit changed();
 }
 
 int MediaInfo::aepRqindex() const
@@ -857,21 +995,9 @@ int MediaInfo::aepRqindex() const
     return _aepRqindex;
 }
 
-void MediaInfo::setAepRqindex(int aepRqindex, bool silent )
-{
-    _aepRqindex = aepRqindex;
-    if(!silent) emit changed();
-}
-
 int MediaInfo::aepNumThreads() const
 {
     return _aepNumThreads;
-}
-
-void MediaInfo::setAepNumThreads(int aepNumThreads, bool silent )
-{
-    _aepNumThreads = aepNumThreads;
-    if(!silent) emit changed();
 }
 
 QString MediaInfo::aepCompName() const
@@ -879,43 +1005,14 @@ QString MediaInfo::aepCompName() const
     return _aepCompName;
 }
 
-void MediaInfo::setAepCompName(const QString &aepCompName, bool silent )
-{
-    _aepCompName = aepCompName;
-    if(!silent) emit changed();
-}
-
 bool MediaInfo::isAep() const
 {
     return _isAep;
 }
 
-void MediaInfo::setAep(bool isAep, bool silent )
-{
-    _isAep = isAep;
-    if(!silent) emit changed();
-}
-
-QString MediaInfo::trc() const
-{
-    return _trc;
-}
-
-void MediaInfo::setTrc(const QString &trc, bool silent )
-{
-    _trc = trc;
-    if(!silent) emit changed();
-}
-
 bool MediaInfo::premultipliedAlpha() const
 {
     return _premultipliedAlpha;
-}
-
-void MediaInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent )
-{
-    _premultipliedAlpha = premultipliedAlpha;
-    if(!silent) emit changed();
 }
 
 FFPixFormat *MediaInfo::pixFormat()
@@ -936,31 +1033,9 @@ FFPixFormat *MediaInfo::defaultPixFormat() const
     return c->defaultPixFormat();
 }
 
-void MediaInfo::setPixFormat(FFPixFormat *pixFormat, bool silent )
-{
-    bool alpha = hasAlpha();
-    _pixFormat = pixFormat;
-    if (_pixFormat == nullptr)
-    {
-        setAlpha(alpha);
-    }
-    if(!silent) emit changed();
-}
-
-void MediaInfo::setPixFormat(QString name, bool silent )
-{
-    setPixFormat( _ffmpeg->pixFormat(name), silent );
-}
-
 QStringList MediaInfo::frames() const
 {
     return _frames;
-}
-
-void MediaInfo::setFrames(const QStringList &frames, bool silent )
-{
-    _frames = frames;
-    if(!silent) emit changed();
 }
 
 void MediaInfo::loadSequence()
@@ -1099,21 +1174,9 @@ int MediaInfo::startNumber() const
     return _startNumber;
 }
 
-void MediaInfo::setStartNumber(int startNumber, bool silent )
-{
-    _startNumber = startNumber;
-    if(!silent) emit changed();
-}
-
 int MediaInfo::videoQuality() const
 {
     return _videoQuality;
-}
-
-void MediaInfo::setVideoQuality(int quality, bool silent )
-{
-    _videoQuality = quality;
-    if(!silent) emit changed();
 }
 
 int MediaInfo::videoProfile() const
@@ -1121,21 +1184,7 @@ int MediaInfo::videoProfile() const
     return _videoProfile;
 }
 
-void MediaInfo::setVideoProfile(int profile, bool silent )
-{
-    _videoProfile = profile;
-    if(!silent) emit changed();
-}
-
 int MediaInfo::loop() const
 {
     return _loop;
 }
-
-void MediaInfo::setLoop(int loop, bool silent )
-{
-    _loop = loop;
-    if(!silent) emit changed();
-}
-
-

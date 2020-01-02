@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>508</height>
+    <width>536</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -60,381 +60,250 @@
     </layout>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>367</width>
-        <height>478</height>
-       </rect>
+     <widget class="QTextBrowser" name="mediaInfosText">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
-       <property name="spacing">
-        <number>3</number>
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>536</width>
+         <height>393</height>
+        </rect>
        </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTextBrowser" name="mediaInfosText">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="openLinks">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QFormLayout" name="customParamsLayout">
-         <property name="horizontalSpacing">
-          <number>3</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>3</number>
-         </property>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="frameRateBox">
-           <property name="enabled">
-            <bool>false</bool>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>3</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QToolButton" name="addBlockButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Settings</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/icons/list</normaloff>:/icons/list</iconset>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonFollowStyle</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="blocksWidget" native="true">
+          <layout class="QVBoxLayout" name="blocksLayout">
+           <property name="spacing">
+            <number>3</number>
            </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="currentIndex">
-            <number>5</number>
-           </property>
-           <property name="frame">
-            <bool>false</bool>
-           </property>
-           <item>
-            <property name="text">
-             <string>Custom</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>12 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>15 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>23.976 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>24 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>25 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>29.97 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>30 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>50 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>59.94 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>60 fps</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>120 fps</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="frameRateEdit">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="frame">
-            <bool>false</bool>
-           </property>
-           <property name="suffix">
-            <string> fps</string>
-           </property>
-           <property name="minimum">
-            <double>1.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>24.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QPushButton" name="addParamButton">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>150</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Custom option...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="frameRateButton">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Frame rate</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QCheckBox" name="trcButton">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Apply color space</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="UIBigComboBox" name="trcBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="currentIndex">
-            <number>-1</number>
-           </property>
-           <property name="frame">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QCheckBox" name="compButton">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Render and encode a specific compostion.</string>
-           </property>
-           <property name="text">
-            <string>Encode composition</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="compEdit">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="placeholderText">
-            <string>Composition Name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QCheckBox" name="threadsButton">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Set the number of threads to use for the rendering process handled by DuME</string>
-           </property>
-           <property name="text">
-            <string>Set threads</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QSpinBox" name="threadsBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="suffix">
-            <string> threads</string>
-           </property>
-           <property name="minimum">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-           <property name="maximum">
-            <number>128</number>
+           <property name="topMargin">
+            <number>0</number>
            </property>
-           <property name="value">
-            <number>1</number>
+           <property name="rightMargin">
+            <number>0</number>
            </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="aeLabel">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
+           <property name="bottomMargin">
+            <number>0</number>
            </property>
-           <property name="text">
-            <string>Ae Renderer:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QCheckBox" name="rqindexButton">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Render and encode a specific item in the render queue</string>
-           </property>
-           <property name="text">
-            <string>Encode queue item #</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QSpinBox" name="rqindexBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>99</number>
-           </property>
-           <property name="value">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QCheckBox" name="aeRenderQueueButton">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Just render the whole render queue, without further encoding.</string>
-           </property>
-           <property name="text">
-            <string>Launch render queue</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QCheckBox" name="exrPreRenderButton">
-           <property name="text">
-            <string>EXR Pre-Render
-(DWA or Luma/Chroma)</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="threadsButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Set the number of threads to use for the rendering process handled by DuME</string>
+            </property>
+            <property name="text">
+             <string>Set threads</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="threadsBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> threads</string>
+            </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addParamButton">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Custom option...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>
   </layout>
+  <action name="actionFramerate">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Set Frame rate</string>
+   </property>
+   <property name="toolTip">
+    <string>Override the input frame rate</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F</string>
+   </property>
+  </action>
+  <action name="actionEXR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>EXR options</string>
+   </property>
+   <property name="toolTip">
+    <string>Set specific options to EXR format</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+E</string>
+   </property>
+  </action>
+  <action name="actionColor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Convert colors</string>
+   </property>
+   <property name="toolTip">
+    <string>Options to interpret the colors of the footage</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
+   </property>
+  </action>
+  <action name="actionAfter_Effects_composition">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>After Effects composition</string>
+   </property>
+   <property name="toolTip">
+    <string>Select the composition to render</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+A</string>
+   </property>
+  </action>
+  <action name="actionAfter_Effects_threads">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>After Effects threads</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the number of threads to use for the After Effects rendering process</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+T</string>
+   </property>
+  </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>UIBigComboBox</class>
-   <extends>QComboBox</extends>
-   <header>UI/uibigcombobox.h</header>
-  </customwidget>
- </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BlockColor</class>
+ <widget class="QWidget" name="BlockColor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>492</width>
+    <height>136</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="horizontalSpacing">
+    <number>3</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Colorspace</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="UIBigComboBox" name="spaceBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Color primaries</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="UIBigComboBox" name="primariesBox"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Color transfer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="UIBigComboBox" name="trcBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Range</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="UIBigComboBox" name="rangeBox"/>
+   </item>
+  </layout>
+  <action name="actionsRGB">
+   <property name="text">
+    <string>Images (sRGB)</string>
+   </property>
+   <property name="toolTip">
+    <string>Set colors to the sRGB standard</string>
+   </property>
+  </action>
+  <action name="actionBT709">
+   <property name="text">
+    <string>HD Video (BT.709)</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the colors to the BT.709 standard</string>
+   </property>
+  </action>
+  <action name="actionUHD10">
+   <property name="text">
+    <string>UHD video - 4K/8K (BT.2020-10bits)</string>
+   </property>
+   <property name="toolTip">
+    <string>UHD video - 4K/8K (BT.2020-10bits)</string>
+   </property>
+  </action>
+  <action name="actionUHD12">
+   <property name="text">
+    <string>UHD video - HDR 4K/8K (BT.2020-12bits)</string>
+   </property>
+   <property name="toolTip">
+    <string>UHD video - HDR 4K/8K (BT.2020-12bits)</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UIBigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/uibigcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

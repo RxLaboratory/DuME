@@ -104,7 +104,12 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     QStringList arguments("-stats");
     arguments << "-y";
 
-    MediaInfo *firstOutput = item->getOutputMedias()[0];
+    //output checks
+    MediaInfo *output = item->getOutputMedias()[0];
+    FFPixFormat *outputPixFmt = output->pixFormat();
+    if (outputPixFmt != nullptr) outputPixFmt = output->defaultPixFormat();
+    FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
+    if (outputPixFmt != nullptr) outputColorSpace = outputPixFmt->colorSpace();
 
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
@@ -126,16 +131,16 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             arguments << "-start_number" << QString::number(input->startNumber());
             inputFileName = input->ffmpegSequenceName();
         }
-        //add trc
-        if (input->trc() != "")
-        {
-            arguments << "-apply_trc" << input->trc();
-        }
-        else if (input->extensions()[0] == "exr_pipe")
-        {
-            if (firstOutput->isImageSequence()) arguments << "-apply_trc" << "iec61966_2_1"; //sRGB
-            else arguments << "-apply_trc" << "bt709"; //Rec709
-        }
+        //add color management
+        if (input->colorTRC() != "") arguments << "-color_trc" << input->colorTRC();
+        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_trc" << "bt709";
+        if (input->colorRange() != "") arguments << "-color_range" << input->colorRange();
+        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_range" << "tv";
+        if (input->colorTRC() != "") arguments << "-color_primaries" << input->colorPrimaries();
+        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_primaries" << "bt709";
+        if (input->colorSpace() != "") arguments << "-colorspace" << input->colorSpace();
+        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-colorspace" << "bt709";
+
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }
@@ -197,17 +202,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     height--;
                     emit newLog("Adjusting height for h264 compatibility. New height: " + QString::number(height));
                 }
-                if (width != 0 && height != 0)
-                {
-                    arguments << "-s" << QString::number(width) + "x" + QString::number(height);
-                }
+                if (width != 0 && height != 0) arguments << "-s" << QString::number(width) + "x" + QString::number(height);
 
                 //framerate
-                double framerate = output->videoFramerate();
-                if (framerate != 0.0)
-                {
-                    arguments << "-r" << QString::number(framerate);
-                }
+                if (output->videoFramerate() != 0.0) arguments << "-r" << QString::number(output->videoFramerate());
 
                 //loop (gif)
                 if (codec == "gif")
@@ -217,11 +215,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                int profile = output->videoProfile();
-                if (profile > -1)
-                {
-                    arguments << "-profile" << QString::number(profile);
-                }
+                if (output->videoProfile() > -1) arguments << "-profile" << QString::number(output->videoProfile());
 
                 //quality (h264)
                 int quality = output->videoQuality();
@@ -279,6 +273,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
 
+                //color
+                //add color management
+                if (output->colorTRC() != "") arguments << "-color_trc" << output->colorTRC();
+                if (output->colorRange() != "") arguments << "-color_range" << output->colorRange();
+                if (output->colorTRC() != "") arguments << "-color_primaries" << output->colorPrimaries();
+                if (output->colorSpace() != "") arguments << "-colorspace" << output->colorSpace();
+
                 //b-pyramids
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
                 if (codec == "h264") arguments << "-x264opts" << "b_pyramid=0";
@@ -288,7 +289,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
             }
 
-            //update the values which do not change from input
+            //update the values which do not change from input, for accurate progression statistics
             //get the first input which has video
             MediaInfo *input = nullptr;
             foreach( MediaInfo *in, item->getInputMedias() )
@@ -622,10 +623,8 @@ void RenderQueue::aeStatusChanged( MediaUtils::Status status )
             }
 
             //set file and launch
-            QString prevTrc = input->trc();
             double frameRate = input->videoFramerate();
             input->updateInfo( QFileInfo(aeTempPath + "/" + files[0]));
-            if (prevTrc != "") input->setTrc(prevTrc);
             if (int( frameRate ) != 0) input->setVideoFramerate(frameRate);
 
             //reInsert at first place in renderqueue

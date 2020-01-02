@@ -598,13 +598,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Color management</string>
+    <string>Set pixel format</string>
    </property>
    <property name="toolTip">
-    <string>Set the color management of the video</string>
+    <string>Set the format of the pixels of the video</string>
    </property>
    <property name="shortcut">
-    <string>C</string>
+    <string>X</string>
    </property>
   </action>
   <action name="actionSampling">
@@ -690,6 +690,20 @@
    </property>
    <property name="text">
     <string>Other</string>
+   </property>
+  </action>
+  <action name="actionColor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Set color management</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage the colors of the video</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
  </widget>

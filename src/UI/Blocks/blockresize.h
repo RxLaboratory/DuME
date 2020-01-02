@@ -27,6 +27,10 @@ private slots:
     void on_action4KFlat_triggered();
     void on_action4KScope_triggered();
     void on_actionDSM4K_triggered();
+    void on_action4KUHD_triggered();
+
+    void on_action8KUHD_triggered();
+
 private:
     QString aspectRatio();
     void checkSizes();

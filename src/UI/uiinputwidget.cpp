@@ -11,25 +11,20 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
 
     _mediaInfo = new MediaInfo( ff, this);
 
-    //populate color transfer
-    trcBox->addItem("Linear", "linear");
-    trcBox->addItem("Log", "log");
-    trcBox->addItem("Log square root", "log_sqrt");
-    trcBox->addItem("sRGB", "iec61966_2_1");
-    trcBox->addItem("xvYCC (Extended-gamut YCC)", "iec61966_2_4");
-    trcBox->addItem("BT.709", "bt709");
-    trcBox->addItem("BT.470 M (Gamma 2.2)", "gamma22");
-    trcBox->addItem("BT.470 BG (Gamma 2.8)", "gamma28");
-    trcBox->addItem("BT.1361", "bt1361");
-    trcBox->addItem("BT.2020 10 bit", "bt2020_10bit");
-    trcBox->addItem("BT.2020 12 bit", "BT.2020_12bit");
-    trcBox->addItem("SMPTE 170 M", "smpte170m");
-    trcBox->addItem("SMPTE 240 M", "smpte240m");
-    trcBox->addItem("SMPTE ST 2084", "smpte2084");
-    trcBox->addItem("SMPTE ST 428-1", "smpte428_1");
-    trcBox->addItem("Gamma", "gamma");
+    // CREATE MENUS
+    blocksMenu = new QMenu(this);
+    blocksMenu->setTearOffEnabled(true);
+    addBlockButton->setMenu( blocksMenu );
 
-    trcBox->setCurrentIndex(0);
+    // CREATE BLOCKS
+    blockFrameRateContent = new BlockFrameRate( _mediaInfo );
+    blockFrameRate = addBlock( blockFrameRateContent, actionFramerate );
+    blockColorContent = new BlockColor( _mediaInfo );
+    blockColor = addBlock( blockColorContent, actionColor );
+    blockEXRContent = new BlockEXR( _mediaInfo );
+    blockEXR = addBlock( blockEXRContent, actionEXR );
+    blockAECompContent = new BlockAEComp( _mediaInfo );
+    blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition);
 
     updateOptions();
 }
@@ -193,7 +188,7 @@ void UIInputWidget::on_inputEdit_editingFinished()
 
 void UIInputWidget::on_addParamButton_clicked()
 {
-    //add a param and a value
+    /*//add a param and a value
     QLineEdit *customParam = new QLineEdit(this);
     customParam->setPlaceholderText("-param");
     customParam->setMinimumWidth(100);
@@ -204,141 +199,26 @@ void UIInputWidget::on_addParamButton_clicked()
     //add to layout and lists
     customParamsLayout->insertRow(customParamsLayout->rowCount(),customParam,customValue);
     _customParamEdits << customParam;
-    _customValueEdits << customValue;
+    _customValueEdits << customValue;*/
 }
 
-void UIInputWidget::on_frameRateButton_toggled(bool checked)
+UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
 {
-    frameRateBox->setEnabled(checked);
-    frameRateEdit->setEnabled(checked);
-    if (checked)
-    {
-        _mediaInfo->setVideoFramerate( frameRateEdit->value() );
-    }
-    else
-    {
-        _mediaInfo->setVideoFramerate( 24.0 );
-    }
-}
+    // create block
+    UIBlockWidget *b = new UIBlockWidget( action->text(), content, blocksWidget);
+    blocksLayout->addWidget( b );
+    //add and connect action
+    blocksMenu->addAction( action );
+    connect( action, SIGNAL( triggered(bool) ), b, SLOT( setVisible(bool) ) );
+    connect( b, SIGNAL( activated(bool) ), action, SLOT( setChecked( bool ) ) );
 
-void UIInputWidget::on_trcButton_toggled(bool checked)
-{
-    trcBox->setEnabled(checked);
-    if (checked)
-    {
-        _mediaInfo->setTrc(trcBox->currentData().toString());
-    }
-    else
-    {
-        _mediaInfo->setTrc("");
-    }
-    emit newMediaLoaded(_mediaInfo);
-}
-
-void UIInputWidget::on_frameRateBox_activated(const QString &arg1)
-{
-    if (arg1 != "Custom")
-    {
-        QString num = frameRateBox->currentText().replace(" fps","");
-        frameRateEdit->setValue(num.toDouble());
-    }
-}
-
-void UIInputWidget::on_frameRateEdit_valueChanged(double arg1)
-{
-    //update mediainfo
-    _mediaInfo->setVideoFramerate(frameRateEdit->value());
-    emit newMediaLoaded(_mediaInfo);
-    //look for corresponding value
-    for (int i = 1 ; i < frameRateBox->count() ; i++)
-    {
-        QString num = frameRateBox->itemText(i).replace(" fps","");
-        if (int( num.toDouble() * 100 ) == int( arg1 * 100) )
-        {
-            frameRateBox->setCurrentIndex(i);
-            return;
-        }
-    }
-    frameRateBox->setCurrentIndex(0);
-}
-
-void UIInputWidget::on_trcBox_currentIndexChanged(int index)
-{
-    if (trcButton->isChecked())
-    {
-        _mediaInfo->setTrc(trcBox->itemData(index).toString());
-    }
-    emit newMediaLoaded(_mediaInfo);
-}
-
-void UIInputWidget::on_compButton_clicked()
-{
-    compEdit->setEnabled(true);
-    rqindexButton->setChecked(false);
-    compButton->setChecked(true);
-    rqindexBox->setEnabled(false);
-    aeRenderQueueButton->setChecked(false);
-    _mediaInfo->setAepCompName(compEdit->text());
-    _mediaInfo->setAepRqindex(0);
-    _mediaInfo->setAeUseRQueue(false);
-    emit newMediaLoaded(_mediaInfo);
-}
-
-void UIInputWidget::on_compEdit_textEdited(const QString &arg1)
-{
-    _mediaInfo->setAepCompName(arg1);
-}
-
-void UIInputWidget::on_rqindexButton_clicked()
-{
-    rqindexBox->setEnabled(true);
-    compEdit->setEnabled(false);
-    compButton->setChecked(false);
-    rqindexButton->setChecked(true);
-    aeRenderQueueButton->setChecked(false);
-    _mediaInfo->setAepRqindex(rqindexBox->value());
-    _mediaInfo->setAepCompName("");
-    _mediaInfo->setAeUseRQueue(false);
-    emit newMediaLoaded(_mediaInfo);
-}
-
-void UIInputWidget::on_rqindexBox_valueChanged(int arg1)
-{
-    _mediaInfo->setAepRqindex(arg1);
-    _mediaInfo->setAepCompName("");
-}
-
-void UIInputWidget::on_aeRenderQueueButton_clicked()
-{
-    compEdit->setEnabled(false);
-    rqindexButton->setChecked(false);
-    compButton->setChecked(false);
-    rqindexBox->setEnabled(false);
-    aeRenderQueueButton->setChecked(true);
-    _mediaInfo->setAeUseRQueue(true);
-    _mediaInfo->setAepRqindex( 0 );
-    _mediaInfo->setAepCompName("");
-    emit newMediaLoaded(_mediaInfo);
-}
-
-void UIInputWidget::on_aeRenderQueueButton_toggled(bool checked)
-{
-    if (checked)
-    {
-        threadsButton->setChecked(false);
-        threadsBox->setValue(1);
-    }
-    else if (!threadsButton->isChecked())
-    {
-        threadsBox->setValue(QThread::idealThreadCount());
-    }
+    return b;
 }
 
 void UIInputWidget::on_threadsButton_toggled(bool checked)
 {
     threadsBox->setEnabled(checked);
-    if (!checked && aeRenderQueueButton->isChecked()) threadsBox->setValue(1);
-    else threadsBox->setValue(QThread::idealThreadCount());
+    threadsBox->setValue(QThread::idealThreadCount());
 }
 
 void UIInputWidget::on_threadsBox_valueChanged(int arg1)
@@ -349,20 +229,14 @@ void UIInputWidget::on_threadsBox_valueChanged(int arg1)
 void UIInputWidget::updateOptions()
 {
     //frame rate
-    frameRateButton->hide();
-    frameRateBox->hide();
-    frameRateEdit->hide();
+    blockFrameRate->hide();
     //exr prerender
-    exrPreRenderButton->hide();
+    blockEXR->hide();
     //Aep
-    aeLabel->hide();
-    compButton->hide();
-    compEdit->hide();
+    blockAEComp->hide();
     threadsBox->hide();
     threadsButton->hide();
-    rqindexButton->hide();
-    rqindexBox->hide();
-    aeRenderQueueButton->hide();
+
 
     //get media default extension (needed to adjust some options)
     QString extension = "";
@@ -371,38 +245,33 @@ void UIInputWidget::updateOptions()
     // framerate buttons
     if (_mediaInfo->isImageSequence() || _mediaInfo->isAep())
     {
-        frameRateButton->show();
-        frameRateBox->show();
-        frameRateEdit->show();
+        actionFramerate->setVisible( true );
+        blockFrameRate->show();
+    }
+    else
+    {
+        actionFramerate->setVisible( false );
     }
 
     //exr prerender
-    if (extension == "exr_pipe")
-    {
-        exrPreRenderButton->show();
-    }
+    actionEXR->setVisible( extension == "exr_pipe" );
 
     if (_mediaInfo->isAep())
     {
-        aeLabel->show();
-        compButton->show();
-        compEdit->show();
+        actionAfter_Effects_composition->setVisible(true);
+        blockAEComp->show();
         threadsBox->show();
         threadsButton->show();
-        rqindexButton->show();
-        rqindexBox->show();
-        rqindexButton->setChecked(true);
-        compButton->setChecked(false);
-        rqindexBox->setEnabled(true);
-        compEdit->setEnabled(false);
         threadsButton->setChecked(false);
         //for now, using half the threads.
         //TODO: count depending on RAM (3Go per thread for example)
         threadsBox->setValue(QThread::idealThreadCount()/2);
-        aeRenderQueueButton->show();
-        aeRenderQueueButton->setChecked(false);
+    }
+    else
+    {
+        actionAfter_Effects_composition->setVisible(false);
+        blockAEComp->hide();
     }
 
-    //uncheck what is hidden
-    if (frameRateButton->isHidden()) frameRateButton->setChecked(false);
+    emit newMediaLoaded(_mediaInfo);
 }

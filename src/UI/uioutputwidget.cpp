@@ -18,7 +18,6 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(updateBlocksAvailability()));
 
     // CREATE MENUS
-
     blocksMenu = new QMenu(this);
     blocksMenu->setTearOffEnabled(true);
     addBlockButton->setMenu( blocksMenu );
@@ -45,6 +44,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockStartNumber = addBlock( blockStartNumberContent, actionStartNumber );
     blockAlphaContent = new BlockAlpha( _mediaInfo );
     blockAlpha = addBlock( blockAlphaContent, actionAlpha );
+    blockColorContent = new BlockColor( _mediaInfo );
+    blockColor = addBlock( blockColorContent, actionColor );
     blockPixFormatContent = new BlockPixFormat( _mediaInfo );
     blockPixFormat = addBlock( blockPixFormatContent, actionPixelFormat );
     blocksMenu->addAction(actionAudio);
@@ -57,42 +58,12 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blocksMenu->addAction( actionOther );
     blocksMenu->addAction( actionAddCustom );
 
-    init();
-
     ffmpeg_init();
 
     _freezeUI = false;
 
     //Set defaults
     on_presetsFilterBox_activated();
-}
-
-void UIOutputWidget::init()
-{
-    _mediaInfo->reInit();
-
-    //main
-    formatsFilterBox->setCurrentText("");
-    formatsBox->setCurrentIndex(0);
-
-    //video
-    videoTranscodeButton->setChecked(true);
-    blockResize->hide();
-    blockFrameRate->hide();
-    blockVideoCodec->hide();
-    blockVideoBitrate->hide();
-    blockVideoProfile->hide();
-    blockLoops->hide();
-
-    //audio
-    audioTranscodeButton->setChecked(true);
-    blockSampling->hide();
-    blockAudioCodec->hide();
-    blockAudioBitrate->hide();
-
-    //params
-    qDeleteAll(_customParams);
-    _customParams.clear();
 }
 
 void UIOutputWidget::ffmpeg_init()

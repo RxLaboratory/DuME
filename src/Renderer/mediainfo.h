@@ -84,6 +84,10 @@ public:
     void setCacheDir(QTemporaryDir *cacheDir, bool silent = false);
     void setAeUseRQueue(bool aeUseRQueue, bool silent = false);
     void setAlpha(bool alpha, bool silent = false);
+    void setColorPrimaries(const QString &colorPrimaries, bool silent = false);
+    void setColorTRC(const QString &colorTRC, bool silent = false);
+    void setColorSpace(const QString &colorSpace, bool silent = false);
+    void setColorRange(const QString &colorRange, bool silent = false);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -113,7 +117,6 @@ public:
     int startNumber() const;
     QStringList frames() const;
     bool premultipliedAlpha() const;
-    QString trc() const;
     bool isAep() const;
     QString aepCompName() const;
     int aepNumThreads() const;
@@ -128,10 +131,17 @@ public:
     bool canHaveAlpha() const;
     bool copyVideo() const;
     bool copyAudio() const;
+    QString colorPrimaries() const;
+    QString colorTRC() const;
+    QString colorSpace() const;
+    QString colorRange() const;
 
     //utils
     QString exportPreset();
     void exportPreset(QString jsonPath);  
+
+
+
 
 signals:
     /**
@@ -260,10 +270,11 @@ private:
      * @brief _premultipliedAlpha Wether the Alpha is premultiplied
      */
     bool _premultipliedAlpha;
-    /**
-     * @brief _trc The color transfer profile (gamma)
-     */
-    QString _trc;
+
+    QString _colorPrimaries;
+    QString _colorTRC;
+    QString _colorSpace;
+    QString _colorRange;
 
     // GENERAL Encoding/decoding parameters
 

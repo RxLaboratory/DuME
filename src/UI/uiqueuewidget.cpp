@@ -121,7 +121,6 @@ void UIQueueWidget::addOutput()
     connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 }
 
-
 void UIQueueWidget::on_splitter_splitterMoved()
 {
     QSettings settings;

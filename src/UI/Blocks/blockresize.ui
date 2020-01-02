@@ -82,12 +82,12 @@
   </layout>
   <action name="actionHD1080">
    <property name="text">
-    <string>HD ( 1080p )</string>
+    <string>HD ( 1920x1080 - 1.78:1 )</string>
    </property>
   </action>
   <action name="actionHD720">
    <property name="text">
-    <string>HD ( 720p )</string>
+    <string>HD ( 1280x720 - 1.78:1 )</string>
    </property>
   </action>
   <action name="actionKeepRatio">
@@ -103,32 +103,32 @@
   </action>
   <action name="action2KFlat">
    <property name="text">
-    <string>2K Flat ( 1998x1080 )</string>
+    <string>DCP 2K Flat ( 1998x1080 - 1.85:1 )</string>
    </property>
   </action>
   <action name="action2KScope">
    <property name="text">
-    <string>2K Scope ( 2048x858 ) </string>
+    <string>DCP 2K Scope ( 2048x858 - 2.39:1 ) </string>
    </property>
   </action>
   <action name="action4KFlat">
    <property name="text">
-    <string>4K Flat ( 3996x2160 )</string>
+    <string>DCP 4K Flat ( 3996x2160 - 1.85:1 )</string>
    </property>
   </action>
   <action name="action4KScope">
    <property name="text">
-    <string>4K Scope ( 4096x1716 )</string>
+    <string>DCP 4K Scope ( 4096x1716 - 2.39:1 )</string>
    </property>
   </action>
   <action name="actionDSM4K">
    <property name="text">
-    <string>DSM 4K ( 4096x2160 )</string>
+    <string>DSM/DCP Full 4K ( 4096x2160 - 1.9:1 )</string>
    </property>
   </action>
   <action name="actionDSM2K">
    <property name="text">
-    <string>DSM 2K ( 2048x1080 )</string>
+    <string>DSM/DCP Full 2K ( 2048x1080 - 1.9:1 )</string>
    </property>
   </action>
   <action name="actionAdaptRatio">
@@ -137,6 +137,16 @@
    </property>
    <property name="text">
     <string>Adapt to current ratio</string>
+   </property>
+  </action>
+  <action name="action4KUHD">
+   <property name="text">
+    <string>4K UHD ( 3840x2160 - 1.78:1 )</string>
+   </property>
+  </action>
+  <action name="action8KUHD">
+   <property name="text">
+    <string>8K UHD ( 7680x4320 - 1.78:1 )</string>
    </property>
   </action>
  </widget>

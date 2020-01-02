@@ -513,6 +513,15 @@ QSplitter::handle:pressed {
         background-color: @color-light;
 }
 
+QSplitter::handle:vertical {
+    image: url(:/icons/vsplitter);
+}
+
+QSplitter::handle:horizontal {
+    image: url(:/icons/hsplitter);
+}
+
+
 /* LIST */
 
 QListWidget {

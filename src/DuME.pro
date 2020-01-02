@@ -39,10 +39,13 @@ SOURCES += \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
+    UI/Blocks/blockaecomp.cpp \
     UI/Blocks/blockalpha.cpp \
     UI/Blocks/blockaudiobitrate.cpp \
     UI/Blocks/blockaudiocodec.cpp \
+    UI/Blocks/blockcolor.cpp \
     UI/Blocks/blockcustom.cpp \
+    UI/Blocks/blockexr.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
     UI/Blocks/blockpixformat.cpp \
@@ -88,9 +91,12 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
+    UI/Blocks/blockaecomp.h \
     UI/Blocks/blockalpha.h \
     UI/Blocks/blockaudiobitrate.h \
     UI/Blocks/blockaudiocodec.h \
+    UI/Blocks/blockcolor.h \
+    UI/Blocks/blockexr.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
     UI/Blocks/blockpixformat.h \
@@ -115,9 +121,12 @@ HEADERS += \
     UI/uitoolbarspacer.h
 
 FORMS += \
+    UI/Blocks/blockaecomp.ui \
     UI/Blocks/blockalpha.ui \
     UI/Blocks/blockaudiobitrate.ui \
     UI/Blocks/blockaudiocodec.ui \
+    UI/Blocks/blockcolor.ui \
+    UI/Blocks/blockexr.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
     UI/Blocks/blockpixformat.ui \

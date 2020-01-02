@@ -13,9 +13,11 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( action2KFlat );
     _presets->addAction( action2KScope );
     _presets->addAction( actionDSM2K );
+    _presets->addAction( action4KUHD );
     _presets->addAction( action4KFlat );
     _presets->addAction( action4KScope );
     _presets->addAction( actionDSM4K );
+    _presets->addAction( action8KUHD );
 }
 
 void BlockResize::setActivated(bool activate)
@@ -185,5 +187,12 @@ void BlockResize::on_actionDSM4K_triggered()
     setSize( 4096, 2160 );
 }
 
+void BlockResize::on_action4KUHD_triggered()
+{
+    setSize( 3840, 2160 );
+}
 
-
+void BlockResize::on_action8KUHD_triggered()
+{
+    setSize( 7680, 4320 );
+}

@@ -20,7 +20,7 @@ public:
                  };
     Q_DECLARE_FLAGS(Abilities, Ability)
 
-    enum ColorSpace { RGB, YUV, Other };
+    enum ColorSpace { RGB, YUV, OTHER };
     Q_ENUM( ColorSpace )
 
     /**

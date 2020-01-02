@@ -17,6 +17,7 @@
         <file alias="video">resources/icons/film.svg</file>
         <file alias="list">resources/icons/list.svg</file>
         <file alias="audio">resources/icons/music.svg</file>
+        <file alias="vsplitter">resources/icons/doublearrows-updown-dark.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
