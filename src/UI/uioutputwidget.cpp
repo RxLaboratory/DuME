@@ -241,6 +241,40 @@ void UIOutputWidget::updateBlocksAvailability()
     {
         addNewParam( option[0], option[1] );
     }
+
+    //Muxer
+    FFMuxer *m = _mediaInfo->muxer();
+    if ( m != nullptr)
+    {
+        bool found = false;
+        for (int i = 0; i < formatsBox->count(); i++)
+        {
+            if (formatsBox->itemData(i).toString() == m->name())
+            {
+                formatsBox->setCurrentIndex(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            //try without filter
+            formatsFilterBox->setCurrentIndex(0);
+            for (int i = 0; i < formatsBox->count(); i++)
+            {
+                if (formatsBox->itemData(i).toString() == m->name())
+                {
+                    formatsBox->setCurrentIndex(i);
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        formatsBox->setCurrentIndex(-1);
+    }
 }
 
 void UIOutputWidget::customParamActivated(bool activated)
