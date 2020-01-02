@@ -67,7 +67,7 @@ void BlockPixFormat::listPixFormats()
     QStringList filters = QStringList();
     foreach( FFPixFormat *p, vc->pixFormats() )
     {
-        QString filter = QString::number(p->bitsPerPixel()) + "bits in " + QString::number(p->numComponents()) + " channels)" ;
+        QString filter = QString::number(p->bitsPerPixel()) + " bits - " + QString::number(p->numComponents()) + " channels" ;
         if (!filters.contains(filter)) filters << filter;
     }
 

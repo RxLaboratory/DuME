@@ -6,7 +6,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits in " + QString::number(_numComponents) + " channels)" );
+    this->setPrettyName(this->prettyName() + " (" + QString::number(_bitsPerPixel) + " bits - " + QString::number(_numComponents) + " channels)" );
 
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
@@ -22,7 +22,7 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
-    this->setPrettyName(this->prettyName() + "  - " + QString::number(_bitsPerPixel) + "bits in " + QString::number(_numComponents) + " channels)" );
+    this->setPrettyName(this->prettyName() + " (" + QString::number(_bitsPerPixel) + "bits - " + QString::number(_numComponents) + " channels)" );
 
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
