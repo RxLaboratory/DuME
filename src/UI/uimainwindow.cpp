@@ -38,17 +38,23 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->addWidget(tbs);
 
     //window buttons for frameless win
+    minimizeButton = new QToolButton(this);
+    minimizeButton->setIcon(QIcon(":/icons/minimize"));
+    minimizeButton->setObjectName("minimizeButton");
+    maximizeButton = new QToolButton(this);
+    maximizeButton->setIcon(QIcon(":/icons/maximize"));
+    maximizeButton->setObjectName("maximizeButton");
+    quitButton = new QToolButton(this);
+    quitButton->setIcon(QIcon(":/icons/close"));
+    quitButton->setObjectName("quitButton");
 #ifndef Q_OS_MAC
     // Maximize and minimize only on windows
     this->setWindowFlags(Qt::FramelessWindowHint);
-    maximizeButton = new QPushButton(QIcon(":/icons/maximize"),"");
-    minimizeButton = new QPushButton(QIcon(":/icons/minimize"),"");
     mainToolBar->addWidget(minimizeButton);
     mainToolBar->addWidget(maximizeButton);
 #endif
     //quit button
 //#ifndef Q_OS_LINUX
-    quitButton = new QPushButton(QIcon(":/icons/close"),"");
     mainToolBar->addWidget(quitButton);
 //#endif
 
@@ -147,10 +153,8 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     // final connections
 
     //connect maximize and minimize buttons
-#ifndef Q_OS_MAC
     connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
-#endif
     //connect close button
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 
@@ -416,16 +420,12 @@ void UIMainWindow::maximize(bool max)
 {
     if (!max)
     {
-#ifndef Q_OS_MAC
         maximizeButton->setIcon(QIcon(":/icons/maximize"));
-#endif
         this->showNormal();
     }
     else
     {
-#ifndef Q_OS_MAC
         maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
-#endif
         this->showMaximized();
     }
 }

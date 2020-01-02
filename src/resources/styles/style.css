@@ -434,6 +434,11 @@ QToolButton:checked:hover, QToolBar QPushButton:checked:hover {
 	color: @color-medium;
 }
 
+#minimizeButton, #maximizeButton, #quitButton {
+    width:@handle-size;
+    height:@handle-size;
+}
+
 /* SCROLLBAR */
 
 QScrollBar {

@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="minimize">resources/icons/angle down 2.png</file>
-        <file alias="unmaximize">resources/icons/angle down double 2.png</file>
-        <file alias="maximize">resources/icons/angle up double 2.png</file>
-        <file alias="close">resources/icons/close 2.png</file>
+        <file alias="minimize">resources/icons/window-minimize.svg</file>
+        <file alias="unmaximize">resources/icons/window-restore.svg</file>
+        <file alias="maximize">resources/icons/window-maximize.svg</file>
+        <file alias="close">resources/icons/window-close.svg</file>
         <file alias="settings">resources/icons/cogs2.png</file>
         <file alias="play">resources/icons/play_circle.png</file>
         <file alias="stop">resources/icons/stop_circle.png</file>

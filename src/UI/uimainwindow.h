@@ -82,21 +82,10 @@ private:
      * @brief statusLabel The status shown in the status bar
      */
     QLabel *statusLabel;
-
-#ifndef Q_OS_MAC
-    /**
-     * @brief maximizeButton Button to maximize the window
-     */
-    QPushButton *maximizeButton;
-    /**
-     * @brief minimizeButton Button to minimize the window
-     */
-    QPushButton *minimizeButton;
-#endif
-    /**
-     * @brief quitButton Button to quit application
-     */
-    QPushButton *quitButton;
+    // Window Buttons
+    QToolButton *quitButton;
+    QToolButton *maximizeButton;
+    QToolButton *minimizeButton;
     /**
      * @brief settingsWidget The settings page
      */
