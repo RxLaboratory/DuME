@@ -263,6 +263,10 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         QStringList muxers = output.split("\n");
         QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
 
+        int max = muxers.count();
+        _progressMax = _prevMax + max; //pixfmts + codecs + muxers
+        emit progressMax( _progressMax );
+
         //remove the previous codecs
         settings.remove("ffmpeg/muxers");
         //create the new array
@@ -272,6 +276,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         for (int i = 0 ; i < muxers.count() ; i++)
         {
             QString muxer = muxers[i];
+            emit progress(_prevMax + i);
+
             QRegularExpressionMatch match = re.match(muxer);
             if (match.hasMatch())
             {
@@ -337,6 +343,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         }
 
         settings.endArray();
+
+        _prevMax = _prevMax + max;
     }
     else //other wise, get from settings
     {
@@ -345,9 +353,14 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         //open array
         int arraySize = settings.beginReadArray("ffmpeg/muxers");
 
+        _progressMax = _prevMax + arraySize; //pixfmts + codecs + muxers
+        emit progressMax( _progressMax );
+
         for (int i = 0; i < arraySize; i++)
         {
             settings.setArrayIndex(i);
+
+            emit progress( _prevMax + i);
 
             QString name = settings.value("name").toString();
             QString prettyName = settings.value("prettyName").toString();
@@ -371,6 +384,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         }
 
         settings.endArray();
+
+        _prevMax = _prevMax + arraySize;
     }
 
     //add image sequences
@@ -544,6 +559,10 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
         QStringList codecs = output.split("\n");
         QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
 
+        int max = codecs.count();
+        _progressMax = _prevMax + max + max/1.5; //pixfmts + codecs + estimated muxers
+        emit progressMax( _progressMax );
+
         //remove the previous codecs
         settings.remove("ffmpeg/codecs");
         //create the new array
@@ -553,6 +572,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
         for (int i = 0 ; i < codecs.count() ; i++)
         {
             QString codec = codecs[i];
+            emit progress( _prevMax + i );
 
             QRegularExpressionMatch match = re.match(codec);
             if (match.hasMatch())
@@ -652,6 +672,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
         //close array
         settings.endArray();
+
+        _prevMax = _prevMax + max;
     }
     else //other wise, get from settings
     {
@@ -660,9 +682,14 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
         //open array
         int arraySize = settings.beginReadArray("ffmpeg/codecs");
 
+        _progressMax = _prevMax + arraySize + arraySize/1.5; //pixfmts + codecs + estimated muxers
+        emit progressMax( _progressMax );
+
         for (int i = 0; i < arraySize; i++)
         {
             settings.setArrayIndex(i);
+
+            emit progress( _prevMax + i);
 
             QString codecName = settings.value("codecName").toString();
             QString codecPrettyName = settings.value("codecPrettyName").toString();
@@ -716,6 +743,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
         //close the array
         settings.endArray();
+
+        _prevMax = _prevMax + arraySize;
     }
 
 
@@ -734,6 +763,10 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     if (newVersion != _version)
     {
         QStringList pixFmts = output.split("\n");
+        int max = pixFmts.count();
+        _progressMax = max + max*2 + max/3; //pixfmts + estimated codecs + estimated muxers
+        _prevMax = max;
+        emit progressMax( _progressMax );
         QRegularExpression re("([I.])([O.])([H.])([P.])([B.]) (\\w+) +(\\d+) +(\\d+)");
 
         //remove the previous formats
@@ -746,6 +779,8 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
         for (int i = 0 ; i < pixFmts.count() ; i++)
         {
             QString pixFmt = pixFmts[i];
+
+            emit progress(i);
 
             QRegularExpressionMatch match = re.match(pixFmt);
             if (match.hasMatch())
@@ -793,10 +828,14 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     {
         //open array
         int arraySize = settings.beginReadArray("ffmpeg/pixFmts");
+        _progressMax = arraySize + arraySize*2 + arraySize/3; //pixfmts + estimated codecs + estimated muxers
+        _prevMax = arraySize;
+        emit progressMax( _progressMax );
 
         for (int i = 0; i < arraySize; ++i)
         {
             settings.setArrayIndex(i);
+            emit progress(i);
 
 
             QString name = settings.value("name").toString();

@@ -74,7 +74,6 @@ private:
     // ====== UI ========
 
     UIQueueWidget *queueWidget;
-    void updateCSS(QString cssFileName);
     /**
      * @brief reInitCurrentProgress Initializes the current progress bar and infos
      */

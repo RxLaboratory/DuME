@@ -116,6 +116,10 @@ public:
      */
     MediaUtils::Status status() const;
 
+signals:
+    void progress(int);
+    void progressMax(int);
+
 public slots:
     /**
      * @brief setBinaryFileName Sets the path to the FFmpeg binary
@@ -149,6 +153,11 @@ private:
     QString _help;
     // The documentation
     QString _longHelp;
+
+    // The progression of init
+    int _progressMax;
+    int _prevMax;
+    int _currentProgress;
 
     //=== Process outputs ===
     /**

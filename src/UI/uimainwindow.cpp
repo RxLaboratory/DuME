@@ -162,10 +162,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
-    //set style
-    updateCSS(":/styles/default");
-    mainToolBar->setToolButtonStyle( Qt::ToolButtonFollowStyle );
-
     log("Ready!");
 
 }
@@ -401,24 +397,6 @@ void UIMainWindow::on_actionSettings_triggered(bool checked)
     {
         mainStackWidget->setCurrentIndex(0);
     }
-}
-
-void UIMainWindow::updateCSS(QString cssFileName)
-{
-    QStringList cssFiles(cssFileName);
-    //check if there's a dume file to include
-    QFileInfo cssFileInfo(cssFileName);
-    QString includeName = cssFileInfo.completeBaseName() + "-dume";
-    QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
-    QFile includeFile(includePath);
-    includePath = cssFileInfo.path() + "/" + includeName;
-    if (!includeFile.exists()) includeFile.setFileName(includePath);
-    if (includeFile.exists())
-    {
-        cssFiles << includePath;
-    }
-    QString css = UIRainbox::loadCSS(cssFiles);
-    qApp->setStyleSheet(css);
 }
 
 void UIMainWindow::reInitCurrentProgress()

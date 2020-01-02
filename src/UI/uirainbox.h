@@ -5,11 +5,13 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QApplication>
 
 class UIRainbox
 {
 public:
     UIRainbox();
+    static void updateCSS(QString cssFileName, QString appName = "");
     /**
      * @brief loadCSS Loads a CSS File
      * If any cssFileName-values.val file is found, uses these values in the CSS

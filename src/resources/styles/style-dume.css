@@ -34,7 +34,6 @@ QSplitter::handle:horizontal {
     color: @color-less-light;
 }
 
-
 #consoleTabs QTabWidget,  #consoleTabs QTabWidget::pane, #consoleTabs QTabBar::tab:selected {
     background-color: @color-dark-alternate;
     border: none;

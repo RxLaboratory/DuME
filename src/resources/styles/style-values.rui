@@ -13,5 +13,6 @@
 @edit-padding = 4px
 @button-padding = 6px
 @bars-size = 15px
+@progress-size = 30px
 @handle-size = 12px
 

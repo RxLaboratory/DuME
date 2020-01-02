@@ -5,6 +5,7 @@
 #include <QBitmap>
 #include <QSettings>
 #include <QStringList>
+#include <QtDebug>
 
 #include "FFmpeg/ffmpeg.h"
 #include "UI/uisplashscreen.h"
@@ -13,20 +14,23 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //create splash screen
-    QPixmap pixmap(":/images/splash");
-    UISplashScreen splash(pixmap);
-    //add a progress bar?
-    //QProgressBar progress(&splash);
-    //show
-    splash.show();
+    //set style
+    UIRainbox::updateCSS(":/styles/default", "dume");
 
     //load settings
-    splash.newMessage("Loading settings...");
     QCoreApplication::setOrganizationName("Rainbox Laboratory");
     QCoreApplication::setOrganizationDomain("rainboxlab.org");
     QCoreApplication::setApplicationName("DuME");
     QCoreApplication::setApplicationVersion(APPVERSION);
+
+    //create splash screen
+    QString v = "DuME v";
+    QPixmap pixmap(":/images/splash");
+    UISplashScreen splash(pixmap, v+APPVERSION);
+
+    //show
+    splash.show();
+
 
     QSettings settings;
     if (settings.value("version").toString() != APPVERSION)
@@ -35,14 +39,17 @@ int main(int argc, char *argv[])
         settings.setValue("ffmpeg/version","");
     }
 
+
     // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD. COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
-    // settings.setValue("ffmpeg/version","");
+     settings.setValue("ffmpeg/version","");
 
 
     //load FFmpeg
     splash.newMessage("Loading FFmpeg...");
     FFmpeg *ffmpeg = new FFmpeg();
     QObject::connect(ffmpeg,&FFmpeg::newLog,&splash,&UISplashScreen::newMessage);
+    QObject::connect(ffmpeg,&FFmpeg::progressMax,&splash,&UISplashScreen::progressMax);
+    QObject::connect(ffmpeg,&FFmpeg::progress,&splash,&UISplashScreen::progress);
     splash.newMessage("Initializing FFmpeg...");
     ffmpeg->init();
 

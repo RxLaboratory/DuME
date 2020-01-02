@@ -9,6 +9,24 @@ UIRainbox::UIRainbox()
 
 }
 
+void UIRainbox::updateCSS( QString cssFileName, QString appName)
+{
+    QStringList cssFiles(cssFileName);
+    //check if there's a dume file to include
+    QFileInfo cssFileInfo(cssFileName);
+    QString includeName = cssFileInfo.completeBaseName() + "-" + appName;
+    QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
+    QFile includeFile(includePath);
+    includePath = cssFileInfo.path() + "/" + includeName;
+    if (!includeFile.exists()) includeFile.setFileName(includePath);
+    if (includeFile.exists())
+    {
+        cssFiles << includePath;
+    }
+    QString css = UIRainbox::loadCSS(cssFiles);
+    qApp->setStyleSheet(css);
+}
+
 QString UIRainbox::loadCSS(QString cssFileName)
 {
     return loadCSS(QStringList(cssFileName));

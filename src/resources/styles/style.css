@@ -711,6 +711,7 @@ QProgressBar {
 	background-color: @color-very-dark;
 	border-radius: @border-radius;
 	text-align: center;
+        height: @bars-size;
 }
 
 QProgressBar::chunk {
@@ -718,4 +719,9 @@ QProgressBar::chunk {
 	width: 1px;
 }
 
+/* SPLASH SCREEN */
 
+QSplashScreen QProgressBar {
+    height: @progress-size;
+    text-align: left;
+}
