@@ -39,15 +39,16 @@ public:
      * @brief updateInfo Updates all the information for this media file
      * @param mediaFilePath The media file. For a frame sequence, it can be any frame from the sequence
      */
-    void updateInfo(QFileInfo mediaFile);
-    void updateInfo(MediaInfo *other, bool updateFilename = false);
-    void loadPreset(QFileInfo presetFile);
+    void updateInfo(QFileInfo mediaFile, bool silent = false);
+    void updateInfo(MediaInfo *other, bool updateFilename = false, bool silent = false);
+    void loadPreset(QFileInfo presetFile, bool silent = false);
     /**
      * @brief reInit Reinit all to default values
      */
-    void reInit(bool removeFileName = true);
+    void reInit(bool removeFileName = true, bool silent = false);
 
     void setMuxer(FFMuxer *muxer, bool silent = false);
+    void setMuxer(QString name, bool silent = false);
     void setContainer(QStringList container, bool silent = false);
     void setVideoWidth(int width, bool silent = false);
     void setVideoHeight(int height, bool silent = false);
