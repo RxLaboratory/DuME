@@ -4,6 +4,8 @@
 #include <QString>
 #include <QFile>
 #include <QObject>
+#include <QRegularExpression>
+#include <QDebug>
 
 
 class FileUtils
@@ -224,6 +226,20 @@ public:
      */
     enum LogType { Debug, Information, Warning, Critical, Fatal };
     Q_ENUM(LogType)
+};
+
+class RegExUtils {
+public:
+    static QRegularExpression getRegEx( QString name )
+    {
+        QFile regExFile(":regex/" + name );
+        if (regExFile.open(QFile::ReadOnly))
+        {
+            QString regExStr = regExFile.readAll();
+            return QRegularExpression( regExStr.trimmed() );
+        }
+        return QRegularExpression();
+    }
 };
 
 #endif // UTILS_H

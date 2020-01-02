@@ -1,0 +1,1 @@
+Duration: (?:(\d\d):(\d\d):(\d\d.\d\d),\sstart:\s\d+.\d+, bitrate:\s(\d+))?(?:(N\/A), )?

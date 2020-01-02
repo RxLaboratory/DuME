@@ -67,4 +67,10 @@
         <file alias="calibri_light_italic">resources/fonts/calibrili.ttf</file>
         <file alias="calibri_bold_italic">resources/fonts/calibriz.ttf</file>
     </qresource>
+    <qresource prefix="/regex">
+        <file alias="ffmpeg video stream">resources/regex/ffmpegVideoStream.txt</file>
+        <file alias="ffmpeg audio stream">resources/regex/ffmpegAudioStream.txt</file>
+        <file alias="ffmpeg duration">resources/regex/ffmpegDuration.txt</file>
+        <file alias="ffmpeg input">resources/regex/ffmpegInput.txt</file>
+    </qresource>
 </RCC>

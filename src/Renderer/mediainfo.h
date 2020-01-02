@@ -2,7 +2,6 @@
 #define MEDIAINFO_H
 
 #include <QObject>
-#include <QRegularExpression>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>

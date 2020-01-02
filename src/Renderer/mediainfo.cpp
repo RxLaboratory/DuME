@@ -82,10 +82,10 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
     QStringList infos = ffmpegOutput.split("\n");
 
     //regexes to get infos
-    QRegularExpression reInput("Input #\\d+, ([\\w+,]+) from '(.+)':");
-    QRegularExpression reVideoStream("\\s*Stream #.+Video:\\s*([^,]*\\([^)]*\\)|[^,]*),\\s*([^,]*\\([^)]*\\)|[^,]*), (\\d+)x(\\d+) \\[SAR (\\d+):(\\d+) DAR (\\d+):(\\d+)][^,]*(?:,\\s*(\\d+)[^,]*,\\s+(\\d+) fps)?");
-    QRegularExpression reAudioStream("\\s*Stream #.+Audio:\\s*([^,]*\\([^)]*\\)|[^,]*),\\s*(\\d*)\\s*Hz, ([^,]+),(?:.*,\\s*(?:(\\d+)\\s*kb\\/s)?)?");
-    QRegularExpression reDuration("Duration: (?:(\\d\\d):(\\d\\d):(\\d\\d.\\d\\d),\\sstart:\\s\\d+.\\d+, bitrate:\\s(\\d+))?(?:(N\\/A), )?");
+    QRegularExpression reInput = RegExUtils::getRegEx("ffmpeg input");
+    QRegularExpression reVideoStream = RegExUtils::getRegEx("ffmpeg video stream");
+    QRegularExpression reAudioStream = RegExUtils::getRegEx("ffmpeg audio stream");
+    QRegularExpression reDuration = RegExUtils::getRegEx("ffmpeg duration");
 
     bool input = false;
     foreach(QString info,infos)
@@ -136,8 +136,9 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
 
             _videoWidth = match.captured(3).toInt();
             _videoHeight = match.captured(4).toInt();
-            _pixAspect = match.captured(5).toFloat() / match.captured(6).toFloat();
-            _videoAspect = match.captured(7).toFloat() / match.captured(8).toFloat();
+            if ( match.captured(6) != "" ) _pixAspect = match.captured(5).toFloat() / match.captured(6).toFloat();
+            if ( match.captured(8).toFloat() != 0.0 ) _videoAspect = match.captured(7).toFloat() / match.captured(8).toFloat();
+            else if ( _videoHeight != 0) _videoAspect = double( _videoWidth ) / double( _videoHeight );
             _videoBitrate = match.captured(9).toInt()*1024;
             _videoFramerate = match.captured(10).toDouble();
             if ( int( _videoFramerate ) == 0 ) _videoFramerate = 24;
