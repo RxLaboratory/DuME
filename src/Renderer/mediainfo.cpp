@@ -366,6 +366,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     setMuxer( muxerObj.value("name").toString(), true);
     setLoop( mediaObj.value("loop").toInt(), true );
 
+    qDebug() << "video";
     //video
     if (mediaObj.value("hasVideo").toBool())
     {
@@ -1141,6 +1142,7 @@ QStringList MediaInfo::frames() const
 
 void MediaInfo::loadSequence()
 {
+    qDebug() << "load sequence";
     _frames.clear();
     _startNumber = 0;
 
@@ -1161,7 +1163,7 @@ void MediaInfo::loadSequence()
     QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
 
     //find where is the base file
-    int baseIndex = 0;
+    int baseIndex = -1;
     for (int i = 0 ; i < files.count() ; i++)
     {
         QFileInfo file = files[i];
@@ -1173,83 +1175,86 @@ void MediaInfo::loadSequence()
     }
 
     //check for each block of digits the one where we have a next and previous file
-    while(reDigitsMatch.hasNext())
+    if (baseIndex >= 0)
     {
-        QRegularExpressionMatch match = reDigitsMatch.next();
-        QString digits = match.captured(0);
-        int num = digits.toInt();
-        bool ok = false;
-        //test next file
-        if (baseIndex < files.count()-1)
+        while(reDigitsMatch.hasNext())
         {
-            QString nextName = files[baseIndex+1].completeBaseName();
-            //check if num+1 is at the same place
-            int nextNum = num+1;
-            QString nextDigits = QString::number(nextNum);
-            while(nextDigits.count() < digits.count())
+            QRegularExpressionMatch match = reDigitsMatch.next();
+            QString digits = match.captured(0);
+            int num = digits.toInt();
+            bool ok = false;
+            //test next file
+            if (baseIndex < files.count()-1)
             {
-                nextDigits = "0" + nextDigits;
-            }
-            if (nextName.indexOf(nextDigits) == match.capturedStart(0)) ok = true;
-        }
-        else
-        {
-            ok = true;
-        }
-
-        //test previous file
-        if (ok)
-        {
-            ok = false;
-            if (baseIndex > 0)
-            {
-                QString prevName = files[baseIndex-1].completeBaseName();
-                //check if num-1 is at the same place
-                int prevNum = num-1;
-                QString prevDigits = QString::number(prevNum);
-                while(prevDigits.count() < digits.count())
+                QString nextName = files[baseIndex+1].completeBaseName();
+                //check if num+1 is at the same place
+                int nextNum = num+1;
+                QString nextDigits = QString::number(nextNum);
+                while(nextDigits.count() < digits.count())
                 {
-                    prevDigits = "0" + prevDigits;
+                    nextDigits = "0" + nextDigits;
                 }
-                if (prevName.indexOf(prevDigits) == match.capturedStart(0)) ok = true;
+                if (nextName.indexOf(nextDigits) == match.capturedStart(0)) ok = true;
             }
             else
             {
                 ok = true;
             }
-        }
 
-        //if next and previous file are ok, we found the digits block
-        if (ok)
-        {
-            //list all files in the sequence matching the pattern, and compute size
-            QString left = baseName.left(match.capturedStart(0));
-            QString right = baseName.right(baseName.count() - match.capturedEnd(0));
-            QString pattern = left + "(\\d+)" + right;
-            QRegularExpression re(pattern);
-            _startNumber = 999999999;
-            _size = 0;
-            foreach(QFileInfo f,files)
+            //test previous file
+            if (ok)
             {
-                QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
-                if (reMatch.hasMatch())
+                ok = false;
+                if (baseIndex > 0)
                 {
-                    //get start frame
-                    int currentNumber = reMatch.captured(1).toInt();
-                    if (currentNumber < _startNumber) _startNumber = currentNumber;
-                    _frames << f.filePath();
-                    _size += f.size();
+                    QString prevName = files[baseIndex-1].completeBaseName();
+                    //check if num-1 is at the same place
+                    int prevNum = num-1;
+                    QString prevDigits = QString::number(prevNum);
+                    while(prevDigits.count() < digits.count())
+                    {
+                        prevDigits = "0" + prevDigits;
+                    }
+                    if (prevName.indexOf(prevDigits) == match.capturedStart(0)) ok = true;
+                }
+                else
+                {
+                    ok = true;
                 }
             }
-            _bitrate = ( _size * 8 ) / ( _frames.count()/24 );
-            if (_startNumber == 999999999) _startNumber = 0;
-            //update filename with ffmpeg convention
-            QString digitsBlock = "";
-            while(digitsBlock.count() < digits.count())
+
+            //if next and previous file are ok, we found the digits block
+            if (ok)
             {
-                digitsBlock += "#";
+                //list all files in the sequence matching the pattern, and compute size
+                QString left = baseName.left(match.capturedStart(0));
+                QString right = baseName.right(baseName.count() - match.capturedEnd(0));
+                QString pattern = left + "(\\d+)" + right;
+                QRegularExpression re(pattern);
+                _startNumber = 999999999;
+                _size = 0;
+                foreach(QFileInfo f,files)
+                {
+                    QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
+                    if (reMatch.hasMatch())
+                    {
+                        //get start frame
+                        int currentNumber = reMatch.captured(1).toInt();
+                        if (currentNumber < _startNumber) _startNumber = currentNumber;
+                        _frames << f.filePath();
+                        _size += f.size();
+                    }
+                }
+                _bitrate = ( _size * 8 ) / ( _frames.count()/24 );
+                if (_startNumber == 999999999) _startNumber = 0;
+                //update filename with ffmpeg convention
+                QString digitsBlock = "";
+                while(digitsBlock.count() < digits.count())
+                {
+                    digitsBlock += "#";
+                }
+                _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
             }
-            _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
         }
     }
 

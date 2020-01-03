@@ -22,6 +22,8 @@ void BlockAlpha::setActivated(bool activate)
 
 void BlockAlpha::update()
 {
+    _freezeUI = true;
+
     //has alpha
     alphaButton->setChecked( _mediaInfo->hasAlpha() );
     if ( alphaButton->isChecked() )
@@ -34,6 +36,7 @@ void BlockAlpha::update()
         unmultButton->setChecked( false );
         unmultButton->setEnabled( false );
     }
+     _freezeUI = false;
 }
 
 void BlockAlpha::on_alphaButton_clicked(bool checked)

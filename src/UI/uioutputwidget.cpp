@@ -64,6 +64,12 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     //Set defaults
     on_presetsFilterBox_activated();
+
+    //splitter sizes
+    QList<int>sizes;
+    sizes << 350;
+    sizes << 600;
+    splitter->setSizes(sizes);
 }
 
 void UIOutputWidget::ffmpeg_init()
@@ -248,12 +254,6 @@ void UIOutputWidget::updateBlocksAvailability()
     }
 
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
-
-    //splitter sizes
-    QList<int>sizes;
-    sizes << 350;
-    sizes << 600;
-    splitter->setSizes(sizes);
 }
 
 void UIOutputWidget::customParamActivated(bool activated)
