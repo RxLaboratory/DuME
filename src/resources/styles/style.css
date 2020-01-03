@@ -739,3 +739,8 @@ QSplashScreen QProgressBar {
     height: @progress-size;
     text-align: left;
 }
+
+QSplashScreen QLabel {
+    background: transparent;
+    color: @color-dark;
+}
