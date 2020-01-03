@@ -40,11 +40,11 @@ MediaInfo *UIInputWidget::getMediaInfo()
     foreach ( UIBlockWidget *b, _customParams )
     {
         BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
-        QString param = bc->value();
+        QString param = bc->param();
         if (param != "")
         {
             QStringList option(param);
-            option << bc->param();
+            option << bc->value();
             _mediaInfo->addFFmpegOption(option);
         }
     }
