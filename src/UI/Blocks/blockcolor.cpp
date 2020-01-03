@@ -130,19 +130,19 @@ void BlockColor::on_spaceBox_currentIndexChanged(int index)
 void BlockColor::on_primariesBox_currentIndexChanged(int index)
 {
     if(_freezeUI) return;
-    _mediaInfo->setColorSpace( primariesBox->itemData(index).toString() );
+    _mediaInfo->setColorPrimaries( primariesBox->itemData(index).toString() );
 }
 
 void BlockColor::on_trcBox_currentIndexChanged(int index)
 {
     if(_freezeUI) return;
-    _mediaInfo->setColorSpace( trcBox->itemData(index).toString() );
+    _mediaInfo->setColorTRC( trcBox->itemData(index).toString() );
 }
 
 void BlockColor::on_rangeBox_currentIndexChanged(int index)
 {
     if(_freezeUI) return;
-    _mediaInfo->setColorSpace( rangeBox->itemData(index).toString() );
+    _mediaInfo->setColorRange( rangeBox->itemData(index).toString() );
 }
 
 void BlockColor::on_actionsRGB_triggered()
