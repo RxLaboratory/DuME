@@ -147,6 +147,24 @@ void UIOutputWidget::updateBlocksAvailability()
     bool okVideo = _mediaInfo->hasVideo() && !_mediaInfo->copyVideo();
     bool okAudio = _mediaInfo->hasAudio() && !_mediaInfo->copyAudio();
 
+    //Audio / Video Buttons
+    FFMuxer *m = _mediaInfo->muxer();
+    if ( m != nullptr )
+    {
+        bool audio = m->isAudio() && !m->isSequence();
+        audioButton->setChecked( audio && _mediaInfo->hasAudio() );
+        audioButton->setEnabled ( audio );
+        audioTranscodeButton->setEnabled( audio && _mediaInfo->hasAudio() );
+        audioCopyButton->setEnabled( audio && _mediaInfo->hasAudio() );
+
+        bool video =  m->isVideo() || m->isSequence();
+        videoButton->setChecked( video && _mediaInfo->hasVideo() );
+        videoButton->setEnabled(  video  );
+        videoTranscodeButton->setEnabled( video && _mediaInfo->hasVideo() );
+        videoCopyButton->setEnabled( video && _mediaInfo->hasVideo() );
+    }
+
+
     FFCodec *vc = _mediaInfo->videoCodec();
     if ( vc == nullptr ) vc = _mediaInfo->defaultVideoCodec();
 
@@ -220,7 +238,6 @@ void UIOutputWidget::updateBlocksAvailability()
     }
 
     //Muxer
-    FFMuxer *m = _mediaInfo->muxer();
     if ( m != nullptr)
     {
         bool found = false;

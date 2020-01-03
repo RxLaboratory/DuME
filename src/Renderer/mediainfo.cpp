@@ -666,6 +666,7 @@ void MediaInfo::setMuxer(FFMuxer *muxer, bool silent )
     {
         _audio = muxer->isAudio();
         _video = muxer->isVideo();
+        _imageSequence = false;
     }
     if(!silent) emit changed();
 }
