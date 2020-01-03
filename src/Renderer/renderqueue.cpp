@@ -630,10 +630,7 @@ void RenderQueue::aeStatusChanged( MediaUtils::Status status )
             QStringList filters("DuME_*.exr");
             QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
 
-            qDebug() << aeTempPath;
-            qDebug() << files;
-
-            //if nothing has been rendered, set to error and go on with next queue item
+           //if nothing has been rendered, set to error and go on with next queue item
             if (files.count() == 0)
             {
                 postRenderCleanUp( MediaUtils::Error );

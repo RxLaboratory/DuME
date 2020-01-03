@@ -189,7 +189,7 @@ void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename, bool silent)
     _videoCodec = other->videoCodec();
     _videoWidth = other->videoWidth();
     _videoHeight = other->videoHeight();
-    _videoFramerate = other->videoHeight();
+    _videoFramerate = other->videoFramerate();
     _videoBitrate = other->videoBitrate();
     _pixAspect = other->pixAspect();
     _videoAspect = other->videoAspect();
