@@ -169,8 +169,8 @@ public:
      */
     static double convertFromBps( qint64 value, BitrateUnit to )
     {
-        if (to == kbps) return value / 1000;
-        if (to == Mbps) return value / 1000000;
+        if (to == kbps) return value / 1024;
+        if (to == Mbps) return value / 1024 / 1024;
         return value;
     }
 
@@ -194,8 +194,8 @@ public:
      */
     static qint64 convertToBps( qint64 value, BitrateUnit from )
     {
-        if (from == kbps) return value * 1000;
-        if (from == Mbps) return value * 1000000;
+        if (from == kbps) return value * 1024;
+        if (from == Mbps) return value * 1024 * 1024;
         return value;
     }
 
