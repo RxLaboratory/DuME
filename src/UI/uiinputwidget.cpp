@@ -49,7 +49,9 @@ MediaInfo *UIInputWidget::getMediaInfo()
         }
     }
 
-    return _mediaInfo;
+    MediaInfo *mi = new MediaInfo( _mediaInfo->getFfmpeg() );
+    mi->updateInfo( _mediaInfo, true, true);
+    return mi;
 }
 
 void UIInputWidget::openFile(QString file)

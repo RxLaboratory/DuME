@@ -124,8 +124,9 @@ MediaInfo *UIOutputWidget::getMediaInfo()
             _mediaInfo->addFFmpegOption(option);
         }
     }
-
-    return _mediaInfo;
+    MediaInfo *mi = new MediaInfo( _ffmpeg );
+    mi->updateInfo( _mediaInfo, true, true);
+    return mi;
 }
 
 void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)

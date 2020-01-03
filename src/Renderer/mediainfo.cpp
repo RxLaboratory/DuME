@@ -1016,6 +1016,11 @@ QString MediaInfo::colorRange() const
     return _colorRange;
 }
 
+FFmpeg *MediaInfo::getFfmpeg() const
+{
+    return _ffmpeg;
+}
+
 bool MediaInfo::hasAlpha() const
 {
     if (_pixFormat != nullptr) return _pixFormat->hasAlpha();

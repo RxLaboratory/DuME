@@ -32,7 +32,6 @@ public:
      */
     explicit MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent = nullptr );
 
-
     //setters
 
     /**
@@ -140,6 +139,8 @@ public:
     QString colorTRC() const;
     QString colorSpace() const;
     QString colorRange() const;
+
+    FFmpeg *getFfmpeg() const;
 
 signals:
     /**
