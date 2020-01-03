@@ -1,4 +1,5 @@
 #include "ffpixformat.h"
+#include <QtDebug>
 
 FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, int bitsPerPixel, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
@@ -11,8 +12,8 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
 
-    if ( ( this->name().indexOf("rgb") >= 0 || this->name().indexOf("bgr") >= 0 ) && _numComponents > 3) _colorSpace = RGB;
-    else if (this->name().indexOf("yuv") >= 0 && _numComponents > 3) _colorSpace = YUV;
+    if ( ( this->name().indexOf("rgb") >= 0 || this->name().indexOf("bgr") >= 0 ) && _numComponents >= 3) _colorSpace = RGB;
+    else if (this->name().indexOf("yuv") >= 0 && _numComponents >= 3) _colorSpace = YUV;
     else _colorSpace = OTHER;
 }
 
@@ -27,8 +28,8 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
 
-    if (this->name().indexOf("rgb") >= 0 && _numComponents > 3) _colorSpace = RGB;
-    else if (this->name().indexOf("yuv") >= 0 && _numComponents > 3) _colorSpace = YUV;
+    if (this->name().indexOf("rgb") >= 0 && _numComponents >= 3) _colorSpace = RGB;
+    else if (this->name().indexOf("yuv") >= 0 && _numComponents >= 3) _colorSpace = YUV;
     else _colorSpace = OTHER;
 }
 

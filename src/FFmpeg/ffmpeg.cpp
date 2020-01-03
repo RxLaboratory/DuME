@@ -413,10 +413,10 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     muxer->setDefaultVideoCodec(videoEncoder("mjpeg"));
     _muxers << muxer;
 
-    muxer = new FFMuxer("ljpeg","Lossless JPEG Sequence");
+    muxer = new FFMuxer("jpegls","Lossless JPEG Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("ljpg"));
-    muxer->setDefaultVideoCodec(videoEncoder("ljpeg"));
+    muxer->setDefaultVideoCodec(videoEncoder("jpegls"));
     _muxers << muxer;
 
     muxer = new FFMuxer("pam","PAM (Portable AnyMap) Sequence");

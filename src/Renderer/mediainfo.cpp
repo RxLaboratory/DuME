@@ -306,7 +306,7 @@ QString MediaInfo::getDescription()
         if (_audio)
         {
             mediaInfoString += "\n\nAudio codec: ";
-            FFCodec *ac = _videoCodec;
+            FFCodec *ac = _audioCodec;
             if (ac == nullptr) ac = defaultAudioCodec();
             if(ac != nullptr)
             {
@@ -1132,7 +1132,9 @@ FFPixFormat *MediaInfo::defaultPixFormat() const
         c = m->defaultVideoCodec();
         if ( c == nullptr ) return nullptr;
     }
-    return c->defaultPixFormat();
+    FFPixFormat *pf = c->defaultPixFormat();
+    if ( pf == nullptr && c->name() == "h264") pf = _ffmpeg->pixFormat("yuv420p");
+    return pf;
 }
 
 QStringList MediaInfo::frames() const
@@ -1142,7 +1144,6 @@ QStringList MediaInfo::frames() const
 
 void MediaInfo::loadSequence()
 {
-    qDebug() << "load sequence";
     _frames.clear();
     _startNumber = 0;
 

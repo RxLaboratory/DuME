@@ -105,11 +105,16 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     arguments << "-y";
 
     //output checks
-    MediaInfo *output = item->getOutputMedias()[0];
-    FFPixFormat *outputPixFmt = output->pixFormat();
-    if (outputPixFmt != nullptr) outputPixFmt = output->defaultPixFormat();
+    MediaInfo *o = item->getOutputMedias()[0];
+    FFPixFormat *outputPixFmt = o->pixFormat();
+    if (outputPixFmt == nullptr) outputPixFmt = o->defaultPixFormat();
     FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
     if (outputPixFmt != nullptr) outputColorSpace = outputPixFmt->colorSpace();
+
+    //input checks
+    bool exrInput = false;
+    MediaInfo *i = item->getInputMedias()[0];
+    if ( i->extensions().count() > 0 ) exrInput = i->extensions()[0] == "exr_pipe";
 
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
@@ -132,14 +137,21 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             inputFileName = input->ffmpegSequenceName();
         }
         //add color management
+        FFPixFormat::ColorSpace inputColorSpace = FFPixFormat::OTHER;
+        FFPixFormat *inputPixFmt = input->pixFormat();
+        if (inputPixFmt == nullptr) inputPixFmt = input->defaultPixFormat();
+        if (inputPixFmt != nullptr) inputColorSpace = inputPixFmt->colorSpace();
+
+        bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV;
+
         if (input->colorTRC() != "") arguments << "-color_trc" << input->colorTRC();
-        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_trc" << "bt709";
+        else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
         if (input->colorRange() != "") arguments << "-color_range" << input->colorRange();
-        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_range" << "tv";
+        else if ( convertToYUV ) arguments << "-color_range" << "tv";
         if (input->colorTRC() != "") arguments << "-color_primaries" << input->colorPrimaries();
-        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-color_primaries" << "bt709";
+        else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
         if (input->colorSpace() != "") arguments << "-colorspace" << input->colorSpace();
-        else if ( outputColorSpace == FFPixFormat::YUV ) arguments << "-colorspace" << "bt709";
+        else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
 
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
@@ -287,6 +299,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 //unpremultiply
                 bool unpremultiply = !output->premultipliedAlpha();
                 if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
+
+                //LUT for input EXR
+                if (exrInput) arguments << "-vf" << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
             }
 
             //update the values which do not change from input, for accurate progression statistics
@@ -615,6 +630,9 @@ void RenderQueue::aeStatusChanged( MediaUtils::Status status )
             QStringList filters("DuME_*.exr");
             QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
 
+            qDebug() << aeTempPath;
+            qDebug() << files;
+
             //if nothing has been rendered, set to error and go on with next queue item
             if (files.count() == 0)
             {
@@ -701,7 +719,7 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     //adjust the number of threads
     //keep one available for exporting the audio
     int numThreads = input->aepNumThreads();
-    if (audio) numThreads--;
+    if (audio && numThreads > 1) numThreads--;
 
     // video
     _aeRenderer->setNumFrames( int( input->duration() * input->videoFramerate() ) );
