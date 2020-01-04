@@ -35,7 +35,7 @@ void BlockAudioBitrate::update()
 
 void BlockAudioBitrate::on_audioBitRateEdit_valueChanged(int arg1)
 {
-    if (audioBitRateEdit->value() == 0) audioBitRateEdit->setSuffix( " Auto" );
+    if (arg1 == 0) audioBitRateEdit->setSuffix( " Auto" );
     else audioBitRateEdit->setSuffix( " kbps" );
 }
 
