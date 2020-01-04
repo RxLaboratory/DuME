@@ -226,7 +226,7 @@ QString FFmpeg::analyseMedia(QString mediaPath)
     return "";
 }
 
-MediaUtils::Status FFmpeg::status() const
+MediaUtils::RenderStatus FFmpeg::status() const
 {
     return _status;
 }

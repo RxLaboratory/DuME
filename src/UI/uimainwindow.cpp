@@ -141,7 +141,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     log("Init - Create render queue");
 
     _renderQueue = new RenderQueue( _ffmpeg, _ae, this );
-    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::Status)), this, SLOT(renderQueueStatusChanged(MediaUtils::Status)) );
+    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
     connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
     connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
     connect(_renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
@@ -292,7 +292,7 @@ void UIMainWindow::progress()
 
 }
 
-void UIMainWindow::renderQueueStatusChanged(MediaUtils::Status status)
+void UIMainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
 {
     QString stText = MediaUtils::statusString( status );
     actionStatus->setText( stText );

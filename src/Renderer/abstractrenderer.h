@@ -10,7 +10,7 @@
 #include <QFileInfoList>
 #include <QDir>
 
-#include "utils.cpp"
+#include "utils.h"
 
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...
@@ -81,7 +81,7 @@ public:
      * @brief status The rendering status
      * @return
      */
-    MediaUtils::Status status() const;
+    MediaUtils::RenderStatus status() const;
 
     // OUTPUT FILE INFO
     /**
@@ -131,7 +131,7 @@ signals:
     /**
      * @brief statusChanged Emitted when the current status changed.
      */
-    void statusChanged( MediaUtils::Status );
+    void statusChanged( MediaUtils::RenderStatus );
     /**
      * @brief progress Emitted regularly when the renderer is rendering, to tell there are new informations about the progress
      */
@@ -142,7 +142,7 @@ public slots:
     // CONFIGURE RENDERER
     void setBinary(const QString &binaryFileName);
     // Changes the current status
-    void setStatus(MediaUtils::Status status);
+    void setStatus(MediaUtils::RenderStatus status);
 
 protected:
 
@@ -189,7 +189,7 @@ private:
     QList<QProcess *> _renderProcesses;
     QString _binaryFileName;
     // The status
-    MediaUtils::Status _status;
+    MediaUtils::RenderStatus _status;
     // The output
     QString _output;
     // Process the outputs

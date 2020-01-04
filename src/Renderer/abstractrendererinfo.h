@@ -5,7 +5,7 @@
 #include <QProcess>
 #include <QRegularExpression>
 
-#include "utils.cpp"
+#include "utils.h"
 
 class AbstractRendererInfo : public QObject
 {
@@ -46,7 +46,7 @@ protected:
     // The process output
     QString _output;
     // The Status
-    MediaUtils::Status _status;
+    MediaUtils::RenderStatus _status;
 
 private:
     QString _binary;

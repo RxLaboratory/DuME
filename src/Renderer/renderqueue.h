@@ -33,7 +33,7 @@ public:
      * @brief status Returns the current status of the renderer
      * @return The status
      */
-    MediaUtils::Status status() const;
+    MediaUtils::RenderStatus status() const;
 
     /**
      * @brief getCurrentInputInfos Gets the item currently being encoded
@@ -141,7 +141,7 @@ signals:
     /**
      * @brief statusChanged Emitted when the Renderer status changes.
      */
-    void statusChanged( MediaUtils::Status );
+    void statusChanged( MediaUtils::RenderStatus );
     /**
      * @brief newLog Emitted when some debug logs are available
      */
@@ -158,20 +158,20 @@ signals:
 
 private slots:
     // changes the current status (and emits statusChanged)
-    void setStatus(MediaUtils::Status st);
+    void setStatus(MediaUtils::RenderStatus st);
 
     // === ffmpeg ===
 
     // logs ffmpeg output
     void ffmpegLog(QString message, LogUtils::LogType lt = LogUtils::Information );
-    void ffmpegStatusChanged(MediaUtils::Status status);
+    void ffmpegStatusChanged(MediaUtils::RenderStatus status);
     void ffmpegProgress();
 
     // === Ae ===
 
     // logs ae output
     void aeLog(QString message, LogUtils::LogType lt = LogUtils::Information );
-    void aeStatusChanged(MediaUtils::Status status);
+    void aeStatusChanged(MediaUtils::RenderStatus status);
     void aeProgress();
 
 private:
@@ -181,7 +181,7 @@ private:
     // The application settings
     QSettings settings;
     // The current status
-    MediaUtils::Status _status;
+    MediaUtils::RenderStatus _status;
     // A timer to keep track of the processes
     QTimer *timer;
 
@@ -234,7 +234,7 @@ private:
     // === METHODS ===
 
     // finished current item rendering/transcoding
-    void finishCurrentItem(MediaUtils::Status lastStatus = MediaUtils::Finished );
+    void finishCurrentItem(MediaUtils::RenderStatus lastStatus = MediaUtils::Finished );
     // launch ffmpeg transcoding
     void renderFFmpeg(QueueItem *item );
     // launch after effects rendering
@@ -242,7 +242,7 @@ private:
     // encodes the next item in the queue
     void encodeNextItem();
     // removes temp files, cache, restores AE templates...
-    void postRenderCleanUp( MediaUtils::Status lastStatus = MediaUtils::Finished );
+    void postRenderCleanUp( MediaUtils::RenderStatus lastStatus = MediaUtils::Finished );
 };
 
 #endif // RENDERER_H

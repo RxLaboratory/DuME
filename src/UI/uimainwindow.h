@@ -17,7 +17,7 @@
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
-#include "utils.cpp"
+#include "utils.h"
 
 #include "uitoolbarspacer.h"
 #include "uisettingswidget.h"
@@ -51,7 +51,7 @@ private slots:
 
     // Queue
     void progress();
-    void renderQueueStatusChanged(MediaUtils::Status status);
+    void renderQueueStatusChanged(MediaUtils::RenderStatus status);
 
     // CONSOLE
     void log(QString log,LogUtils::LogType type = LogUtils::Information);

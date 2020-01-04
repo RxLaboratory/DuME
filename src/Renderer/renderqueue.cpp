@@ -44,7 +44,7 @@ RenderQueue::~RenderQueue()
     postRenderCleanUp();
 }
 
-void RenderQueue::setStatus(MediaUtils::Status st)
+void RenderQueue::setStatus(MediaUtils::RenderStatus st)
 {
     if( st == _status) return;
     _status = st;
@@ -57,7 +57,7 @@ void RenderQueue::ffmpegLog(QString message, LogUtils::LogType lt)
     emit newLog( message, lt );
 }
 
-void RenderQueue::ffmpegStatusChanged( MediaUtils::Status status )
+void RenderQueue::ffmpegStatusChanged( MediaUtils::RenderStatus status )
 {
     if ( MediaUtils::isBusy( status ) )
     {
@@ -446,7 +446,7 @@ int RenderQueue::numFrames() const
     return _numFrames;
 }
 
-MediaUtils::Status RenderQueue::status() const
+MediaUtils::RenderStatus RenderQueue::status() const
 {
     return _status;
 }
@@ -537,7 +537,7 @@ void RenderQueue::stop(int timeout)
     emit newLog( "Queue stopped" );
 }
 
-void RenderQueue::postRenderCleanUp( MediaUtils::Status lastStatus )
+void RenderQueue::postRenderCleanUp( MediaUtils::RenderStatus lastStatus )
 {
     if (_status == MediaUtils::FFmpegEncoding || _status == MediaUtils::AERendering || _status == MediaUtils::BlenderRendering )
     {
@@ -566,7 +566,7 @@ void RenderQueue::encodeNextItem()
 
     _currentItem = _encodingQueue.takeAt(0);
     //connect item status to queue status
-    connect(this, SIGNAL(statusChanged(MediaUtils::Status)), _currentItem, SLOT(statusChanged(MediaUtils::Status)) );
+    connect(this, SIGNAL(statusChanged(MediaUtils::RenderStatus)), _currentItem, SLOT(statusChanged(MediaUtils::RenderStatus)) );
 
     setStatus( MediaUtils::Launching );
 
@@ -595,7 +595,7 @@ void RenderQueue::encodeNextItem()
     renderFFmpeg( _currentItem );
 }
 
-void RenderQueue::finishCurrentItem( MediaUtils::Status lastStatus )
+void RenderQueue::finishCurrentItem( MediaUtils::RenderStatus lastStatus )
 {
     if (_currentItem == nullptr) return;
     //disconnect item status from queue status
@@ -607,7 +607,7 @@ void RenderQueue::finishCurrentItem( MediaUtils::Status lastStatus )
     _currentItem = nullptr;
 }
 
-void RenderQueue::aeStatusChanged( MediaUtils::Status status )
+void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
 {
     if ( MediaUtils::isBusy( status ) )
     {

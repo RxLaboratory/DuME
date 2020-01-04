@@ -21,25 +21,25 @@ public:
     MediaInfo *takeInputMedia(QString fileName);
     MediaInfo *takeOutputMedia(int id);
     MediaInfo *takeOutputMedia(QString fileName);
-    MediaUtils::Status getStatus();
+    MediaUtils::RenderStatus getStatus();
 
 public slots:
     /**
      * @brief setStatus Changes the status of the item
      * @param st The status
      */
-    void setStatus( MediaUtils::Status st );
+    void setStatus( MediaUtils::RenderStatus st );
     void postRenderCleanUp();
 
 signals:
-    void statusChanged( MediaUtils::Status );
+    void statusChanged( MediaUtils::RenderStatus );
 
 private slots:
 
 private:
     QList<MediaInfo *> _inputMedias;
     QList<MediaInfo *> _outputMedias;
-    MediaUtils::Status _status;
+    MediaUtils::RenderStatus _status;
 };
 
 #endif // FFQUEUEITEM_H

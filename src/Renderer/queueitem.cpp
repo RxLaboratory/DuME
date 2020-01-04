@@ -82,12 +82,12 @@ MediaInfo *QueueItem::takeOutputMedia(QString fileName)
     return nullptr;
 }
 
-MediaUtils::Status QueueItem::getStatus()
+MediaUtils::RenderStatus QueueItem::getStatus()
 {
     return _status;
 }
 
-void QueueItem::setStatus( MediaUtils::Status st )
+void QueueItem::setStatus( MediaUtils::RenderStatus st )
 {
     if(_status == st) return;
     _status = st;

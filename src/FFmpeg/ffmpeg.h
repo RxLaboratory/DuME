@@ -8,7 +8,7 @@
 
 #include "Renderer/abstractrendererinfo.h"
 
-#include "utils.cpp"
+#include "utils.h"
 
 #include "ffcodec.h"
 #include "ffmuxer.h"
@@ -114,7 +114,7 @@ public:
      * @brief status The current FFmpeg Status
      * @return
      */
-    MediaUtils::Status status() const;
+    MediaUtils::RenderStatus status() const;
 
 signals:
     void progress(int);

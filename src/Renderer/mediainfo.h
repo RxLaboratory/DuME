@@ -13,7 +13,7 @@
 #include <QTime>
 
 #include "FFmpeg/ffmpeg.h"
-#include "utils.cpp"
+#include "utils.h"
 
 class MediaInfo : public QObject
 {

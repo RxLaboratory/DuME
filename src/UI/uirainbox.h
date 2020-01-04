@@ -10,7 +10,7 @@
 #include <QProgressBar>
 #include <QLabel>
 
-#include "utils.cpp"
+#include "utils.h"
 
 class UIRainbox
 {

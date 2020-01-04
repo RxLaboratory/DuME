@@ -120,7 +120,8 @@ HEADERS += \
     UI/uiqueuewidget.h \
     UI/uirainbox.h \
     UI/uisettingswidget.h \
-    UI/uitoolbarspacer.h
+    UI/uitoolbarspacer.h \
+    utils.h
 
 FORMS += \
     UI/Blocks/blockaecomp.ui \

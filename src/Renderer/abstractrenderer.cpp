@@ -249,7 +249,7 @@ void AbstractRenderer::processOutput(QString output)
     }
 }
 
-MediaUtils::Status AbstractRenderer::status() const
+MediaUtils::RenderStatus AbstractRenderer::status() const
 {
     return _status;
 }
@@ -260,7 +260,7 @@ void AbstractRenderer::setBinary(const QString &binaryFileName)
     setStatus( MediaUtils:: Waiting );
 }
 
-void AbstractRenderer::setStatus(MediaUtils::Status status)
+void AbstractRenderer::setStatus(MediaUtils::RenderStatus status)
 {
     if (status == _status) return;
     _status = status;
