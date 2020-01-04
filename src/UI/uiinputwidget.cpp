@@ -133,6 +133,22 @@ void UIInputWidget::addNewParam(QString name, QString value)
     _customParams << bw;
 }
 
+void UIInputWidget::customParamActivated(bool activated)
+{
+    if (!activated)
+    {
+        for ( int i = 0; i < _customParams.count(); i++)
+        {
+            if (sender() == _customParams[i])
+            {
+                QWidget *w = _customParams.takeAt(i);
+                w->deleteLater();
+                return;
+            }
+        }
+    }
+}
+
 void UIInputWidget::on_actionAddCustom_triggered()
 {
     addNewParam();

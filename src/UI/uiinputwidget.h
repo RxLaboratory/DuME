@@ -36,6 +36,7 @@ private slots:
     void on_inputBrowseButton_clicked();
     void on_inputEdit_editingFinished();
     void on_actionAddCustom_triggered();
+    void customParamActivated(bool activated);
 private:
     // BLOCKS
     UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
