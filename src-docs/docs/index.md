@@ -7,6 +7,8 @@ It is developped as a Graphical User Interface (GUI) for [*FFmpeg*](https://ffmp
 
 ## Description
 
+![](img/captures/DuME_Screenshot.png)
+
 The goal of DuME is to be as **easy to use** as possible even for beginners, without any compromise on **functionnality for advanced users**.
 
 To achieve this goal, the development of the application follows these guidelines:

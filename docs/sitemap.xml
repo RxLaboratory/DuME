@@ -2,22 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>http://rainboxlab.org/index.html</loc>
-     <lastmod>2019-12-15</lastmod>
+     <lastmod>2020-01-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/after-effects.html</loc>
+     <lastmod>2020-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/changelog.html</loc>
-     <lastmod>2019-12-15</lastmod>
+     <lastmod>2020-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/gnu-gpl.html</loc>
-     <lastmod>2019-12-15</lastmod>
+     <lastmod>2020-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/doc-license.html</loc>
-     <lastmod>2019-12-15</lastmod>
+     <lastmod>2020-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
