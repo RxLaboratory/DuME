@@ -723,7 +723,7 @@ QProgressBar {
         color: @color-medium;
 	border: none;
 	background-color: @color-very-dark;
-	border-radius: @border-radius;
+        border-radius: 0;
 	text-align: center;
         height: @bars-size;
 }
