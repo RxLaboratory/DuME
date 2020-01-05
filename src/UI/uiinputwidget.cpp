@@ -29,7 +29,11 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
     blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads);
     blocksMenu->addAction( actionAddCustom );
 
-    //TODO Fix connections between input and output
+    //splitter sizes
+    QList<int>sizes;
+    sizes << 500;
+    sizes << 500;
+    splitter->setSizes(sizes);
 
     updateOptions();
 }

@@ -19,7 +19,7 @@ QDialog#HelpDialog {
 
 QWidget {
         background-color: @color-dark;
-        font-family: "calibri", sans-serif;
+        /*font-family: "calibri", sans-serif;*/
         font-weight:500;
 }
 

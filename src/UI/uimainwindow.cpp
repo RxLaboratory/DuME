@@ -76,14 +76,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     log("Init - Appearance", LogUtils::Debug);
 
-    //add fonts
-    QFontDatabase::addApplicationFont(":/fonts/calibri");
-    QFontDatabase::addApplicationFont(":/fonts/calibri_bold");
-    QFontDatabase::addApplicationFont(":/fonts/calibri_italic");
-    QFontDatabase::addApplicationFont(":/fonts/calibri_light");
-    QFontDatabase::addApplicationFont(":/fonts/calibri_light_italic");
-    QFontDatabase::addApplicationFont(":/fonts/calibri_bold_italic");
-
     //add nice shadows
     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
     effect->setBlurRadius(20);
@@ -166,6 +158,8 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     //Re-set StyleSheet
     UIRainbox::updateCSS(":/styles/default", "dume");
+    //and font
+    UIRainbox::setFont();
 
     log("Ready!");
 

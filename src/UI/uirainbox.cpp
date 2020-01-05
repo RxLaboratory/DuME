@@ -92,6 +92,19 @@ QString UIRainbox::loadCSS(QStringList cssFileNames)
     return css;
 }
 
+void UIRainbox::setFont(QString family)
+{
+    //add fonts
+    QFontDatabase::addApplicationFont(":/fonts/calibri");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_bold");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_italic");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_light");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_light_italic");
+    QFontDatabase::addApplicationFont(":/fonts/calibri_bold_italic");
+
+    qApp->setFont(QFont(family,10,500),"QWidget");
+}
+
 UISplashScreen::UISplashScreen(const QPixmap &pixmap, QString version, Qt::WindowFlags f) : QSplashScreen (pixmap,f)
 {
     //add a progress bar

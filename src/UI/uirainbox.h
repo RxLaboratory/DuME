@@ -9,6 +9,7 @@
 #include <QSplashScreen>
 #include <QProgressBar>
 #include <QLabel>
+#include <QFontDatabase>
 
 #include "utils.h"
 
@@ -33,6 +34,7 @@ public:
      * @return the CSS string
      */
     static QString loadCSS(QStringList cssFileNames);
+    static void setFont(QString family = "Calibri");
 };
 
 class UISplashScreen : public QSplashScreen
