@@ -38,25 +38,24 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     mainToolBar->addWidget(tbs);
 
     //window buttons for frameless win
-    minimizeButton = new QToolButton(this);
+
+    minimizeButton = new QToolButton();
     minimizeButton->setIcon(QIcon(":/icons/minimize"));
     minimizeButton->setObjectName("minimizeButton");
+#ifndef Q_OS_MAC
+    mainToolBar->addWidget(minimizeButton);
+#endif
     maximizeButton = new QToolButton(this);
     maximizeButton->setIcon(QIcon(":/icons/maximize"));
     maximizeButton->setObjectName("maximizeButton");
+    mainToolBar->addWidget(maximizeButton);
     quitButton = new QToolButton(this);
     quitButton->setIcon(QIcon(":/icons/close"));
     quitButton->setObjectName("quitButton");
-#ifndef Q_OS_MAC
-    // Maximize and minimize only on windows
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    mainToolBar->addWidget(minimizeButton);
-    mainToolBar->addWidget(maximizeButton);
-#endif
-    //quit button
-//#ifndef Q_OS_LINUX
     mainToolBar->addWidget(quitButton);
-//#endif
+#ifndef Q_OS_MAC
+    this->setWindowFlags(Qt::FramelessWindowHint);
+#endif
 
     //drag window
     toolBarClicked = false;
@@ -72,6 +71,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     //queue widget
     queueWidget = new UIQueueWidget(_ffmpeg, this);
+    qDebug() << "test";
     queueLayout->addWidget(queueWidget);
 
     log("Init - Appearance", LogUtils::Debug);

@@ -20,11 +20,16 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
 
     //hide close buttons on add buttons
     QTabBar *outputTabBar = outputTab->tabBar();
-    outputTabBar->tabButton(1,QTabBar::RightSide)->hide();
+
+    QWidget *closeButton = outputTabBar->tabButton(1, QTabBar::RightSide);
+    if (closeButton == nullptr) closeButton = outputTabBar->tabButton(1, QTabBar::LeftSide);
+    if (closeButton != nullptr) closeButton->hide();
 
     //No add tab for now on input
     //QTabBar *inputTabBar = inputTab->tabBar();
     //inputTabBar->tabButton(1,QTabBar::RightSide)->hide();
+
+    qDebug() << "splitter sizes";
 
     // splitter sizes
     QSettings settings;
@@ -35,6 +40,7 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     splitter->setSizes(sizes);
     settings.endGroup();
 
+    qDebug() << "queue created";
 }
 
 MediaInfo *UIQueueWidget::getInputMedia()

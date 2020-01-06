@@ -19,9 +19,13 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 #ifdef Q_OS_WIN
     QString defaultFFmpegPath = "ffmpeg.exe";
 #endif
+#ifdef Q_OS_MAC
+    QString defaultFFmpegPath = "./ffmpeg";
+#endif
 
-    if (path == "") setBinary(settings.value("ffmpeg/path",defaultFFmpegPath).toString(), false);
-    else setBinary(path, false);
+    if (path == "") path = settings.value("ffmpeg/path",defaultFFmpegPath).toString();
+    qDebug() << "Using FFmpeg path: " + path;
+    setBinary(path, false);
 }
 
 FFmpeg::~FFmpeg()

@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 
     // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD. COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
-    // settings.setValue("ffmpeg/version","");
+    //settings.setValue("ffmpeg/version","");
 
 
     //load FFmpeg
