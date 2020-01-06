@@ -7,7 +7,6 @@
         <file alias="settings">resources/icons/cogs2.png</file>
         <file alias="play">resources/icons/play_circle.png</file>
         <file alias="stop">resources/icons/stop_circle.png</file>
-        <file alias="app">resources/icons/icon-02.png</file>
         <file alias="hsplitter">resources/icons/doublearrows-dark.png</file>
         <file alias="hsplitter_light">resources/icons/doublearrows-light.png</file>
         <file alias="microkeyboard">resources/icons/microkeyboard-dark.png</file>
@@ -18,6 +17,7 @@
         <file alias="list">resources/icons/list.svg</file>
         <file alias="audio">resources/icons/music.svg</file>
         <file alias="vsplitter">resources/icons/doublearrows-updown-dark.png</file>
+        <file alias="app">resources/icons/appIcon/icon_32x32.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
