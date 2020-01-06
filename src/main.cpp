@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     QPixmap pixmap(":/images/splash");
     UISplashScreen splash(pixmap, v+APPVERSION);
 
+    //set app icon
+    qApp->setWindowIcon(QIcon(":/icons/app"));
+
     //show
     splash.show();
 

@@ -17,7 +17,7 @@
         <file alias="list">resources/icons/list.svg</file>
         <file alias="audio">resources/icons/music.svg</file>
         <file alias="vsplitter">resources/icons/doublearrows-updown-dark.png</file>
-        <file alias="app">resources/icons/appIcon/icon_32x32.png</file>
+        <file alias="app">resources/icons/appIcon.iconset/icon_512x512.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>

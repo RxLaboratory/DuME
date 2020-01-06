@@ -152,10 +152,12 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
-DISTFILES += \
+!macx: DISTFILES += \
     resources/ico.rc
 
-RC_FILE = resources/ico.rc
+!macx: RC_FILE = resources/ico.rc
+
+ICON = resources/icons/appIcon.icns
 
 # OpenImageIO
 
