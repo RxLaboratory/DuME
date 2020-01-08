@@ -38,8 +38,6 @@
         <file alias="MP4 - Auto - LQ">resources/presets/MP4 - Auto - LQ.meprst</file>
         <file alias="MP4 - Auto - Normal">resources/presets/MP4 - Auto - Normal.meprst</file>
         <file alias="GIF - 800x600">resources/presets/GIF - 800x600.meprst</file>
-        <file alias="MP4 - Auto - 720p">resources/presets/MP4 - Auto - 720p.meprst</file>
-        <file alias="MP4 - Auto - 1080p">resources/presets/MP4 - Auto - 1080p.meprst</file>
         <file alias="MOV - HAP - Alpha">resources/presets/MOV - HAP - Alpha.meprst</file>
         <file alias="MOV - HAP - Q">resources/presets/MOV - HAP - Q.meprst</file>
         <file alias="MOV - HAP - Standard">resources/presets/MOV - HAP - Standard.meprst</file>
