@@ -271,6 +271,12 @@ void UIOutputWidget::updateBlocksAvailability()
         formatsBox->setCurrentIndex(-1);
     }
 
+    //set the preset to custom if we're not loading a preset
+    if (!_loadingPreset)
+    {
+        presetsBox->setCurrentIndex(0);
+    }
+
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 }
 
