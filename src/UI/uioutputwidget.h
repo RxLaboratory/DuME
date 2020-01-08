@@ -67,6 +67,10 @@ private slots:
     void on_videoButton_clicked(bool checked);
     void on_audioButton_clicked(bool checked);
     void on_actionAddCustom_triggered();
+    void on_actionSavePreset_triggered();
+    void on_actionOpenPreset_triggered();
+
+    void on_actionDefaultPreset_triggered(bool checked);
 
 private:
     // BLOCKS
@@ -100,9 +104,12 @@ private:
 
     // MENUS
     QMenu *blocksMenu;
+    QMenu *presetsMenu;
 
     void updateOutputExtension(QString outputPath);
     void addNewParam(QString name = "",QString value = "");
+
+    void selectDefaultPreset();
 
     QSettings settings;
     FFmpeg *_ffmpeg;

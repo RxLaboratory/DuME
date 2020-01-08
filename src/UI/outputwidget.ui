@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>390</width>
+    <width>392</width>
     <height>494</height>
    </rect>
   </property>
@@ -37,7 +37,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="0,1">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,1">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -53,6 +53,22 @@
       <property name="spacing">
        <number>3</number>
       </property>
+      <item row="3" column="1">
+       <widget class="UIBigComboBox" name="formatsBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="outputBrowseButton">
         <property name="sizePolicy">
@@ -67,6 +83,52 @@
         <property name="flat">
          <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QComboBox" name="formatsFilterBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>All Formats</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Video &amp; Audio</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Images</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Audio Only</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Video Only</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Special</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="0" column="1">
@@ -120,91 +182,50 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="presetsBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="spacing">
+         <number>0</number>
         </property>
         <item>
-         <property name="text">
-          <string>Custom</string>
-         </property>
+         <widget class="QComboBox" name="presetsBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>Custom</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Load...</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Save...</string>
+           </property>
+          </item>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>Load...</string>
-         </property>
+         <widget class="QToolButton" name="presetsButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/icons/cog</normaloff>:/icons/cog</iconset>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Save...</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QComboBox" name="formatsFilterBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="currentIndex">
-         <number>1</number>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>All Formats</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Video &amp; Audio</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Images</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Audio Only</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Video Only</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Special</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="UIBigComboBox" name="formatsBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
-        </property>
-        <property name="minimumContentsLength">
-         <number>1</number>
-        </property>
-       </widget>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -219,7 +240,7 @@
        <enum>QFrame::NoFrame</enum>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="spacing">
         <number>3</number>
@@ -437,8 +458,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>388</width>
-            <height>100</height>
+            <width>390</width>
+            <height>97</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -723,6 +744,39 @@
    </property>
    <property name="shortcut">
     <string>C</string>
+   </property>
+  </action>
+  <action name="actionSavePreset">
+   <property name="text">
+    <string>Save preset...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save current settings as a new preset</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionOpenPreset">
+   <property name="text">
+    <string>Open preset...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a preset from a file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionDefaultPreset">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default preset</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the current preset as default</string>
    </property>
   </action>
  </widget>

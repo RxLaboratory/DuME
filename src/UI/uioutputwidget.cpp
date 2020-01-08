@@ -22,6 +22,9 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blocksMenu->setTearOffEnabled(true);
     addBlockButton->setMenu( blocksMenu );
 
+    presetsMenu = new QMenu(this);
+    presetsButton->setMenu( presetsMenu );
+
     // SHADOWS
     videoWidget->setGraphicsEffect( new UIDropShadow() );
     audioWidget->setGraphicsEffect( new UIDropShadow() );
@@ -58,12 +61,20 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blocksMenu->addAction( actionOther );
     blocksMenu->addAction( actionAddCustom );
 
+    // PRESETS MENU
+    presetsMenu->addAction( actionDefaultPreset );
+    presetsMenu->addSeparator();
+    presetsMenu->addAction( actionOpenPreset );
+    presetsMenu->addAction( actionSavePreset );
+
     ffmpeg_init();
 
     _freezeUI = false;
 
     //Set defaults
     on_presetsFilterBox_activated();
+    //choose preset
+    selectDefaultPreset();
 
     //splitter sizes
     QList<int>sizes;
@@ -392,61 +403,16 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
     if (index == 0) return;
     if (_freezeUI) return;
+
     _freezeUI = true;
-
-    //save
-    if (index == presetsBox->count()-1)
-    {
-        presetsBox->setCurrentIndex(0);
-
-        //ask for file
-        QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
-        if (saveFileName == "")
-        {
-            _freezeUI = false;
-            return;
-        }
-
-        //add extension if none
-        if ( QFileInfo(saveFileName).suffix() == "" ) saveFileName += ".meprst";
-
-        //update infos
-        getMediaInfo();
-        //export
-        _mediaInfo->exportPreset(saveFileName);
-        //add to box
-        _freezeUI = false;
-        loadPresets();
-    }
-    //load
-    else if (index == presetsBox->count()-2)
-    {
-        presetsBox->setCurrentIndex(0);
-
-        QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
-        if (openFileName == "")
-        {
-            _freezeUI = false;
-            return;
-        }
-        _loadingPreset = true;
-        _freezeUI = false;
-        //load
-        _mediaInfo->loadPreset(openFileName);
-        _loadingPreset = false;
-    }
-    //load preset
-    else
-    {
-        _loadingPreset = true;
-        //load
-        _freezeUI = false;
-
-        _mediaInfo->loadPreset(presetsBox->currentData().toString());
-        _loadingPreset = false;
-    }
-
+    actionDefaultPreset->setChecked( presetsBox->itemData(index).toString() == settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString());
     _freezeUI = false;
+
+    //load
+    _loadingPreset = true;
+    //load
+    _mediaInfo->loadPreset(presetsBox->itemData(index).toString());
+    _loadingPreset = false;
 }
 
 void UIOutputWidget::on_presetsFilterBox_activated()
@@ -578,11 +544,24 @@ void UIOutputWidget::loadPresets()
     {
         presetsBox->addItem(QFileInfo(preset).completeBaseName(),preset);
     }
-    //add load ans save
-    presetsBox->addItem("Load...");
-    presetsBox->addItem("Save as...");
 
     _freezeUI = false;
+}
+
+void UIOutputWidget::selectDefaultPreset()
+{
+    QString defaultPreset = settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString();
+    for (int i = 0; i < presetsBox->count(); i++)
+    {
+        if (presetsBox->itemData(i).toString() == defaultPreset)
+        {
+            presetsBox->setCurrentIndex(i);
+            _freezeUI = true;
+            actionDefaultPreset->setChecked(true);
+            _freezeUI = false;
+            break;
+        }
+    }
 }
 
 UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action )
@@ -601,4 +580,56 @@ UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action
 void UIOutputWidget::on_actionAddCustom_triggered()
 {
     addNewParam();
+}
+
+void UIOutputWidget::on_actionSavePreset_triggered()
+{
+    _freezeUI = true;
+
+    presetsBox->setCurrentIndex(0);
+
+    //ask for file
+    QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
+    if (saveFileName == "")
+    {
+        _freezeUI = false;
+        return;
+    }
+
+    //add extension if none
+    if ( QFileInfo(saveFileName).suffix() == "" ) saveFileName += ".meprst";
+
+    //update infos
+    getMediaInfo();
+    //export
+    _mediaInfo->exportPreset(saveFileName);
+    //add to box
+    _freezeUI = false;
+    loadPresets();
+}
+
+void UIOutputWidget::on_actionOpenPreset_triggered()
+{
+    _freezeUI = true;
+
+    presetsBox->setCurrentIndex(0);
+
+    QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
+    if (openFileName == "")
+    {
+        _freezeUI = false;
+        return;
+    }
+    _loadingPreset = true;
+    _freezeUI = false;
+    //load
+    _mediaInfo->loadPreset(openFileName);
+    _loadingPreset = false;
+}
+
+void UIOutputWidget::on_actionDefaultPreset_triggered(bool checked)
+{
+    if (_freezeUI) return;
+    if (checked) settings.setValue("presets/default", presetsBox->currentData().toString());
+    else settings.setValue("presets/default", ":/presets/MP4 - Auto - Normal");
 }
