@@ -3,12 +3,14 @@
 MediaInfo::MediaInfo( FFmpeg *ffmpeg, QObject *parent ) : QObject(parent)
 {
     _ffmpeg = ffmpeg;
+    _id = -1;
     reInit();
 }
 
 MediaInfo::MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
     _ffmpeg = ffmpeg;
+    _id = -1;
     if ( mediaFile.suffix() == "dffp" ) loadPreset( mediaFile );
     else updateInfo( mediaFile );
 }
@@ -900,6 +902,12 @@ void MediaInfo::removeMap(int index, bool silent)
     }
 }
 
+void MediaInfo::removeAllMaps(bool silent)
+{
+    _maps.clear();
+    if (!silent) emit changed();
+}
+
 void MediaInfo::setColorPrimaries(const QString &colorPrimaries, bool silent)
 {
     _colorPrimaries = colorPrimaries;
@@ -1130,6 +1138,16 @@ QString MediaInfo::colorRange() const
 FFmpeg *MediaInfo::getFfmpeg() const
 {
     return _ffmpeg;
+}
+
+int MediaInfo::id() const
+{
+    return _id;
+}
+
+void MediaInfo::setId(int value)
+{
+    _id = value;
 }
 
 QList<StreamReference> MediaInfo::maps() const

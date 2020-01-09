@@ -99,6 +99,7 @@ public:
     void addVideoStream(VideoInfo *stream, bool silent = false);
     void addMap(int mediaId, int streamId, bool silent = false);
     void removeMap(int index, bool silent = false);
+    void removeAllMaps(bool silent = false);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -152,6 +153,9 @@ public:
 
     FFmpeg *getFfmpeg() const;
 
+    int id() const;
+    void setId(int value);
+
 signals:
     /**
      * @brief changed Emitted when some parameters have been changed.
@@ -168,6 +172,8 @@ private:
     FFmpeg *_ffmpeg;
 
     // ========== ATTRIBUTES ==============
+
+    int _id;
 
     // GENERAL
 
