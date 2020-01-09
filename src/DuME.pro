@@ -37,6 +37,7 @@ SOURCES += \
     AfterEffects/aerenderer.cpp \
     Renderer/abstractrendererinfo.cpp \
     Renderer/audioinfo.cpp \
+    Renderer/medialist.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
     UI/Blocks/blockvideoprofile.cpp \
     UI/Blocks/uiblockcontent.cpp \
     UI/Blocks/uiblockwidget.cpp \
+    UI/streamreferencewidget.cpp \
     UI/uibigcombobox.cpp \
     languagelist.cpp \
     main.cpp \
@@ -89,6 +91,7 @@ HEADERS += \
     AfterEffects/aerenderer.h \
     Renderer/abstractrendererinfo.h \
     Renderer/audioinfo.h \
+    Renderer/medialist.h \
     Renderer/queueitem.h \
     Renderer/renderqueue.h \
     FFmpeg/ffmpegrenderer.h \
@@ -120,6 +123,7 @@ HEADERS += \
     UI/Blocks/blockcustom.h \
     UI/Blocks/uiblockcontent.h \
     UI/Blocks/uiblockwidget.h \
+    UI/streamreferencewidget.h \
     UI/uibigcombobox.h \
     UI/uidropshadow.h \
     UI/uiframeless.h \
@@ -158,6 +162,7 @@ FORMS += \
     UI/settingswidget.ui \
     UI/queuewidget.ui \
     UI/inputwidget.ui \
+    UI/streamreferencewidget.ui \
     UI/toolbarspacer.ui
 
 RESOURCES += \
