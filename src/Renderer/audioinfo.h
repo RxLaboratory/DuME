@@ -10,6 +10,7 @@ class AudioInfo : public QObject
     Q_OBJECT
 public:
     explicit AudioInfo(QObject *parent = nullptr);
+    void reInit();
 
     int samplingRate() const;
     void setSamplingRate(int samplingRate);

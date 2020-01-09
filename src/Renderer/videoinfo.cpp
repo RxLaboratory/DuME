@@ -2,7 +2,22 @@
 
 VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
 {
+    reInit();
+}
 
+void VideoInfo::reInit()
+{
+    _quality = -1;
+    _profile = -1;
+    _aspect = 0.0;
+    _pixAspect = 1;
+    _pixFormat = nullptr;
+    _bitrate = 0;
+    _framerate = 0.0;
+    _height = 0;
+    _width = 0;
+    _codec = nullptr;
+    _language = "";
 }
 
 int VideoInfo::quality() const
@@ -25,14 +40,14 @@ void VideoInfo::setProfile(int profile)
     _profile = profile;
 }
 
-float VideoInfo::vaspect() const
+float VideoInfo::aspect() const
 {
-    return _vaspect;
+    return _aspect;
 }
 
-void VideoInfo::setVaspect(float vaspect)
+void VideoInfo::setAspect(float vaspect)
 {
-    _vaspect = vaspect;
+    _aspect = vaspect;
 }
 
 float VideoInfo::pixAspect() const
@@ -108,4 +123,9 @@ QString VideoInfo::language() const
 void VideoInfo::setLanguage(const QString &language)
 {
     _language = language;
+}
+
+void VideoInfo::setCodec(FFCodec *codec)
+{
+    _codec = codec;
 }

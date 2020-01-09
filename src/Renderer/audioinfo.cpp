@@ -2,7 +2,16 @@
 
 AudioInfo::AudioInfo(QObject *parent) : QObject(parent)
 {
+    reInit();
+}
 
+void AudioInfo::reInit()
+{
+    _samplingRate = 0;
+    _channels = "";
+    _bitrate = 0;
+    _codec = nullptr;
+    _language = "";
 }
 
 int AudioInfo::samplingRate() const

@@ -274,6 +274,9 @@ private:
     QString _videoLanguage;
     QString _audioLanguage;
 
+    QList<VideoInfo *> _videoStreams;
+    QList<AudioInfo *> _audioStreams;
+
     QString _colorPrimaries;
     QString _colorTRC;
     QString _colorSpace;

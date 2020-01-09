@@ -11,6 +11,7 @@ class VideoInfo : public QObject
     Q_OBJECT
 public:
     explicit VideoInfo(QObject *parent = nullptr);
+    void reInit();
 
     int quality() const;
     void setQuality(int quality);
@@ -18,8 +19,8 @@ public:
     int profile() const;
     void setProfile(int profile);
 
-    float vaspect() const;
-    void setVaspect(float vaspect);
+    float aspect() const;
+    void setAspect(float aspect);
 
     float pixAspect() const;
     void setPixAspect(float pixAspect);
@@ -40,6 +41,7 @@ public:
     void setWidth(int width);
 
     FFCodec *codec() const;
+    void setCodec(FFCodec *codec);
 
     QString language() const;
     void setLanguage(const QString &language);
@@ -49,7 +51,7 @@ signals:
 private:
     int _quality;
     int _profile;
-    float _vaspect;
+    float _aspect;
     float _pixAspect;
     FFPixFormat *_pixFormat;
     qint64 _bitrate;
