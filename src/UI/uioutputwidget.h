@@ -61,9 +61,9 @@ private slots:
     void on_audioTranscodeButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
     void on_formatsBox_currentIndexChanged(int index);
-    void on_formatsFilterBox_currentIndexChanged();
+    void on_formatsFilterBox_currentIndexChanged(int index);
     void on_presetsBox_currentIndexChanged(int index);
-    void on_presetsFilterBox_activated();
+    void on_presetsFilterBox_activated(QString arg1);
     void on_videoButton_clicked(bool checked);
     void on_audioButton_clicked(bool checked);
     void on_actionAddCustom_triggered();

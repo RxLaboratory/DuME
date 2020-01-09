@@ -46,6 +46,9 @@ public:
     QString language() const;
     void setLanguage(const QString &language);
 
+    bool hasAlpha();
+    bool canHaveAlpha();
+
 signals:
 
 private:

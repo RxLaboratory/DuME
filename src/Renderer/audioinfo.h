@@ -35,7 +35,6 @@ private:
     qint64 _bitrate;
     FFCodec *_codec;
     QString _language;
-
 };
 
 #endif // AUDIOINFO_H

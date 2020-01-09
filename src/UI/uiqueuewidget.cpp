@@ -29,8 +29,6 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     //QTabBar *inputTabBar = inputTab->tabBar();
     //inputTabBar->tabButton(1,QTabBar::RightSide)->hide();
 
-    qDebug() << "splitter sizes";
-
     // splitter sizes
     QSettings settings;
     settings.beginGroup("queueSplitter");
@@ -39,8 +37,6 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     sizes << settings.value("outputSize",50).toInt();
     splitter->setSizes(sizes);
     settings.endGroup();
-
-    qDebug() << "queue created";
 }
 
 MediaInfo *UIQueueWidget::getInputMedia()

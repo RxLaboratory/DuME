@@ -79,8 +79,6 @@ void UIInputWidget::openFile(QString file)
     mediaInfosText->setText(mediaInfoString);
 
     updateOptions();
-
-    emit newMediaLoaded(_mediaInfo);
 }
 
 void UIInputWidget::openFile(QUrl file)

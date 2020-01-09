@@ -1,4 +1,4 @@
-﻿#ifndef MEDIAINFO_H
+#ifndef MEDIAINFO_H
 #define MEDIAINFO_H
 
 #include <QObject>
@@ -94,6 +94,8 @@ public:
     void setColorTRC(const QString &colorTRC, bool silent = false);
     void setColorSpace(const QString &colorSpace, bool silent = false);
     void setColorRange(const QString &colorRange, bool silent = false);
+    void addAudioStream(AudioInfo *stream, bool silent = false);
+    void addVideoStream(VideoInfo *stream, bool silent = false);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -141,8 +143,12 @@ public:
     QString colorTRC() const;
     QString colorSpace() const;
     QString colorRange() const;
+    QList<VideoInfo *> videoStreams() const;
+    QList<AudioInfo *> audioStreams() const;
 
     FFmpeg *getFfmpeg() const;
+
+
 
 signals:
     /**

@@ -125,6 +125,27 @@ void VideoInfo::setLanguage(const QString &language)
     _language = language;
 }
 
+bool VideoInfo::hasAlpha()
+{
+    if ( _codec == nullptr ) return false;
+    FFPixFormat *pf = _pixFormat;
+    if (pf == nullptr) pf = _codec->defaultPixFormat();
+    if (pf == nullptr) return false;
+    return pf->hasAlpha();
+}
+
+bool VideoInfo::canHaveAlpha()
+{
+    if ( _codec == nullptr ) return false;
+
+    foreach (FFPixFormat *pf, _codec->pixFormats())
+    {
+        if (pf->hasAlpha()) return true;
+    }
+
+    return false;
+}
+
 void VideoInfo::setCodec(FFCodec *codec)
 {
     _codec = codec;

@@ -71,7 +71,6 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
 
     //queue widget
     queueWidget = new UIQueueWidget(_ffmpeg, this);
-    qDebug() << "test";
     queueLayout->addWidget(queueWidget);
 
     log("Init - Appearance", LogUtils::Debug);

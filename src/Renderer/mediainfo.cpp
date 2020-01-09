@@ -49,6 +49,11 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _colorRange = "";
     _videoLanguage = "";
     _audioLanguage = "";
+    // STREAMS
+    qDeleteAll(_videoStreams);
+    _videoStreams.clear();
+    qDeleteAll(_audioStreams);
+    _audioStreams.clear();
     // GENERAL Encoding/decoding parameters
     _cacheDir = nullptr;
     // FFMPEG Encoding/decoding
@@ -130,25 +135,33 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         match = reVideoStream.match(info);
         if (match.hasMatch())
         {
-            _videoLanguage = match.captured(1);
-            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
+            //add the stream
+            VideoInfo *stream = new VideoInfo;
+            stream->setLanguage( (match.captured(1)) );
 
-            _videoCodec = _ffmpeg->videoEncoder( codec );
-            if ( _videoCodec == nullptr ) _videoCodec = new FFCodec( codec );
+            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
+            FFCodec *c = _ffmpeg->videoEncoder( codec );
+            if (c == nullptr ) c = new FFCodec(codec);
+            stream->setCodec( c );
 
             QString pixFormat = match.captured(3).left( match.captured(3).indexOf("(") );
-            _pixFormat = _ffmpeg->pixFormat( pixFormat );
-            if ( _pixFormat == nullptr ) _pixFormat = new FFPixFormat( pixFormat );
+            FFPixFormat *pf = _ffmpeg->pixFormat( pixFormat );
+            if ( pf == nullptr ) pf = new FFPixFormat( pixFormat );
+            stream->setPixFormat( pf );
 
-            _videoWidth = match.captured(4).toInt();
-            _videoHeight = match.captured(5).toInt();
-            if ( match.captured(7) != "" ) _pixAspect = match.captured(6).toFloat() / match.captured(7).toFloat();
-            if ( match.captured(9).toFloat() != 0.0 ) _videoAspect = match.captured(8).toFloat() / match.captured(9).toFloat();
-            else if ( _videoHeight != 0) _videoAspect = double( _videoWidth ) / double( _videoHeight );
-            _videoBitrate = match.captured(10).toInt()*1024;
-            _videoFramerate = match.captured(11).toDouble();
-            if ( int( _videoFramerate ) == 0 ) _videoFramerate = 24;
+            stream->setWidth( match.captured(4).toInt() );
+            stream->setHeight( match.captured(5).toInt() );
+            if ( match.captured(7) != "" ) stream->setPixAspect( match.captured(6).toFloat() / match.captured(7).toFloat() );
+            if ( match.captured(9).toFloat() != 0.0 ) stream->setAspect( match.captured(8).toFloat() / match.captured(9).toFloat() );
+            else if ( stream->height() != 0) stream->setAspect( double( stream->height() ) / double( stream->height() ) );
+
+            stream->setBitrate( match.captured(10).toInt()*1024 );
+            stream->setFramerate( match.captured(11).toDouble() );
+
+            if ( int( stream->framerate() ) == 0 ) stream->setFramerate( 24 );
             _video = true;
+
+            _videoStreams << stream;
             continue;
         }
 
@@ -156,17 +169,22 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         match = reAudioStream.match(info);
         if (match.hasMatch())
         {
-            _audioLanguage = match.captured(1);
+            //add the stream
+            AudioInfo *stream = new AudioInfo;
+            stream->setLanguage( match.captured(1) );
+
             QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
+            FFCodec *c = _ffmpeg->audioEncoder( codec );
+            if ( c == nullptr ) c = new FFCodec( codec );
+            stream->setCodec(c);
 
-            _audioCodec = _ffmpeg->audioEncoder( codec );
-            if ( _audioCodec == nullptr ) _audioCodec = new FFCodec( codec );
+            stream->setSamplingRate( match.captured(3).toInt() );
 
-            _audioSamplingRate = match.captured(3).toInt();
+            stream->setChannels( match.captured(4) );
 
-            _audioChannels = match.captured(4);
+            stream->setBitrate( match.captured(5).toInt()*1024 );
 
-            _audioBitrate = match.captured(5).toInt()*1024;
+            _audioStreams << stream;
 
             _audio = true;
             continue;
@@ -281,7 +299,8 @@ QString MediaInfo::getDescription()
         if (_imageSequence) mediaInfoString += "yes";
         else mediaInfoString += "no";
 
-        if (_video)
+        //TEMP to be replaced by streams
+        if (_video && _videoStreams.count() == 0)
         {
             mediaInfoString += "\n\nVideo stream 1:";
             if (_videoLanguage != "") mediaInfoString += "\nVideo language: " + LanguageUtils::get(_videoLanguage);
@@ -309,7 +328,7 @@ QString MediaInfo::getDescription()
             }
         }
 
-        if (_audio)
+        if (_audio && _audioStreams.count() == 0)
         {
             mediaInfoString += "\n\nAudio stream 1:";
             if (_audioLanguage != "") mediaInfoString += "\nAudio language: " + LanguageUtils::get(_audioLanguage);
@@ -326,6 +345,60 @@ QString MediaInfo::getDescription()
                 mediaInfoString += "\nChannels: " + _audioChannels;
             }
             int abitrate = int( _audioBitrate );
+            if (abitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(abitrate);
+        }
+
+        for ( int i = 0; i < _videoStreams.count(); i++)
+        {
+            mediaInfoString += "\n\nVideo stream " + QString::number(i+1) + ":";
+
+            VideoInfo *s = _videoStreams[i];
+
+            if ( s->language() != "") mediaInfoString += "\nVideo language: " + LanguageUtils::get( s->language() );
+            mediaInfoString += "\nVideo codec: ";
+            FFCodec *vc = s->codec();
+            if (vc == nullptr) vc = defaultVideoCodec();
+            if (vc != nullptr)
+            {
+                mediaInfoString += vc->prettyName();
+            }
+
+            if (s->width() !=0 || s->height() != 0 ) mediaInfoString += "\nResolution: " + QString::number( s->width() ) + "x" + QString::number( s->height() );
+            if (s->aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( s->aspect()*100+0.5 ) / 100.0) + ":1";
+            if (s->framerate() != 0 ) mediaInfoString += "\nFramerate: " + QString::number(s->framerate()) + " fps";
+            qint64 bitrate = s->bitrate();
+            if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
+            mediaInfoString += "\nPixel Aspect: " + QString::number( int(s->pixAspect()*100+0.5)/ 100.0) + ":1";
+            FFPixFormat *pf = s->pixFormat();
+            if ( pf == nullptr ) pf = defaultPixFormat();
+            if (pf != nullptr)
+            {
+                mediaInfoString += "\nPixel Format: " + pf->prettyName();
+                if (pf->hasAlpha()) mediaInfoString += "\nAlpha: yes";
+                else mediaInfoString += "\nAlpha: no";
+            }
+        }
+
+        for ( int i = 0; i < _audioStreams.count(); i++)
+        {
+            mediaInfoString += "\n\nAudio stream " + QString::number(i+1) + ":";
+
+            AudioInfo *s = _audioStreams[i];
+
+            if ( s->language() != "") mediaInfoString += "\nAudio language: " + LanguageUtils::get(s->language());
+            mediaInfoString += "\nAudio codec: ";
+            FFCodec *ac = s->codec();
+            if (ac == nullptr) ac = defaultAudioCodec();
+            if(ac != nullptr)
+            {
+                mediaInfoString += ac->prettyName();
+            }
+            if (s->samplingRate() != 0) mediaInfoString += "\nSampling rate: " + QString::number( s->samplingRate() ) + " Hz";
+            if (s->channels() != "")
+            {
+                mediaInfoString += "\nChannels: " + s->channels();
+            }
+            int abitrate = int( s->bitrate() );
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(abitrate);
         }
     }
@@ -374,7 +447,6 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     setMuxer( muxerObj.value("name").toString(), true);
     setLoop( mediaObj.value("loop").toInt(), true );
 
-    qDebug() << "video";
     //video
     if (mediaObj.value("hasVideo").toBool())
     {
@@ -708,12 +780,12 @@ void MediaInfo::clearFFmpegOptions(bool silent )
     if(!silent) emit changed();
 }
 
-void MediaInfo::setAlpha(bool alpha, bool silent )
+void MediaInfo::setAlpha( bool alpha, bool silent )
 {
     //select a pixfmt which has an alpha, the closest to the current one (or default)
     FFPixFormat *pf = _pixFormat;
     FFCodec *vc = _videoCodec;
-    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) vc = defaultVideoCodec();
     if (vc == nullptr) return;
 
     if ( pf == nullptr ) pf = vc->defaultPixFormat();
@@ -794,6 +866,18 @@ void MediaInfo::setAlpha(bool alpha, bool silent )
 void MediaInfo::setColorRange(const QString &colorRange, bool silent)
 {
     _colorRange = colorRange;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::addAudioStream(AudioInfo *stream, bool silent)
+{
+    _audioStreams << stream;
+    if (!silent) emit changed();
+}
+
+void MediaInfo::addVideoStream(VideoInfo *stream, bool silent)
+{
+    _videoStreams << stream;
     if (!silent) emit changed();
 }
 
@@ -1029,14 +1113,31 @@ FFmpeg *MediaInfo::getFfmpeg() const
     return _ffmpeg;
 }
 
+QList<VideoInfo *> MediaInfo::videoStreams() const
+{
+    return _videoStreams;
+}
+
+QList<AudioInfo *> MediaInfo::audioStreams() const
+{
+    return _audioStreams;
+}
+
 bool MediaInfo::hasAlpha() const
 {
+    //Check in streams if there is alpha
+    for (int i = 0; i < _videoStreams.count(); i++)
+    {
+        if ( _videoStreams[i]->hasAlpha() ) return true;
+    }
+
+    // check with current pixFmt
     if (_pixFormat != nullptr) return _pixFormat->hasAlpha();
-    
+
+    // check with current video codec (or default one)
     FFCodec *vc = _videoCodec;
     if (vc == nullptr) vc = defaultVideoCodec();
-    if (vc == nullptr) return false;
-
+    if (vc == nullptr ) return _isAep;
     FFPixFormat *pf = vc->defaultPixFormat();
     if (pf != nullptr) return pf->hasAlpha();
 
@@ -1045,8 +1146,15 @@ bool MediaInfo::hasAlpha() const
 
 bool MediaInfo::canHaveAlpha() const
 {
+    //Check in streams if there is alpha
+    for (int i = 0; i < _videoStreams.count(); i++)
+    {
+        if ( _videoStreams[i]->canHaveAlpha() ) return true;
+    }
+
+    //Check with current or default video codec
     FFCodec *vc = _videoCodec;
-    if (vc == nullptr && _muxer != nullptr) vc = _muxer->defaultVideoCodec();
+    if (vc == nullptr) vc = defaultVideoCodec();
     if (vc == nullptr) return false;
 
     foreach (FFPixFormat *pf, vc->pixFormats())
@@ -1138,14 +1246,19 @@ FFPixFormat *MediaInfo::pixFormat()
 
 FFPixFormat *MediaInfo::defaultPixFormat() const
 {
-    FFCodec *c = _videoCodec;
-    FFMuxer *m = _muxer;
+    FFCodec *c = nullptr;
+
+    //get first stream codec
+    if ( _videoStreams.count() > 0) c = _videoStreams[0]->codec();
+
+    //get current or default
     if ( c == nullptr )
     {
-        if ( m == nullptr ) return nullptr;
-        c = m->defaultVideoCodec();
+        c = _videoCodec;
+        if ( c == nullptr ) c = defaultVideoCodec();
         if ( c == nullptr ) return nullptr;
     }
+
     FFPixFormat *pf = c->defaultPixFormat();
     if ( pf == nullptr && c->name() == "h264") pf = _ffmpeg->pixFormat("yuv420p");
     return pf;

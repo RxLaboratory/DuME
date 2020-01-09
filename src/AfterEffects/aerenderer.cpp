@@ -48,7 +48,6 @@ void AERenderer::readyRead(QString output)
         else
         {
             _numFrames = match.captured(5).toInt();
-            qDebug() << _numFrames;
             if (_frameRate != 0) _duration = _numFrames / _frameRate;
             else _duration = _numFrames / 24;
         }

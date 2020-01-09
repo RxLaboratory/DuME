@@ -23,7 +23,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     addBlockButton->setMenu( blocksMenu );
 
     presetsMenu = new QMenu(this);
-    presetsButton->setMenu( presetsMenu );
+    presetsButton->setMenu( presetsMenu ); 
 
     // SHADOWS
     videoWidget->setGraphicsEffect( new UIDropShadow() );
@@ -72,7 +72,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     _freezeUI = false;
 
     //Set defaults
-    on_presetsFilterBox_activated();
+    on_presetsFilterBox_activated("");
     //choose preset
     selectDefaultPreset();
 
@@ -394,8 +394,9 @@ void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void UIOutputWidget::on_formatsFilterBox_currentIndexChanged()
+void UIOutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
+    qDebug() << "Format filter selected: " + QString::number(index);
     ffmpeg_loadMuxers();
 }
 
@@ -415,8 +416,9 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
     _loadingPreset = false;
 }
 
-void UIOutputWidget::on_presetsFilterBox_activated()
+void UIOutputWidget::on_presetsFilterBox_activated(QString arg1)
 {
+    qDebug() << "Preset filter selected: " + arg1;
     loadPresets( );
 }
 
@@ -477,6 +479,7 @@ void UIOutputWidget::addNewParam(QString name, QString value)
 
 void UIOutputWidget::newInputMedia(MediaInfo *input)
 {
+    qDebug() << "new input";
     //set output fileName
     QFileInfo inputFile(input->fileName());
     QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
@@ -485,27 +488,30 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     //update blocks availability
     updateBlocksAvailability();
 
+
+    qDebug() << "blocks updated";
+
     // update (hidden) fields
     if (blockResize->isHidden())
     {
-        blockResizeContent->setWidth( input->videoWidth() );
-        blockResizeContent->setHeight( input->videoHeight() );
+        blockResizeContent->setWidth( input->videoStreams()[0]->width() );
+        blockResizeContent->setHeight( input->videoStreams()[0]->height() );
     }
-    if (blockFrameRate->isHidden()) blockFrameRateContent->setFrameRate( input->videoFramerate() );
-
+    if (blockFrameRate->isHidden() && input->videoStreams().count() > 0) blockFrameRateContent->setFrameRate( input->videoStreams()[0]->framerate() );
+qDebug() << "alpha";
 
     if ( !input->hasAlpha() )
     {
         actionAlpha->setVisible(false);
         blockAlpha->hide();
     }
+qDebug() << "alpha ok";
 
-
-    if (blockSampling->isHidden()) blockSamplingContent->setSampling( input->audioSamplingRate() );
-
+    if (blockSampling->isHidden() && input->audioStreams().count() > 0) blockSamplingContent->setSampling( input->audioStreams()[0]->samplingRate() );
+qDebug() << "sampling ok";
     //If ae render queue
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
-
+    qDebug() << "ok";
 }
 
 void UIOutputWidget::loadPresets()
