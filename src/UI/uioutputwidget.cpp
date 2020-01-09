@@ -479,7 +479,6 @@ void UIOutputWidget::addNewParam(QString name, QString value)
 
 void UIOutputWidget::newInputMedia(MediaInfo *input)
 {
-    qDebug() << "new input";
     //set output fileName
     QFileInfo inputFile(input->fileName());
     QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
@@ -488,9 +487,6 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     //update blocks availability
     updateBlocksAvailability();
 
-
-    qDebug() << "blocks updated";
-
     // update (hidden) fields
     if (blockResize->isHidden())
     {
@@ -498,20 +494,17 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
         blockResizeContent->setHeight( input->videoStreams()[0]->height() );
     }
     if (blockFrameRate->isHidden() && input->videoStreams().count() > 0) blockFrameRateContent->setFrameRate( input->videoStreams()[0]->framerate() );
-qDebug() << "alpha";
 
     if ( !input->hasAlpha() )
     {
         actionAlpha->setVisible(false);
         blockAlpha->hide();
     }
-qDebug() << "alpha ok";
 
     if (blockSampling->isHidden() && input->audioStreams().count() > 0) blockSamplingContent->setSampling( input->audioStreams()[0]->samplingRate() );
-qDebug() << "sampling ok";
+
     //If ae render queue
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
-    qDebug() << "ok";
 }
 
 void UIOutputWidget::loadPresets()
