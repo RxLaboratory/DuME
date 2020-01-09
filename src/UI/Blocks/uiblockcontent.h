@@ -18,12 +18,14 @@
 #include <QResizeEvent>
 
 #include "Renderer/mediainfo.h"
+#include "Renderer/medialist.h"
 
 class UIBlockContent : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UIBlockContent(MediaInfo *mediaInfo, QWidget *parent = nullptr);
+    explicit UIBlockContent(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent = nullptr);
+    UIBlockContent(MediaInfo *mediaInfo, QWidget *parent = nullptr);
     QMenu* getPresets() const;
 
 public slots:
@@ -37,6 +39,7 @@ signals:
 
 protected:
     MediaInfo *_mediaInfo;
+    MediaList *_inputMedias;
     bool _freezeUI;
     QMenu *_presets;
 
