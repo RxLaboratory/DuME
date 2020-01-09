@@ -25,6 +25,15 @@ class UIInputWidget : public QWidget, private Ui::InputWidget
 
 public:
     explicit UIInputWidget(FFmpeg *ff, QWidget *parent = nullptr);
+    /**
+     * @brief mediaInfo Gives a pointer to the current input MediaInfo
+     * @return The current MediaInfo
+     */
+    MediaInfo *mediaInfo();
+    /**
+     * @brief getMediaInfo Gives a pointer to a copy of the current input MediaInfo
+     * @return The new copy
+     */
     MediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
@@ -59,7 +68,7 @@ private:
     MediaInfo *_mediaInfo;
     QList<UIBlockWidget *> _customParams;
     void updateOptions();
-
+    void updateCustomParams();
 };
 
 #endif // INPUTWIDGET_H

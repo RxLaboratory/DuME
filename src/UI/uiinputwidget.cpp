@@ -38,21 +38,15 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
     updateOptions();
 }
 
+MediaInfo *UIInputWidget::mediaInfo()
+{
+    updateCustomParams();
+    return _mediaInfo;
+}
+
 MediaInfo *UIInputWidget::getMediaInfo()
 {
-    //ADD CUSTOM PARAMS
-    foreach ( UIBlockWidget *b, _customParams )
-    {
-        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
-        QString param = bc->param();
-        if (param != "")
-        {
-            QStringList option(param);
-            option << bc->value();
-            _mediaInfo->addFFmpegOption(option);
-        }
-    }
-
+    updateCustomParams();
     MediaInfo *mi = new MediaInfo( _mediaInfo->getFfmpeg() );
     mi->updateInfo( _mediaInfo, true, true);
     return mi;
@@ -193,4 +187,20 @@ void UIInputWidget::updateOptions()
     blockAEThreads->hide();
 
     emit newMediaLoaded(_mediaInfo);
+}
+
+void UIInputWidget::updateCustomParams()
+{
+    //ADD CUSTOM PARAMS
+    foreach ( UIBlockWidget *b, _customParams )
+    {
+        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
+        QString param = bc->param();
+        if (param != "")
+        {
+            QStringList option(param);
+            option << bc->value();
+            _mediaInfo->addFFmpegOption(option);
+        }
+    }
 }
