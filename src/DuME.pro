@@ -36,9 +36,11 @@ SOURCES += \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
     Renderer/abstractrendererinfo.cpp \
+    Renderer/audioinfo.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
+    Renderer/videoinfo.cpp \
     UI/Blocks/blockaecomp.cpp \
     UI/Blocks/blockaethreads.cpp \
     UI/Blocks/blockalpha.cpp \
@@ -84,6 +86,7 @@ HEADERS += \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
     Renderer/abstractrendererinfo.h \
+    Renderer/audioinfo.h \
     Renderer/queueitem.h \
     Renderer/renderqueue.h \
     FFmpeg/ffmpegrenderer.h \
@@ -93,6 +96,7 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
+    Renderer/videoinfo.h \
     UI/Blocks/blockaecomp.h \
     UI/Blocks/blockaethreads.h \
     UI/Blocks/blockalpha.h \
