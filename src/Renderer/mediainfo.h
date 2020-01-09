@@ -269,6 +269,8 @@ private:
      * @brief _premultipliedAlpha Wether the Alpha is premultiplied
      */
     bool _premultipliedAlpha;
+    QString _videoLanguage;
+    QString _audioLanguage;
 
     QString _colorPrimaries;
     QString _colorTRC;

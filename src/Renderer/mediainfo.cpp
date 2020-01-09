@@ -47,6 +47,8 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _colorTRC = "";
     _colorPrimaries = "";
     _colorRange = "";
+    _videoLanguage = "";
+    _audioLanguage = "";
     // GENERAL Encoding/decoding parameters
     _cacheDir = nullptr;
     // FFMPEG Encoding/decoding
@@ -128,22 +130,23 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         match = reVideoStream.match(info);
         if (match.hasMatch())
         {
-            QString codec = match.captured(1).left( match.captured(1).indexOf("(") );
+            _videoLanguage = match.captured(1);
+            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
 
             _videoCodec = _ffmpeg->videoEncoder( codec );
             if ( _videoCodec == nullptr ) _videoCodec = new FFCodec( codec );
 
-            QString pixFormat = match.captured(2).left( match.captured(2).indexOf("(") );
+            QString pixFormat = match.captured(3).left( match.captured(3).indexOf("(") );
             _pixFormat = _ffmpeg->pixFormat( pixFormat );
             if ( _pixFormat == nullptr ) _pixFormat = new FFPixFormat( pixFormat );
 
-            _videoWidth = match.captured(3).toInt();
-            _videoHeight = match.captured(4).toInt();
-            if ( match.captured(6) != "" ) _pixAspect = match.captured(5).toFloat() / match.captured(6).toFloat();
-            if ( match.captured(8).toFloat() != 0.0 ) _videoAspect = match.captured(7).toFloat() / match.captured(8).toFloat();
+            _videoWidth = match.captured(4).toInt();
+            _videoHeight = match.captured(5).toInt();
+            if ( match.captured(7) != "" ) _pixAspect = match.captured(6).toFloat() / match.captured(7).toFloat();
+            if ( match.captured(9).toFloat() != 0.0 ) _videoAspect = match.captured(8).toFloat() / match.captured(9).toFloat();
             else if ( _videoHeight != 0) _videoAspect = double( _videoWidth ) / double( _videoHeight );
-            _videoBitrate = match.captured(9).toInt()*1024;
-            _videoFramerate = match.captured(10).toDouble();
+            _videoBitrate = match.captured(10).toInt()*1024;
+            _videoFramerate = match.captured(11).toDouble();
             if ( int( _videoFramerate ) == 0 ) _videoFramerate = 24;
             _video = true;
             continue;
@@ -153,16 +156,17 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         match = reAudioStream.match(info);
         if (match.hasMatch())
         {
-            QString codec = match.captured(1).left( match.captured(1).indexOf("(") );
+            _audioLanguage = match.captured(1);
+            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
 
             _audioCodec = _ffmpeg->audioEncoder( codec );
             if ( _audioCodec == nullptr ) _audioCodec = new FFCodec( codec );
 
-            _audioSamplingRate = match.captured(2).toInt();
+            _audioSamplingRate = match.captured(3).toInt();
 
-            _audioChannels = match.captured(3);
+            _audioChannels = match.captured(4);
 
-            _audioBitrate = match.captured(4).toInt()*1024;
+            _audioBitrate = match.captured(5).toInt()*1024;
 
             _audio = true;
             continue;
@@ -279,7 +283,9 @@ QString MediaInfo::getDescription()
 
         if (_video)
         {
-            mediaInfoString += "\n\nVideo codec: ";
+            mediaInfoString += "\n\nVideo stream 1:";
+            if (_videoLanguage != "") mediaInfoString += "\nVideo language: " + LanguageUtils::get(_videoLanguage);
+            mediaInfoString += "\nVideo codec: ";
             FFCodec *vc = _videoCodec;
             if (vc == nullptr) vc = defaultVideoCodec();
             if (vc != nullptr)
@@ -305,7 +311,9 @@ QString MediaInfo::getDescription()
 
         if (_audio)
         {
-            mediaInfoString += "\n\nAudio codec: ";
+            mediaInfoString += "\n\nAudio stream 1:";
+            if (_audioLanguage != "") mediaInfoString += "\nAudio language: " + LanguageUtils::get(_audioLanguage);
+            mediaInfoString += "\nAudio codec: ";
             FFCodec *ac = _audioCodec;
             if (ac == nullptr) ac = defaultAudioCodec();
             if(ac != nullptr)
