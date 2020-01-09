@@ -7,6 +7,7 @@ AudioInfo::AudioInfo(QObject *parent) : QObject(parent)
 
 void AudioInfo::reInit()
 {
+    _id = -1;
     _samplingRate = 0;
     _channels = "";
     _bitrate = 0;
@@ -62,4 +63,14 @@ QString AudioInfo::language() const
 void AudioInfo::setLanguage(const QString &language)
 {
     _language = language;
+}
+
+int AudioInfo::id() const
+{
+    return _id;
+}
+
+void AudioInfo::setId(int id)
+{
+    _id = id;
 }

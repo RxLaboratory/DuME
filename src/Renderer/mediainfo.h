@@ -15,6 +15,7 @@
 #include "FFmpeg/ffmpeg.h"
 #include "Renderer/audioinfo.h"
 #include "Renderer/videoinfo.h"
+#include "Renderer/streamreference.h"
 #include "utils.h"
 
 class MediaInfo : public QObject
@@ -96,6 +97,8 @@ public:
     void setColorRange(const QString &colorRange, bool silent = false);
     void addAudioStream(AudioInfo *stream, bool silent = false);
     void addVideoStream(VideoInfo *stream, bool silent = false);
+    void addMap(int mediaId, int streamId, bool silent = false);
+    void removeMap(int index, bool silent = false);
     //getters
     FFMuxer *muxer() const;
     int videoWidth();
@@ -145,10 +148,9 @@ public:
     QString colorRange() const;
     QList<VideoInfo *> videoStreams() const;
     QList<AudioInfo *> audioStreams() const;
+    QList<StreamReference> maps() const;
 
     FFmpeg *getFfmpeg() const;
-
-
 
 signals:
     /**
@@ -282,6 +284,7 @@ private:
 
     QList<VideoInfo *> _videoStreams;
     QList<AudioInfo *> _audioStreams;
+    QList<StreamReference> _maps;
 
     QString _colorPrimaries;
     QString _colorTRC;

@@ -7,6 +7,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
 
 void VideoInfo::reInit()
 {
+    _id = -1;
     _quality = -1;
     _profile = -1;
     _aspect = 0.0;
@@ -144,6 +145,16 @@ bool VideoInfo::canHaveAlpha()
     }
 
     return false;
+}
+
+int VideoInfo::id() const
+{
+    return _id;
+}
+
+void VideoInfo::setId(int id)
+{
+    _id = id;
 }
 
 void VideoInfo::setCodec(FFCodec *codec)

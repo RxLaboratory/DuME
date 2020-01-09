@@ -40,6 +40,7 @@ SOURCES += \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
+    Renderer/streamreference.cpp \
     Renderer/videoinfo.cpp \
     UI/Blocks/blockaecomp.cpp \
     UI/Blocks/blockaethreads.cpp \
@@ -97,6 +98,7 @@ HEADERS += \
     FFmpeg/ffmuxer.h \
     FFmpeg/ffpixformat.h \
     FFmpeg/ffbaseobject.h \
+    Renderer/streamreference.h \
     Renderer/videoinfo.h \
     UI/Blocks/blockaecomp.h \
     UI/Blocks/blockaethreads.h \

@@ -27,9 +27,13 @@ public:
     QString language() const;
     void setLanguage(const QString &language);
 
+    int id() const;
+    void setId(int id);
+
 signals:
 
 private:
+    int _id;
     int _samplingRate;
     QString _channels;
     qint64 _bitrate;

@@ -54,6 +54,8 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _videoStreams.clear();
     qDeleteAll(_audioStreams);
     _audioStreams.clear();
+    // MAPS
+    _maps.clear();
     // GENERAL Encoding/decoding parameters
     _cacheDir = nullptr;
     // FFMPEG Encoding/decoding
@@ -137,26 +139,27 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         {
             //add the stream
             VideoInfo *stream = new VideoInfo;
-            stream->setLanguage( (match.captured(1)) );
+            stream->setId( match.captured(1).toInt() );
+            stream->setLanguage( (match.captured(2)) );
 
-            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
+            QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->videoEncoder( codec );
             if (c == nullptr ) c = new FFCodec(codec);
             stream->setCodec( c );
 
-            QString pixFormat = match.captured(3).left( match.captured(3).indexOf("(") );
+            QString pixFormat = match.captured(4).left( match.captured(4).indexOf("(") );
             FFPixFormat *pf = _ffmpeg->pixFormat( pixFormat );
             if ( pf == nullptr ) pf = new FFPixFormat( pixFormat );
             stream->setPixFormat( pf );
 
-            stream->setWidth( match.captured(4).toInt() );
-            stream->setHeight( match.captured(5).toInt() );
-            if ( match.captured(7) != "" ) stream->setPixAspect( match.captured(6).toFloat() / match.captured(7).toFloat() );
-            if ( match.captured(9).toFloat() != 0.0 ) stream->setAspect( match.captured(8).toFloat() / match.captured(9).toFloat() );
+            stream->setWidth( match.captured(5).toInt() );
+            stream->setHeight( match.captured(6).toInt() );
+            if ( match.captured(8) != "" ) stream->setPixAspect( match.captured(7).toFloat() / match.captured(8).toFloat() );
+            if ( match.captured(10).toFloat() != 0.0 ) stream->setAspect( match.captured(9).toFloat() / match.captured(10).toFloat() );
             else if ( stream->height() != 0) stream->setAspect( double( stream->height() ) / double( stream->height() ) );
 
-            stream->setBitrate( match.captured(10).toInt()*1024 );
-            stream->setFramerate( match.captured(11).toDouble() );
+            stream->setBitrate( match.captured(11).toInt()*1024 );
+            stream->setFramerate( match.captured(12).toDouble() );
 
             if ( int( stream->framerate() ) == 0 ) stream->setFramerate( 24 );
             _video = true;
@@ -171,18 +174,19 @@ void MediaInfo::updateInfo(QFileInfo mediaFile, bool silent)
         {
             //add the stream
             AudioInfo *stream = new AudioInfo;
-            stream->setLanguage( match.captured(1) );
+            stream->setId( match.captured(1).toInt() );
+            stream->setLanguage( match.captured(2) );
 
-            QString codec = match.captured(2).left( match.captured(2).indexOf("(") );
+            QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->audioEncoder( codec );
             if ( c == nullptr ) c = new FFCodec( codec );
             stream->setCodec(c);
 
-            stream->setSamplingRate( match.captured(3).toInt() );
+            stream->setSamplingRate( match.captured(4).toInt() );
 
-            stream->setChannels( match.captured(4) );
+            stream->setChannels( match.captured(5) );
 
-            stream->setBitrate( match.captured(5).toInt()*1024 );
+            stream->setBitrate( match.captured(6).toInt()*1024 );
 
             _audioStreams << stream;
 
@@ -350,9 +354,9 @@ QString MediaInfo::getDescription()
 
         for ( int i = 0; i < _videoStreams.count(); i++)
         {
-            mediaInfoString += "\n\nVideo stream " + QString::number(i+1) + ":";
-
             VideoInfo *s = _videoStreams[i];
+
+            mediaInfoString += "\n\nVideo stream #" + QString::number( s->id() ) + ":";
 
             if ( s->language() != "") mediaInfoString += "\nVideo language: " + LanguageUtils::get( s->language() );
             mediaInfoString += "\nVideo codec: ";
@@ -381,9 +385,9 @@ QString MediaInfo::getDescription()
 
         for ( int i = 0; i < _audioStreams.count(); i++)
         {
-            mediaInfoString += "\n\nAudio stream " + QString::number(i+1) + ":";
-
             AudioInfo *s = _audioStreams[i];
+
+            mediaInfoString += "\n\nAudio stream #" + QString::number( s->id() ) + ":";
 
             if ( s->language() != "") mediaInfoString += "\nAudio language: " + LanguageUtils::get(s->language());
             mediaInfoString += "\nAudio codec: ";
@@ -881,6 +885,21 @@ void MediaInfo::addVideoStream(VideoInfo *stream, bool silent)
     if (!silent) emit changed();
 }
 
+void MediaInfo::addMap(int mediaId, int streamId, bool silent)
+{
+    _maps << StreamReference(mediaId, streamId);
+    if (!silent) emit changed();
+}
+
+void MediaInfo::removeMap(int index, bool silent)
+{
+    if (index >= 0 && index < _maps.count())
+    {
+        _maps.removeAt(index);
+        if (!silent) emit changed();
+    }
+}
+
 void MediaInfo::setColorPrimaries(const QString &colorPrimaries, bool silent)
 {
     _colorPrimaries = colorPrimaries;
@@ -1111,6 +1130,11 @@ QString MediaInfo::colorRange() const
 FFmpeg *MediaInfo::getFfmpeg() const
 {
     return _ffmpeg;
+}
+
+QList<StreamReference> MediaInfo::maps() const
+{
+    return _maps;
 }
 
 QList<VideoInfo *> MediaInfo::videoStreams() const

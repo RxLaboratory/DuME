@@ -49,9 +49,13 @@ public:
     bool hasAlpha();
     bool canHaveAlpha();
 
+    int id() const;
+    void setId(int id);
+
 signals:
 
 private:
+    int _id;
     int _quality;
     int _profile;
     float _aspect;
