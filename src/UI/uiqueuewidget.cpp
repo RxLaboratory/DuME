@@ -114,15 +114,6 @@ void UIQueueWidget::addOutput()
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
 
-    //TODO replace by a connection to the "changed" signal of the medias in the medialist
-    //TODO connect input widget: new media, and media removed to output widget
-    //connect first input widget
-    UIInputWidget *iw = inputWidgets.at(0);
-    connect(iw,SIGNAL(newMediaLoaded(MediaInfo*)),ow,SLOT(newInputMedia(MediaInfo*)));
-    //get current media info
-    MediaInfo *iwInfo = iw->getMediaInfo();
-    if (iwInfo->fileName() != "") ow->newInputMedia(iwInfo);
-
     //connect console
     connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
     //set tab index

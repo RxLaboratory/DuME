@@ -19,6 +19,13 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidg
 
     // Input medias
     _inputMedias = inputMedias;
+    //connect them
+    foreach( MediaInfo *media, _inputMedias->medias())
+    {
+        connect( media, SIGNAL(changed()), this, SLOT(inputChanged()));
+    }
+    //get current info
+    // TODO update from media
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);
@@ -482,8 +489,10 @@ void UIOutputWidget::addNewParam(QString name, QString value)
     _customParams << bw;
 }
 
-void UIOutputWidget::newInputMedia(MediaInfo *input)
+void UIOutputWidget::inputChanged()
 {
+    MediaInfo *input = static_cast<MediaInfo *>(sender());
+
     //set output fileName
     QFileInfo inputFile(input->fileName());
     QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
@@ -493,7 +502,7 @@ void UIOutputWidget::newInputMedia(MediaInfo *input)
     updateBlocksAvailability();
 
     // update (hidden) fields
-    if (blockResize->isHidden())
+    if (blockResize->isHidden() && input->videoStreams().count() > 0)
     {
         blockResizeContent->setWidth( input->videoStreams()[0]->width() );
         blockResizeContent->setHeight( input->videoStreams()[0]->height() );

@@ -51,7 +51,7 @@ signals:
 public slots:
     void ffmpeg_init();
     void ffmpeg_loadMuxers();
-    void newInputMedia(MediaInfo *input);
+    void inputChanged();
     void loadPresets();
 
 private slots:
