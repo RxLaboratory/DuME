@@ -7,6 +7,8 @@
 #include <QRegularExpression>
 #include <QDebug>
 
+#include "languagelist.h"
+
 namespace FileUtils
 {
     void setReadWrite(QFile *file);
@@ -101,8 +103,13 @@ namespace LogUtils
 };
 
 namespace RegExUtils {
-
     QRegularExpression getRegEx( QString name );
+};
+
+namespace LanguageUtils
+{
+    QString get(QString id, LanguageList::LanguageIDType from = LanguageList::ISO639_2, LanguageList::LanguageIDType to = LanguageList::NATIVE_NAME);
+    static const LanguageList *languageList = new LanguageList();
 };
 
 #endif // UTILS_H

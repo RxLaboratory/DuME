@@ -59,6 +59,7 @@ SOURCES += \
     UI/Blocks/uiblockcontent.cpp \
     UI/Blocks/uiblockwidget.cpp \
     UI/uibigcombobox.cpp \
+    languagelist.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
     FFmpeg/ffmpeg.cpp \
@@ -121,6 +122,7 @@ HEADERS += \
     UI/uirainbox.h \
     UI/uisettingswidget.h \
     UI/uitoolbarspacer.h \
+    languagelist.h \
     utils.h
 
 FORMS += \

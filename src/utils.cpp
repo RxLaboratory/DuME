@@ -153,3 +153,8 @@ QRegularExpression RegExUtils::getRegEx(QString name)
     }
     return QRegularExpression();
 }
+
+QString LanguageUtils::get(QString id, LanguageList::LanguageIDType from, LanguageList::LanguageIDType to)
+{
+    return LanguageUtils::languageList->get(id, from, to);
+}
