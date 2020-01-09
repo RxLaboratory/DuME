@@ -459,7 +459,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>97</height>
+            <height>102</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -777,6 +777,20 @@
    </property>
    <property name="toolTip">
     <string>Set the current preset as default</string>
+   </property>
+  </action>
+  <action name="actionMap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select and map input streams</string>
+   </property>
+   <property name="toolTip">
+    <string>Map the input streams to specific output streams</string>
+   </property>
+   <property name="shortcut">
+    <string>M</string>
    </property>
   </action>
  </widget>

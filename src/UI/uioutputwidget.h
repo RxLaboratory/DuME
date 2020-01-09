@@ -21,6 +21,7 @@
 #include "UI/Blocks/blockaudiobitrate.h"
 #include "UI/Blocks/blockcustom.h"
 #include "UI/Blocks/blockcolor.h"
+#include "UI/Blocks/blockmapping.h"
 
 // OTHER UI
 #include "UI/uidropshadow.h"
@@ -35,7 +36,7 @@ class UIOutputWidget : public QWidget, private Ui::OutputWidget
     Q_OBJECT
 
 public:
-    explicit UIOutputWidget(FFmpeg *ff, int id, QWidget *parent = nullptr);
+    explicit UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
     QString getOutputPath();
@@ -101,6 +102,8 @@ private:
     BlockAudioBitrate *blockAudioBitrateContent;
     UIBlockWidget *blockColor;
     BlockColor *blockColorContent;
+    UIBlockWidget *blockMap;
+    BlockMapping *blockMapContent;
 
     // MENUS
     QMenu *blocksMenu;
@@ -115,6 +118,7 @@ private:
     FFmpeg *_ffmpeg;
     MediaInfo *_mediaInfo;
     QList<UIBlockWidget *> _customParams;
+    MediaList *_inputMedias;
 
     bool _freezeUI;
     bool _loadingPreset;

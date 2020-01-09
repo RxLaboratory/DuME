@@ -1,6 +1,6 @@
 #include "uioutputwidget.h"
 
-UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
+UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
     _freezeUI = true;
@@ -16,6 +16,9 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     // Associated MediaInfo
     _mediaInfo = new MediaInfo( _ffmpeg, this);
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(updateBlocksAvailability()));
+
+    // Input medias
+    _inputMedias = inputMedias;
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);
@@ -59,6 +62,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, QWidget *parent) :
     blockAudioBitrateContent = new BlockAudioBitrate( _mediaInfo );
     blockAudioBitrate = addBlock( blockAudioBitrateContent, actionAudioBitrate );
     blocksMenu->addAction( actionOther );
+    blockMapContent = new BlockMapping( _mediaInfo, _inputMedias );
+    blockMap = addBlock( blockMapContent, actionMap );
     blocksMenu->addAction( actionAddCustom );
 
     // PRESETS MENU
