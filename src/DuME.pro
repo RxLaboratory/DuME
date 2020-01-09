@@ -51,6 +51,7 @@ SOURCES += \
     UI/Blocks/blockexr.cpp \
     UI/Blocks/blockframerate.cpp \
     UI/Blocks/blockloops.cpp \
+    UI/Blocks/blockmapping.cpp \
     UI/Blocks/blockpixformat.cpp \
     UI/Blocks/blockresize.cpp \
     UI/Blocks/blocksampling.cpp \
@@ -106,6 +107,7 @@ HEADERS += \
     UI/Blocks/blockexr.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
+    UI/Blocks/blockmapping.h \
     UI/Blocks/blockpixformat.h \
     UI/Blocks/blockresize.h \
     UI/Blocks/blocksampling.h \
@@ -139,6 +141,7 @@ FORMS += \
     UI/Blocks/blockexr.ui \
     UI/Blocks/blockframerate.ui \
     UI/Blocks/blockloops.ui \
+    UI/Blocks/blockmapping.ui \
     UI/Blocks/blockpixformat.ui \
     UI/Blocks/blockresize.ui \
     UI/Blocks/blocksampling.ui \
