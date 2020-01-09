@@ -8,6 +8,7 @@
 
 #include "uiinputwidget.h"
 #include "uioutputwidget.h"
+#include "Renderer/medialist.h"
 
 class UIQueueWidget : public QWidget, private Ui::QueueWidget
 {
@@ -41,6 +42,7 @@ private:
     FFmpeg *_ffmpeg;
     QList<UIOutputWidget*> outputWidgets;
     QList<UIInputWidget*> inputWidgets;
+    MediaList *_inputMedias;
 
     void addOutput();
 
