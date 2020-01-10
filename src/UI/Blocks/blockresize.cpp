@@ -22,6 +22,7 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockResize::activate(bool activate)
 {
+    _freezeUI = true;
     if (!activate)
     {
         _mediaInfo->setVideoWidth( 0 );
@@ -32,10 +33,23 @@ void BlockResize::activate(bool activate)
         _mediaInfo->setVideoWidth( videoWidthButton->value() );
         _mediaInfo->setVideoHeight( videoHeightButton->value() );
     }
+    _freezeUI = false;
 }
 
 void BlockResize::update()
 {
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
+    emit blockEnabled(true);
+
     int w = _mediaInfo->videoWidth();
     int h = _mediaInfo->videoHeight();
     videoWidthButton->setValue( w );
@@ -46,6 +60,8 @@ void BlockResize::update()
     else videoHeightButton->setSuffix( " px" );
 
     checkSizes( );
+
+    _freezeUI = false;
 }
 
 void BlockResize::setWidth(int w)

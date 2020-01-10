@@ -17,6 +17,8 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockVideoBitrate::activate(bool activate)
 {
+    _freezeUI = true;
+
     if (activate)
     {
         if (videoBitrateButton->isChecked())
@@ -42,19 +44,49 @@ void BlockVideoBitrate::activate(bool activate)
         _mediaInfo->setVideoBitrate( 0 );
         _mediaInfo->setVideoQuality( -1 );
     }
+
+    _freezeUI = false;
 }
 
 void BlockVideoBitrate::update()
 {
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo() || _mediaInfo->isImageSequence())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
     FFCodec *c = _mediaInfo->videoCodec();
     if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
-    if ( c == nullptr ) return;
+    if ( c == nullptr )
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
 
     FFMuxer *m = _mediaInfo->muxer();
-    if ( m == nullptr ) return;
+    if ( m == nullptr )
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    else if (m->name() == "gif")
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
+    emit blockEnabled(true);
 
     bool useQuality = c->name() == "h264";
-    bool useBitrate = c->name() != "gif" && !m->isSequence();
+    bool useBitrate = !m->isSequence();
 
     actionPerfect_95->setVisible( useQuality );
     actionAuto->setVisible( useQuality );
@@ -166,6 +198,7 @@ void BlockVideoBitrate::update()
         }
     }
 
+    _freezeUI = false;
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)

@@ -21,6 +21,8 @@ BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockFrameRate::activate(bool activate)
 {
+    _freezeUI = true;
+
     if (activate)
     {
         _mediaInfo->setVideoFramerate( frameRateEdit->value() );
@@ -29,15 +31,30 @@ void BlockFrameRate::activate(bool activate)
     {
         _mediaInfo->setVideoFramerate( 0 );
     }
+
+    _freezeUI = false;
 }
 
 void BlockFrameRate::update()
 {
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
+
     double f = _mediaInfo->videoFramerate();
     if ( f != 0.0)
     {
         frameRateEdit->setValue( f );
     }
+
+    _freezeUI = false;
 }
 
 void BlockFrameRate::setFrameRate(double f)

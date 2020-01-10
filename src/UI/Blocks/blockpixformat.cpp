@@ -11,6 +11,8 @@ BlockPixFormat::BlockPixFormat(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockPixFormat::activate(bool activate)
 {
+    _freezeUI = true;
+
     if (activate && pixFmtFilterBox->currentIndex() != 0 )
     {
         _mediaInfo->setPixFormat( pixFmtBox->currentData(Qt::UserRole).toString() );
@@ -19,10 +21,22 @@ void BlockPixFormat::activate(bool activate)
     {
         _mediaInfo->setPixFormat( nullptr );
     }
+
+    _freezeUI = false;
 }
 
 void BlockPixFormat::update()
 {
+    if (_freezeUI) return;
+
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
+
     listPixFormats( );
 
     _freezeUI = true;

@@ -50,7 +50,6 @@ void UIBlockWidget::blockEnable(bool en)
     if (!en)
     {
         this->hide();
-        activate(false);
     }
     emit blockEnabled(en);
 }

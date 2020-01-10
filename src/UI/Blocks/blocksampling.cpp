@@ -40,6 +40,8 @@ void BlockSampling::setSampling(int s)
 
 void BlockSampling::activate(bool activate)
 {
+    _freezeUI = true;
+
     if (activate)
     {
         _mediaInfo->setAudioSamplingRate( samplingBox->currentData(Qt::UserRole).toInt() );
@@ -48,11 +50,22 @@ void BlockSampling::activate(bool activate)
     {
         _mediaInfo->setAudioSamplingRate( 0 );
     }
+
+    _freezeUI = false;
 }
 
 void BlockSampling::update()
 {
+    if (_freezeUI) return;
     _freezeUI = true;
+
+    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
 
     for (int i = 0; i < samplingBox->count(); i++)
     {

@@ -33,6 +33,17 @@ void BlockAudioCodec::activate(bool activate)
 
 void BlockAudioCodec::update()
 {
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
+
     listCodecs();
     _freezeUI = true;
 

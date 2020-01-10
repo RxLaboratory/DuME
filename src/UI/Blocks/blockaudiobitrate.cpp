@@ -30,7 +30,20 @@ void BlockAudioBitrate::activate(bool activate)
 
 void BlockAudioBitrate::update()
 {
+    if (_freezeUI) return;
+    _freezeUI = true;
+
+    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
+
     audioBitRateEdit->setValue( MediaUtils::convertFromBps( _mediaInfo->audioBitrate(), MediaUtils::kbps ) );
+
+    _freezeUI = false;
 }
 
 void BlockAudioBitrate::on_audioBitRateEdit_valueChanged(int arg1)

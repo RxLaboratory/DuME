@@ -28,6 +28,13 @@ void BlockVideoProfile::update()
     //Update profiles list
     videoProfileBox->clear();
 
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
     FFCodec *c = _mediaInfo->videoCodec();
     if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
     if ( c == nullptr )

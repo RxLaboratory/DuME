@@ -152,9 +152,7 @@ QString UIOutputWidget::getOutputPath()
 
 void UIOutputWidget::updateBlocksAvailability()
 {
-    bool ok = false;
 
-    bool okVideo = _mediaInfo->hasVideo() && !_mediaInfo->copyVideo();
     bool okAudio = _mediaInfo->hasAudio() && !_mediaInfo->copyAudio();
 
     //Audio / Video Buttons
@@ -173,63 +171,6 @@ void UIOutputWidget::updateBlocksAvailability()
         videoTranscodeButton->setEnabled( video && _mediaInfo->hasVideo() );
         videoCopyButton->setEnabled( video && _mediaInfo->hasVideo() );
     }
-
-
-    FFCodec *vc = _mediaInfo->videoCodec();
-    if ( vc == nullptr ) vc = _mediaInfo->defaultVideoCodec();
-
-    //Resize
-    if(!okVideo) blockResize->hide();
-    actionResize->setVisible(okVideo);
-
-    //Framerate
-    ok = !_mediaInfo->isImageSequence();
-    if(!okVideo || !ok) blockFrameRate->hide();
-    actionFrameRate->setVisible(okVideo && ok);
-
-    //Video codec
-    ok = !_mediaInfo->isImageSequence();
-    if (ok && vc != nullptr) ok = vc->name() != "gif";
-    if(!okVideo || !ok) blockVideoCodec->hide();
-    actionVideoCodec->setVisible(okVideo && ok);
-
-    //Video Bitrate
-    ok = !_mediaInfo->isImageSequence();
-    if (ok && vc != nullptr) ok = vc->name() != "gif";
-    if (!okVideo || !ok) blockVideoBitrate->hide();
-    actionVideoBitrate->setVisible( okVideo && ok );
-
-    //Loops
-    ok = false;
-    if ( vc != nullptr) ok = vc->name() == "gif";
-    if (!okVideo || !ok) blockLoops->hide();
-    actionLoops->setVisible( okVideo && ok );
-
-    //Start Number
-    ok = _mediaInfo->isImageSequence();
-    if (!okVideo || !ok) blockStartNumber->hide();
-    actionStartNumber->setVisible( okVideo && ok );
-
-    //Alpha
-    ok = _mediaInfo->canHaveAlpha();
-    if (!okVideo || !ok) blockAlpha->hide();
-    actionAlpha->setVisible( okVideo && ok );
-
-    //Pix format
-    if(!okVideo) blockPixFormat->hide();
-    actionPixelFormat->setVisible(okVideo);
-
-    //Sampling
-    if(!okAudio) blockSampling->hide();
-    actionSampling->setVisible(okAudio);
-
-    //Audio Codec
-    if(!okAudio) blockAudioCodec->hide();
-    actionAudioCodec->setVisible(okAudio);
-
-    //Audio Bitrate
-    if(!okAudio) blockAudioBitrate->hide();
-    actionAudioBitrate->setVisible(okAudio);
 
     //Customs
     //remove previous

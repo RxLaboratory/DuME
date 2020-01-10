@@ -67,6 +67,8 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockColor::activate(bool activate)
 {
+    _freezeUI = true;
+
     if (activate)
     {
         _mediaInfo->setColorTRC( trcBox->currentData().toString() );
@@ -81,11 +83,23 @@ void BlockColor::activate(bool activate)
         _mediaInfo->setColorRange( "" );
         _mediaInfo->setColorPrimaries( "" );
     }
+
+    _freezeUI = false;
 }
 
 void BlockColor::update()
 {
+    if (_freezeUI) return;
     _freezeUI = true;
+
+    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    emit blockEnabled(true);
+
     for (int i = 0; i < trcBox->count(); i++)
     {
         if (trcBox->itemData(i) == _mediaInfo->colorTRC())
