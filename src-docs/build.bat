@@ -1,4 +1,4 @@
 mkdocs build
 @echo off
-echo duffmpeg-docs.rainboxlab.org > ..\docs\CNAME
+echo dume-docs.rainboxlab.org > ..\docs\CNAME
 pause
