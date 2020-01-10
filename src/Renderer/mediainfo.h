@@ -100,7 +100,12 @@ public:
     void addMap(int mediaId, int streamId, bool silent = false);
     void removeMap(int index, bool silent = false);
     void removeAllMaps(bool silent = false);
+    void setMap(int mapIndex, int mediaId, int streamId, bool silentt = false);
+    void setMapMedia(int mapIndex, int mediaId, bool silentt = false);
+    void setMapStream(int mapIndex, int streamId, bool silentt = false);
+    void setId(int value);
     //getters
+    int id() const;
     FFMuxer *muxer() const;
     int videoWidth();
     int videoHeight();
@@ -152,9 +157,6 @@ public:
     QList<StreamReference> maps() const;
 
     FFmpeg *getFfmpeg() const;
-
-    int id() const;
-    void setId(int value);
 
 signals:
     /**

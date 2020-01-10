@@ -236,6 +236,11 @@ void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename, bool silent)
     _colorTRC = other->colorTRC();
     _colorPrimaries = other->colorPrimaries();
     _colorRange = other->colorRange();
+    // STREAMS
+    _videoStreams = other->videoStreams();
+    _audioStreams = other->audioStreams();
+    // MAPS
+    _maps = other->maps();
     // GENERAL Encoding/decoding parameters
     _cacheDir = other->cacheDir();
     // FFMPEG Encoding/decoding
@@ -905,6 +910,34 @@ void MediaInfo::removeMap(int index, bool silent)
 void MediaInfo::removeAllMaps(bool silent)
 {
     _maps.clear();
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setMap(int mapIndex, int mediaId, int streamId, bool silent)
+{
+    if (mapIndex >= 0 && mapIndex < _maps.count())
+    {
+        _maps[mapIndex].setMediaId(mediaId);
+        _maps[mapIndex].setStreamId(streamId);
+    }
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setMapMedia(int mapIndex, int mediaId, bool silent)
+{
+    if (mapIndex >= 0 && mapIndex < _maps.count())
+    {
+        _maps[mapIndex].setMediaId(mediaId);
+    }
+    if (!silent) emit changed();
+}
+
+void MediaInfo::setMapStream(int mapIndex, int streamId, bool silent)
+{
+    if (mapIndex >= 0 && mapIndex < _maps.count())
+    {
+        _maps[mapIndex].setStreamId(streamId);
+    }
     if (!silent) emit changed();
 }
 
