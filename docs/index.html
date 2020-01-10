@@ -9,6 +9,8 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
   <title>Home - DuME Documentation</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -61,6 +63,8 @@
         
             <li><a class="toctree-l3" href="#about-dume">About DuME</a></li>
         
+            <li><a class="toctree-l3" href="#license">License</a></li>
+        
         </ul>
     
 
@@ -69,7 +73,59 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="after-effects.html">After Effects Rendering</a>
+    <span class="caption-text">Installation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="windows.html">Windows</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mac.html">Mac OS X</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="presets.html">Manage presets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="h264.html">MP4 / h.264</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="sequences.html">Image sequences</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">After Effects Rendering</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="after-effects-install.html">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="after-effects-rendering.html">Rendering</a>
+                </li>
+    </ul>
 	    </li>
           
             <li class="toctree-l1">
@@ -136,12 +192,30 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="dume-introduction">DuME Introduction</h1>
+                <h1 id="dume-introduction">DuME Introduction<a class="headerlink" href="#dume-introduction" title="Permanent link">&para;</a></h1>
 <p><strong><em>DuME</em> is a Free and Open Source Media Encoder</strong>.<br />
 It is fast, versatile, and easy-to-use.<br />
-It is developped as a Graphical User Interface (GUI) for <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very fast and versatile command-line media encoder.<br />
+It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very fast and versatile command-line media encoder.<br />
 <em>DuME</em> is also able to render and transcode <em>Adobe After Effects</em> projects and to render <a href="http://blender.org"><em>Blender</em></a> scenes.</p>
-<h2 id="description">Description</h2>
+<div class="toc">
+<ul>
+<li><a href="#dume-introduction">DuME Introduction</a><ul>
+<li><a href="#description">Description</a><ul>
+<li><a href="#available-features">Available Features</a></li>
+<li><a href="#planned-features">Planned Features</a></li>
+</ul>
+</li>
+<li><a href="#about-dume">About DuME</a></li>
+<li><a href="#license">License</a><ul>
+<li><a href="#software">Software</a></li>
+<li><a href="#documentation">Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/DuME_Screenshot.png" /></p>
 <p>The goal of DuME is to be as <strong>easy to use</strong> as possible even for beginners, without any compromise on <strong>functionnality for advanced users</strong>.</p>
 <p>To achieve this goal, the development of the application follows these guidelines:</p>
@@ -152,15 +226,15 @@ It is developped as a Graphical User Interface (GUI) for <a href="https://ffmpeg
 <li>Advanced users can add any other parameter available in FFmpeg thanks to the &ldquo;custom parameters&rdquo;, or even input their own commands through the included command line.</li>
 <li>Common parameters and Custom parameters can be saved as easy-to-use User Presets.</li>
 </ul>
-<h3 id="available-features">Available Features</h3>
+<h3 id="available-features">Available Features<a class="headerlink" href="#available-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Transcode any audio or video file, <a href="https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features">from any format supporter by <em>FFmpeg</em></a> to any other format supported by FFmpeg.</li>
+<li>Transcode any audio or video file, <a href="https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features">from any format supported by <em>FFmpeg</em></a> to any other format supported by <em>FFmpeg</em>.</li>
 <li>Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF&hellip; - <em>evolving list</em>.</li>
-<li>Transcode to and from Image Sequences (PNG, EXR&hellip;).</li>
-<li>Mix Media files (e.g. add sound to an image sequence) - <em>available using custom parameters, work in progress</em>.</li>
+<li>Transcode to and from <a href="sequences.html">Image Sequences</a> (PNG, EXR&hellip;).</li>
+<li><a href="mapping.html">Mix Media files</a> (e.g. add sound to an image sequence).</li>
 <li>Render After Effects projects and transcode to any format supported by FFmpeg - <em>work in progress</em>.</li>
 </ul>
-<h3 id="planned-features">Planned Features</h3>
+<h3 id="planned-features">Planned Features<a class="headerlink" href="#planned-features" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Render/Transcode queue.</li>
 <li>Simplify <em>After Effects</em> rendering setup.</li>
@@ -170,28 +244,28 @@ It is developped as a Graphical User Interface (GUI) for <a href="https://ffmpeg
 </ul>
 </li>
 <li>Render <em>Blender</em> scenes.</li>
-<li>Mix several inputs together.</li>
 <li>Append several inputs.</li>
 <li>Add subtitles tracks.</li>
+<li>Per-stream options for the output.</li>
 <li>Burn subtitles in picture.</li>
 <li>Burn Metadata in picture (Timecode&hellip;).</li>
 </ul>
-<h2 id="about-dume">About DuME</h2>
-<p>If you like this free software, please support the developer on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.</p>
-<h3 id="licenses">Licenses:</h3>
-<h4 id="software">Software</h4>
-<p>This program makes use of <em>FFmpeg</em> and <em>Qt</em>.</p>
-<p><strong><em>DuME</em> Copyright (c) 2017-2019 Nicolas Dufresne and Contributors</strong><br />
-<strong><em>FFmpeg</em> Copyright (c) the FFmpeg developers</strong><br />
+<h2 id="about-dume">About DuME<a class="headerlink" href="#about-dume" title="Permanent link">&para;</a></h2>
+<p>If you like this free software, please <a href="http://patreon.com/duduf">support the developer on Patreon</a> to help the continuation of the development of free tools.</p>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
+<h3 id="software">Software<a class="headerlink" href="#software" title="Permanent link">&para;</a></h3>
+<p><strong><em>DuME</em> Copyright (c) 2017-2020 Nicolas Dufresne and Contributors</strong>  </p>
+<p><em>DuME</em> is licensed under the <a href="gnu-gpl.html">GNU General Public License v3</a>.</p>
+<p>It also uses <em>FFmpeg</em> and <em>Qt</em>.</p>
+<p><strong><em>FFmpeg</em> Copyright (c) the FFmpeg developers</strong><br />
 <strong><em>Qt</em> Copyright (c) The Qt Company</strong></p>
-<p><em>DuFFmpeg</em>, <em>FFmpeg</em> and <em>Qt</em> are free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.</p>
-<p><em>DuFFmpeg</em>, <em>FFmpeg</em> and <em>Qt</em> are distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+<p>This program is free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.</p>
-<p>You should have received a copy of the <em>GNU General Public License</em> along with <em>DuFFmpeg</em>.  If not, see http://www.gnu.org/licenses/.</p>
+<p>You should have received a copy of the <em>GNU General Public License</em> along with <em>DuME</em>.  If not, see http://www.gnu.org/licenses/.</p>
 <p><img alt="GNU" src="img/logos/gnu.png" /> <img alt="GPL" src="img/logos/gplv3.png" /> </p>
-<h4 id="documentation">Documentation</h4>
-<p><strong>Copyright (C)  2019 Nicolas Dufresne and Contributors.</strong><br />
+<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<p><strong>Copyright (C)  2019-2020 Nicolas Dufresne and Contributors.</strong><br />
 Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation;<br />
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled &ldquo;<a href="doc-license.html">Documentation License</a>&rdquo;.</p>
@@ -203,7 +277,7 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="after-effects.html" class="btn btn-neutral float-right" title="After Effects Rendering">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="windows.html" class="btn btn-neutral float-right" title="Windows">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -233,7 +307,7 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
       
       
       
-        <span style="margin-left: 15px"><a href="after-effects.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="windows.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -247,5 +321,5 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-01-04 11:54:14
+Build Date UTC : 2020-01-10 11:57:05
 -->

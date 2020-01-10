@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>DuME Documentation</title>
+  <title>Adding / Changing streams - DuME Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -16,6 +16,13 @@
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   <link href="style.css" rel="stylesheet">
   <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Adding / Changing streams";
+    var mkdocs_page_input_path = "mapping.md";
+    var mkdocs_page_url = "/mapping.html";
+  </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
@@ -33,7 +40,7 @@
       <div class="wy-side-nav-search">
         <a href="index.html" class="icon icon-home"> DuME Documentation</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="/search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -83,9 +90,23 @@
                     
     <a class="" href="sequences.html">Image sequences</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="mapping.html">Adding / Changing streams</a>
+    <a class="current" href="mapping.html">Adding / Changing streams</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#adding-changing-streams">Adding / Changing streams</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#add-a-new-stream-from-file">Add a new stream from file</a></li>
+        
+            <li><a class="toctree-l4" href="#changing-mapping-streams">Changing / Mapping streams</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -155,8 +176,16 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
     
+      
+        
+          <li>Transcoding &raquo;</li>
+        
+      
     
+    <li>Adding / Changing streams</li>
     <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/mapping.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -165,15 +194,45 @@
           <div role="main">
             <div class="section">
               
-
-  <h1 id="404-page-not-found">404</h1>
-
-  <p><strong>Page not found</strong></p>
-
-
+                <div class="toc">
+<ul>
+<li><a href="#adding-changing-streams">Adding / Changing streams</a><ul>
+<li><a href="#add-a-new-stream-from-file">Add a new stream from file</a></li>
+<li><a href="#changing-mapping-streams">Changing / Mapping streams</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="adding-changing-streams">Adding / Changing streams<a class="headerlink" href="#adding-changing-streams" title="Permanent link">&para;</a></h1>
+<p><img alt="" src="img/captures/sound-mapping.png" /></p>
+<p>With <em>DuMe</em> you can easily add or change audio streams (and other type of streams) in the output files.</p>
+<h2 id="add-a-new-stream-from-file">Add a new stream from file<a class="headerlink" href="#add-a-new-stream-from-file" title="Permanent link">&para;</a></h2>
+<p>To add new streams to the output file from multiple input medias, you can just <strong>add them as new input medias</strong> (using the &ldquo;Add&hellip;&rdquo; button on the input panel of <em>DuME</em>). You don&rsquo;t need to change anything else.</p>
+<p>If the output file can contain only a limited number of streams (e.g. one video and one audio stream, like mp4), and there are more available streams in the input medias, <em>DuME</em> will automatically select the best-quality streams it can find from all the input medias. If you want to manually select specific streams, read the section below entitled <em>Changing / Mapping streams</em>.</p>
+<h2 id="changing-mapping-streams">Changing / Mapping streams<a class="headerlink" href="#changing-mapping-streams" title="Permanent link">&para;</a></h2>
+<p>If you need to select specific streams from the input medias to be used in the output file, you can do so using the <strong><em>Select and map input streams</em> options</strong> on the output panel of <em>DuME</em>.</p>
+<p><img alt="" src="img/captures/mapping.png" /></p>
+<ul>
+<li>Add streams using the options button <img alt="icon" src="img/icons/cog.svg" />.</li>
+<li>Then, you can select an input media and the stream to use from it.</li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>As soon as you&rsquo;ve added some streams using the mapping options, they will be the <strong>only</strong> streams used in the output file, all other streams will be ignored. That means you have to manually select all the streams you want to use in the output file.</p>
+</div>
+              
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="after-effects-install.html" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="sequences.html" class="btn btn-neutral" title="Image sequences"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -199,10 +258,14 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="sequences.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="after-effects-install.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '';</script>
+    <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
       <script src="search/main.js" defer></script>

@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>DuME Documentation</title>
+  <title>Installation - DuME Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -16,6 +16,13 @@
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   <link href="style.css" rel="stylesheet">
   <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Installation";
+    var mkdocs_page_input_path = "after-effects-install.md";
+    var mkdocs_page_url = "/after-effects-install.html";
+  </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
@@ -33,7 +40,7 @@
       <div class="wy-side-nav-search">
         <a href="index.html" class="icon icon-home"> DuME Documentation</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="/search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -94,9 +101,23 @@
 		
     <span class="caption-text">After Effects Rendering</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="after-effects-install.html">Installation</a>
+    <a class="current" href="after-effects-install.html">Installation</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#after-effects-installation">After Effects: Installation</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#using-the-provided-script">Using the provided script</a></li>
+        
+            <li><a class="toctree-l4" href="#manually">Manually</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -155,8 +176,16 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
     
+      
+        
+          <li>After Effects Rendering &raquo;</li>
+        
+      
     
+    <li>Installation</li>
     <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/after-effects-install.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -165,15 +194,41 @@
           <div role="main">
             <div class="section">
               
-
-  <h1 id="404-page-not-found">404</h1>
-
-  <p><strong>Page not found</strong></p>
-
-
+                <div class="toc">
+<ul>
+<li><a href="#after-effects-installation">After Effects: Installation</a><ul>
+<li><a href="#using-the-provided-script">Using the provided script</a></li>
+<li><a href="#manually">Manually</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="after-effects-installation"><em>After Effects</em>: Installation<a class="headerlink" href="#after-effects-installation" title="Permanent link">&para;</a></h1>
+<p>If <em>Adobe After Effects</em> is installed on the system, <em>DuME</em> is able to render and encode <em>After Effects</em> Compositions.</p>
+<p>Before these compositions can be rendered, some presets need to be created inside <em>After Effects</em>. This operation has to be done only once for each version of <em>After Effects</em> you want to use.<br />
+A small script is provided with <em>DuME</em> to make this first installation easy.</p>
+<h2 id="using-the-provided-script">Using the provided script<a class="headerlink" href="#using-the-provided-script" title="Permanent link">&para;</a></h2>
+<p>1- Launch the version of After Effects you want to use with <em>DuME</em>.
+2- Run the script via <code>File/Scripts/Run Script File...</code>. The script is located in the <em>After Effects</em> folder where you have installed <em>DuME</em>.</p>
+<h2 id="manually">Manually<a class="headerlink" href="#manually" title="Permanent link">&para;</a></h2>
+<p>If for some reason this script does not work or you cannot use it, follow these steps in the rendere queue:</p>
+<p>1- Select the &ldquo;Lossless&rdquo; output module. Set its format to <code>OpenEXR Sequence</code>, and the channels to RGB+Alpha. Leave all other options to their default values. Save this new module as &ldquo;DuEXR&rdquo;.
+2- Select the &ldquo;Lossless&rdquo; output module. Set its format to <code>WAV</code>, and the audio options to <code>96,000Hz / 32 bit / Stereo</code>. Save this new module as &ldquo;DuWAV&rdquo;.
+3- Select the &ldquo;Best&rdquo; render settings. and check the &ldquo;Skip existing files&rdquo; box. Save these new settings as &ldquo;DuMultiMachine&rdquo;.
+4- Select the &ldquo;Best&rdquo; render settings. Save these settings as &ldquo;DuBest&rdquo;.</p>
+              
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="after-effects-rendering.html" class="btn btn-neutral float-right" title="Rendering">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="mapping.html" class="btn btn-neutral" title="Adding / Changing streams"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -199,10 +254,14 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="mapping.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="after-effects-rendering.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '';</script>
+    <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
       <script src="search/main.js" defer></script>

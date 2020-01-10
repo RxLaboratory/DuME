@@ -8,7 +8,9 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>After Effects Rendering - DuME Documentation</title>
+  <title>Linux - DuME Documentation</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -17,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "After Effects Rendering";
-    var mkdocs_page_input_path = "after-effects.md";
-    var mkdocs_page_url = "/after-effects.html";
+    var mkdocs_page_name = "Linux";
+    var mkdocs_page_input_path = "linux.md";
+    var mkdocs_page_url = "/linux.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -53,22 +55,63 @@
     <a class="" href="index.html">Home</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="after-effects.html">After Effects Rendering</a>
+    <span class="caption-text">Installation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="windows.html">Windows</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mac.html">Mac OS X</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="linux.html">Linux</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#after-effects-rendering">After Effects Rendering</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#installation">Installation</a></li>
-        
-            <li><a class="toctree-l3" href="#use">Use</a></li>
-        
-        </ul>
-    
-
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="presets.html">Manage presets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="h264.html">MP4 / h.264</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="sequences.html">Image sequences</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">After Effects Rendering</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="after-effects-install.html">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="after-effects-rendering.html">Rendering</a>
+                </li>
     </ul>
 	    </li>
           
@@ -123,11 +166,15 @@
     <li><a href="index.html">Docs</a> &raquo;</li>
     
       
+        
+          <li>Installation &raquo;</li>
+        
+      
     
-    <li>After Effects Rendering</li>
+    <li>Linux</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/after-effects.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/linux.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -136,28 +183,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="after-effects-rendering"><em>After Effects</em> Rendering</h1>
-<p>If <em>Adobe After Effects</em> is installed on the system, <em>DuME</em> is able to render and encode <em>After Effects</em> Compositions.</p>
-<p>Before these compositions can be rendered, some presets need to be created inside <em>After Effects</em>. This operation has to be done only once for each version of <em>After Effects</em> you want to use.<br />
-A small script is provided with <em>DuME</em> to make this first installation easy.</p>
-<h2 id="installation">Installation</h2>
-<h3 id="using-the-provided-script">Using the provided script</h3>
-<p>1- Launch the version of After Effects you want to use with <em>DuME</em>.
-2- Run the script via <code>File/Scripts/Run Script File...</code>. The script is located in the <em>After Effects</em> folder where you have installed <em>DuME</em>.</p>
-<h3 id="manually">Manually</h3>
-<p>If for some reason this script does not work or you cannot use it, follow these steps in the rendere queue:</p>
-<p>1- Select the &ldquo;Lossless&rdquo; output module. Set its format to <code>OpenEXR Sequence</code>, and the channels to RGB+Alpha. Leave all other options to their default values. Save this new module as &ldquo;DuEXR&rdquo;.
-2- Select the &ldquo;Lossless&rdquo; output module. Set its format to <code>WAV</code>, and the audio options to <code>96,000Hz / 32 bit / Stereo</code>. Save this new module as &ldquo;DuWAV&rdquo;.
-3- Select the &ldquo;Best&rdquo; render settings. and check the &ldquo;Skip existing files&rdquo; box. Save these new settings as &ldquo;DuMultiMachine&rdquo;.
-4- Select the &ldquo;Best&rdquo; render settings. Save these settings as &ldquo;DuBest&rdquo;.</p>
-<h2 id="use">Use</h2>
-<p>Drop or open an <em>After Effects</em> project on the input side of <em>DuME</em>.</p>
-<p><img alt="" src="img/captures/ae_input_options.png" /></p>
-<p>The framerate is not (yet) detected by <em>DuME</em>, don&rsquo;t forget to set it manually.</p>
-<p>To choose which composition will be rendered, you have to possibilities: Either set the exact composition name, or add the composition to the render queue in <em>After Effects</em>, and set the number of its item in the render queue in <em>DuME</em> (the render settings do not matter at all).<br />
-The quickest way to do this is to make sure the rendere queue in <em>After Effects</em> is empty, then add the composition you want to render. <em>DuME</em> automatically renders the first (and only in this case) item in the queue.</p>
-<p>You can also use <em>DuME</em> to render the whole queue, but in this case <em>DuME</em> cannot automatically transcode the result into other formats.</p>
-<p>You have the option to use several threads at once when rendering <em>After Effects</em> projects, but be careful as this may not work correctly if the number of threads is too high, especially with projects needing a lot of memory.</p>
+                <p><em>To be written&hellip;</em></p>
               
             </div>
           </div>
@@ -165,10 +191,10 @@ The quickest way to do this is to make sure the rendere queue in <em>After Effec
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="presets.html" class="btn btn-neutral float-right" title="Manage presets">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="mac.html" class="btn btn-neutral" title="Mac OS X"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -196,10 +222,10 @@ The quickest way to do this is to make sure the rendere queue in <em>After Effec
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="index.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="mac.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="changelog.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="presets.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

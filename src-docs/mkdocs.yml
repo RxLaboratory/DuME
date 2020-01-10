@@ -16,7 +16,8 @@ markdown_extensions:
     - admonition
     - codehilite
     - fenced_code
-    - toc
+    - toc:
+        permalink: true
 extra_css:
     - style.css
     - video.css
@@ -28,7 +29,18 @@ extra:
     version: 0.1.0-beta
 nav:
     - Home: index.md
-    - After Effects Rendering: after-effects.md
+    - Installation:
+        - Windows: windows.md
+        - Mac OS X: mac.md
+        - Linux: linux.md
+    - Transcoding:
+        - Manage presets: presets.md
+        - MP4 / h.264: h264.md
+        - Image sequences: sequences.md
+        - Adding / Changing streams: mapping.md
+    - After Effects Rendering:
+        - Installation: after-effects-install.md
+        - Rendering: after-effects-rendering.md
     - Changelog: changelog.md
     - License:
         - GNU GPLv3: gnu-gpl.md

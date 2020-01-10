@@ -2,27 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>http://rainboxlab.org/index.html</loc>
-     <lastmod>2020-01-04</lastmod>
+     <lastmod>2020-01-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://rainboxlab.org/after-effects.html</loc>
-     <lastmod>2020-01-04</lastmod>
+     <loc>http://rainboxlab.org/windows.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/mac.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/linux.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/presets.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/h264.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/sequences.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/mapping.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/after-effects-install.html</loc>
+     <lastmod>2020-01-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/after-effects-rendering.html</loc>
+     <lastmod>2020-01-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/changelog.html</loc>
-     <lastmod>2020-01-04</lastmod>
+     <lastmod>2020-01-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/gnu-gpl.html</loc>
-     <lastmod>2020-01-04</lastmod>
+     <lastmod>2020-01-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/doc-license.html</loc>
-     <lastmod>2020-01-04</lastmod>
+     <lastmod>2020-01-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>

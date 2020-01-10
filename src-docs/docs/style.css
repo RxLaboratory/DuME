@@ -27,3 +27,7 @@ a:hover {
 .wy-menu-vertical span {
     color: #ec1818;
 }
+
+img[alt=icon] {
+    width: 24px;
+}

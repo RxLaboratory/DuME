@@ -2,8 +2,10 @@
 
 **_DuME_ is a Free and Open Source Media Encoder**.  
 It is fast, versatile, and easy-to-use.  
-It is developped as a Graphical User Interface (GUI) for [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile command-line media encoder.  
+It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile command-line media encoder.  
 *DuME* is also able to render and transcode *Adobe After Effects* projects and to render [*Blender*](http://blender.org) scenes.
+
+[TOC]
 
 ## Description
 
@@ -21,10 +23,10 @@ To achieve this goal, the development of the application follows these guideline
 
 ### Available Features
 
-- Transcode any audio or video file, [from any format supporter by *FFmpeg*](https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features) to any other format supported by FFmpeg.
+- Transcode any audio or video file, [from any format supported by *FFmpeg*](https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features) to any other format supported by *FFmpeg*.
 - Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF... - *evolving list*.
-- Transcode to and from Image Sequences (PNG, EXR...).
-- Mix Media files (e.g. add sound to an image sequence) - *available using custom parameters, work in progress*.
+- Transcode to and from [Image Sequences](sequences.md) (PNG, EXR...).
+- [Mix Media files](mapping.md) (e.g. add sound to an image sequence).
 - Render After Effects projects and transcode to any format supported by FFmpeg - *work in progress*.
 
 ### Planned Features
@@ -35,39 +37,41 @@ To achieve this goal, the development of the application follows these guideline
     - Preview of the input.
     - Preview of the output.
 - Render *Blender* scenes.
-- Mix several inputs together.
 - Append several inputs.
 - Add subtitles tracks.
+- Per-stream options for the output.
 - Burn subtitles in picture.
 - Burn Metadata in picture (Timecode...).
 
 ## About DuME
 
-If you like this free software, please support the developer on Patreon: http://patreon.com/duduf to help the continuation of the development of free tools.
+If you like this free software, please [support the developer on Patreon](http://patreon.com/duduf) to help the continuation of the development of free tools.
 
-### Licenses:
+## License
 
-#### Software
+### Software
 
-This program makes use of *FFmpeg* and *Qt*.
+***DuME* Copyright (c) 2017-2020 Nicolas Dufresne and Contributors**  
 
-***DuME* Copyright (c) 2017-2019 Nicolas Dufresne and Contributors**  
+*DuME* is licensed under the [GNU General Public License v3](gnu-gpl.md).
+
+It also uses *FFmpeg* and *Qt*.
+
 ***FFmpeg* Copyright (c) the FFmpeg developers**  
 ***Qt* Copyright (c) The Qt Company**
 
-*DuFFmpeg*, *FFmpeg* and *Qt* are free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
+This program is free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
-*DuFFmpeg*, *FFmpeg* and *Qt* are distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the *GNU General Public License* along with *DuFFmpeg*.  If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the *GNU General Public License* along with *DuME*.  If not, see http://www.gnu.org/licenses/.
 
 ![GNU](img/logos/gnu.png) ![GPL](img/logos/gplv3.png) 
 
-#### Documentation
+### Documentation
 
-**Copyright (C)  2019 Nicolas Dufresne and Contributors.**  
+**Copyright (C)  2019-2020 Nicolas Dufresne and Contributors.**  
 Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation;  
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled "[Documentation License](doc-license.md)".
