@@ -14,6 +14,7 @@
 #include "ffcodec.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
+#include "ffprofile.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -150,6 +151,8 @@ private:
     QList<FFMuxer *> _muxers;
     // The list of pixel formats
     QList<FFPixFormat *> _pixFormats;
+    // The list of profiles
+    QList<FFProfile *> _profiles;
     // The help
     QString _help;
     // The documentation

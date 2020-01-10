@@ -9,6 +9,18 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 {
     _status = MediaUtils::Initializing;
 
+    // The list of Profiles
+    _profiles << new FFProfile("0", "Proxy");
+    _profiles << new FFProfile("1", "LT");
+    _profiles << new FFProfile("2", "SQ");
+    _profiles << new FFProfile("3", "HQ");
+    _profiles << new FFProfile("baseline", "Baseline");
+    _profiles << new FFProfile("main", "Main");
+    _profiles << new FFProfile("high", "High");
+    _profiles << new FFProfile("high10", "High 10");
+    _profiles << new FFProfile("high422", "High 422");
+    _profiles << new FFProfile("high444", "High 444");
+
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
     _version = settings.value("ffmpeg/version","").toString();
