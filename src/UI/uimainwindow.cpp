@@ -37,21 +37,25 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     UIToolBarSpacer *tbs = new UIToolBarSpacer();
     mainToolBar->addWidget(tbs);
 
+    //settings button
+    mainToolBar->addAction(actionSettings);
+    mainToolBar->widgetForAction( actionSettings )->setObjectName("windowButton");
+
     //window buttons for frameless win
 
     minimizeButton = new QToolButton();
     minimizeButton->setIcon(QIcon(":/icons/minimize"));
-    minimizeButton->setObjectName("minimizeButton");
+    minimizeButton->setObjectName("windowButton");
 #ifndef Q_OS_MAC
     mainToolBar->addWidget(minimizeButton);
 #endif
     maximizeButton = new QToolButton(this);
     maximizeButton->setIcon(QIcon(":/icons/maximize"));
-    maximizeButton->setObjectName("maximizeButton");
+    maximizeButton->setObjectName("windowButton");
     mainToolBar->addWidget(maximizeButton);
     quitButton = new QToolButton(this);
     quitButton->setIcon(QIcon(":/icons/close"));
-    quitButton->setObjectName("quitButton");
+    quitButton->setObjectName("windowButton");
     mainToolBar->addWidget(quitButton);
 #ifndef Q_OS_MAC
     this->setWindowFlags(Qt::FramelessWindowHint);
