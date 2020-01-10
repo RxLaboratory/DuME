@@ -19,7 +19,7 @@ BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( action120_fps );
 }
 
-void BlockFrameRate::setActivated(bool activate)
+void BlockFrameRate::activate(bool activate)
 {
     if (activate)
     {

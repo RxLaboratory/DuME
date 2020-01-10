@@ -12,7 +12,7 @@ public:
     explicit BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
     void setFrameRate( double f );
 private slots:

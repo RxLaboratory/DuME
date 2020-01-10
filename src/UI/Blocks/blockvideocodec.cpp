@@ -94,7 +94,7 @@ void BlockVideoCodec::setDefaultCodec()
     _freezeUI = false;
 }
 
-void BlockVideoCodec::setActivated(bool activate)
+void BlockVideoCodec::activate(bool activate)
 {
     _freezeUI = true;
 

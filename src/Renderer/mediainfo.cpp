@@ -41,7 +41,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _audioChannels = "";
     _frames.clear();
     _videoQuality = -1;
-    _videoProfile = -1;
+    _videoProfile = "";
     _loop = -1;
     _startNumber = 0;
     _premultipliedAlpha = true;
@@ -472,7 +472,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
         setVideoHeight( videoObj.value("height").toInt(), true );
         setVideoFramerate( videoObj.value("framerate").toDouble(), true );
         setVideoBitrate( videoObj.value("bitrate").toInt(), true );
-        setVideoProfile( videoObj.value("profile").toInt(), true );
+        setVideoProfile( videoObj.value("profile").toString(), true );
         setVideoQuality( videoObj.value("quality").toInt(), true );
         setStartNumber( videoObj.value("startNumber").toInt(), true );
         if (!videoObj.value("premultipliedAlpha").isUndefined()) setPremultipliedAlpha( videoObj.value("premultipliedAlpha").toBool(), true );
@@ -1029,7 +1029,7 @@ void MediaInfo::setVideoQuality(int quality, bool silent )
     if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoProfile(int profile, bool silent )
+void MediaInfo::setVideoProfile(QString profile, bool silent )
 {
     _videoProfile = profile;
     if(!silent) emit changed();
@@ -1488,7 +1488,7 @@ int MediaInfo::videoQuality() const
     return _videoQuality;
 }
 
-int MediaInfo::videoProfile() const
+QString MediaInfo::videoProfile() const
 {
     return _videoProfile;
 }

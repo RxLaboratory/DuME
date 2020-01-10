@@ -65,7 +65,7 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     _freezeUI = false;
 }
 
-void BlockColor::setActivated(bool activate)
+void BlockColor::activate(bool activate)
 {
     if (activate)
     {

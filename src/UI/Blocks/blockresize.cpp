@@ -20,7 +20,7 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( action8KUHD );
 }
 
-void BlockResize::setActivated(bool activate)
+void BlockResize::activate(bool activate)
 {
     if (!activate)
     {

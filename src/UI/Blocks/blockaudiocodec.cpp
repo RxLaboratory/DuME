@@ -15,7 +15,7 @@ BlockAudioCodec::BlockAudioCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *
     _freezeUI = false;
 }
 
-void BlockAudioCodec::setActivated(bool activate)
+void BlockAudioCodec::activate(bool activate)
 {
     _freezeUI = true;
 

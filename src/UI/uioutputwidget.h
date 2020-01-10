@@ -77,33 +77,19 @@ private:
     // BLOCKS
     UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
     UIBlockWidget *blockResize;
-    BlockResize *blockResizeContent;
     UIBlockWidget *blockFrameRate;
-    BlockFrameRate *blockFrameRateContent;
     UIBlockWidget *blockVideoCodec;
-    BlockVideoCodec *blockVideoCodecContent;
     UIBlockWidget *blockVideoBitrate;
-    BlockVideoBitrate *blockVideoBitrateContent;
     UIBlockWidget *blockVideoProfile;
-    BlockVideoProfile *blockVideoProfileContent;
     UIBlockWidget *blockLoops;
-    BlockLoops *blockLoopsContent;
     UIBlockWidget *blockStartNumber;
-    BlockStartNumber *blockStartNumberContent;
     UIBlockWidget *blockAlpha;
-    BlockAlpha *blockAlphaContent;
     UIBlockWidget *blockPixFormat;
-    BlockPixFormat *blockPixFormatContent;
     UIBlockWidget *blockSampling;
-    BlockSampling *blockSamplingContent;
     UIBlockWidget *blockAudioCodec;
-    BlockAudioCodec *blockAudioCodecContent;
     UIBlockWidget *blockAudioBitrate;
-    BlockAudioBitrate *blockAudioBitrateContent;
     UIBlockWidget *blockColor;
-    BlockColor *blockColorContent;
     UIBlockWidget *blockMap;
-    BlockMapping *blockMapContent;
 
     // MENUS
     QMenu *blocksMenu;

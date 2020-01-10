@@ -6,7 +6,7 @@ BlockAEComp::BlockAEComp(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 }
 
-void BlockAEComp::setActivated(bool activate)
+void BlockAEComp::activate(bool activate)
 {
     _freezeUI = true;
     if(activate)

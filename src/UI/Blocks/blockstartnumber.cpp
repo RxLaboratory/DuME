@@ -6,7 +6,7 @@ BlockStartNumber::BlockStartNumber(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 }
 
-void BlockStartNumber::setActivated(bool activate)
+void BlockStartNumber::activate(bool activate)
 {
     if (activate)
     {

@@ -38,7 +38,7 @@ void BlockSampling::setSampling(int s)
     _freezeUI = false;
 }
 
-void BlockSampling::setActivated(bool activate)
+void BlockSampling::activate(bool activate)
 {
     if (activate)
     {

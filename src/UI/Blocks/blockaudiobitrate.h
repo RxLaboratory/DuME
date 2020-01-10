@@ -11,7 +11,7 @@ class BlockAudioBitrate : public UIBlockContent, private Ui::BlockAudioBitrate
 public:
     explicit BlockAudioBitrate(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_audioBitRateEdit_editingFinished();

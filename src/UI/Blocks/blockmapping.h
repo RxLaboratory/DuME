@@ -15,7 +15,7 @@ public:
     explicit BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent = nullptr);
 
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 
 private slots:

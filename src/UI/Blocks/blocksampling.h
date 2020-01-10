@@ -12,7 +12,7 @@ public:
     explicit BlockSampling(MediaInfo *mediaInfo,QWidget *parent = nullptr);
     void setSampling(int s);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_samplingBox_currentIndexChanged(int index);

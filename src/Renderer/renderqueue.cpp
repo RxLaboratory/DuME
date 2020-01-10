@@ -197,7 +197,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (output->hasVideo())
         {
             //codec
-            if (codec != "") arguments << "-vcodec" << codec;
+            if (codec != "") arguments << "-c:v" << codec;
 
             if (codec != "copy")
             {
@@ -235,7 +235,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                if (output->videoProfile() > -1) arguments << "-profile" << QString::number(output->videoProfile());
+                if (output->videoProfile() > -1) arguments << "-profile:v" << output->videoProfile();
 
                 //quality (h264)
                 int quality = output->videoQuality();
@@ -343,7 +343,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (output->hasAudio())
         {
             //codec
-            if (acodec != "") arguments << "-acodec" << acodec;
+            if (acodec != "") arguments << "-c:a" << acodec;
 
             if (acodec != "copy")
             {

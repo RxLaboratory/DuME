@@ -15,7 +15,7 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( actionDVD );
 }
 
-void BlockVideoBitrate::setActivated(bool activate)
+void BlockVideoBitrate::activate(bool activate)
 {
     if (activate)
     {

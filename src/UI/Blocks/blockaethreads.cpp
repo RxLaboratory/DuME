@@ -9,7 +9,7 @@ BlockAEThreads::BlockAEThreads(MediaInfo *mediaInfo, QWidget *parent) :
     _freezeUI = false;
 }
 
-void BlockAEThreads::setActivated(bool activate)
+void BlockAEThreads::activate(bool activate)
 {
     _freezeUI = true;
     if (activate)

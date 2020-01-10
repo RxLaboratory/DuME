@@ -30,12 +30,14 @@ public:
 
 public slots:
     // reimplement this in the blocks to update the MediaInfo when (de)activated
-    virtual void setActivated( bool activate );
+    virtual void activate( bool act );
     // reimplement this in the blocks to update the UI from the MediaInfo when it changes
     virtual void update();
 
 signals:
     void status(QString);
+    //emitted to make this block (un)available
+    void blockEnabled(bool);
 
 protected:
     MediaInfo *_mediaInfo;

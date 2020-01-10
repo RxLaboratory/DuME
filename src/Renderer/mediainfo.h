@@ -72,7 +72,7 @@ public:
     void setFFmpegOptions(QList<QStringList> options, bool silent = false);
     void setVideo(bool video = true, bool silent = false);
     void setAudio(bool audio = true, bool silent = false);
-    void setVideoProfile(int profile, bool silent = false);
+    void setVideoProfile(QString profile, bool silent = false);
     void setVideoQuality(int quality, bool silent = false);
     void setLoop(int loop, bool silent = false);
     void addFFmpegOption(QStringList option, bool silent = false);
@@ -129,7 +129,7 @@ public:
     bool isImageSequence();
     QStringList extensions() const;
     int videoQuality() const;
-    int videoProfile() const;
+    QString videoProfile() const;
     int loop() const;
     int startNumber() const;
     QStringList frames() const;
@@ -274,7 +274,7 @@ private:
     /**
      * @brief _videoProfile The video profile, as used by some codecs like prores
      */
-    int _videoProfile;
+    QString _videoProfile;
     /**
      * @brief _loop The number of loops to be encoded (-1 for inifite, available only with some specific formats like GIF)
      */

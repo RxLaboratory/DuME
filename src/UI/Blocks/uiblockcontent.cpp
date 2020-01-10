@@ -26,9 +26,9 @@ UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, QWidget *parent) : QWidget(
     _freezeUI = false;
 }
 
-void UIBlockContent::setActivated(bool activate)
+void UIBlockContent::activate(bool act)
 {
-    _activated = activate;
+    _activated = act;
 }
 
 void UIBlockContent::update()
@@ -38,9 +38,7 @@ void UIBlockContent::update()
 
 void UIBlockContent::changed()
 {
-    _freezeUI = true;
     update();
-    _freezeUI = false;
 }
 
 QMenu *UIBlockContent::getPresets() const

@@ -12,7 +12,7 @@ BlockAudioBitrate::BlockAudioBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( action320 );
 }
 
-void BlockAudioBitrate::setActivated(bool activate)
+void BlockAudioBitrate::activate(bool activate)
 {
     _freezeUI = true;
 

@@ -10,7 +10,7 @@ class BlockAudioCodec : public UIBlockContent, private Ui::BlockAudioCodec
 public:
     explicit BlockAudioCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_audioCodecsBox_currentIndexChanged(int index);

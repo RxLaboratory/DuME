@@ -11,7 +11,7 @@ class BlockAlpha : public UIBlockContent, private Ui::BlockAlpha
 public:
     explicit BlockAlpha(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_alphaButton_clicked(bool checked);

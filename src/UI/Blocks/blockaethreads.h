@@ -11,7 +11,7 @@ class BlockAEThreads : public UIBlockContent, private Ui::BlockAEThreads
 
 public:
     explicit BlockAEThreads(MediaInfo *mediaInfo, QWidget *parent = nullptr);
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_threadsBox_valueChanged(int arg1);

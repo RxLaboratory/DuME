@@ -11,7 +11,7 @@ class BlockPixFormat : public UIBlockContent, private Ui::BlockPixFormat
 public:
     explicit BlockPixFormat(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_pixFmtFilterBox_currentIndexChanged(int index);

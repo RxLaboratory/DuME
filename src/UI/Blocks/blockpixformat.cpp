@@ -9,7 +9,7 @@ BlockPixFormat::BlockPixFormat(MediaInfo *mediaInfo, QWidget *parent) :
     _freezeUI = false;
 }
 
-void BlockPixFormat::setActivated(bool activate)
+void BlockPixFormat::activate(bool activate)
 {
     if (activate && pixFmtFilterBox->currentIndex() != 0 )
     {

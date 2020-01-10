@@ -11,7 +11,7 @@ class BlockStartNumber : public UIBlockContent, private Ui::BlockStartNumber
 public:
     explicit BlockStartNumber(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_startNumberEdit_valueChanged(int arg1);

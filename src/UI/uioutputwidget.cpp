@@ -41,36 +41,22 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidg
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
-    blockResizeContent = new BlockResize( _mediaInfo );
-    blockResize = addBlock( blockResizeContent, actionResize );
-    blockFrameRateContent = new BlockFrameRate( _mediaInfo );
-    blockFrameRate = addBlock( blockFrameRateContent, actionFrameRate );
-    blockVideoCodecContent = new BlockVideoCodec( _ffmpeg, _mediaInfo );
-    blockVideoCodec = addBlock( blockVideoCodecContent, actionVideoCodec );
-    blockVideoBitrateContent = new BlockVideoBitrate( _mediaInfo );
-    blockVideoBitrate = addBlock( blockVideoBitrateContent, actionVideoBitrate );
-    blockVideoProfileContent = new BlockVideoProfile( _mediaInfo );
-    blockVideoProfile = addBlock( blockVideoProfileContent, actionProfile );
-    blockLoopsContent = new BlockLoops( _mediaInfo );
-    blockLoops = addBlock( blockLoopsContent, actionLoops );
-    blockStartNumberContent = new BlockStartNumber( _mediaInfo );
-    blockStartNumber = addBlock( blockStartNumberContent, actionStartNumber );
-    blockAlphaContent = new BlockAlpha( _mediaInfo );
-    blockAlpha = addBlock( blockAlphaContent, actionAlpha );
-    blockColorContent = new BlockColor( _mediaInfo );
-    blockColor = addBlock( blockColorContent, actionColor );
-    blockPixFormatContent = new BlockPixFormat( _mediaInfo );
-    blockPixFormat = addBlock( blockPixFormatContent, actionPixelFormat );
+    blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize );
+    blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate );
+    blockVideoCodec = addBlock( new BlockVideoCodec( _ffmpeg, _mediaInfo ), actionVideoCodec );
+    blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate );
+    blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile );
+    blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops );
+    blockStartNumber = addBlock( new BlockStartNumber( _mediaInfo ), actionStartNumber );
+    blockAlpha = addBlock( new BlockAlpha( _mediaInfo ), actionAlpha );
+    blockColor = addBlock( new BlockColor( _mediaInfo ), actionColor );
+    blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat );
     blocksMenu->addAction(actionAudio);
-    blockSamplingContent = new BlockSampling( _mediaInfo );
-    blockSampling = addBlock( blockSamplingContent, actionSampling );
-    blockAudioCodecContent = new BlockAudioCodec( _ffmpeg, _mediaInfo );
-    blockAudioCodec = addBlock( blockAudioCodecContent, actionAudioCodec );
-    blockAudioBitrateContent = new BlockAudioBitrate( _mediaInfo );
-    blockAudioBitrate = addBlock( blockAudioBitrateContent, actionAudioBitrate );
+    blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling );
+    blockAudioCodec = addBlock( new BlockAudioCodec( _ffmpeg, _mediaInfo ), actionAudioCodec );
+    blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate );
     blocksMenu->addAction( actionOther );
-    blockMapContent = new BlockMapping( _mediaInfo, _inputMedias );
-    blockMap = addBlock( blockMapContent, actionMap );
+    blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap );
     blocksMenu->addAction( actionAddCustom );
 
     // PRESETS MENU
@@ -212,12 +198,6 @@ void UIOutputWidget::updateBlocksAvailability()
     if (ok && vc != nullptr) ok = vc->name() != "gif";
     if (!okVideo || !ok) blockVideoBitrate->hide();
     actionVideoBitrate->setVisible( okVideo && ok );
-
-    //Video Profile
-    ok = false;
-    if ( vc != nullptr) ok = vc->name() == "prores";
-    if (!okVideo || !ok) blockVideoProfile->hide();
-    actionProfile->setVisible( okVideo && ok );
 
     //Loops
     ok = false;
@@ -491,6 +471,9 @@ void UIOutputWidget::addNewParam(QString name, QString value)
 
 void UIOutputWidget::inputChanged()
 {
+
+    //TODO Replace by input monitoring by blocks themselves
+
     MediaInfo *input = static_cast<MediaInfo *>(sender());
 
     //set output fileName
@@ -501,7 +484,7 @@ void UIOutputWidget::inputChanged()
     //update blocks availability
     updateBlocksAvailability();
 
-    // update (hidden) fields
+    /*// update (hidden) fields
     if (blockResize->isHidden() && input->videoStreams().count() > 0)
     {
         blockResizeContent->setWidth( input->videoStreams()[0]->width() );
@@ -516,7 +499,7 @@ void UIOutputWidget::inputChanged()
     }
 
     if (blockSampling->isHidden() && input->audioStreams().count() > 0) blockSamplingContent->setSampling( input->audioStreams()[0]->samplingRate() );
-
+*/
     //If ae render queue
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
 }
@@ -584,8 +567,9 @@ UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action
     blocksLayout->addWidget( b );
     //add and connect action
     blocksMenu->addAction( action );
-    connect( action, SIGNAL( triggered(bool) ), b, SLOT( setVisible(bool) ) );
+    connect( action, SIGNAL( triggered(bool) ), b, SLOT( activate(bool) ) );
     connect( b, SIGNAL( activated(bool) ), action, SLOT( setChecked( bool ) ) );
+    connect( b, SIGNAL( blockEnabled(bool) ), action, SLOT(setVisible(bool)));
 
     return b;
 }

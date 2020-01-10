@@ -11,7 +11,7 @@ class BlockLoops : public UIBlockContent, private Ui::BlockLoops
 public:
     explicit BlockLoops(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_videoLoopsEdit_valueChanged(int arg1);

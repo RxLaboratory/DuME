@@ -11,7 +11,7 @@ class BlockColor : public UIBlockContent, private Ui::BlockColor
 public:
     explicit BlockColor(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_spaceBox_currentIndexChanged(int index);

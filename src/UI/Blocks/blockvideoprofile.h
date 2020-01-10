@@ -11,7 +11,7 @@ class BlockVideoProfile : public UIBlockContent, private Ui::BlockVideoProfile
 public:
     explicit BlockVideoProfile(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_videoProfileBox_currentIndexChanged(int index);

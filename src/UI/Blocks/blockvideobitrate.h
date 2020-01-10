@@ -11,7 +11,7 @@ class BlockVideoBitrate : public UIBlockContent, private Ui::BlockVideoBitrate
 public:
     explicit BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_videoBitrateButton_clicked(bool checked);

@@ -9,7 +9,7 @@ BlockMapping::BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget
     _presets->addAction( actionAdd );
 }
 
-void BlockMapping::setActivated(bool activate)
+void BlockMapping::activate(bool activate)
 {
     _freezeUI = true;
     if (activate)

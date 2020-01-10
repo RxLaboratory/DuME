@@ -6,7 +6,7 @@ BlockLoops::BlockLoops(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 }
 
-void BlockLoops::setActivated(bool activate)
+void BlockLoops::activate(bool activate)
 {
     if (activate) _mediaInfo->setLoop( -1 );
     else _mediaInfo->setLoop( videoLoopsEdit->value() );

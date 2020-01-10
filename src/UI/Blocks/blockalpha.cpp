@@ -6,7 +6,7 @@ BlockAlpha::BlockAlpha(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 }
 
-void BlockAlpha::setActivated(bool activate)
+void BlockAlpha::activate(bool activate)
 {
     if (activate)
     {

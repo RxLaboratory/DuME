@@ -11,7 +11,7 @@ class BlockAEComp : public UIBlockContent, private Ui::BlockAEComp
 public:
     explicit BlockAEComp(MediaInfo *mediaInfo,QWidget *parent = nullptr);
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
 private slots:
     void on_compButton_clicked(bool checked);

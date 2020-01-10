@@ -12,7 +12,7 @@ public:
     explicit BlockResize(MediaInfo *mediaInfo, QWidget *parent = nullptr);
 
 public slots:
-    void setActivated( bool activate );
+    void activate( bool blockEnabled );
     void update();
     void setWidth( int w );
     void setHeight( int h );

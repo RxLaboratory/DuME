@@ -16,8 +16,15 @@ UIBlockWidget::UIBlockWidget(QString title, UIBlockContent *content,QWidget *par
     else presetsButton->hide();
 
     connect(content, SIGNAL(status(QString)), this, SLOT(setStatus(QString)) );
+    connect(content, SIGNAL(blockEnabled(bool)), this, SLOT(blockEnable(bool)) );
+    connect(closeButton, SIGNAL(clicked()), this, SLOT (deActivate()) );
 
     this->hide();
+}
+
+UIBlockContent *UIBlockWidget::content()
+{
+    return _content;
 }
 
 void UIBlockWidget::setStatus(QString status)
@@ -25,26 +32,25 @@ void UIBlockWidget::setStatus(QString status)
     statusLabel->setText(status);
 }
 
-void UIBlockWidget::showEvent(QShowEvent *event)
+void UIBlockWidget::activate(bool act)
 {
-    _content->setActivated(true);
-    emit activated(true);
-    event->accept();
+    _content->activate(act);
+    if (!act) this->hide();
+    else this->show();
+    emit activated(act);
 }
 
-void UIBlockWidget::hideEvent(QHideEvent *event)
+void UIBlockWidget::deActivate()
 {
-    _content->setActivated(false);
-    emit activated(false);
-    event->accept();
+    activate(false);
 }
 
-void UIBlockWidget::on_closeButton_clicked()
+void UIBlockWidget::blockEnable(bool en)
 {
-    this->hide();
-}
-
-UIBlockContent *UIBlockWidget::content() const
-{
-    return _content;
+    if (!en)
+    {
+        this->hide();
+        activate(false);
+    }
+    emit blockEnabled(en);
 }
