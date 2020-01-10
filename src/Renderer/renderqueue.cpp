@@ -235,7 +235,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                if (output->videoProfile() > -1) arguments << "-profile:v" << output->videoProfile();
+                if (output->videoProfile() != "") arguments << "-profile:v" << output->videoProfile();
 
                 //quality (h264)
                 int quality = output->videoQuality();
