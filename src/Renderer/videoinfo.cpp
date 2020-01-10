@@ -9,7 +9,8 @@ void VideoInfo::reInit()
 {
     _id = -1;
     _quality = -1;
-    _profile = -1;
+    _profile = "";
+    _level = "";
     _aspect = 0.0;
     _pixAspect = 1;
     _pixFormat = nullptr;
@@ -31,12 +32,12 @@ void VideoInfo::setQuality(int quality)
     _quality = quality;
 }
 
-int VideoInfo::profile() const
+QString VideoInfo::profile() const
 {
     return _profile;
 }
 
-void VideoInfo::setProfile(int profile)
+void VideoInfo::setProfile(QString profile)
 {
     _profile = profile;
 }
@@ -155,6 +156,16 @@ int VideoInfo::id() const
 void VideoInfo::setId(int id)
 {
     _id = id;
+}
+
+QString VideoInfo::level() const
+{
+    return _level;
+}
+
+void VideoInfo::setLevel(const QString &level)
+{
+    _level = level;
 }
 
 void VideoInfo::setCodec(FFCodec *codec)

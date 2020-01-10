@@ -15,6 +15,7 @@ public slots:
     void update();
 private slots:
     void on_videoProfileBox_currentIndexChanged(int index);
+    void on_videoLevelBox_currentIndexChanged(int index);
 };
 
 #endif // BLOCKVIDEOPROFILE_H

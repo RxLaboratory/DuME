@@ -42,6 +42,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _frames.clear();
     _videoQuality = -1;
     _videoProfile = "";
+    _videoLevel = "";
     _loop = -1;
     _startNumber = 0;
     _premultipliedAlpha = true;
@@ -229,6 +230,7 @@ void MediaInfo::updateInfo(MediaInfo *other, bool updateFilename, bool silent)
     _frames = other->frames();
     _videoQuality = other->videoQuality();
     _videoProfile = other->videoProfile();
+    _videoLevel = other->videoLevel();
     _loop = other->loop();
     _startNumber = other->startNumber();
     _premultipliedAlpha = other->premultipliedAlpha();
@@ -328,6 +330,8 @@ QString MediaInfo::getDescription()
             if (_videoFramerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number(_videoFramerate) + " fps";
             qint64 bitrate = _videoBitrate;
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
+            if (_videoProfile != "") mediaInfoString += "\nProfile: " + _videoProfile;
+            if (_videoProfile != "") mediaInfoString += "\nLevel: " + _videoLevel;
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(_pixAspect*100+0.5)/ 100.0) + ":1";
             FFPixFormat *pf = _pixFormat;
             if ( pf == nullptr ) pf = defaultPixFormat();
@@ -1035,6 +1039,12 @@ void MediaInfo::setVideoProfile(QString profile, bool silent )
     if(!silent) emit changed();
 }
 
+void MediaInfo::setVideoLevel(const QString &videoLevel, bool silent)
+{
+    _videoLevel = videoLevel;
+    if(!silent) emit changed();
+}
+
 void MediaInfo::setLoop(int loop, bool silent )
 {
     _loop = loop;
@@ -1171,6 +1181,11 @@ QString MediaInfo::colorRange() const
 FFmpeg *MediaInfo::getFfmpeg() const
 {
     return _ffmpeg;
+}
+
+QString MediaInfo::videoLevel() const
+{
+    return _videoLevel;
 }
 
 int MediaInfo::id() const

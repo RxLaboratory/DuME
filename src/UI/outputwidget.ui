@@ -459,7 +459,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>102</height>
+            <height>99</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -582,7 +582,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Set codec profile</string>
+    <string>Set codec profile and level</string>
    </property>
    <property name="toolTip">
     <string>Set the profile of the video codec</string>

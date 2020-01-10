@@ -16,8 +16,8 @@ public:
     int quality() const;
     void setQuality(int quality);
 
-    int profile() const;
-    void setProfile(int profile);
+    QString profile() const;
+    void setProfile(QString profile);
 
     float aspect() const;
     void setAspect(float aspect);
@@ -52,12 +52,16 @@ public:
     int id() const;
     void setId(int id);
 
+    QString level() const;
+    void setLevel(const QString &level);
+
 signals:
 
 private:
     int _id;
     int _quality;
-    int _profile;
+    QString _profile;
+    QString _level;
     float _aspect;
     float _pixAspect;
     FFPixFormat *_pixFormat;
