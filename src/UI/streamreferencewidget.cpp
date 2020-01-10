@@ -94,7 +94,7 @@ void StreamReferenceWidget::on_mediaBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     updateStreamList();
-    emit mediaChanged( _id, mediaBox->itemData(index).toInt());
+    emit mediaChanged(_id, mediaBox->itemData(index).toInt());
 }
 
 void StreamReferenceWidget::on_removeButton_clicked()
@@ -138,6 +138,7 @@ void StreamReferenceWidget::mediaChanged()
         if (mediaBox->itemData(i).toInt() == media->id())
         {
             mediaBox->setItemText(i, QFileInfo(media->fileName()).fileName() );
+            updateStreamList();
             return;
         }
     }
