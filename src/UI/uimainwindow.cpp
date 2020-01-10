@@ -370,7 +370,7 @@ void UIMainWindow::on_ffmpegCommandsButton_clicked()
 void UIMainWindow::on_actionGo_triggered()
 {
     //generate input and output
-    MediaInfo *input = queueWidget->getInputMedia();
+    QList<MediaInfo *> input = queueWidget->getInputMedia();
     QList<MediaInfo *> output = queueWidget->getOutputMedia();
 
     //Launch!

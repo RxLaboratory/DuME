@@ -24,7 +24,7 @@ class UIInputWidget : public QWidget, private Ui::InputWidget
     Q_OBJECT
 
 public:
-    explicit UIInputWidget(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit UIInputWidget(FFmpeg *ff, int id = -1, QWidget *parent = nullptr);
     /**
      * @brief mediaInfo Gives a pointer to the current input MediaInfo
      * @return The current MediaInfo

@@ -4,12 +4,13 @@
 #include <QtDebug>
 #endif
 
-UIInputWidget::UIInputWidget(FFmpeg *ff, QWidget *parent) :
+UIInputWidget::UIInputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
     _mediaInfo = new MediaInfo( ff, this);
+    _mediaInfo->setId(id);
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);

@@ -16,7 +16,7 @@ class UIQueueWidget : public QWidget, private Ui::QueueWidget
 
 public:
     explicit UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
-    MediaInfo *getInputMedia();
+    QList<MediaInfo *> getInputMedia();
     QList<MediaInfo *> getOutputMedia();
     void addInputFile(QString file);
     void addInputFile(QUrl file);
@@ -33,6 +33,8 @@ public slots:
 private slots:
     void on_outputTab_tabCloseRequested(int index);
     void on_outputTab_tabBarClicked(int index);
+    void on_inputTab_tabCloseRequested(int index);
+    void on_inputTab_tabBarClicked(int index);
     void log(QString log, LogUtils::LogType lt = LogUtils::Information );
 
     void on_splitter_splitterMoved();

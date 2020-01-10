@@ -36,10 +36,14 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     settings.endGroup();
 }
 
-MediaInfo *UIQueueWidget::getInputMedia()
+QList<MediaInfo *> UIQueueWidget::getInputMedia()
 {
-    //TODO build list
-    return inputWidgets.at(0)->getMediaInfo();
+    QList<MediaInfo *> input;
+    foreach(UIInputWidget *iw,inputWidgets)
+    {
+        input << iw->getMediaInfo();
+    }
+    return input;
 }
 
 QList<MediaInfo *> UIQueueWidget::getOutputMedia()
@@ -54,12 +58,12 @@ QList<MediaInfo *> UIQueueWidget::getOutputMedia()
 
 void UIQueueWidget::addInputFile(QString file)
 {
-    inputWidgets[0]->openFile(file);
+    inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
 void UIQueueWidget::addInputFile(QUrl file)
 {
-    inputWidgets[0]->openFile(file);
+    inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
 void UIQueueWidget::presetsPathChanged()
@@ -95,6 +99,32 @@ void UIQueueWidget::on_outputTab_tabBarClicked(int index)
     addOutput();
 }
 
+void UIQueueWidget::on_inputTab_tabCloseRequested(int index)
+{
+    int numTabs = inputTab->count();
+    if (index == numTabs-1) return;
+    if (numTabs <= 2) return;
+
+    //remove tab
+    inputTab->removeTab(index);
+    //delete corresponding widget and media
+    UIInputWidget *w = inputWidgets.takeAt(index);
+    _inputMedias->removeMedia( w->mediaInfo() );
+    w->deleteLater();
+    //update current index
+    if (inputTab->currentIndex() == inputTab->count()-1)
+    {
+        inputTab->setCurrentIndex(inputTab->count()-2);
+    }
+}
+
+void UIQueueWidget::on_inputTab_tabBarClicked(int index)
+{
+    if (index != inputTab->count()-1) return;
+    //add new
+    addInput();
+}
+
 void UIQueueWidget::log(QString log, LogUtils::LogType lt )
 {
     emit newLog(log, lt);
@@ -105,10 +135,13 @@ void UIQueueWidget::addInput()
     int num = inputWidgets.count();
 
     //create widget
-    UIInputWidget *inputWidget = new UIInputWidget(_ffmpeg, this);
+    UIInputWidget *inputWidget = new UIInputWidget(_ffmpeg, num, this);
     inputWidgets << inputWidget;
     _inputMedias->addMedia( inputWidget->mediaInfo() );
     inputTab->insertTab( inputTab->count()-1, inputWidget, "Input " + QString::number(num + 1));
+
+    //set tab index
+    inputTab->setCurrentIndex(inputTab->count()-2);
 }
 
 void UIQueueWidget::addOutput()
@@ -135,4 +168,3 @@ void UIQueueWidget::on_splitter_splitterMoved()
     settings.setValue("outputSize", splitter->sizes()[1]);
     settings.endGroup();
 }
-
