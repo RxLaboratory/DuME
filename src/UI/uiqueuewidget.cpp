@@ -10,25 +10,21 @@ UIQueueWidget::UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     setupUi(this);
 
     _ffmpeg = ffmpeg;
+    _inputMedias = new MediaList();
 
-    UIInputWidget *inputWidget = new UIInputWidget(_ffmpeg, this);
-    inputWidgets << inputWidget;
-    _inputMedias = new MediaList( inputWidget->mediaInfo() );
-
-    inputTab1->layout()->addWidget(inputWidget);
-
+    addInput();
     addOutput();
 
     //hide close buttons on add buttons
     QTabBar *outputTabBar = outputTab->tabBar();
-
     QWidget *closeButton = outputTabBar->tabButton(1, QTabBar::RightSide);
     if (closeButton == nullptr) closeButton = outputTabBar->tabButton(1, QTabBar::LeftSide);
     if (closeButton != nullptr) closeButton->hide();
 
-    //No add tab for now on input
-    //QTabBar *inputTabBar = inputTab->tabBar();
-    //inputTabBar->tabButton(1,QTabBar::RightSide)->hide();
+    QTabBar *inputTabBar = inputTab->tabBar();
+    closeButton = inputTabBar->tabButton(1, QTabBar::RightSide);
+    if (closeButton == nullptr) closeButton = inputTabBar->tabButton(1, QTabBar::LeftSide);
+    if (closeButton != nullptr) closeButton->hide();
 
     // splitter sizes
     QSettings settings;
@@ -104,6 +100,17 @@ void UIQueueWidget::log(QString log, LogUtils::LogType lt )
     emit newLog(log, lt);
 }
 
+void UIQueueWidget::addInput()
+{
+    int num = inputWidgets.count();
+
+    //create widget
+    UIInputWidget *inputWidget = new UIInputWidget(_ffmpeg, this);
+    inputWidgets << inputWidget;
+    _inputMedias->addMedia( inputWidget->mediaInfo() );
+    inputTab->insertTab( inputTab->count()-1, inputWidget, "Input " + QString::number(num + 1));
+}
+
 void UIQueueWidget::addOutput()
 {
     //number of the output
@@ -137,3 +144,4 @@ void UIQueueWidget::on_splitter_splitterMoved()
     settings.setValue("outputSize", splitter->sizes()[1]);
     settings.endGroup();
 }
+

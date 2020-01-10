@@ -44,8 +44,8 @@ private:
     QList<UIInputWidget*> inputWidgets;
     MediaList *_inputMedias;
 
+    void addInput();
     void addOutput();
-
 };
 
 #endif // QUEUEWIDGET_H
