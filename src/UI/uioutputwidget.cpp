@@ -152,9 +152,6 @@ QString UIOutputWidget::getOutputPath()
 
 void UIOutputWidget::updateBlocksAvailability()
 {
-
-    bool okAudio = _mediaInfo->hasAudio() && !_mediaInfo->copyAudio();
-
     //Audio / Video Buttons
     FFMuxer *m = _mediaInfo->muxer();
     if ( m != nullptr )
