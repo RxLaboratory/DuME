@@ -67,6 +67,12 @@ public:
      */
     void encode(MediaInfo *input, MediaInfo *output);
     /**
+     * @brief encode Launches the encoding of the given input media with multiple outputs
+     * @param input The input media
+     * @param outputs The list of output medias
+     */
+    void encode(QList<MediaInfo *> inputs, QList<MediaInfo*> outputs);
+    /**
      * @brief addQueueItem Adds an item to the encoding queue
      * @param item
      * @return The item id

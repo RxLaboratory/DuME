@@ -142,9 +142,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (inputPixFmt == nullptr) inputPixFmt = input->defaultPixFormat();
         if (inputPixFmt != nullptr) inputColorSpace = inputPixFmt->colorSpace();
 
-        bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV;
+        bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
 
-        if (input->colorTRC() != "") arguments << "-color_trc" << input->colorTRC();
+        if (input->colorTRC() != "" ) arguments << "-color_trc" << input->colorTRC();
         else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
         if (input->colorRange() != "") arguments << "-color_range" << input->colorRange();
         else if ( convertToYUV ) arguments << "-color_range" << "tv";
@@ -159,6 +159,14 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     //add outputs
     foreach(MediaInfo *output, item->getOutputMedias())
     {
+        //maps
+        foreach (StreamReference map, output->maps())
+        {
+            int mediaId = map.mediaId();
+            int streamId = map.streamId();
+            if (mediaId >= 0 && streamId >= 0) arguments << "-map" << QString::number( mediaId ) + ":" + QString::number( streamId );
+        }
+
         //muxer
         QString muxer = "";
         if (output->muxer() != nullptr)
@@ -478,9 +486,9 @@ void RenderQueue::encode(QList<QueueItem*> list)
     encode();
 }
 
-void RenderQueue::encode(MediaInfo *input, QList<MediaInfo *> outputs)
+void RenderQueue::encode(QList<MediaInfo *> inputs, QList<MediaInfo *> outputs)
 {
-    QueueItem *item = new QueueItem(input,outputs,this);
+    QueueItem *item = new QueueItem(inputs,outputs,this);
     _encodingQueue.clear();
     _encodingQueue << item;
     encode();
