@@ -28,6 +28,7 @@ void BlockMapping::setActivated(bool activate)
 
 void BlockMapping::update()
 {
+    if (_freezeUI) return;
     _freezeUI = true;
 
     qDeleteAll(_streamWidgets);
@@ -45,16 +46,23 @@ void BlockMapping::update()
 
 void BlockMapping::changeStream(int index, int streamId)
 {
-    _mediaInfo->maps()[index].setStreamId(streamId);
+    if (_freezeUI) return;
+    _freezeUI = true;
+    _mediaInfo->setMapStream(index, streamId);
+    _freezeUI = false;
 }
 
 void BlockMapping::changeMedia(int index, int mediaId)
 {
-    _mediaInfo->maps()[index].setMediaId(mediaId);
+    if (_freezeUI) return;
+    _freezeUI = true;
+    _mediaInfo->setMapMedia(index, mediaId);
+    _freezeUI = false;
 }
 
 void BlockMapping::addStreamWidget(int mediaId, int streamId)
 {
+    _freezeUI = true;
     StreamReferenceWidget *sw = new StreamReferenceWidget( _streamWidgets.count(), _inputMedias, this );
     sw->setMediaId( mediaId );
     sw->setStreamId( streamId );
@@ -63,18 +71,23 @@ void BlockMapping::addStreamWidget(int mediaId, int streamId)
     connect( sw, SIGNAL(streamChanged(int, int)), this, SLOT(changeStream(int, int)));
     _streamWidgets << sw;
     mainLayout->addWidget(sw);
+    _freezeUI = false;
 }
 
 void BlockMapping::removeStreamWidget(int id)
 {
+    _freezeUI = true;
     StreamReferenceWidget *sw = _streamWidgets.takeAt(id);
     mainLayout->removeWidget(sw);
     sw->deleteLater();
     _mediaInfo->removeMap(id);
+    _freezeUI = false;
 }
 
 void BlockMapping::on_actionAdd_triggered()
 {
-    addStreamWidget();
-    _mediaInfo->addMap( _streamWidgets.last()->mediaId(), _streamWidgets.last()->streamId() );
+    addStreamWidget(-1, -1);
+    _freezeUI = true;
+    _mediaInfo->addMap( -1, -1 );
+    _freezeUI = false;
 }

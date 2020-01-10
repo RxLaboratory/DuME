@@ -22,7 +22,6 @@ private slots:
     void changeStream(int index, int streamId);
     void changeMedia(int index, int mediaId);
     void removeStreamWidget(int id);
-
     void on_actionAdd_triggered();
 
 private:
