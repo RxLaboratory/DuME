@@ -19,10 +19,11 @@ public slots:
     void update();
 
 private slots:
-    void on_addButton_clicked();
     void changeStream(int index, int streamId);
     void changeMedia(int index, int mediaId);
     void removeStreamWidget(int id);
+
+    void on_actionAdd_triggered();
 
 private:
     QList<StreamReferenceWidget *> _streamWidgets;

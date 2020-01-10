@@ -5,6 +5,8 @@ BlockMapping::BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget
     UIBlockContent(mediaInfo,inputMedias,parent)
 {
     setupUi(this);
+
+    _presets->addAction( actionAdd );
 }
 
 void BlockMapping::setActivated(bool activate)
@@ -41,12 +43,6 @@ void BlockMapping::update()
     _freezeUI = false;
 }
 
-void BlockMapping::on_addButton_clicked()
-{
-    addStreamWidget();
-    _mediaInfo->addMap( _streamWidgets.last()->mediaId(), _streamWidgets.last()->streamId() );
-}
-
 void BlockMapping::changeStream(int index, int streamId)
 {
     _mediaInfo->maps()[index].setStreamId(streamId);
@@ -60,8 +56,6 @@ void BlockMapping::changeMedia(int index, int mediaId)
 void BlockMapping::addStreamWidget(int mediaId, int streamId)
 {
     StreamReferenceWidget *sw = new StreamReferenceWidget( _streamWidgets.count(), _inputMedias, this );
-    //TODO add medias
-    //TODO connect medias added/removed
     sw->setMediaId( mediaId );
     sw->setStreamId( streamId );
     connect( sw, SIGNAL(removed(int)), this, SLOT (removeStreamWidget(int)));
@@ -77,4 +71,10 @@ void BlockMapping::removeStreamWidget(int id)
     mainLayout->removeWidget(sw);
     sw->deleteLater();
     _mediaInfo->removeMap(id);
+}
+
+void BlockMapping::on_actionAdd_triggered()
+{
+    addStreamWidget();
+    _mediaInfo->addMap( _streamWidgets.last()->mediaId(), _streamWidgets.last()->streamId() );
 }

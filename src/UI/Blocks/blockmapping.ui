@@ -29,14 +29,15 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QToolButton" name="addButton">
-     <property name="text">
-      <string>Add stream</string>
-     </property>
-    </widget>
-   </item>
   </layout>
+  <action name="actionAdd">
+   <property name="text">
+    <string>Add stream</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a new stream to the output</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
