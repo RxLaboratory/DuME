@@ -106,7 +106,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
     //output checks
     MediaInfo *o = item->getOutputMedias()[0];
-    FFPixFormat *outputPixFmt = o->pixFormat();
+    FFPixFormat *outputPixFmt = nullptr;
+    if (o->hasVideo()) outputPixFmt = o->videoStreams()[0]->pixFormat();
+    if (outputPixFmt == nullptr) outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
     if (outputPixFmt == nullptr) outputPixFmt = o->defaultPixFormat();
     FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
     if (outputPixFmt != nullptr) outputColorSpace = outputPixFmt->colorSpace();
@@ -129,29 +131,35 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (option[1] != "") arguments << option[1];
             }
         }
-        //add sequence options
-        if (input->isImageSequence())
+        if (input->hasVideo())
         {
-            arguments << "-framerate" << QString::number(input->videoFramerate());
-            arguments << "-start_number" << QString::number(input->startNumber());
-            inputFileName = input->ffmpegSequenceName();
+            VideoInfo *stream = input->videoStreams()[0];
+            //add sequence options
+            if (input->isSequence())
+            {
+                arguments << "-framerate" << QString::number(stream->framerate());
+                arguments << "-start_number" << QString::number(input->startNumber());
+                inputFileName = input->ffmpegSequenceName();
+            }
+
+            //add color management
+            FFPixFormat::ColorSpace inputColorSpace = FFPixFormat::OTHER;
+            FFPixFormat *inputPixFmt = stream->pixFormat();
+            if (inputPixFmt == nullptr) inputPixFmt = stream->defaultPixFormat();
+            if (inputPixFmt == nullptr) inputPixFmt = input->defaultPixFormat();
+            if (inputPixFmt != nullptr) inputColorSpace = inputPixFmt->colorSpace();
+
+            bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
+
+            if (stream->colorTRC() != "" ) arguments << "-color_trc" << stream->colorTRC();
+            else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
+            if (stream->colorRange() != "") arguments << "-color_range" << stream->colorRange();
+            else if ( convertToYUV ) arguments << "-color_range" << "tv";
+            if (stream->colorPrimaries() != "") arguments << "-color_primaries" << stream->colorPrimaries();
+            else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
+            if (stream->colorSpace() != "") arguments << "-colorspace" << stream->colorSpace();
+            else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
         }
-        //add color management
-        FFPixFormat::ColorSpace inputColorSpace = FFPixFormat::OTHER;
-        FFPixFormat *inputPixFmt = input->pixFormat();
-        if (inputPixFmt == nullptr) inputPixFmt = input->defaultPixFormat();
-        if (inputPixFmt != nullptr) inputColorSpace = inputPixFmt->colorSpace();
-
-        bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
-
-        if (input->colorTRC() != "" ) arguments << "-color_trc" << input->colorTRC();
-        else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
-        if (input->colorRange() != "") arguments << "-color_range" << input->colorRange();
-        else if ( convertToYUV ) arguments << "-color_range" << "tv";
-        if (input->colorTRC() != "") arguments << "-color_primaries" << input->colorPrimaries();
-        else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
-        if (input->colorSpace() != "") arguments << "-colorspace" << input->colorSpace();
-        else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
 
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
@@ -190,27 +198,23 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         }
 
         //video
-        QString codec = "";
-        if (output->videoCodec() != nullptr) codec = output->videoCodec()->name();
-
-
         if (output->hasVideo())
         {
-            //codec
+            VideoInfo *stream = output->videoStreams()[0];
+
+            QString codec = "";
+            if (stream->codec() != nullptr) codec = stream->codec()->name();
             if (codec != "") arguments << "-c:v" << codec;
 
             if (codec != "copy")
             {
                 //bitrate
-                int bitrate = int( output->videoBitrate() );
-                if (bitrate != 0)
-                {
-                    arguments << "-b:v" << QString::number(bitrate);
-                }
+                int bitrate = int( stream->bitrate() );
+                if (bitrate != 0) arguments << "-b:v" << QString::number(bitrate);
 
                 //size
-                int width = output->videoWidth();
-                int height = output->videoHeight();
+                int width = stream->width();
+                int height = stream->height();
                 //fix odd sizes (for h264)
                 if (codec == "h264" && width % 2 != 0)
                 {
@@ -225,7 +229,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (width != 0 && height != 0) arguments << "-s" << QString::number(width) + "x" + QString::number(height);
 
                 //framerate
-                if (output->videoFramerate() != 0.0) arguments << "-r" << QString::number(output->videoFramerate());
+                if (stream->framerate() != 0.0) arguments << "-r" << QString::number(stream->framerate());
 
                 //loop (gif)
                 if (codec == "gif")
@@ -235,13 +239,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                if (output->videoProfile() != nullptr) arguments << "-profile:v" << output->videoProfile()->name();
+                if (stream->profile() != nullptr) arguments << "-profile:v" << stream->profile()->name();
 
                 //level
-                if (output->videoLevel() != "") arguments << "-level" << output->videoLevel();
+                if (stream->level() != "") arguments << "-level" << stream->level();
 
                 //quality (h264)
-                int quality = output->videoQuality();
+                int quality = stream->quality();
                 if (codec == "h264" && quality > 0 )
                 {
                     quality = 100-quality;
@@ -291,74 +295,57 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //pixel format
                 QString pixFmt = "";
-                if (output->pixFormat() != nullptr) pixFmt = output->pixFormat()->name();
+                if (stream->pixFormat() != nullptr) pixFmt = stream->pixFormat()->name();
                 //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
                 if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
 
                 //color
                 //add color management
-                if (output->colorTRC() != "") arguments << "-color_trc" << output->colorTRC();
-                if (output->colorRange() != "") arguments << "-color_range" << output->colorRange();
-                if (output->colorTRC() != "") arguments << "-color_primaries" << output->colorPrimaries();
-                if (output->colorSpace() != "") arguments << "-colorspace" << output->colorSpace();
+                if (stream->colorTRC() != "") arguments << "-color_trc" << stream->colorTRC();
+                if (stream->colorRange() != "") arguments << "-color_range" << stream->colorRange();
+                if (stream->colorTRC() != "") arguments << "-color_primaries" << stream->colorPrimaries();
+                if (stream->colorSpace() != "") arguments << "-colorspace" << stream->colorSpace();
 
                 //b-pyramids
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
                 if (codec == "h264") arguments << "-x264opts" << "b_pyramid=0";
 
                 //unpremultiply
-                bool unpremultiply = !output->premultipliedAlpha();
+                bool unpremultiply = !stream->premultipliedAlpha();
                 if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
 
                 //LUT for input EXR
                 if (exrInput) arguments << "-vf" << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
             }
-
-            //update the values which do not change from input, for accurate progression statistics
-            //get the first input which has video
-            MediaInfo *input = nullptr;
-            foreach( MediaInfo *in, item->getInputMedias() )
-            {
-                if (in->hasVideo())
-                {
-                    input = in;
-                    break;
-                }
-            }
-            if (input != nullptr)
-            {
-                if ( output->videoFramerate() == 0.0 ) output->setVideoFramerate( input->videoFramerate() );
-                if ( output->duration() == 0.0 ) output->setDuration( input->duration() );
-            }
-
         }
         else
         {
-            //no video
-            arguments << "-vn";
+             arguments << "-vn";
         }
 
         //audio
-        QString acodec = "";
-        if (output->audioCodec() != nullptr) acodec = output->audioCodec()->name();
-
         if (output->hasAudio())
         {
+            AudioInfo *stream = output->audioStreams()[0];
+
+            QString acodec = "";
+            if (stream->codec() != nullptr) acodec = stream->codec()->name();
+
             //codec
             if (acodec != "") arguments << "-c:a" << acodec;
 
             if (acodec != "copy")
             {
                 //bitrate
-                int bitrate = int( output->audioBitrate() );
+                int bitrate = int( stream->bitrate() );
                 if (bitrate != 0)
                 {
-                    arguments << "-b:a" << QString::number(output->audioBitrate());
+                    arguments << "-b:a" << QString::number(stream->bitrate());
                 }
 
                 //sampling
-                int sampling = output->audioSamplingRate();
+                int sampling = stream->samplingRate();
                 if (sampling != 0)
                 {
                     arguments << "-ar" << QString::number(sampling);
@@ -377,7 +364,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         //if sequence, digits
         if (output->muxer() != nullptr)
         {
-            if (output->isImageSequence())
+            if (output->isSequence())
             {
                 outputPath = QDir::toNativeSeparators( output->ffmpegSequenceName() );
             }
@@ -390,8 +377,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
     //launch
     _ffmpegRenderer->setOutputFileName( item->getOutputMedias()[0]->fileName() );
-    _ffmpegRenderer->setNumFrames( int( item->getOutputMedias()[0]->duration() * item->getOutputMedias()[0]->videoFramerate() ) );
-    _ffmpegRenderer->setFrameRate( item->getOutputMedias()[0]->videoFramerate() );
+    if ( item->getOutputMedias()[0]->hasVideo())
+    {
+        VideoInfo *stream = item->getOutputMedias()[0]->videoStreams()[0];
+        _ffmpegRenderer->setNumFrames( int( item->getOutputMedias()[0]->duration() * stream->framerate() ) );
+        _ffmpegRenderer->setFrameRate( stream->framerate() );
+    }
+
     _ffmpegRenderer->start( arguments );
 }
 
@@ -649,9 +641,9 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
             }
 
             //set file and launch
-            double frameRate = input->videoFramerate();
-            input->updateInfo( QFileInfo(aeTempPath + "/" + files[0]));
-            if (int( frameRate ) != 0) input->setVideoFramerate(frameRate);
+            double frameRate = input->videoStreams()[0]->framerate();
+            input->update( QFileInfo(aeTempPath + "/" + files[0]));
+            if (int( frameRate ) != 0) input->videoStreams()[0]->setFramerate(frameRate);
 
             //reInsert at first place in renderqueue
             _encodingQueue.insert(0,_currentItem);
@@ -730,8 +722,8 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     if (audio && numThreads > 1) numThreads--;
 
     // video
-    _aeRenderer->setNumFrames( int( input->duration() * input->videoFramerate() ) );
-    _aeRenderer->setFrameRate( input->videoFramerate() );
+    _aeRenderer->setNumFrames( int( input->duration() * input->videoStreams()[0]->framerate() ) );
+    _aeRenderer->setFrameRate( input->videoStreams()[0]->framerate() );
     _aeRenderer->setOutputFileName( tempPath );
     _aeRenderer->start( arguments, numThreads );
     // audio
