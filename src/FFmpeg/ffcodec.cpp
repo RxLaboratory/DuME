@@ -111,3 +111,13 @@ void FFCodec::setDefaultPixFormat(FFPixFormat *defaultPixFormat)
 {
     _defaultPixFormat = defaultPixFormat;
 }
+
+QList<FFProfile *> FFCodec::profiles() const
+{
+    return _profiles;
+}
+
+void FFCodec::addProfile(FFProfile *profile)
+{
+    _profiles << profile;
+}

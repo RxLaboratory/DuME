@@ -221,6 +221,20 @@ FFPixFormat *FFmpeg::pixFormat(QString name)
     return nullptr;
 }
 
+FFProfile *FFmpeg::profile(QString name)
+{
+    name = name.trimmed();
+    foreach(FFProfile *pf,_profiles)
+    {
+        if (pf->name().toLower() == name.trimmed().toLower()) return pf;
+    }
+    foreach(FFProfile *pf,_profiles)
+    {
+        if (pf->prettyName() == name) return pf;
+    }
+    return nullptr;
+}
+
 QString FFmpeg::help()
 {
     return _help;
@@ -631,6 +645,24 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
                 if (co->isVideo())
                 {
+                    //add profiles
+                    if( co->name().startsWith("prores") )
+                    {
+                        co->addProfile( profile("0") );
+                        co->addProfile( profile("1") );
+                        co->addProfile( profile("2") );
+                        co->addProfile( profile("3") );
+                    }
+                    else if (co->name() == "h264")
+                    {
+                        co->addProfile( profile("baseline") );
+                        co->addProfile( profile("main") );
+                        co->addProfile( profile("high") );
+                        co->addProfile( profile("high10") );
+                        co->addProfile( profile("high422") );
+                        co->addProfile( profile("high444") );
+                    }
+
                     //get pixel formats
                     QStringList args("-h");
                     if (co->isEncoder()) args << "encoder=" + co->name();
@@ -653,9 +685,10 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                                     QStringList pixFmts = pixFmtMatch.captured(1).split(" ");
                                     QString defaultPF = pixFmts[0];
                                     pixFmts.sort();
-                                    for( int j = 0; j < pixFmts.length(); j++ )
+                                    int num = 0;
+                                    foreach ( QString pfStr, pixFmts )
                                     {
-                                        QString pixFmt = pixFmts[j].trimmed();
+                                        QString pixFmt = pfStr.trimmed();
 
                                         FFPixFormat *pf = pixFormat(pixFmt);
                                         if (pf == nullptr) continue;
@@ -663,7 +696,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                                         bool deflt = pixFmt == defaultPF;
                                         if ( deflt ) co->setDefaultPixFormat(pf);
 
-                                        settings.setArrayIndex(j);
+                                        settings.setArrayIndex( num );
+                                        num++;
                                         settings.setValue("name",pixFmt);
                                         settings.setValue("default",deflt);
                                     }
@@ -672,8 +706,6 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
                                     break;
                                 }
-
-
                             }
                         }
                     }
@@ -731,6 +763,24 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
             if (co->isVideo())
             {
+                //add profiles
+                if( co->name().startsWith("prores") )
+                {
+                    co->addProfile( profile("0") );
+                    co->addProfile( profile("1") );
+                    co->addProfile( profile("2") );
+                    co->addProfile( profile("3") );
+                }
+                else if (co->name() == "h264")
+                {
+                    co->addProfile( profile("baseline") );
+                    co->addProfile( profile("main") );
+                    co->addProfile( profile("high") );
+                    co->addProfile( profile("high10") );
+                    co->addProfile( profile("high422") );
+                    co->addProfile( profile("high444") );
+                }
+
                 //get pixel formats
                 int pArraySize = settings.beginReadArray("pixFmts");
                 for (int j = 0; j < pArraySize; j++)

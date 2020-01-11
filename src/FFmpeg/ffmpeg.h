@@ -92,6 +92,12 @@ public:
      */
     FFPixFormat *pixFormat(QString name);
     /**
+     * @brief profile Gets a profile unsing its name
+     * @param name The name of the profile
+     * @return  A pointer to the profile
+     */
+    FFProfile *profile(QString name);
+    /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
      */

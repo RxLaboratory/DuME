@@ -3,6 +3,7 @@
 
 #include "ffbaseobject.h"
 #include "ffpixformat.h"
+#include "ffprofile.h"
 
 #include <QString>
 
@@ -92,10 +93,14 @@ public:
     FFPixFormat *defaultPixFormat() const;
     void setDefaultPixFormat(FFPixFormat *defaultPixFormat);
 
+    QList<FFProfile *> profiles() const;
+    void addProfile(FFProfile *profile);
+
 private:
     Abilities _abilities;
     QList<FFPixFormat *> _pixFormats;
     FFPixFormat *_defaultPixFormat;
+    QList<FFProfile *> _profiles;
 
 protected:
 
