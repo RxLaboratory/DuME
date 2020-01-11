@@ -91,6 +91,8 @@ public:
     void addPixFormat(FFPixFormat *pixFormat);
 
     FFPixFormat *defaultPixFormat() const;
+    FFPixFormat *defaultPixFormat(bool withAlpha) const;
+    FFPixFormat *pixFormatWithAlpha(FFPixFormat *pf, bool alpha) const;
     void setDefaultPixFormat(FFPixFormat *defaultPixFormat);
 
     QList<FFProfile *> profiles() const;

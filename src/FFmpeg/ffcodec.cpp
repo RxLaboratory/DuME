@@ -107,6 +107,78 @@ FFPixFormat *FFCodec::defaultPixFormat() const
     return _defaultPixFormat;
 }
 
+FFPixFormat *FFCodec::defaultPixFormat(bool withAlpha) const
+{
+    return pixFormatWithAlpha( _defaultPixFormat, withAlpha);
+}
+
+FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha) const
+{
+    if ( pf->hasAlpha() != alpha )
+    {
+        //find the closest one with(out) alpha
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                                if( p->bitsPerPixel() == pf->bitsPerPixel() )
+                                {
+                                    return p;
+                                }
+        }
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                            if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
+                            {
+                                return p;
+                            }
+
+        }
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                        if (p->colorSpace() == pf->colorSpace())
+                        {
+                            return p;
+                        }
+        }
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                    if (p->isInput() && pf->isInput())
+                    {
+                        return p;
+                    }
+        }
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+                if ( p->isOutput() && pf->isOutput() )
+                {
+                    return p;
+                }
+        }
+        foreach ( FFPixFormat *p, _pixFormats )
+        {
+            if ( p->hasAlpha() == alpha )
+            {
+                return p;
+            }
+        }
+    }
+    return pf;
+}
+
 void FFCodec::setDefaultPixFormat(FFPixFormat *defaultPixFormat)
 {
     _defaultPixFormat = defaultPixFormat;
