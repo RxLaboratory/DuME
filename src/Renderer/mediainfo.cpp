@@ -117,6 +117,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->videoEncoder( codec );
+            if (c == nullptr ) c = _ffmpeg->videoDecoder( codec );
             if (c == nullptr ) c = new FFCodec(codec);
             stream->setCodec( c );
 
@@ -149,6 +150,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->audioEncoder( codec );
+            if (c == nullptr ) c = _ffmpeg->audioDecoder( codec );
             if ( c == nullptr ) c = new FFCodec( codec );
             stream->setCodec(c);
 
@@ -273,7 +275,7 @@ QString MediaInfo::getDescription()
             mediaInfoString += "\n\nVideo stream";
             if (s->id() >= 0) mediaInfoString += " #" + QString::number( s->id() ) + ":";
 
-            if ( s->language()->name() != "") mediaInfoString += "\nVideo language: " + LanguageUtils::get( s->language()->prettyName() );
+            if ( s->language()->name() != "") mediaInfoString += "\nVideo language: " + s->language()->prettyName();
             mediaInfoString += "\nVideo codec: ";
             FFCodec *vc = s->codec();
             if (vc == nullptr) vc = defaultVideoCodec();
@@ -281,6 +283,8 @@ QString MediaInfo::getDescription()
             {
                 mediaInfoString += vc->prettyName();
             }
+
+            if ( vc->name() == "copy" ) continue;
 
             if (s->width() !=0 || s->height() != 0 ) mediaInfoString += "\nResolution: " + QString::number( s->width() ) + "x" + QString::number( s->height() );
             if (s->aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( s->aspect()*100+0.5 ) / 100.0) + ":1";
@@ -291,14 +295,44 @@ QString MediaInfo::getDescription()
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
             if (s->quality() >= 0) mediaInfoString += "\nQuality: " + QString::number(s->quality()) + "%";
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(s->pixAspect()*100+0.5)/ 100.0) + ":1";
+            if (s->canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
+            else if (s->codec() == nullptr && canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
+            else mediaInfoString += "\nCan have alpha: no";
             FFPixFormat *pf = s->pixFormat();
             if ( pf == nullptr ) pf = defaultPixFormat();
             if (pf != nullptr)
             {
-                mediaInfoString += "\nPixel Format: " + pf->prettyName();
-                if (pf->hasAlpha()) mediaInfoString += "\nAlpha: yes";
+                if (pf->hasAlpha())
+                {
+                    mediaInfoString += "\nAlpha: yes";
+                    if (!s->premultipliedAlpha()) mediaInfoString += " (Unmultiply)";
+                }
                 else mediaInfoString += "\nAlpha: no";
+                mediaInfoString += "\nPixel Format: " + pf->prettyName();
             }
+            if ( s->colorTRC()->name() == "iec61966_2_1" && s->colorPrimaries()->name() == "bt709" && s->colorSpace()->name() == "rgb")
+            {
+                mediaInfoString += "\nColor profile: sRGB";
+            }
+            else if ( s->colorTRC()->name() == "bt709" && s->colorPrimaries()->name() == "bt709" && s->colorSpace()->name() == "bt709")
+            {
+                mediaInfoString += "\nColor profile: HD video, BT.709";
+            }
+            else if ( s->colorTRC()->name() == "bt2020_10" && s->colorPrimaries()->name() == "bt2020" && s->colorSpace()->name() == "bt2020_cl")
+            {
+                mediaInfoString += "\nColor profile: UHD video, BT.2020 10 bits";
+            }
+            else if ( s->colorTRC()->name() == "bt2020_12" && s->colorPrimaries()->name() == "bt2020" && s->colorSpace()->name() == "bt2020_cl")
+            {
+                mediaInfoString += "\nColor profile: UHD HDR video, BT.2020 12 bits";
+            }
+            else
+            {
+                if ( s->colorSpace()->name() != "") mediaInfoString += "\nColor space: " + s->colorSpace()->prettyName();
+                if ( s->colorPrimaries()->name() != "") mediaInfoString += "\nColor primaries: " + s->colorPrimaries()->prettyName();
+                if ( s->colorTRC()->name() != "") mediaInfoString += "\nColor transfer function: " + s->colorTRC()->prettyName();
+            }
+            if ( s->colorRange()->name() != "" ) mediaInfoString += "\nColor range: " + s->colorRange()->prettyName();
         }
 
         for ( int i = 0; i < _audioStreams.count(); i++)
@@ -308,7 +342,7 @@ QString MediaInfo::getDescription()
             mediaInfoString += "\n\nAudio stream";
             if (s->id() >= 0) mediaInfoString += " #" + QString::number( s->id() ) + ":";
 
-            if ( s->language()->name() != "") mediaInfoString += "\nAudio language: " + LanguageUtils::get(s->language()->prettyName());
+            if ( s->language()->name() != "") mediaInfoString += "\nAudio language: " + s->language()->prettyName();
             mediaInfoString += "\nAudio codec: ";
             FFCodec *ac = s->codec();
             if (ac == nullptr) ac = defaultAudioCodec();
@@ -316,6 +350,9 @@ QString MediaInfo::getDescription()
             {
                 mediaInfoString += ac->prettyName();
             }
+
+            if ( ac->name() == "copy" ) continue;
+
             if (s->samplingRate() != 0) mediaInfoString += "\nSampling rate: " + QString::number( s->samplingRate() ) + " Hz";
             if (s->channels() != "")
             {
