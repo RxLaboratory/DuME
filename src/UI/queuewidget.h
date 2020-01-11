@@ -6,16 +6,16 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
-#include "uiinputwidget.h"
-#include "uioutputwidget.h"
+#include "inputwidget.h"
+#include "outputwidget.h"
 #include "Renderer/medialist.h"
 
-class UIQueueWidget : public QWidget, private Ui::QueueWidget
+class QueueWidget : public QWidget, private Ui::QueueWidget
 {
     Q_OBJECT
 
 public:
-    explicit UIQueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
+    explicit QueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
     QList<MediaInfo *> getInputMedia();
     QList<MediaInfo *> getOutputMedia();
     void addInputFile(QString file);
@@ -42,8 +42,8 @@ private slots:
 private:
     QSettings _settings;
     FFmpeg *_ffmpeg;
-    QList<UIOutputWidget*> outputWidgets;
-    QList<UIInputWidget*> inputWidgets;
+    QList<OutputWidget*> outputWidgets;
+    QList<InputWidget*> inputWidgets;
     MediaList *_inputMedias;
 
     void addInput();

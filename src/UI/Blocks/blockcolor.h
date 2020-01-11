@@ -2,9 +2,9 @@
 #define BLOCKCOLOR_H
 
 #include "ui_blockcolor.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockColor : public UIBlockContent, private Ui::BlockColor
+class BlockColor : public BlockContentWidget, private Ui::BlockColor
 {
     Q_OBJECT
 

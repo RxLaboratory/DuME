@@ -2,9 +2,9 @@
 #define BLOCKRESIZE_H
 
 #include "ui_blockresize.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockResize : public UIBlockContent, private Ui::BlockResize
+class BlockResize : public BlockContentWidget, private Ui::BlockResize
 {
     Q_OBJECT
 

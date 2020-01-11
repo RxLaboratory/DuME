@@ -1,6 +1,6 @@
-#include "uiblockcontent.h"
+#include "blockcontentwidget.h"
 
-UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent) : QWidget(parent)
+BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent) : QWidget(parent)
 {
     _freezeUI = true;
     _activated = false;
@@ -13,7 +13,7 @@ UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, MediaList *inputMedias, QWi
     _freezeUI = false;
 }
 
-UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, QWidget *parent) : QWidget(parent)
+BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, QWidget *parent) : QWidget(parent)
 {
     _freezeUI = true;
     _activated = false;
@@ -26,22 +26,22 @@ UIBlockContent::UIBlockContent(MediaInfo *mediaInfo, QWidget *parent) : QWidget(
     _freezeUI = false;
 }
 
-void UIBlockContent::activate(bool act)
+void BlockContentWidget::activate(bool act)
 {
     _activated = act;
 }
 
-void UIBlockContent::update()
+void BlockContentWidget::update()
 {
 
 }
 
-void UIBlockContent::changed()
+void BlockContentWidget::changed()
 {
     update();
 }
 
-QMenu *UIBlockContent::getPresets() const
+QMenu *BlockContentWidget::getPresets() const
 {
     return _presets;
 }

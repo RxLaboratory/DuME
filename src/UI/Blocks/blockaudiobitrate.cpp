@@ -1,7 +1,7 @@
 #include "blockaudiobitrate.h"
 
 BlockAudioBitrate::BlockAudioBitrate(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
 

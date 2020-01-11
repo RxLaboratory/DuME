@@ -49,7 +49,9 @@ SOURCES += \
     UI/Blocks/blockalpha.cpp \
     UI/Blocks/blockaudiobitrate.cpp \
     UI/Blocks/blockaudiocodec.cpp \
+    UI/Blocks/blockbasewidget.cpp \
     UI/Blocks/blockcolor.cpp \
+    UI/Blocks/blockcontentwidget.cpp \
     UI/Blocks/blockcustom.cpp \
     UI/Blocks/blockexr.cpp \
     UI/Blocks/blockframerate.cpp \
@@ -62,11 +64,18 @@ SOURCES += \
     UI/Blocks/blockvideobitrate.cpp \
     UI/Blocks/blockvideocodec.cpp \
     UI/Blocks/blockvideoprofile.cpp \
-    UI/Blocks/uiblockcontent.cpp \
-    UI/Blocks/uiblockwidget.cpp \
+    UI/bigcombobox.cpp \
     UI/datacombobox.cpp \
+    UI/dropshadow.cpp \
+    UI/framelesswindow.cpp \
+    UI/inputwidget.cpp \
+    UI/mainwindow.cpp \
+    UI/outputwidget.cpp \
+    UI/queuewidget.cpp \
+    UI/rainboxui.cpp \
+    UI/settingswidget.cpp \
     UI/streamreferencewidget.cpp \
-    UI/uibigcombobox.cpp \
+    UI/toolbarspacer.cpp \
     languagelist.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
@@ -75,15 +84,6 @@ SOURCES += \
     FFmpeg/ffmuxer.cpp \
     FFmpeg/ffpixformat.cpp \
     FFmpeg/ffbaseobject.cpp \
-    UI/uidropshadow.cpp \
-    UI/uiframeless.cpp \
-    UI/uiinputwidget.cpp \
-    UI/uimainwindow.cpp \
-    UI/uioutputwidget.cpp \
-    UI/uiqueuewidget.cpp \
-    UI/uirainbox.cpp \
-    UI/uisettingswidget.cpp \
-    UI/uitoolbarspacer.cpp \
     utils.cpp
 
 HEADERS += \
@@ -111,7 +111,9 @@ HEADERS += \
     UI/Blocks/blockalpha.h \
     UI/Blocks/blockaudiobitrate.h \
     UI/Blocks/blockaudiocodec.h \
+    UI/Blocks/blockbasewidget.h \
     UI/Blocks/blockcolor.h \
+    UI/Blocks/blockcontentwidget.h \
     UI/Blocks/blockexr.h \
     UI/Blocks/blockframerate.h \
     UI/Blocks/blockloops.h \
@@ -124,20 +126,18 @@ HEADERS += \
     UI/Blocks/blockvideocodec.h \
     UI/Blocks/blockvideoprofile.h \
     UI/Blocks/blockcustom.h \
-    UI/Blocks/uiblockcontent.h \
-    UI/Blocks/uiblockwidget.h \
+    UI/bigcombobox.h \
     UI/datacombobox.h \
+    UI/dropshadow.h \
+    UI/framelesswindow.h \
+    UI/inputwidget.h \
+    UI/mainwindow.h \
+    UI/outputwidget.h \
+    UI/queuewidget.h \
+    UI/rainboxui.h \
+    UI/settingswidget.h \
     UI/streamreferencewidget.h \
-    UI/uibigcombobox.h \
-    UI/uidropshadow.h \
-    UI/uiframeless.h \
-    UI/uiinputwidget.h \
-    UI/uimainwindow.h \
-    UI/uioutputwidget.h \
-    UI/uiqueuewidget.h \
-    UI/uirainbox.h \
-    UI/uisettingswidget.h \
-    UI/uitoolbarspacer.h \
+    UI/toolbarspacer.h \
     languagelist.h \
     utils.h
 

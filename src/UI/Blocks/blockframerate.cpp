@@ -1,7 +1,7 @@
 #include "blockframerate.h"
 
 BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo, parent)
+    BlockContentWidget(mediaInfo, parent)
 {
     setupUi(this);
 

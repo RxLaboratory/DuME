@@ -1,6 +1,6 @@
-#include "uioutputwidget.h"
+#include "outputwidget.h"
 
-UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
+OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
     _freezeUI = true;
@@ -36,8 +36,8 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidg
     presetsButton->setMenu( presetsMenu ); 
 
     // SHADOWS
-    videoWidget->setGraphicsEffect( new UIDropShadow() );
-    audioWidget->setGraphicsEffect( new UIDropShadow() );
+    videoWidget->setGraphicsEffect( new DropShadow() );
+    audioWidget->setGraphicsEffect( new DropShadow() );
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
@@ -81,7 +81,7 @@ UIOutputWidget::UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidg
     splitter->setSizes(sizes);
 }
 
-void UIOutputWidget::ffmpeg_init()
+void OutputWidget::ffmpeg_init()
 {
     _freezeUI = true;
     _mediaInfo->reInit( false );
@@ -89,7 +89,7 @@ void UIOutputWidget::ffmpeg_init()
     _freezeUI = false;
 }
 
-void UIOutputWidget::ffmpeg_loadMuxers()
+void OutputWidget::ffmpeg_loadMuxers()
 {
     _freezeUI = true;
 
@@ -119,10 +119,10 @@ void UIOutputWidget::ffmpeg_loadMuxers()
     on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
 }
 
-MediaInfo *UIOutputWidget::getMediaInfo()
+MediaInfo *OutputWidget::getMediaInfo()
 {
     //ADD CUSTOM PARAMS
-    foreach ( UIBlockWidget *b, _customParams )
+    foreach ( BlockBaseWidget *b, _customParams )
     {
         BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
         QString param = bc->param();
@@ -138,19 +138,19 @@ MediaInfo *UIOutputWidget::getMediaInfo()
     return mi;
 }
 
-void UIOutputWidget::setMediaInfo(MediaInfo *mediaInfo)
+void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
     _mediaInfo->updateInfo( mediaInfo );
 }
 
-QString UIOutputWidget::getOutputPath()
+QString OutputWidget::getOutputPath()
 {
     return outputEdit->text();
 }
 
-void UIOutputWidget::updateBlocksAvailability()
+void OutputWidget::updateBlocksAvailability()
 {
     //Audio / Video Buttons
     FFMuxer *m = _mediaInfo->muxer();
@@ -221,7 +221,7 @@ void UIOutputWidget::updateBlocksAvailability()
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 }
 
-void UIOutputWidget::customParamActivated(bool activated)
+void OutputWidget::customParamActivated(bool activated)
 {
     if (!activated)
     {
@@ -237,7 +237,7 @@ void UIOutputWidget::customParamActivated(bool activated)
     }
 }
 
-void UIOutputWidget::on_videoButton_clicked(bool checked)
+void OutputWidget::on_videoButton_clicked(bool checked)
 {
     videoTranscodeButton->setEnabled( checked );
     videoCopyButton->setEnabled( checked );
@@ -245,7 +245,7 @@ void UIOutputWidget::on_videoButton_clicked(bool checked)
     _mediaInfo->setVideo( checked );
 }
 
-void UIOutputWidget::on_audioButton_clicked(bool checked)
+void OutputWidget::on_audioButton_clicked(bool checked)
 {
     audioTranscodeButton->setEnabled( checked );
     audioCopyButton->setEnabled( checked );
@@ -253,7 +253,7 @@ void UIOutputWidget::on_audioButton_clicked(bool checked)
     _mediaInfo->setAudio( checked );
 }
 
-void UIOutputWidget::on_videoTranscodeButton_toggled( bool checked )
+void OutputWidget::on_videoTranscodeButton_toggled( bool checked )
 {
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 
@@ -261,7 +261,7 @@ void UIOutputWidget::on_videoTranscodeButton_toggled( bool checked )
     else _mediaInfo->setVideoCodec( "copy" );
 }
 
-void UIOutputWidget::on_audioTranscodeButton_toggled( bool checked )
+void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
 {
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 
@@ -269,14 +269,14 @@ void UIOutputWidget::on_audioTranscodeButton_toggled( bool checked )
     else _mediaInfo->setAudioCodec( "copy" );
 }
 
-void UIOutputWidget::on_outputBrowseButton_clicked()
+void OutputWidget::on_outputBrowseButton_clicked()
 {
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
     updateOutputExtension(outputPath);
 }
 
-void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
+void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
     if (index == -1) return;
     FFMuxer *_currentMuxer = _ffmpeg->muxer(formatsBox->currentData().toString());
@@ -324,13 +324,13 @@ void UIOutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
-void UIOutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
+void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
     qDebug() << "Format filter selected: " + QString::number(index);
     ffmpeg_loadMuxers();
 }
 
-void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
+void OutputWidget::on_presetsBox_currentIndexChanged(int index)
 {
     if (index == 0) return;
     if (_freezeUI) return;
@@ -346,13 +346,13 @@ void UIOutputWidget::on_presetsBox_currentIndexChanged(int index)
     _loadingPreset = false;
 }
 
-void UIOutputWidget::on_presetsFilterBox_activated(QString arg1)
+void OutputWidget::on_presetsFilterBox_activated(QString arg1)
 {
     qDebug() << "Preset filter selected: " + arg1;
     loadPresets( );
 }
 
-void UIOutputWidget::updateOutputExtension(QString outputPath)
+void OutputWidget::updateOutputExtension(QString outputPath)
 {
     if (outputPath == "") return;
     QFileInfo output(outputPath);
@@ -394,12 +394,12 @@ void UIOutputWidget::updateOutputExtension(QString outputPath)
     _mediaInfo->setFileName( outputEdit->text() );
 }
 
-void UIOutputWidget::addNewParam(QString name, QString value)
+void OutputWidget::addNewParam(QString name, QString value)
 {
     //add a param and a value
     qDebug() << "New Custom param: " + name + " " + value;
     BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    UIBlockWidget *bw = new UIBlockWidget( "FFmpeg parameter", block, blocksWidget );
+    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
     blocksLayout->addWidget( bw );
     bw->show();
     connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
@@ -407,7 +407,7 @@ void UIOutputWidget::addNewParam(QString name, QString value)
     _customParams << bw;
 }
 
-void UIOutputWidget::inputChanged()
+void OutputWidget::inputChanged()
 {
 
     //TODO Replace by input monitoring by blocks themselves
@@ -442,7 +442,7 @@ void UIOutputWidget::inputChanged()
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
 }
 
-void UIOutputWidget::loadPresets()
+void OutputWidget::loadPresets()
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -482,7 +482,7 @@ void UIOutputWidget::loadPresets()
     _freezeUI = false;
 }
 
-void UIOutputWidget::selectDefaultPreset()
+void OutputWidget::selectDefaultPreset()
 {
     QString defaultPreset = settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString();
     for (int i = 0; i < presetsBox->count(); i++)
@@ -498,10 +498,10 @@ void UIOutputWidget::selectDefaultPreset()
     }
 }
 
-UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action )
+BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *action )
 {
     // create block
-    UIBlockWidget *b = new UIBlockWidget( action->text(), content, blocksWidget);
+    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, blocksWidget);
     blocksLayout->addWidget( b );
     //add and connect action
     blocksMenu->addAction( action );
@@ -512,12 +512,12 @@ UIBlockWidget *UIOutputWidget::addBlock(UIBlockContent *content, QAction *action
     return b;
 }
 
-void UIOutputWidget::on_actionAddCustom_triggered()
+void OutputWidget::on_actionAddCustom_triggered()
 {
     addNewParam();
 }
 
-void UIOutputWidget::on_actionSavePreset_triggered()
+void OutputWidget::on_actionSavePreset_triggered()
 {
     _freezeUI = true;
 
@@ -543,7 +543,7 @@ void UIOutputWidget::on_actionSavePreset_triggered()
     loadPresets();
 }
 
-void UIOutputWidget::on_actionOpenPreset_triggered()
+void OutputWidget::on_actionOpenPreset_triggered()
 {
     _freezeUI = true;
 
@@ -562,7 +562,7 @@ void UIOutputWidget::on_actionOpenPreset_triggered()
     _loadingPreset = false;
 }
 
-void UIOutputWidget::on_actionDefaultPreset_triggered(bool checked)
+void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
 {
     if (_freezeUI) return;
     if (checked) settings.setValue("presets/default", presetsBox->currentData().toString());

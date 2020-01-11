@@ -2,9 +2,9 @@
 #define BLOCKFRAMERATE_H
 
 #include "ui_blockframerate.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockFrameRate : public UIBlockContent, private Ui::BlockFrameRate
+class BlockFrameRate : public BlockContentWidget, private Ui::BlockFrameRate
 {
     Q_OBJECT
 

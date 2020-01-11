@@ -1,6 +1,6 @@
-#include "uidropshadow.h"
+#include "dropshadow.h"
 
-UIDropShadow::UIDropShadow(QObject *parent) :
+DropShadow::DropShadow(QObject *parent) :
     QGraphicsDropShadowEffect(parent)
 {
     setBlurRadius(20);

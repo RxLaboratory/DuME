@@ -6,7 +6,7 @@
 #include "Renderer/mediainfo.h"
 
 // BLOCKS
-#include "UI/Blocks/uiblockwidget.h"
+#include "UI/Blocks/blockbasewidget.h"
 #include "UI/Blocks/blockresize.h"
 #include "UI/Blocks/blockframerate.h"
 #include "UI/Blocks/blockvideocodec.h"
@@ -24,25 +24,25 @@
 #include "UI/Blocks/blockmapping.h"
 
 // OTHER UI
-#include "UI/uidropshadow.h"
+#include "UI/dropshadow.h"
 
 #include <QFileDialog>
 #include <QSettings>
 #include <QStringList>
 #include <QMenu>
 
-class UIOutputWidget : public QWidget, private Ui::OutputWidget
+class OutputWidget : public QWidget, private Ui::OutputWidget
 {
     Q_OBJECT
 
 public:
-    explicit UIOutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent = nullptr);
+    explicit OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
     QString getOutputPath();
 
 signals:
-    void checkSaveOutputPath(QString, UIOutputWidget*);
+    void checkSaveOutputPath(QString, OutputWidget*);
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */
@@ -75,21 +75,21 @@ private slots:
 
 private:
     // BLOCKS
-    UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
-    UIBlockWidget *blockResize;
-    UIBlockWidget *blockFrameRate;
-    UIBlockWidget *blockVideoCodec;
-    UIBlockWidget *blockVideoBitrate;
-    UIBlockWidget *blockVideoProfile;
-    UIBlockWidget *blockLoops;
-    UIBlockWidget *blockStartNumber;
-    UIBlockWidget *blockAlpha;
-    UIBlockWidget *blockPixFormat;
-    UIBlockWidget *blockSampling;
-    UIBlockWidget *blockAudioCodec;
-    UIBlockWidget *blockAudioBitrate;
-    UIBlockWidget *blockColor;
-    UIBlockWidget *blockMap;
+    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
+    BlockBaseWidget *blockResize;
+    BlockBaseWidget *blockFrameRate;
+    BlockBaseWidget *blockVideoCodec;
+    BlockBaseWidget *blockVideoBitrate;
+    BlockBaseWidget *blockVideoProfile;
+    BlockBaseWidget *blockLoops;
+    BlockBaseWidget *blockStartNumber;
+    BlockBaseWidget *blockAlpha;
+    BlockBaseWidget *blockPixFormat;
+    BlockBaseWidget *blockSampling;
+    BlockBaseWidget *blockAudioCodec;
+    BlockBaseWidget *blockAudioBitrate;
+    BlockBaseWidget *blockColor;
+    BlockBaseWidget *blockMap;
 
     // MENUS
     QMenu *blocksMenu;
@@ -103,7 +103,7 @@ private:
     QSettings settings;
     FFmpeg *_ffmpeg;
     MediaInfo *_mediaInfo;
-    QList<UIBlockWidget *> _customParams;
+    QList<BlockBaseWidget *> _customParams;
     MediaList *_inputMedias;
 
     bool _freezeUI;

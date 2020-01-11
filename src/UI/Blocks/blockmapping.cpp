@@ -2,7 +2,7 @@
 #include "ui_blockmapping.h"
 
 BlockMapping::BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent) :
-    UIBlockContent(mediaInfo,inputMedias,parent)
+    BlockContentWidget(mediaInfo,inputMedias,parent)
 {
     setupUi(this);
 

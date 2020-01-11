@@ -1,7 +1,7 @@
 #include "blocksampling.h"
 
 BlockSampling::BlockSampling(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     _freezeUI = true;
     setupUi(this);

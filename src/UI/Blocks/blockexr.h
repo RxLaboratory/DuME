@@ -2,9 +2,9 @@
 #define BLOCKEXR_H
 
 #include "ui_blockexr.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockEXR : public UIBlockContent, private Ui::BlockEXR
+class BlockEXR : public BlockContentWidget, private Ui::BlockEXR
 {
     Q_OBJECT
 

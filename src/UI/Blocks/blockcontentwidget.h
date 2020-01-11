@@ -20,12 +20,12 @@
 #include "Renderer/mediainfo.h"
 #include "Renderer/medialist.h"
 
-class UIBlockContent : public QWidget
+class BlockContentWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UIBlockContent(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent = nullptr);
-    UIBlockContent(MediaInfo *mediaInfo, QWidget *parent = nullptr);
+    explicit BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent = nullptr);
+    BlockContentWidget(MediaInfo *mediaInfo, QWidget *parent = nullptr);
     QMenu* getPresets() const;
 
 public slots:

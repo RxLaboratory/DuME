@@ -2,9 +2,9 @@
 #define BLOCKVIDEOBITRATE_H
 
 #include "ui_blockvideobitrate.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockVideoBitrate : public UIBlockContent, private Ui::BlockVideoBitrate
+class BlockVideoBitrate : public BlockContentWidget, private Ui::BlockVideoBitrate
 {
     Q_OBJECT
 

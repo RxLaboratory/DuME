@@ -2,9 +2,9 @@
 #define BLOCKCUSTOM_H
 
 #include "ui_blockcustom.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockCustom : public UIBlockContent, private Ui::BlockCustom
+class BlockCustom : public BlockContentWidget, private Ui::BlockCustom
 {
     Q_OBJECT
 

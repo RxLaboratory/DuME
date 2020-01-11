@@ -1,7 +1,7 @@
 #include "blockaudiocodec.h"
 
 BlockAudioCodec::BlockAudioCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     _freezeUI = true;
 

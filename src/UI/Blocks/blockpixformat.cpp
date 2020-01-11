@@ -1,7 +1,7 @@
 #include "blockpixformat.h"
 
 BlockPixFormat::BlockPixFormat(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
     _freezeUI = true;

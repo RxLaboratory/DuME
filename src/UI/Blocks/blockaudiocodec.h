@@ -2,9 +2,9 @@
 #define BLOCKAUDIOCODEC_H
 
 #include "ui_blockaudiocodec.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockAudioCodec : public UIBlockContent, private Ui::BlockAudioCodec
+class BlockAudioCodec : public BlockContentWidget, private Ui::BlockAudioCodec
 {
     Q_OBJECT  
 public:

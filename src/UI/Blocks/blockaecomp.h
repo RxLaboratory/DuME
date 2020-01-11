@@ -2,9 +2,9 @@
 #define BLOCKAECOMP_H
 
 #include "ui_blockaecomp.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockAEComp : public UIBlockContent, private Ui::BlockAEComp
+class BlockAEComp : public BlockContentWidget, private Ui::BlockAEComp
 {
     Q_OBJECT
 

@@ -1,7 +1,7 @@
 #include "blockaethreads.h"
 
 BlockAEThreads::BlockAEThreads(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo, parent)
+    BlockContentWidget(mediaInfo, parent)
 {
     _freezeUI = true;
     setupUi(this);

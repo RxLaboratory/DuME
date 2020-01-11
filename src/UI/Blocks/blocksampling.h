@@ -2,9 +2,9 @@
 #define BLOCKSAMPLING_H
 
 #include "ui_blocksampling.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockSampling : public UIBlockContent, private Ui::BlockSampling
+class BlockSampling : public BlockContentWidget, private Ui::BlockSampling
 {
     Q_OBJECT
 

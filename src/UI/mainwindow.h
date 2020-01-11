@@ -19,17 +19,17 @@
 #include "Renderer/renderqueue.h"
 #include "utils.h"
 
-#include "uitoolbarspacer.h"
-#include "uisettingswidget.h"
-#include "uiqueuewidget.h"
-#include "uirainbox.h"
+#include "toolbarspacer.h"
+#include "settingswidget.h"
+#include "queuewidget.h"
+#include "rainboxui.h"
 
-class UIMainWindow : public QMainWindow, private Ui::MainWindow
+class MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
 
 public:
-    explicit UIMainWindow(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit MainWindow(FFmpeg *ff, QWidget *parent = nullptr);
 
 public slots:
 
@@ -73,7 +73,7 @@ private:
 
     // ====== UI ========
 
-    UIQueueWidget *queueWidget;
+    QueueWidget *queueWidget;
     /**
      * @brief reInitCurrentProgress Initializes the current progress bar and infos
      */
@@ -89,7 +89,7 @@ private:
     /**
      * @brief settingsWidget The settings page
      */
-    UISettingsWidget *settingsWidget;
+    SettingsWidget *settingsWidget;
     /**
      * @brief Is the tool bar currently clicked or not
      */

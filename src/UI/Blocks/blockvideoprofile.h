@@ -2,9 +2,9 @@
 #define BLOCKVIDEOPROFILE_H
 
 #include "ui_blockvideoprofile.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockVideoProfile : public UIBlockContent, private Ui::BlockVideoProfile
+class BlockVideoProfile : public BlockContentWidget, private Ui::BlockVideoProfile
 {
     Q_OBJECT
 

@@ -2,9 +2,9 @@
 #define BLOCKPIXFORMAT_H
 
 #include "ui_blockpixformat.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockPixFormat : public UIBlockContent, private Ui::BlockPixFormat
+class BlockPixFormat : public BlockContentWidget, private Ui::BlockPixFormat
 {
     Q_OBJECT
 

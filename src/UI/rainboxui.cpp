@@ -1,15 +1,15 @@
-#include "uirainbox.h"
+#include "rainboxui.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-UIRainbox::UIRainbox()
+RainboxUI::RainboxUI()
 {
 
 }
 
-void UIRainbox::updateCSS( QString cssFileName, QString appName)
+void RainboxUI::updateCSS( QString cssFileName, QString appName)
 {
     qApp->setStyleSheet("");
     QStringList cssFiles(cssFileName);
@@ -24,16 +24,16 @@ void UIRainbox::updateCSS( QString cssFileName, QString appName)
     {
         cssFiles << includePath;
     }
-    QString css = UIRainbox::loadCSS(cssFiles);
+    QString css = RainboxUI::loadCSS(cssFiles);
     qApp->setStyleSheet(css);
 }
 
-QString UIRainbox::loadCSS(QString cssFileName)
+QString RainboxUI::loadCSS(QString cssFileName)
 {
     return loadCSS(QStringList(cssFileName));
 }
 
-QString UIRainbox::loadCSS(QStringList cssFileNames)
+QString RainboxUI::loadCSS(QStringList cssFileNames)
 {
     QString css = "";
 
@@ -92,7 +92,7 @@ QString UIRainbox::loadCSS(QStringList cssFileNames)
     return css;
 }
 
-void UIRainbox::setFont(QString family)
+void RainboxUI::setFont(QString family)
 {
     //add fonts
     QFontDatabase::addApplicationFont(":/fonts/calibri");

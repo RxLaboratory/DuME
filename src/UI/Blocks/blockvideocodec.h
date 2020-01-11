@@ -2,9 +2,9 @@
 #define BLOCKVIDEOCODEC_H
 
 #include "ui_blockvideocodec.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockVideoCodec : public UIBlockContent, private Ui::BlockVideoCodec
+class BlockVideoCodec : public BlockContentWidget, private Ui::BlockVideoCodec
 {
     Q_OBJECT
 

@@ -1,10 +1,10 @@
-#include "uiinputwidget.h"
+#include "inputwidget.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-UIInputWidget::UIInputWidget(FFmpeg *ff, int id, QWidget *parent) :
+InputWidget::InputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
@@ -39,13 +39,13 @@ UIInputWidget::UIInputWidget(FFmpeg *ff, int id, QWidget *parent) :
     updateOptions();
 }
 
-MediaInfo *UIInputWidget::mediaInfo()
+MediaInfo *InputWidget::mediaInfo()
 {
     updateCustomParams();
     return _mediaInfo;
 }
 
-MediaInfo *UIInputWidget::getMediaInfo()
+MediaInfo *InputWidget::getMediaInfo()
 {
     updateCustomParams();
     MediaInfo *mi = new MediaInfo( _mediaInfo->getFfmpeg() );
@@ -53,7 +53,7 @@ MediaInfo *UIInputWidget::getMediaInfo()
     return mi;
 }
 
-void UIInputWidget::openFile(QString file)
+void InputWidget::openFile(QString file)
 {
     QSettings settings;
     if (file == "") return;
@@ -76,12 +76,12 @@ void UIInputWidget::openFile(QString file)
     updateOptions();
 }
 
-void UIInputWidget::openFile(QUrl file)
+void InputWidget::openFile(QUrl file)
 {
     openFile(file.toLocalFile());
 }
 
-void UIInputWidget::on_inputBrowseButton_clicked()
+void InputWidget::on_inputBrowseButton_clicked()
 {
     QSettings settings;
     QString inputPath = QFileDialog::getOpenFileName(this,"Select the media file to transcode",settings.value("input/path","").toString());
@@ -89,7 +89,7 @@ void UIInputWidget::on_inputBrowseButton_clicked()
     openFile(inputPath);
 }
 
-void UIInputWidget::on_inputEdit_editingFinished()
+void InputWidget::on_inputEdit_editingFinished()
 {
     //check if file exists, try to read url
     QUrl test(inputEdit->text());
@@ -104,10 +104,10 @@ void UIInputWidget::on_inputEdit_editingFinished()
     openFile(inputEdit->text());
 }
 
-UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
+BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *action)
 {
     // create block
-    UIBlockWidget *b = new UIBlockWidget( action->text(), content, blocksWidget);
+    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, blocksWidget);
     blocksLayout->addWidget( b );
     //add and connect action
     blocksMenu->addAction( action );
@@ -117,12 +117,12 @@ UIBlockWidget *UIInputWidget::addBlock(UIBlockContent *content, QAction *action)
     return b;
 }
 
-void UIInputWidget::addNewParam(QString name, QString value)
+void InputWidget::addNewParam(QString name, QString value)
 {
     //add a param and a value
     qDebug() << "New Custom param: " + name + " " + value;
     BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    UIBlockWidget *bw = new UIBlockWidget( "FFmpeg parameter", block, blocksWidget );
+    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
     blocksLayout->addWidget( bw );
     bw->show();
     connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
@@ -130,7 +130,7 @@ void UIInputWidget::addNewParam(QString name, QString value)
     _customParams << bw;
 }
 
-void UIInputWidget::customParamActivated(bool activated)
+void InputWidget::customParamActivated(bool activated)
 {
     if (!activated)
     {
@@ -146,12 +146,12 @@ void UIInputWidget::customParamActivated(bool activated)
     }
 }
 
-void UIInputWidget::on_actionAddCustom_triggered()
+void InputWidget::on_actionAddCustom_triggered()
 {
     addNewParam();
 }
 
-void UIInputWidget::updateOptions()
+void InputWidget::updateOptions()
 {
     //get media default extension (needed to adjust some options)
     QString extension = "";
@@ -190,10 +190,10 @@ void UIInputWidget::updateOptions()
     emit newMediaLoaded(_mediaInfo);
 }
 
-void UIInputWidget::updateCustomParams()
+void InputWidget::updateCustomParams()
 {
     //ADD CUSTOM PARAMS
-    foreach ( UIBlockWidget *b, _customParams )
+    foreach ( BlockBaseWidget *b, _customParams )
     {
         BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
         QString param = bc->param();

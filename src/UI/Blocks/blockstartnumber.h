@@ -2,9 +2,9 @@
 #define BLOCKSTARTNUMBER_H
 
 #include "ui_blockstartnumber.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockStartNumber : public UIBlockContent, private Ui::BlockStartNumber
+class BlockStartNumber : public BlockContentWidget, private Ui::BlockStartNumber
 {
     Q_OBJECT
 

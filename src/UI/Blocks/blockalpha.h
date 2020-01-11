@@ -2,9 +2,9 @@
 #define BLOCKALPHA_H
 
 #include "ui_blockalpha.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockAlpha : public UIBlockContent, private Ui::BlockAlpha
+class BlockAlpha : public BlockContentWidget, private Ui::BlockAlpha
 {
     Q_OBJECT
 

@@ -1,7 +1,7 @@
 #include "blockalpha.h"
 
 BlockAlpha::BlockAlpha(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
 }

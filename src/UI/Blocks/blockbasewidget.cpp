@@ -1,10 +1,10 @@
-#include "uiblockwidget.h"
+#include "blockbasewidget.h"
 
-UIBlockWidget::UIBlockWidget(QString title, UIBlockContent *content,QWidget *parent) :
+BlockBaseWidget::BlockBaseWidget(QString title, BlockContentWidget *content,QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
-    shadowFrame->setGraphicsEffect(new UIDropShadow);
+    shadowFrame->setGraphicsEffect(new DropShadow);
 
     titleLabel->setText(title);
 
@@ -22,17 +22,17 @@ UIBlockWidget::UIBlockWidget(QString title, UIBlockContent *content,QWidget *par
     this->hide();
 }
 
-UIBlockContent *UIBlockWidget::content()
+BlockContentWidget *BlockBaseWidget::content()
 {
     return _content;
 }
 
-void UIBlockWidget::setStatus(QString status)
+void BlockBaseWidget::setStatus(QString status)
 {
     statusLabel->setText(status);
 }
 
-void UIBlockWidget::activate(bool act)
+void BlockBaseWidget::activate(bool act)
 {
     _content->activate(act);
     if (!act) this->hide();
@@ -40,12 +40,12 @@ void UIBlockWidget::activate(bool act)
     emit activated(act);
 }
 
-void UIBlockWidget::deActivate()
+void BlockBaseWidget::deActivate()
 {
     activate(false);
 }
 
-void UIBlockWidget::blockEnable(bool en)
+void BlockBaseWidget::blockEnable(bool en)
 {
     if (!en)
     {

@@ -13,12 +13,12 @@
 #include <QFile>
 
 
-class UISettingsWidget : public QWidget, private Ui::SettingsWidget
+class SettingsWidget : public QWidget, private Ui::SettingsWidget
 {
     Q_OBJECT
 
 public:
-    explicit UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent = nullptr);
+    explicit SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent = nullptr);
 
 signals:
     void presetsPathChanged();

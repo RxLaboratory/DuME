@@ -1,7 +1,7 @@
 #include "blockexr.h"
 
 BlockEXR::BlockEXR(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
 }

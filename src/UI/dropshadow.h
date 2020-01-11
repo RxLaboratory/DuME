@@ -4,11 +4,11 @@
 #include <QObject>
 #include <QGraphicsDropShadowEffect>
 
-class UIDropShadow : public QGraphicsDropShadowEffect
+class DropShadow : public QGraphicsDropShadowEffect
 {
     Q_OBJECT
 public:
-    UIDropShadow(QObject *parent = Q_NULLPTR);
+    DropShadow(QObject *parent = Q_NULLPTR);
 };
 
 #endif // UIDROPSHADOW_H

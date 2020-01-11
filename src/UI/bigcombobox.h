@@ -3,11 +3,11 @@
 
 #include "UI/datacombobox.h"
 
-class UIBigComboBox : public DataComboBox
+class BigComboBox : public DataComboBox
 {
     Q_OBJECT
 public:
-    explicit UIBigComboBox(QWidget *parent = nullptr);
+    explicit BigComboBox(QWidget *parent = nullptr);
     QSize sizeHint() const override        { return minimumSizeHint(); }
     QSize minimumSizeHint() const override { return QSize(50, QComboBox::minimumSizeHint().height()); }
 

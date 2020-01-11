@@ -2,16 +2,16 @@
 #define UIBLOCKWIDGET_H
 
 #include "ui_uiblockwidget.h"
-#include "UI/uidropshadow.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/dropshadow.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class UIBlockWidget : public QWidget, private Ui::UIBlockWidget
+class BlockBaseWidget : public QWidget, private Ui::UIBlockWidget
 {
     Q_OBJECT
 
 public:
-    explicit UIBlockWidget(QString title, UIBlockContent *content, QWidget *parent = nullptr);
-    UIBlockContent *content();
+    explicit BlockBaseWidget(QString title, BlockContentWidget *content, QWidget *parent = nullptr);
+    BlockContentWidget *content();
 public slots:
     void setStatus(QString status);
     void activate(bool act = true);
@@ -22,7 +22,7 @@ signals:
     void blockEnabled(bool);
 
 private:
-    UIBlockContent *_content;
+    BlockContentWidget *_content;
 };
 
 #endif // UIBLOCKWIDGET_H

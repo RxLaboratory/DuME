@@ -13,7 +13,7 @@
 #include <QtGui/QMouseEvent>
 #include <QMainWindow>
 
-class UIFrameLess : public QObject {
+class FrameLessWindow : public QObject {
     Q_OBJECT
 
 public:
@@ -31,7 +31,7 @@ public:
     Q_ENUM(Edge)
     Q_DECLARE_FLAGS(Edges, Edge)
 
-    UIFrameLess(QMainWindow *target);
+    FrameLessWindow(QMainWindow *target);
 
     void setBorderWidth(int w) {
         _borderWidth = w;
@@ -63,4 +63,4 @@ private:
     bool _dragStart = false;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(UIFrameLess::Edges)
+Q_DECLARE_OPERATORS_FOR_FLAGS(FrameLessWindow::Edges)

@@ -1,10 +1,10 @@
-#include "uimainwindow.h"
+#include "mainwindow.h"
 
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
 #include "duexr.h"
 
-UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
+MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
@@ -34,7 +34,7 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //populate toolbar
-    UIToolBarSpacer *tbs = new UIToolBarSpacer();
+    ToolBarSpacer *tbs = new ToolBarSpacer();
     mainToolBar->addWidget(tbs);
 
     //settings button
@@ -68,13 +68,13 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     log("Init - Add settings widget", LogUtils::Debug);
 
     //settings widget
-    settingsWidget = new UISettingsWidget(_ffmpeg, _ae, this);
+    settingsWidget = new SettingsWidget(_ffmpeg, _ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     log("Init - Add queue widget", LogUtils::Debug);
 
     //queue widget
-    queueWidget = new UIQueueWidget(_ffmpeg, this);
+    queueWidget = new QueueWidget(_ffmpeg, this);
     queueLayout->addWidget(queueWidget);
 
     log("Init - Appearance", LogUtils::Debug);
@@ -160,20 +160,20 @@ UIMainWindow::UIMainWindow(FFmpeg *ff, QWidget *parent) :
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
     //Re-set StyleSheet
-    UIRainbox::updateCSS(":/styles/default", "dume");
+    RainboxUI::updateCSS(":/styles/default", "dume");
     //and font
-    UIRainbox::setFont();
+    RainboxUI::setFont();
 
     log("Ready!");
 
 }
 
-void UIMainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
+void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
 {
     log( "FFmpeg | " + l, lt);
 }
 
-void UIMainWindow::ffmpegConsole(QString c)
+void MainWindow::ffmpegConsole(QString c)
 {
     //add date
     QTime currentTime = QTime::currentTime();
@@ -183,19 +183,19 @@ void UIMainWindow::ffmpegConsole(QString c)
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
-void UIMainWindow::ffmpeg_init()
+void MainWindow::ffmpeg_init()
 {
     //get help
     helpEdit->setText(_ffmpeg->longHelp());
     queuePage->setEnabled(true);
 }
 
-void UIMainWindow::aeLog(QString l, LogUtils::LogType lt)
+void MainWindow::aeLog(QString l, LogUtils::LogType lt)
 {
     log("After Effects Info | " + l, lt);
 }
 
-void UIMainWindow::aeConsole(QString c)
+void MainWindow::aeConsole(QString c)
 {
     //add date
     QTime currentTime = QTime::currentTime();
@@ -205,7 +205,7 @@ void UIMainWindow::aeConsole(QString c)
     aeConsoleEdit->verticalScrollBar()->setSliderPosition(aeConsoleEdit->verticalScrollBar()->maximum());
 }
 
-void UIMainWindow::progress()
+void MainWindow::progress()
 {
     //get input info
     QueueItem *item = _renderQueue->currentItem();
@@ -289,7 +289,7 @@ void UIMainWindow::progress()
 
 }
 
-void UIMainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
+void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
 {
     QString stText = MediaUtils::statusString( status );
     actionStatus->setText( stText );
@@ -318,7 +318,7 @@ void UIMainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
     }
 }
 
-void UIMainWindow::log(QString log, LogUtils::LogType type)
+void MainWindow::log(QString log, LogUtils::LogType type)
 {
     //type
     QString typeString = "";
@@ -359,19 +359,19 @@ void UIMainWindow::log(QString log, LogUtils::LogType type)
     }
 }
 
-void UIMainWindow::on_ffmpegCommandsEdit_returnPressed()
+void MainWindow::on_ffmpegCommandsEdit_returnPressed()
 {
     on_ffmpegCommandsButton_clicked();
 }
 
-void UIMainWindow::on_ffmpegCommandsButton_clicked()
+void MainWindow::on_ffmpegCommandsButton_clicked()
 {
     QString commands = ffmpegCommandsEdit->text();
     if (commands == "") commands = "-h";
     _ffmpeg->runCommand(commands);
 }
 
-void UIMainWindow::on_actionGo_triggered()
+void MainWindow::on_actionGo_triggered()
 {
     //generate input and output
     QList<MediaInfo *> input = queueWidget->getInputMedia();
@@ -382,14 +382,14 @@ void UIMainWindow::on_actionGo_triggered()
     _renderQueue->encode(input,output);
 }
 
-void UIMainWindow::on_actionStop_triggered()
+void MainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
     _renderQueue->stop(6000);
 }
 
-void UIMainWindow::on_actionSettings_triggered(bool checked)
+void MainWindow::on_actionSettings_triggered(bool checked)
 {
     if (checked)
     {
@@ -401,7 +401,7 @@ void UIMainWindow::on_actionSettings_triggered(bool checked)
     }
 }
 
-void UIMainWindow::reInitCurrentProgress()
+void MainWindow::reInitCurrentProgress()
 {
     progressBar->setMaximum( 1 );
     progressBar->setValue( 0 );
@@ -413,7 +413,7 @@ void UIMainWindow::reInitCurrentProgress()
     timeLabel->setText("00:00:00");
 }
 
-void UIMainWindow::maximize(bool max)
+void MainWindow::maximize(bool max)
 {
     if (!max)
     {
@@ -427,12 +427,12 @@ void UIMainWindow::maximize(bool max)
     }
 }
 
-void UIMainWindow::maximize()
+void MainWindow::maximize()
 {
     maximize(!this->isMaximized());
 }
 
-void UIMainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     _renderQueue->stop(6000);
     //save ui geometry
@@ -450,7 +450,7 @@ void UIMainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-bool UIMainWindow::eventFilter(QObject *obj, QEvent *event)
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
   if (event->type() == QEvent::MouseButtonPress)
   {
@@ -494,7 +494,7 @@ bool UIMainWindow::eventFilter(QObject *obj, QEvent *event)
   }
 }
 
-void UIMainWindow::dropEvent(QDropEvent *event)
+void MainWindow::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
 
@@ -524,7 +524,7 @@ void UIMainWindow::dropEvent(QDropEvent *event)
     event->acceptProposedAction();
 }
 
-void UIMainWindow::dragEnterEvent(QDragEnterEvent *event)
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
 
@@ -550,12 +550,12 @@ void UIMainWindow::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
-void UIMainWindow::dragMoveEvent(QDragMoveEvent *event)
+void MainWindow::dragMoveEvent(QDragMoveEvent *event)
 {
      event->acceptProposedAction();
 }
 
-void UIMainWindow::dragLeaveEvent(QDragLeaveEvent *event)
+void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
     event->accept();
 }

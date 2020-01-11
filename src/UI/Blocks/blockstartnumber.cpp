@@ -1,7 +1,7 @@
 #include "blockstartnumber.h"
 
 BlockStartNumber::BlockStartNumber(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
 }

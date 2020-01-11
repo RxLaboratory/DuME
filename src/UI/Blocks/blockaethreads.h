@@ -2,10 +2,10 @@
 #define BLOCKAETHREADS_H
 
 #include "ui_blockaethreads.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 #include <QThread>
 
-class BlockAEThreads : public UIBlockContent, private Ui::BlockAEThreads
+class BlockAEThreads : public BlockContentWidget, private Ui::BlockAEThreads
 {
     Q_OBJECT
 

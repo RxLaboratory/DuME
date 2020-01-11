@@ -1,7 +1,7 @@
 #include "blockaecomp.h"
 
 BlockAEComp::BlockAEComp(MediaInfo *mediaInfo, QWidget *parent) :
-    UIBlockContent(mediaInfo,parent)
+    BlockContentWidget(mediaInfo,parent)
 {
     setupUi(this);
 }

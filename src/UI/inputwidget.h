@@ -6,7 +6,7 @@
 #include "Renderer/mediainfo.h"
 
 //BLOCKS
-#include "UI/Blocks/uiblockwidget.h"
+#include "UI/Blocks/blockbasewidget.h"
 #include "UI/Blocks/blockframerate.h"
 #include "UI/Blocks/blockexr.h"
 #include "UI/Blocks/blockcolor.h"
@@ -19,12 +19,12 @@
 #include <QThread>
 #include <QTime>
 
-class UIInputWidget : public QWidget, private Ui::InputWidget
+class InputWidget : public QWidget, private Ui::InputWidget
 {
     Q_OBJECT
 
 public:
-    explicit UIInputWidget(FFmpeg *ff, int id = -1, QWidget *parent = nullptr);
+    explicit InputWidget(FFmpeg *ff, int id = -1, QWidget *parent = nullptr);
     /**
      * @brief mediaInfo Gives a pointer to the current input MediaInfo
      * @return The current MediaInfo
@@ -48,16 +48,16 @@ private slots:
     void customParamActivated(bool activated);
 private:
     // BLOCKS
-    UIBlockWidget *addBlock(UIBlockContent *content, QAction *action);
-    UIBlockWidget *blockFrameRate;
+    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
+    BlockBaseWidget *blockFrameRate;
     BlockFrameRate *blockFrameRateContent;
-    UIBlockWidget *blockEXR;
+    BlockBaseWidget *blockEXR;
     BlockEXR *blockEXRContent;
-    UIBlockWidget *blockColor;
+    BlockBaseWidget *blockColor;
     BlockColor *blockColorContent;
-    UIBlockWidget *blockAEComp;
+    BlockBaseWidget *blockAEComp;
     BlockAEComp *blockAECompContent;
-    UIBlockWidget *blockAEThreads;
+    BlockBaseWidget *blockAEThreads;
     BlockAEThreads *blockAEThreadsContent;
 
     // MENUS
@@ -66,7 +66,7 @@ private:
     void addNewParam(QString name = "",QString value = "");
 
     MediaInfo *_mediaInfo;
-    QList<UIBlockWidget *> _customParams;
+    QList<BlockBaseWidget *> _customParams;
     void updateOptions();
     void updateCustomParams();
 };

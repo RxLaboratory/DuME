@@ -1,11 +1,11 @@
-#include "uisettingswidget.h"
-#include "uidropshadow.h"
+#include "settingswidget.h"
+#include "dropshadow.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
 #endif
 
-UISettingsWidget::UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent) :
+SettingsWidget::SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
@@ -15,8 +15,8 @@ UISettingsWidget::UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *pa
     _freezeUI = true;
 
     //Add nice shadows
-    generalWidget->setGraphicsEffect(new UIDropShadow);
-    aeWidget->setGraphicsEffect(new UIDropShadow);
+    generalWidget->setGraphicsEffect(new DropShadow);
+    aeWidget->setGraphicsEffect(new DropShadow);
 
     ffmpegPathEdit->setText( QDir::toNativeSeparators( _ffmpeg->binary() ) );
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
@@ -46,7 +46,7 @@ UISettingsWidget::UISettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *pa
     _freezeUI = false;
 }
 
-void UISettingsWidget::on_ffmpegBrowseButton_clicked()
+void SettingsWidget::on_ffmpegBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
@@ -54,12 +54,12 @@ void UISettingsWidget::on_ffmpegBrowseButton_clicked()
     _ffmpeg->setBinary( path, true );
 }
 
-void UISettingsWidget::on_ffmpegPathEdit_editingFinished()
+void SettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
     _ffmpeg->setBinary( ffmpegPathEdit->text(), true );
 }
 
-void UISettingsWidget::on_userPresetsBrowseButton_clicked()
+void SettingsWidget::on_userPresetsBrowseButton_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings.value("presets/path").toString());
     if (path == "") return;
@@ -69,14 +69,14 @@ void UISettingsWidget::on_userPresetsBrowseButton_clicked()
     emit presetsPathChanged();
 }
 
-void UISettingsWidget::on_userPresetsPathEdit_editingFinished()
+void SettingsWidget::on_userPresetsPathEdit_editingFinished()
 {
     settings.setValue("presets/path",userPresetsPathEdit->text());
     settings.sync();
     emit presetsPathChanged();
 }
 
-void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
+void SettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -91,7 +91,7 @@ void UISettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     _freezeUI = false;
 }
 
-void UISettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
+void SettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -116,14 +116,14 @@ void UISettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
     aeVersionBox->setCurrentText( "Custom" );
 }
 
-void UISettingsWidget::on_aerenderBrowseButton_clicked()
+void SettingsWidget::on_aerenderBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
     aerenderPathEdit->setText(path);
 }
 
-void UISettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
+void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -139,7 +139,7 @@ void UISettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
     _freezeUI = false;
 }
 
-void UISettingsWidget::on_aeCacheBrowseButton_clicked()
+void SettingsWidget::on_aeCacheBrowseButton_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",settings.value("aerender/cache",aeCacheEdit->text()).toString());
     if (path == "") return;
@@ -147,7 +147,7 @@ void UISettingsWidget::on_aeCacheBrowseButton_clicked()
     aeCacheEdit->setText(path);
 }
 
-void UISettingsWidget::refreshAeVersionBox()
+void SettingsWidget::refreshAeVersionBox()
 {
     _freezeUI = true;
 

@@ -2,9 +2,9 @@
 #define BLOCKLOOPS_H
 
 #include "ui_blockloops.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockLoops : public UIBlockContent, private Ui::BlockLoops
+class BlockLoops : public BlockContentWidget, private Ui::BlockLoops
 {
     Q_OBJECT
 

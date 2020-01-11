@@ -4,10 +4,10 @@
 #include <QWidget>
 
 #include "ui_blockmapping.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 #include "UI/streamreferencewidget.h"
 
-class BlockMapping : public UIBlockContent, private Ui::BlockMapping
+class BlockMapping : public BlockContentWidget, private Ui::BlockMapping
 {
     Q_OBJECT
 

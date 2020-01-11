@@ -2,9 +2,9 @@
 #define BLOCKAUDIOBITRATE_H
 
 #include "ui_blockaudiobitrate.h"
-#include "UI/Blocks/uiblockcontent.h"
+#include "UI/Blocks/blockcontentwidget.h"
 
-class BlockAudioBitrate : public UIBlockContent, private Ui::BlockAudioBitrate
+class BlockAudioBitrate : public BlockContentWidget, private Ui::BlockAudioBitrate
 {
     Q_OBJECT
 

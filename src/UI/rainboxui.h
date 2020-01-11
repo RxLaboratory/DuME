@@ -13,10 +13,10 @@
 
 #include "utils.h"
 
-class UIRainbox
+class RainboxUI
 {
 public:
-    UIRainbox();
+    RainboxUI();
     static void updateCSS(QString cssFileName, QString appName = "");
     /**
      * @brief loadCSS Loads a CSS File

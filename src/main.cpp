@@ -1,5 +1,5 @@
-#include "UI/uimainwindow.h"
-#include "UI/uiframeless.h"
+#include "UI/mainwindow.h"
+#include "UI/framelesswindow.h"
 
 #include <QApplication>
 #include <QBitmap>
@@ -8,14 +8,14 @@
 #include <QtDebug>
 
 #include "FFmpeg/ffmpeg.h"
-#include "UI/uirainbox.h"
+#include "UI/rainboxui.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     //set style
-    UIRainbox::updateCSS(":/styles/default", "dume");
+    RainboxUI::updateCSS(":/styles/default", "dume");
 
     //load settings
     QCoreApplication::setOrganizationName("Rainbox Laboratory");
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     //build UI and show
     splash.newMessage("Building UI");
-    UIMainWindow *w = new UIMainWindow( ffmpeg );
+    MainWindow *w = new MainWindow( ffmpeg );
 #ifndef Q_OS_LINUX
     UIFrameLess f(w);
 #endif
