@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QComboBox" name="audioCodecsFilterBox">
+    <widget class="DataComboBox" name="audioCodecsFilterBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -88,6 +88,11 @@
    <class>UIBigComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/uibigcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/datacombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

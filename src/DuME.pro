@@ -64,6 +64,7 @@ SOURCES += \
     UI/Blocks/blockvideoprofile.cpp \
     UI/Blocks/uiblockcontent.cpp \
     UI/Blocks/uiblockwidget.cpp \
+    UI/datacombobox.cpp \
     UI/streamreferencewidget.cpp \
     UI/uibigcombobox.cpp \
     languagelist.cpp \
@@ -125,6 +126,7 @@ HEADERS += \
     UI/Blocks/blockcustom.h \
     UI/Blocks/uiblockcontent.h \
     UI/Blocks/uiblockwidget.h \
+    UI/datacombobox.h \
     UI/streamreferencewidget.h \
     UI/uibigcombobox.h \
     UI/uidropshadow.h \

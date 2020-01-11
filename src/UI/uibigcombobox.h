@@ -1,9 +1,9 @@
 #ifndef UIBIGCOMBOBOX_H
 #define UIBIGCOMBOBOX_H
 
-#include <QComboBox>
+#include "UI/datacombobox.h"
 
-class UIBigComboBox : public QComboBox
+class UIBigComboBox : public DataComboBox
 {
     Q_OBJECT
 public:

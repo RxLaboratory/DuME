@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QComboBox" name="samplingBox">
+    <widget class="DataComboBox" name="samplingBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -47,6 +47,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/datacombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
