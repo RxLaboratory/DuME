@@ -19,9 +19,13 @@ public:
     void removeMedia(int id);
     void removeMedia(MediaInfo *media);
 
+    bool hasVideo();
+    bool hasAudio();
+
 signals:
     void newMedia(MediaInfo*);
     void mediaRemoved(MediaInfo*);
+    void changed();
 
 private:
     QList<MediaInfo *> _medias;

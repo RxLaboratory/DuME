@@ -33,6 +33,7 @@ int MediaList::addMedia(MediaInfo *media)
 {
     _medias << media;
     emit newMedia( media );
+    emit changed();
     return _medias.count()-1;
 }
 
@@ -40,6 +41,7 @@ MediaInfo *MediaList::takeMedia(int id)
 {
     MediaInfo *media = _medias.takeAt(id);
     emit mediaRemoved(media);
+    emit changed();
     return media;
 }
 
@@ -47,6 +49,7 @@ void MediaList::removeMedia(int id)
 {
     MediaInfo *media = _medias.takeAt(id);
     emit mediaRemoved(media);
+    emit changed();
     media->deleteLater();
 }
 
@@ -54,5 +57,24 @@ void MediaList::removeMedia(MediaInfo *media)
 {
     _medias.removeOne(media);
     emit mediaRemoved(media);
+    emit changed();
     media->deleteLater();
+}
+
+bool MediaList::hasVideo()
+{
+    foreach( MediaInfo *m, _medias)
+    {
+        if (m->hasVideo()) return true;
+    }
+    return false;
+}
+
+bool MediaList::hasAudio()
+{
+    foreach( MediaInfo *m, _medias)
+    {
+        if (m->hasAudio()) return true;
+    }
+    return false;
 }
