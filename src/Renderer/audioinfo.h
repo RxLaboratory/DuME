@@ -3,42 +3,51 @@
 
 #include <QObject>
 
-#include "FFmpeg/ffcodec.h"
+#include "FFmpeg/ffmpeg.h"
+#include "FFmpeg/fflanguage.h"
 
 class AudioInfo : public QObject
 {
     Q_OBJECT
 public:
-    explicit AudioInfo(QObject *parent = nullptr);
-    void reInit();
+    explicit AudioInfo(FFmpeg *ffmpeg, QObject *parent = nullptr);
+    explicit AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent = nullptr);
+    void reInit(bool silent = false);
+    void copyFrom(AudioInfo *other, bool silent = false);
+    bool isCopy();
+    QJsonObject toJson();
 
     int samplingRate() const;
-    void setSamplingRate(int samplingRate);
+    void setSamplingRate(int samplingRate, bool silent = false);
 
     QString channels() const;
-    void setChannels(const QString &channels);
+    void setChannels(const QString &channels, bool silent = false);
 
     qint64 bitrate() const;
-    void setBitrate(const qint64 &bitrate);
+    void setBitrate(const qint64 &bitrate, bool silent = false);
 
     FFCodec *codec() const;
-    void setCodec(FFCodec *codec);
+    void setCodec(FFCodec *codec, bool silent = false);
+    void setCodec(QString name, bool silent = false);
+    void setCodec(QJsonObject obj, bool silent = false);
 
-    QString language() const;
-    void setLanguage(const QString &language);
+    FFLanguage *language() const;
+    void setLanguage(const QString &languageId, bool silent = false);
 
     int id() const;
-    void setId(int id);
+    void setId(int id, bool silent = false);
 
 signals:
-
+    void changed();
 private:
     int _id;
     int _samplingRate;
     QString _channels;
     qint64 _bitrate;
     FFCodec *_codec;
-    QString _language;
+    FFLanguage *_language;
+
+    FFmpeg *_ffmpeg;
 };
 
 #endif // AUDIOINFO_H
