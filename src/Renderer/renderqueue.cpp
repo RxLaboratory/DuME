@@ -235,7 +235,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                if (output->videoProfile() != "") arguments << "-profile:v" << output->videoProfile();
+                if (output->videoProfile() != nullptr) arguments << "-profile:v" << output->videoProfile()->name();
 
                 //level
                 if (output->videoLevel() != "") arguments << "-level" << output->videoLevel();
