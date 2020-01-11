@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="UIBigComboBox" name="spaceBox"/>
+    <widget class="BigComboBox" name="spaceBox"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label">
@@ -50,7 +50,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="UIBigComboBox" name="primariesBox"/>
+    <widget class="BigComboBox" name="primariesBox"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
@@ -60,7 +60,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="UIBigComboBox" name="trcBox"/>
+    <widget class="BigComboBox" name="trcBox"/>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
@@ -70,7 +70,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="UIBigComboBox" name="rangeBox"/>
+    <widget class="BigComboBox" name="rangeBox"/>
    </item>
   </layout>
   <action name="actionsRGB">
@@ -108,9 +108,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>UIBigComboBox</class>
+   <class>BigComboBox</class>
    <extends>QComboBox</extends>
-   <header>UI/uibigcombobox.h</header>
+   <header>UI/bigcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

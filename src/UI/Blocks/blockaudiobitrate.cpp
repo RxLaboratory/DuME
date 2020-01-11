@@ -31,9 +31,16 @@ void BlockAudioBitrate::activate(bool activate)
 void BlockAudioBitrate::update()
 {
     if (_freezeUI) return;
-    _freezeUI = true;
+     _freezeUI = true;
 
-    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    if (!_mediaInfo->hasAudio() )
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    AudioInfo *stream = _mediaInfo->audioStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -41,7 +48,7 @@ void BlockAudioBitrate::update()
     }
     emit blockEnabled(true);
 
-    audioBitRateEdit->setValue( MediaUtils::convertFromBps( _mediaInfo->audioBitrate(), MediaUtils::kbps ) );
+    audioBitRateEdit->setValue( MediaUtils::convertFromBps( stream->bitrate(), MediaUtils::kbps ) );
 
     _freezeUI = false;
 }

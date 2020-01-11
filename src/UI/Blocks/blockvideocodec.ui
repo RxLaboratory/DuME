@@ -74,7 +74,7 @@
     </widget>
    </item>
    <item>
-    <widget class="UIBigComboBox" name="videoCodecsBox">
+    <widget class="BigComboBox" name="videoCodecsBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -90,9 +90,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>UIBigComboBox</class>
+   <class>BigComboBox</class>
    <extends>QComboBox</extends>
-   <header>UI/uibigcombobox.h</header>
+   <header>UI/bigcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

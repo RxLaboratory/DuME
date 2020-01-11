@@ -53,14 +53,21 @@ void BlockVideoBitrate::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo() || _mediaInfo->isImageSequence())
+    if (!_mediaInfo->hasVideo() || _mediaInfo->isSequence())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
         return;
     }
 
-    FFCodec *c = _mediaInfo->videoCodec();
+    FFCodec *c = stream->codec();
     if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
     if ( c == nullptr )
     {
@@ -138,7 +145,7 @@ void BlockVideoBitrate::update()
     // bitrate
     if ( useBitrate )
     {
-        int b = _mediaInfo->videoBitrate( );
+        int b = stream->bitrate( );
         videoBitRateEdit->setEnabled( true );
         if ( b == 0 )
         {
@@ -161,7 +168,7 @@ void BlockVideoBitrate::update()
     if ( useQuality )
     {
         // quality
-        int q = _mediaInfo->videoQuality();
+        int q = stream->quality();
         if (q == -1)
         {
             videoQualitySlider->setValue( 90 );

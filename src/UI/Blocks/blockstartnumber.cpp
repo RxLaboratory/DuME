@@ -27,7 +27,7 @@ void BlockStartNumber::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->isImageSequence())
+    if (!_mediaInfo->isSequence())
     {
         emit blockEnabled(false);
         _freezeUI = false;

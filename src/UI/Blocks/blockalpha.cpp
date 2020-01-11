@@ -27,7 +27,16 @@ void BlockAlpha::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo() || !_mediaInfo->canHaveAlpha())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -40,7 +49,7 @@ void BlockAlpha::update()
     alphaButton->setChecked( _mediaInfo->hasAlpha() );
     if ( alphaButton->isChecked() )
     {
-        unmultButton->setChecked( !_mediaInfo->premultipliedAlpha() );
+        unmultButton->setChecked( !stream->premultipliedAlpha() );
         unmultButton->setEnabled( true );
     }
     else

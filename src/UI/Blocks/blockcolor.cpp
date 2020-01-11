@@ -92,7 +92,14 @@ void BlockColor::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -102,7 +109,7 @@ void BlockColor::update()
 
     for (int i = 0; i < trcBox->count(); i++)
     {
-        if (trcBox->itemData(i) == _mediaInfo->colorTRC())
+        if (trcBox->itemData(i) == stream->colorTRC())
         {
             trcBox->setCurrentIndex(i);
             break;
@@ -110,7 +117,7 @@ void BlockColor::update()
     }
     for (int i = 0; i < spaceBox->count(); i++)
     {
-        if (spaceBox->itemData(i) == _mediaInfo->colorSpace())
+        if (spaceBox->itemData(i) == stream->colorSpace())
         {
             spaceBox->setCurrentIndex(i);
             break;
@@ -118,7 +125,7 @@ void BlockColor::update()
     }
     for (int i = 0; i < rangeBox->count(); i++)
     {
-        if (rangeBox->itemData(i) == _mediaInfo->colorRange())
+        if (rangeBox->itemData(i) == stream->colorRange())
         {
             rangeBox->setCurrentIndex(i);
             break;
@@ -126,7 +133,7 @@ void BlockColor::update()
     }
     for (int i = 0; i < primariesBox->count(); i++)
     {
-        if (primariesBox->itemData(i) == _mediaInfo->colorPrimaries())
+        if (primariesBox->itemData(i) == stream->colorPrimaries())
         {
             primariesBox->setCurrentIndex(i);
             break;

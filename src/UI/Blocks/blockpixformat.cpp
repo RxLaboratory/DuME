@@ -29,7 +29,14 @@ void BlockPixFormat::update()
 {
     if (_freezeUI) return;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if(stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -45,7 +52,7 @@ void BlockPixFormat::update()
 
     _freezeUI = true;
 
-    FFPixFormat *pf = _mediaInfo->pixFormat();
+    FFPixFormat *pf = stream->pixFormat();
     if ( pf == nullptr )
     {
         setDefaultPixFormat();
@@ -68,7 +75,13 @@ void BlockPixFormat::listPixFormats()
     pixFmtFilterBox->clear();
     _pixFormats.clear();
 
-    FFCodec *vc = _mediaInfo->videoCodec();
+    if (!_mediaInfo->hasVideo())
+    {
+        _freezeUI = false;
+        return;
+    }
+
+    FFCodec *vc = _mediaInfo->videoStreams()[0]->codec();
     if ( vc == nullptr ) vc = _mediaInfo->defaultVideoCodec();
     if ( vc == nullptr )
     {
@@ -131,7 +144,14 @@ void BlockPixFormat::setDefaultPixFormat()
 
     _freezeUI = true;
 
-    FFPixFormat *pf = _mediaInfo->defaultPixFormat();
+    if (!_mediaInfo->hasVideo())
+    {
+        _freezeUI = false;
+        return;
+    }
+
+    FFPixFormat *pf = _mediaInfo->videoStreams()[0]->defaultPixFormat();
+    if (pf == nullptr) pf = _mediaInfo->defaultPixFormat();
 
     if (pf == nullptr)
     {

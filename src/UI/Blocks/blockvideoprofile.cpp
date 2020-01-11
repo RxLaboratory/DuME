@@ -31,14 +31,21 @@ void BlockVideoProfile::update()
     videoProfileBox->clear();
     videoLevelBox->clear();
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
         return;
     }
 
-    FFCodec *c = _mediaInfo->videoCodec();
+    FFCodec *c = stream->codec();
     if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
     if ( c == nullptr )
     {
@@ -79,11 +86,11 @@ void BlockVideoProfile::update()
         return;
     }
 
-    FFProfile *p = _mediaInfo->videoProfile();
+    FFProfile *p = stream->profile();
     if ( p != nullptr ) videoProfileBox->setCurrentData( p->name() );
     else videoProfileBox->setCurrentIndex( 0 );
 
-    videoLevelBox->setCurrentData( _mediaInfo->videoLevel() );
+    videoLevelBox->setCurrentData( stream->level() );
 
     _freezeUI = false;
 }

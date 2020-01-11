@@ -21,7 +21,13 @@ void BlockLoops::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    if (_mediaInfo->videoStreams()[0]->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;

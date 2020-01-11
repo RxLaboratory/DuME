@@ -36,7 +36,14 @@ void BlockAudioCodec::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    if (!_mediaInfo->hasAudio())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    AudioInfo *stream = _mediaInfo->audioStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -47,7 +54,7 @@ void BlockAudioCodec::update()
     listCodecs();
     _freezeUI = true;
 
-    FFCodec *c = _mediaInfo->audioCodec();
+    FFCodec *c = _mediaInfo->audioStreams()[0]->codec();
     if ( c == nullptr )
     {
         setDefaultCodec();

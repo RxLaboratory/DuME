@@ -44,11 +44,11 @@ void BlockSampling::activate(bool activate)
 
     if (activate)
     {
-        _mediaInfo->setAudioSamplingRate( samplingBox->currentData(Qt::UserRole).toInt() );
+        _mediaInfo->setSamplingRate( samplingBox->currentData(Qt::UserRole).toInt() );
     }
     else
     {
-        _mediaInfo->setAudioSamplingRate( 0 );
+        _mediaInfo->setSamplingRate( 0 );
     }
 
     _freezeUI = false;
@@ -59,7 +59,14 @@ void BlockSampling::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasAudio() || _mediaInfo->copyAudio())
+    if (!_mediaInfo->hasAudio())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    AudioInfo *stream = _mediaInfo->audioStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -69,7 +76,7 @@ void BlockSampling::update()
 
     for (int i = 0; i < samplingBox->count(); i++)
     {
-        if (samplingBox->itemData(i, Qt::UserRole).toInt() == _mediaInfo->audioSamplingRate())
+        if (samplingBox->itemData(i, Qt::UserRole).toInt() == stream->samplingRate())
         {
             samplingBox->setCurrentIndex(i);
             return;
@@ -81,5 +88,5 @@ void BlockSampling::update()
 void BlockSampling::on_samplingBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
-    _mediaInfo->setAudioSamplingRate( samplingBox->itemData(index, Qt::UserRole).toInt() );
+    _mediaInfo->setSamplingRate( samplingBox->itemData(index, Qt::UserRole).toInt() );
 }

@@ -25,13 +25,13 @@ void BlockResize::activate(bool activate)
     _freezeUI = true;
     if (!activate)
     {
-        _mediaInfo->setVideoWidth( 0 );
-        _mediaInfo->setVideoHeight( 0 );
+        _mediaInfo->setWidth( 0 );
+        _mediaInfo->setHeight( 0 );
     }
     else
     {
-        _mediaInfo->setVideoWidth( videoWidthButton->value() );
-        _mediaInfo->setVideoHeight( videoHeightButton->value() );
+        _mediaInfo->setWidth( videoWidthButton->value() );
+        _mediaInfo->setHeight( videoHeightButton->value() );
     }
     _freezeUI = false;
 }
@@ -41,7 +41,14 @@ void BlockResize::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -50,8 +57,8 @@ void BlockResize::update()
 
     emit blockEnabled(true);
 
-    int w = _mediaInfo->videoWidth();
-    int h = _mediaInfo->videoHeight();
+    int w = stream->width();
+    int h = stream->height();
     videoWidthButton->setValue( w );
     videoHeightButton->setValue( h );
     if ( w == 0 ) videoWidthButton->setSuffix( " Same as input" );
@@ -106,8 +113,8 @@ void BlockResize::on_videoWidthButton_editingFinished( )
     {
         h = w / _currentRatio;
     }
-    _mediaInfo->setVideoWidth( w );
-    _mediaInfo->setVideoHeight( h );
+    _mediaInfo->setWidth( w );
+    _mediaInfo->setHeight( h );
 }
 
 void BlockResize::on_videoHeightButton_editingFinished()
@@ -119,8 +126,8 @@ void BlockResize::on_videoHeightButton_editingFinished()
     {
         w = h * _currentRatio;
     }
-    _mediaInfo->setVideoWidth( w );
-    _mediaInfo->setVideoHeight( h );
+    _mediaInfo->setWidth( w );
+    _mediaInfo->setHeight( h );
 }
 
 void BlockResize::checkSizes( )
@@ -129,9 +136,9 @@ void BlockResize::checkSizes( )
     int h = videoHeightButton->value();
     emit status( aspectRatio() );
 
-    if ( h % 2 != 0 || w % 2 != 0 )
+    if (( h % 2 != 0 || w % 2 != 0 ) && _mediaInfo->hasVideo() )
     {
-        FFCodec *c = _mediaInfo->videoCodec();
+        FFCodec *c = _mediaInfo->videoStreams()[0]->codec();
         if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
         if ( c == nullptr ) return;
         if ( c->name() == "h264" )
@@ -159,8 +166,8 @@ void BlockResize::setSize( int w, int h)
         }
     }
 
-    _mediaInfo->setVideoWidth( w );
-    _mediaInfo->setVideoHeight( h );
+    _mediaInfo->setWidth( w );
+    _mediaInfo->setHeight( h );
 }
 
 void BlockResize::on_actionHD720_triggered()

@@ -25,11 +25,11 @@ void BlockFrameRate::activate(bool activate)
 
     if (activate)
     {
-        _mediaInfo->setVideoFramerate( frameRateEdit->value() );
+        _mediaInfo->setFramerate( frameRateEdit->value() );
     }
     else
     {
-        _mediaInfo->setVideoFramerate( 0 );
+        _mediaInfo->setFramerate( 0 );
     }
 
     _freezeUI = false;
@@ -40,7 +40,14 @@ void BlockFrameRate::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo())
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -48,7 +55,7 @@ void BlockFrameRate::update()
     }
     emit blockEnabled(true);
 
-    double f = _mediaInfo->videoFramerate();
+    double f = stream->framerate();
     if ( f != 0.0)
     {
         frameRateEdit->setValue( f );
@@ -66,65 +73,65 @@ void BlockFrameRate::setFrameRate(double f)
 
 void BlockFrameRate::on_frameRateEdit_valueChanged(double arg1)
 {
-    _mediaInfo->setVideoFramerate( arg1 );
+    _mediaInfo->setFramerate( arg1 );
 }
 
 void BlockFrameRate::on_action8_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 8 );
+    _mediaInfo->setFramerate( 8 );
 }
 
 void BlockFrameRate::on_action12_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 12 );
+    _mediaInfo->setFramerate( 12 );
 }
 
 void BlockFrameRate::on_action15_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 15 );
+    _mediaInfo->setFramerate( 15 );
 }
 
 void BlockFrameRate::on_action23_976_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 23.976 );
+    _mediaInfo->setFramerate( 23.976 );
 }
 
 void BlockFrameRate::on_action24_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 24 );
+    _mediaInfo->setFramerate( 24 );
 }
 
 void BlockFrameRate::on_action25_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 25 );
+    _mediaInfo->setFramerate( 25 );
 }
 
 void BlockFrameRate::on_action29_97_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 29.97 );
+    _mediaInfo->setFramerate( 29.97 );
 }
 
 void BlockFrameRate::on_action30_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 30 );
+    _mediaInfo->setFramerate( 30 );
 }
 
 void BlockFrameRate::on_action50_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 50 );
+    _mediaInfo->setFramerate( 50 );
 }
 
 void BlockFrameRate::on_action59_94_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 59.94 );
+    _mediaInfo->setFramerate( 59.94 );
 }
 
 void BlockFrameRate::on_action60_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 60 );
+    _mediaInfo->setFramerate( 60 );
 }
 
 void BlockFrameRate::on_action120_fps_triggered()
 {
-    _mediaInfo->setVideoFramerate( 120 );
+    _mediaInfo->setFramerate( 120 );
 }

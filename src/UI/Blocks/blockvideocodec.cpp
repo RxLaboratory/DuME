@@ -119,7 +119,14 @@ void BlockVideoCodec::update()
     if (_freezeUI) return;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->copyVideo() || _mediaInfo->isImageSequence())
+    if (!_mediaInfo->hasVideo() || _mediaInfo->isSequence())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    if (stream->isCopy())
     {
         emit blockEnabled(false);
         _freezeUI = false;
@@ -127,7 +134,7 @@ void BlockVideoCodec::update()
     }
 
     // set codec
-    FFCodec *c = _mediaInfo->videoCodec();
+    FFCodec *c = stream->codec();
     if ( c == nullptr )
     {
         setDefaultCodec();
