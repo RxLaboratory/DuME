@@ -151,13 +151,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
             bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
 
-            if (stream->colorTRC() != "" ) arguments << "-color_trc" << stream->colorTRC();
+            if (stream->colorTRC()->name() != "" ) arguments << "-color_trc" << stream->colorTRC()->name();
             else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
-            if (stream->colorRange() != "") arguments << "-color_range" << stream->colorRange();
+            if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
             else if ( convertToYUV ) arguments << "-color_range" << "tv";
-            if (stream->colorPrimaries() != "") arguments << "-color_primaries" << stream->colorPrimaries();
+            if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
             else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
-            if (stream->colorSpace() != "") arguments << "-colorspace" << stream->colorSpace();
+            if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
             else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
         }
 
@@ -302,10 +302,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //color
                 //add color management
-                if (stream->colorTRC() != "") arguments << "-color_trc" << stream->colorTRC();
-                if (stream->colorRange() != "") arguments << "-color_range" << stream->colorRange();
-                if (stream->colorTRC() != "") arguments << "-color_primaries" << stream->colorPrimaries();
-                if (stream->colorSpace() != "") arguments << "-colorspace" << stream->colorSpace();
+                if (stream->colorTRC()->name() != "") arguments << "-color_trc" << stream->colorTRC()->name();
+                if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
+                if (stream->colorTRC()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
+                if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
 
                 //b-pyramids
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
