@@ -319,7 +319,7 @@ void OutputWidget::on_audioButton_clicked(bool checked)
     }
 }
 
-void OutputWidget::on_videoTranscodeButton_clicked( bool checked )
+void OutputWidget::on_videoTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasVideo()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -327,7 +327,7 @@ void OutputWidget::on_videoTranscodeButton_clicked( bool checked )
     else _mediaInfo->videoStreams()[0]->setCodec( "copy" );
 }
 
-void OutputWidget::on_audioTranscodeButton_clicked( bool checked )
+void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasAudio()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
@@ -416,7 +416,9 @@ void OutputWidget::updateOutputExtension(QString outputPath)
         outputPath = output.path() + "/" + outputName + "_transcoded" + num + newExt;
     }
 
-    _mediaInfo->setFileName( QDir::toNativeSeparators(outputPath) );
+    outputPath = QDir::toNativeSeparators(outputPath);
+    outputEdit->setText( outputPath );
+    _mediaInfo->setFileName( outputPath, true );
 }
 
 void OutputWidget::addNewParam(QString name, QString value)

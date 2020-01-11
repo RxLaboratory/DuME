@@ -58,8 +58,8 @@ private slots:
     void inputChanged();
     void customParamActivated(bool activated);
 
-    void on_videoTranscodeButton_clicked(bool checked);
-    void on_audioTranscodeButton_clicked(bool checked);
+    void on_videoTranscodeButton_toggled(bool checked);
+    void on_audioTranscodeButton_toggled(bool checked);
     void on_outputBrowseButton_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
