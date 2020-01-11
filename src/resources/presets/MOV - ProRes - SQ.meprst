@@ -12,8 +12,8 @@
             }
         ],
         "muxer": {
-            "name": "mp4",
-            "prettyName": "MP4 (MPEG-4 Part 14)",
+            "name": "mov",
+            "prettyName": "QuickTime / MOV",
             "sequence": false
         },
         "options": [
@@ -22,6 +22,10 @@
         "videoStreams": [
             {
                 "bitrate": 0,
+                "codec": {
+                    "name": "prores",
+                    "prettyName": "Apple ProRes "
+                },
                 "colorPrimaries": {
                     "name": "",
                     "prettyName": "Auto"
@@ -39,15 +43,19 @@
                     "prettyName": "Auto"
                 },
                 "framerate": 0,
-                "height": 720,
+                "height": 0,
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"
                 },
                 "level": "",
                 "pixAspect": 1,
+                "profile": {
+                    "name": "2",
+                    "prettyName": "SQ"
+                },
                 "quality": -1,
-                "width": 1280
+                "width": 0
             }
         ]
     }

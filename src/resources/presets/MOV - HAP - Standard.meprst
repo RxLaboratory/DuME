@@ -1,20 +1,20 @@
 {
     "dume": {
-        "audio": {
-            "bitrate": 0,
-            "codecName": "aac",
-            "codecPrettyName": "AAC ",
-            "sampling": 0
-        },
-        "hasAudio": true,
-        "hasVideo": true,
+        "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "samplingRate": 0
+            }
+        ],
         "muxer": {
-            "extensions": [
-                "mov"
-            ],
-            "isSequence": false,
             "name": "mov",
-            "prettyName": "QuickTime / MOV"
+            "prettyName": "QuickTime / MOV",
+            "sequence": false
         },
         "options": [
             {
@@ -22,17 +22,41 @@
                 "value": "hap"
             }
         ],
-        "version": "0.1.0",
-        "video": {
-            "bitrate": 0,
-            "codecName": "hap",
-            "codecPrettyName": "Vidvox Hap\r",
-            "framerate": 0,
-            "height": 0,
-            "loop": -1,
-            "profile": -1,
-            "quality": -1,
-            "width": 0
-        }
+        "version": "0.1.0-Beta",
+        "videoStreams": [
+            {
+                "bitrate": 0,
+                "codec": {
+                    "name": "hap",
+                    "prettyName": "Vidvox Hap"
+                },
+                "colorPrimaries": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorRange": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorSpace": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorTRC": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "framerate": 0,
+                "height": 0,
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "level": "",
+                "pixAspect": 1,
+                "quality": -1,
+                "width": 0
+            }
+        ]
     }
 }

@@ -1,34 +1,62 @@
 {
     "dume": {
-        "audio": {
-            "bitrate": 0,
-            "codecName": "alac",
-            "codecPrettyName": "ALAC ",
-            "sampling": 0
-        },
-        "hasAudio": true,
-        "hasVideo": true,
+        "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "samplingRate": 0
+            }
+        ],
         "muxer": {
-            "extensions": [
-                "mov"
-            ],
-            "isSequence": false,
             "name": "mov",
-            "prettyName": "QuickTime / MOV"
+            "prettyName": "QuickTime / MOV",
+            "sequence": false
         },
         "options": [
         ],
-        "version": "0.1.0",
-        "video": {
-            "bitrate": 0,
-            "codecName": "prores",
-            "codecPrettyName": "Apple ProRes ",
-            "framerate": 0,
-            "height": 0,
-            "loop": -1,
-            "profile": 1,
-            "quality": -1,
-            "width": 0
-        }
+        "version": "0.1.0-Beta",
+        "videoStreams": [
+            {
+                "bitrate": 0,
+                "codec": {
+                    "name": "prores",
+                    "prettyName": "Apple ProRes "
+                },
+                "colorPrimaries": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorRange": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorSpace": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorTRC": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "framerate": 0,
+                "height": 0,
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "level": "",
+                "pixAspect": 1,
+                "profile": {
+                    "name": "1",
+                    "prettyName": "LT"
+                },
+                "quality": -1,
+                "width": 0
+            }
+        ]
     }
 }
