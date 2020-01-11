@@ -134,7 +134,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             if ( int( stream->framerate() ) == 0 ) stream->setFramerate( 24 );
 
-            _videoStreams << stream;
+            addVideoStream( stream );
             continue;
         }
 
@@ -158,7 +158,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             stream->setBitrate( match.captured(6).toInt()*1024 );
 
-            _audioStreams << stream;
+            addAudioStream( stream );
             continue;
         }
     }
@@ -285,8 +285,11 @@ QString MediaInfo::getDescription()
             if (s->width() !=0 || s->height() != 0 ) mediaInfoString += "\nResolution: " + QString::number( s->width() ) + "x" + QString::number( s->height() );
             if (s->aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( s->aspect()*100+0.5 ) / 100.0) + ":1";
             if (s->framerate() != 0 ) mediaInfoString += "\nFramerate: " + QString::number(s->framerate()) + " fps";
+            if (s->profile() != nullptr) if (s->profile()->name() != "") mediaInfoString += "\nProfile: " + s->profile()->prettyName();
+            if (s->level() != "") mediaInfoString += "\nLevel: " + s->level();
             qint64 bitrate = s->bitrate();
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
+            if (s->quality() >= 0) mediaInfoString += "\nQuality: " + QString::number(s->quality()) + "%";
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(s->pixAspect()*100+0.5)/ 100.0) + ":1";
             FFPixFormat *pf = s->pixFormat();
             if ( pf == nullptr ) pf = defaultPixFormat();
@@ -548,7 +551,7 @@ void MediaInfo::addAudioStream(AudioInfo *stream, bool silent)
     if (_audioStreams.contains(stream)) return;
     _audioStreams << stream;
     stream->setParent(this);
-    connect(stream, SIGNAL(changed()), this, SLOT(changed()));
+    connect(stream, SIGNAL(changed()), this, SLOT(streamChanged()));
     if (!silent) emit changed();
 }
 
@@ -572,7 +575,7 @@ void MediaInfo::addVideoStream(VideoInfo *stream, bool silent)
     if (_videoStreams.contains(stream)) return;
     _videoStreams << stream;
     stream->setParent(this);
-    connect(stream, SIGNAL(changed()), this, SLOT(changed()));
+    connect(stream, SIGNAL(changed()), this, SLOT(streamChanged()));
     if (!silent) emit changed();
 }
 
@@ -888,6 +891,11 @@ void MediaInfo::setAudioLanguage(QString value, int id, bool silent)
             stream->setLanguage(value, silent);
     else if (id >= 0 && id < _videoStreams.count())
         _audioStreams[id]->setLanguage(value, silent);
+}
+
+void MediaInfo::streamChanged()
+{
+    emit changed();
 }
 
 void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir, bool silent )

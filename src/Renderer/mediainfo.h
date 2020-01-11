@@ -171,6 +171,9 @@ signals:
 
 public slots:
 
+private slots:
+    void streamChanged();
+
 private:
 
     // === FOR INTERNAL USE ===
