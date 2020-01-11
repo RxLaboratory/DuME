@@ -39,7 +39,6 @@ public:
     explicit OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
-    QString getOutputPath();
 
 signals:
     void checkSaveOutputPath(QString, OutputWidget*);
@@ -51,26 +50,28 @@ signals:
 public slots:
     void ffmpeg_init();
     void ffmpeg_loadMuxers();
-    void inputChanged();
     void loadPresets();
 
 private slots:
-    void updateBlocksAvailability();
+    void mediaInfoChanged();
+    void inputMediaChanged();
+    void inputChanged();
     void customParamActivated(bool activated);
 
-    void on_videoTranscodeButton_toggled(bool checked);
-    void on_audioTranscodeButton_toggled(bool checked);
+    void on_videoTranscodeButton_clicked(bool checked);
+    void on_audioTranscodeButton_clicked(bool checked);
     void on_outputBrowseButton_clicked();
     void on_formatsBox_currentIndexChanged(int index);
     void on_formatsFilterBox_currentIndexChanged(int index);
     void on_presetsBox_currentIndexChanged(int index);
     void on_presetsFilterBox_activated(QString arg1);
+
     void on_videoButton_clicked(bool checked);
     void on_audioButton_clicked(bool checked);
+
     void on_actionAddCustom_triggered();
     void on_actionSavePreset_triggered();
     void on_actionOpenPreset_triggered();
-
     void on_actionDefaultPreset_triggered(bool checked);
 
 private:

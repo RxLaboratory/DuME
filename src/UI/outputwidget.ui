@@ -54,7 +54,7 @@
        <number>3</number>
       </property>
       <item row="3" column="1">
-       <widget class="UIBigComboBox" name="formatsBox">
+       <widget class="BigComboBox" name="formatsBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -187,7 +187,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QComboBox" name="presetsBox">
+         <widget class="DataComboBox" name="presetsBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -459,7 +459,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>99</height>
+            <height>97</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -796,9 +796,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>UIBigComboBox</class>
+   <class>BigComboBox</class>
    <extends>QComboBox</extends>
-   <header>UI/uibigcombobox.h</header>
+   <header>UI/bigcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/datacombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

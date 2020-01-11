@@ -225,8 +225,11 @@ void MainWindow::progress()
 
                 if (numFrames == 0)
                 {
-                    if ( input->duration() > 0 ) numFrames = input->duration() * input->videoFramerate();
-                    else if ( input->isImageSequence() ) numFrames = input->frames().count();
+                    if (input->hasVideo())
+                    {
+                        if ( input->duration() > 0 ) numFrames = input->duration() * input->videoStreams()[0]->framerate();
+                        else if ( input->isSequence() ) numFrames = input->frames().count();
+                    }
                 }
                 break;
             }

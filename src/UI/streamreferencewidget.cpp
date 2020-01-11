@@ -113,14 +113,14 @@ void StreamReferenceWidget::updateStreamList()
     for (int i = 0; i < vs.count(); i++)
     {
         VideoInfo *s = vs[i];
-        streamBox->addItem( "Video #" + QString::number(s->id()) + " (" + s->language() + ")", s->id());
+        streamBox->addItem( "Video #" + QString::number(s->id()) + " (" + s->language()->prettyName() + ")", s->id());
     }
 
     QList<AudioInfo *> as = m->audioStreams();
     for (int i = 0; i < as.count(); i++)
     {
         AudioInfo *s = as[i];
-        streamBox->addItem( "Audio #" + QString::number(s->id()) + " (" + s->language() + ")", s->id());
+        streamBox->addItem( "Audio #" + QString::number(s->id()) + " (" + s->language()->prettyName() + ")", s->id());
     }
 }
 

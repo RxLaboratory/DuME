@@ -38,9 +38,6 @@ public:
     void openFile(QString file);
     void openFile(QUrl file);
 
-signals:
-    void newMediaLoaded(MediaInfo *);
-
 private slots:
     void on_inputBrowseButton_clicked();
     void on_inputEdit_editingFinished();

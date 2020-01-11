@@ -15,17 +15,15 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
     _index = id;
     // Associated MediaInfo
     _mediaInfo = new MediaInfo( _ffmpeg, this);
-    connect( _mediaInfo, SIGNAL(changed()), this, SLOT(updateBlocksAvailability()));
+    connect( _mediaInfo, SIGNAL(changed()), this, SLOT(mediaInfoChanged()));
 
     // Input medias
     _inputMedias = inputMedias;
-    //connect them
-    foreach( MediaInfo *media, _inputMedias->medias())
+    connect( _inputMedias, SIGNAL(changed()), this, SLOT(inputMediaChanged()));
+    foreach (MediaInfo *m, _inputMedias->medias() )
     {
-        connect( media, SIGNAL(changed()), this, SLOT(inputChanged()));
+        connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
     }
-    //get current info
-    // TODO update from media
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);
@@ -107,16 +105,17 @@ void OutputWidget::ffmpeg_loadMuxers()
         else if (formatsFilter == 5 && muxer->extensions().count() == 0) formatsBox->addItem(muxer->prettyName(),QVariant(muxer->name()));
 
         if (formatsFilter == 0 ||
-                (formatsFilter == 1 && muxer->isAudio() && muxer->isVideo() )  ||
+                (formatsFilter == 1 && muxer->isAudio() && muxer->isVideo() ) ||
                 (formatsFilter == 2 && muxer->isSequence() ) ||
-                (formatsFilter == 3 && muxer->isAudio() && !muxer->isVideo() )  ||
-                (formatsFilter == 4 && muxer->isVideo() && !muxer->isAudio() ))
+                (formatsFilter == 3 && muxer->isAudio() && !muxer->isVideo() ) ||
+                (formatsFilter == 4 && muxer->isVideo() && !muxer->isAudio() ) )
         {
             formatsBox->addItem("." + muxer->extensions().join(", .") + " | " + muxer->prettyName(),QVariant(muxer->name()));
         }
     }
     _freezeUI = false;
-    on_formatsBox_currentIndexChanged(formatsBox->currentIndex());
+
+    formatsBox->setCurrentIndex( -1 );
 }
 
 MediaInfo *OutputWidget::getMediaInfo()
@@ -134,7 +133,7 @@ MediaInfo *OutputWidget::getMediaInfo()
         }
     }
     MediaInfo *mi = new MediaInfo( _ffmpeg );
-    mi->updateInfo( _mediaInfo, true, true);
+    mi->copyFrom( _mediaInfo, true, true);
     return mi;
 }
 
@@ -142,31 +141,59 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
-    _mediaInfo->updateInfo( mediaInfo );
+    _mediaInfo->copyFrom( mediaInfo );
 }
 
-QString OutputWidget::getOutputPath()
+void OutputWidget::mediaInfoChanged()
 {
-    return outputEdit->text();
-}
+    _freezeUI = true;
 
-void OutputWidget::updateBlocksAvailability()
-{
-    //Audio / Video Buttons
+    //Audio / Video Buttons and Muxer selection
     FFMuxer *m = _mediaInfo->muxer();
     if ( m != nullptr )
     {
         bool audio = m->isAudio() && !m->isSequence();
-        audioButton->setChecked( audio && _mediaInfo->hasAudio() );
         audioButton->setEnabled ( audio );
-        audioTranscodeButton->setEnabled( audio && _mediaInfo->hasAudio() );
-        audioCopyButton->setEnabled( audio && _mediaInfo->hasAudio() );
 
         bool video =  m->isVideo() || m->isSequence();
-        videoButton->setChecked( video && _mediaInfo->hasVideo() );
         videoButton->setEnabled(  video  );
-        videoTranscodeButton->setEnabled( video && _mediaInfo->hasVideo() );
-        videoCopyButton->setEnabled( video && _mediaInfo->hasVideo() );
+
+        // select muxer in formats box
+        for (int i = 0; i < formatsBox->count(); i++)
+        {
+            formatsBox->setCurrentData( m->name() );
+        }
+        if (formatsBox->currentIndex() == -1)
+        {
+            //try without filter
+            formatsFilterBox->setCurrentIndex(0);
+            formatsBox->setCurrentData( m->name() );
+        }
+    }
+    else
+    {
+        audioButton->setEnabled( false );
+        videoButton->setEnabled( false );
+    }
+
+    audioButton->setChecked( _mediaInfo->hasAudio() );
+    audioTranscodeButton->setEnabled( _mediaInfo->hasAudio() );
+    audioCopyButton->setEnabled( _mediaInfo->hasAudio() );
+    if ( _mediaInfo->hasAudio() )
+    {
+        bool copy = _mediaInfo->audioStreams()[0]->isCopy();
+        audioCopyButton->setChecked( copy );
+        audioTranscodeButton->setChecked( !copy );
+    }
+
+    videoButton->setChecked( _mediaInfo->hasVideo() );
+    videoTranscodeButton->setEnabled( _mediaInfo->hasVideo() );
+    videoCopyButton->setEnabled( _mediaInfo->hasVideo() );
+    if ( _mediaInfo->hasVideo() )
+    {
+        bool copy = _mediaInfo->videoStreams()[0]->isCopy();
+        videoTranscodeButton->setChecked( !copy );
+        videoCopyButton->setChecked( copy );
     }
 
     //Customs
@@ -179,46 +206,35 @@ void OutputWidget::updateBlocksAvailability()
         addNewParam( option[0], option[1] );
     }
 
-    //Muxer
-    if ( m != nullptr)
+    //set the preset to custom if we're not loading a preset
+    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+
+    mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
+
+    _freezeUI = false;
+}
+
+void OutputWidget::inputMediaChanged()
+{
+    if (_inputMedias->hasVideo())
     {
-        bool found = false;
-        for (int i = 0; i < formatsBox->count(); i++)
-        {
-            if (formatsBox->itemData(i).toString() == m->name())
-            {
-                formatsBox->setCurrentIndex(i);
-                found = true;
-                break;
-            }
-        }
-        if (!found)
-        {
-            //try without filter
-            formatsFilterBox->setCurrentIndex(0);
-            for (int i = 0; i < formatsBox->count(); i++)
-            {
-                if (formatsBox->itemData(i).toString() == m->name())
-                {
-                    formatsBox->setCurrentIndex(i);
-                    found = true;
-                    break;
-                }
-            }
-        }
+        videoButton->setEnabled( true );
     }
     else
     {
-        formatsBox->setCurrentIndex(-1);
+        videoButton->setChecked( false );
+        videoButton->setEnabled( false );
     }
 
-    //set the preset to custom if we're not loading a preset
-    if (!_loadingPreset)
+    if (_inputMedias->hasAudio())
     {
-        presetsBox->setCurrentIndex(0);
+        audioButton->setEnabled(true);
     }
-
-    mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
+    else
+    {
+        audioButton->setEnabled(false);
+        audioButton->setChecked(false);
+    }
 }
 
 void OutputWidget::customParamActivated(bool activated)
@@ -239,32 +255,82 @@ void OutputWidget::customParamActivated(bool activated)
 
 void OutputWidget::on_videoButton_clicked(bool checked)
 {
-    videoTranscodeButton->setEnabled( checked );
-    videoCopyButton->setEnabled( checked );
-
-    _mediaInfo->setVideo( checked );
+    if (checked)
+    {
+        if (!_mediaInfo->hasVideo())
+        {
+            //only if muxer is capable of video
+            FFMuxer *m = _mediaInfo->muxer();
+            if (m == nullptr)
+            {
+                videoButton->setChecked(false);
+                videoButton->setEnabled(false);
+                videoTranscodeButton->setEnabled( false );
+                videoCopyButton->setEnabled( false );
+                return;
+            }
+            if (!m->isVideo() && !m->isSequence())
+            {
+                videoButton->setChecked(false);
+                videoButton->setEnabled(false);
+                videoTranscodeButton->setEnabled( false );
+                videoCopyButton->setEnabled( false );
+                return;
+            }
+            _mediaInfo->addVideoStream( new VideoInfo(_ffmpeg) );
+        }
+    }
+    else
+    {
+        _mediaInfo->clearVideoStreams( );
+    }
 }
 
 void OutputWidget::on_audioButton_clicked(bool checked)
 {
-    audioTranscodeButton->setEnabled( checked );
-    audioCopyButton->setEnabled( checked );
-
-    _mediaInfo->setAudio( checked );
+    if (checked)
+    {
+        if (!_mediaInfo->hasAudio())
+        {
+            //only if muxer is capable of video
+            FFMuxer *m = _mediaInfo->muxer();
+            if (m == nullptr)
+            {
+                videoButton->setChecked(false);
+                videoButton->setEnabled(false);
+                videoTranscodeButton->setEnabled( false );
+                videoCopyButton->setEnabled( false );
+                return;
+            }
+            if (!m->isAudio())
+            {
+                videoButton->setChecked(false);
+                videoButton->setEnabled(false);
+                videoTranscodeButton->setEnabled( false );
+                videoCopyButton->setEnabled( false );
+                return;
+            }
+            _mediaInfo->addAudioStream( new AudioInfo(_ffmpeg) );
+        }
+    }
+    else
+    {
+        _mediaInfo->clearAudioStreams();
+    }
 }
 
-void OutputWidget::on_videoTranscodeButton_toggled( bool checked )
+void OutputWidget::on_videoTranscodeButton_clicked( bool checked )
 {
+    if (!_mediaInfo->hasVideo()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-
-    if ( checked ) _mediaInfo->setVideoCodec( nullptr );
-    else _mediaInfo->setVideoCodec( "copy" );
+    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( nullptr );
+    else _mediaInfo->videoStreams()[0]->setCodec( "copy" );
 }
 
-void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
+void OutputWidget::on_audioTranscodeButton_clicked( bool checked )
 {
+    if (!_mediaInfo->hasAudio()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-
     if ( checked ) _mediaInfo->setAudioCodec( nullptr );
     else _mediaInfo->setAudioCodec( "copy" );
 }
@@ -279,49 +345,10 @@ void OutputWidget::on_outputBrowseButton_clicked()
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 {
     if (index == -1) return;
-    FFMuxer *_currentMuxer = _ffmpeg->muxer(formatsBox->currentData().toString());
-
-    _mediaInfo->setMuxer( _currentMuxer );
-
     if (_freezeUI) return;
-    _freezeUI = true;
 
-    //UI
-
-    //video
-    if (_currentMuxer->isVideo())
-    {
-        videoButton->setChecked(true);
-        videoTranscodeButton->setEnabled(true);
-        videoCopyButton->setEnabled(true);
-    }
-    else
-    {
-        videoButton->setChecked(false);
-        videoTranscodeButton->setEnabled(false);
-        videoCopyButton->setEnabled(false);
-    }
-
-    //audio
-    if (_currentMuxer->isAudio())
-    {
-        audioButton->setChecked( true );
-        audioTranscodeButton->setEnabled(true);
-        audioCopyButton->setEnabled(true);
-    }
-    else
-    {
-        audioButton->setChecked( false );
-        audioTranscodeButton->setEnabled(false);
-        audioCopyButton->setEnabled(false);
-    }
-
-
-
-    _freezeUI = false;
-
+    _mediaInfo->setMuxer( formatsBox->currentData().toString() );
     updateOutputExtension(outputEdit->text());
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
 }
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
@@ -389,9 +416,7 @@ void OutputWidget::updateOutputExtension(QString outputPath)
         outputPath = output.path() + "/" + outputName + "_transcoded" + num + newExt;
     }
 
-    outputEdit->setText(QDir::toNativeSeparators(outputPath));
-
-    _mediaInfo->setFileName( outputEdit->text() );
+    _mediaInfo->setFileName( QDir::toNativeSeparators(outputPath) );
 }
 
 void OutputWidget::addNewParam(QString name, QString value)
@@ -409,9 +434,6 @@ void OutputWidget::addNewParam(QString name, QString value)
 
 void OutputWidget::inputChanged()
 {
-
-    //TODO Replace by input monitoring by blocks themselves
-
     MediaInfo *input = static_cast<MediaInfo *>(sender());
 
     //set output fileName
@@ -419,25 +441,6 @@ void OutputWidget::inputChanged()
     QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
     updateOutputExtension(outputPath);
 
-    //update blocks availability
-    updateBlocksAvailability();
-
-    /*// update (hidden) fields
-    if (blockResize->isHidden() && input->videoStreams().count() > 0)
-    {
-        blockResizeContent->setWidth( input->videoStreams()[0]->width() );
-        blockResizeContent->setHeight( input->videoStreams()[0]->height() );
-    }
-    if (blockFrameRate->isHidden() && input->videoStreams().count() > 0) blockFrameRateContent->setFrameRate( input->videoStreams()[0]->framerate() );
-
-    if ( !input->hasAlpha() )
-    {
-        actionAlpha->setVisible(false);
-        blockAlpha->hide();
-    }
-
-    if (blockSampling->isHidden() && input->audioStreams().count() > 0) blockSamplingContent->setSampling( input->audioStreams()[0]->samplingRate() );
-*/
     //If ae render queue
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
 }
@@ -485,16 +488,12 @@ void OutputWidget::loadPresets()
 void OutputWidget::selectDefaultPreset()
 {
     QString defaultPreset = settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString();
-    for (int i = 0; i < presetsBox->count(); i++)
+    presetsBox->setCurrentData( defaultPreset );
+    if ( presetsBox->currentIndex() != -1 )
     {
-        if (presetsBox->itemData(i).toString() == defaultPreset)
-        {
-            presetsBox->setCurrentIndex(i);
-            _freezeUI = true;
-            actionDefaultPreset->setChecked(true);
-            _freezeUI = false;
-            break;
-        }
+        _freezeUI = true;
+        actionDefaultPreset->setChecked(true);
+        _freezeUI = false;
     }
 }
 

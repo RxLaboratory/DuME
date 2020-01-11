@@ -49,7 +49,7 @@ MediaInfo *InputWidget::getMediaInfo()
 {
     updateCustomParams();
     MediaInfo *mi = new MediaInfo( _mediaInfo->getFfmpeg() );
-    mi->updateInfo( _mediaInfo, true, true);
+    mi->copyFrom( _mediaInfo, true, true);
     return mi;
 }
 
@@ -60,7 +60,7 @@ void InputWidget::openFile(QString file)
     file = QDir::toNativeSeparators( file );
 
     QFileInfo fileInfo(file);
-    _mediaInfo->updateInfo( fileInfo );
+    _mediaInfo->update( fileInfo );
 
     //keep in settings
     settings.setValue("input/path", fileInfo.path() );
@@ -153,12 +153,8 @@ void InputWidget::on_actionAddCustom_triggered()
 
 void InputWidget::updateOptions()
 {
-    //get media default extension (needed to adjust some options)
-    QString extension = "";
-    if (_mediaInfo->extensions().count() > 0) extension = _mediaInfo->extensions()[0];
-
     // framerate buttons
-    if (_mediaInfo->isImageSequence() || _mediaInfo->isAep())
+    if (_mediaInfo->isSequence() || _mediaInfo->isAep())
     {
         actionFramerate->setVisible( true );
         blockFrameRate->show();
@@ -169,9 +165,6 @@ void InputWidget::updateOptions()
         blockFrameRate->hide();
     }
 
-    //exr prerender
-    actionEXR->setVisible( extension == "exr_pipe" );
-    blockEXR->hide();
 
     if (_mediaInfo->isAep())
     {
@@ -186,8 +179,6 @@ void InputWidget::updateOptions()
         actionAfter_Effects_threads->setVisible(false);
     }
     blockAEThreads->hide();
-
-    emit newMediaLoaded(_mediaInfo);
 }
 
 void InputWidget::updateCustomParams()
