@@ -35,131 +35,133 @@ public:
      */
     explicit MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent = nullptr );
 
-    //setters
+    FFmpeg *getFfmpeg() const;
 
     /**
      * @brief updateInfo Updates all the information for this media file
      * @param mediaFilePath The media file. For a frame sequence, it can be any frame from the sequence
      */
-    void updateInfo(QFileInfo mediaFile, bool silent = false);
-    void updateInfo(MediaInfo *other, bool updateFilename = false, bool silent = false);
-    QString getDescription();
+    void update(QFileInfo mediaFile, bool silent = false);
+    void copyFrom(MediaInfo *other, bool updateFilename = false, bool silent = false);
+
     /**
      * @brief reInit Reinit all to default values
      */
     void reInit(bool removeFileName = true, bool silent = false);
+
+    QString getDescription();
+
     //presets
     QString exportPreset();
     void exportPreset(QString jsonPath);
     void loadPreset(QFileInfo presetFile, bool silent = false);
-    //setters
+
+    //general
+    void setId(int value);
+    int id() const;
     void setMuxer(FFMuxer *muxer, bool silent = false);
     void setMuxer(QString name, bool silent = false);
+    FFMuxer *muxer() const;
+    QStringList extensions() const;
+    FFCodec *defaultVideoCodec() const;
+    FFCodec *defaultAudioCodec() const;
+    FFPixFormat *defaultPixFormat() const;
+    bool hasVideo();
+    bool hasAudio();
+    bool isSequence();
+    qint64 bitrate() const;
     void setContainer(QStringList container, bool silent = false);
-    void setVideoWidth(int width, bool silent = false);
-    void setVideoHeight(int height, bool silent = false);
-    void setVideoFramerate(double fps, bool silent = false);
-    void setAudioSamplingRate(int sampling, bool silent = false);
     void setDuration(double duration, bool silent = false);
+    double duration();
     void setFileName(QString fileName, bool silent = false);
-    void setVideoCodec(FFCodec *codec, bool silent = false);
-    void setVideoCodec(QString codecName, bool silent = false);
-    void setAudioCodec(FFCodec *codec, bool silent = false);
-    void setAudioCodec(QString codecName, bool silent = false);
-    void setVideoBitrate(qint64 bitrate, bool silent = false);
-    void setAudioBitrate(qint64 bitrate, bool silent = false);
+    QString fileName();
     void setSize(double size, MediaUtils::SizeUnit unit = MediaUtils::Bytes, bool silent = false);
-    void setFFmpegOptions(QList<QStringList> options, bool silent = false);
-    void setVideo(bool video = true, bool silent = false);
-    void setAudio(bool audio = true, bool silent = false);
-    void setVideoProfile(FFProfile *profile, bool silent = false);
-    void setVideoProfile(QString name, bool silent = false);
-    void setVideoLevel(const QString &videoLevel, bool silent = false);
-    void setVideoQuality(int quality, bool silent = false);
+    qint64 size();
     void setLoop(int loop, bool silent = false);
+    int loop() const;
+
+    //sequence
+    void setStartNumber(int startNumber, bool silent = false);
+    int startNumber() const;
+    void setFrames(const QStringList &frames, bool silent = false);
+    QStringList frames() const;
+    QString ffmpegSequenceName() const;
+
+    //alpha
+    bool hasAlpha();
+    bool canHaveAlpha() const;
+    void setAlpha(bool alpha, bool silent = false);
+
+    //custom params
+    QList<QStringList> ffmpegOptions();
+    void setFFmpegOptions(QList<QStringList> options, bool silent = false);
     void addFFmpegOption(QStringList option, bool silent = false);
     void removeFFmpegOptions(QString optionName, bool silent = false);
     void clearFFmpegOptions(bool silent = false);
-    void setStartNumber(int startNumber, bool silent = false);
-    void setFrames(const QStringList &frames, bool silent = false);
-    void setPixFormat(FFPixFormat *pixFormat, bool silent = false);
-    void setPixFormat(QString name, bool silent = false);
-    void setPremultipliedAlpha(bool premultipliedAlpha, bool silent = false);
-    void setTrc(const QString &trc, bool silent = false);
+
+    //aep
     void setAep(bool isAep, bool silent = false);
     void setAepNumThreads(int aepNumThreads, bool silent = false);
     void setAepCompName(const QString &aepCompName, bool silent = false);
     void setAepRqindex(int aepRqindex, bool silent = false);
-    void setCacheDir(QTemporaryDir *cacheDir, bool silent = false);
     void setAeUseRQueue(bool aeUseRQueue, bool silent = false);
-    void setAlpha(bool alpha, bool silent = false);
-    void setColorPrimaries(const QString &colorPrimaries, bool silent = false);
-    void setColorTRC(const QString &colorTRC, bool silent = false);
-    void setColorSpace(const QString &colorSpace, bool silent = false);
-    void setColorRange(const QString &colorRange, bool silent = false);
+    bool isAep() const;
+    QString aepCompName() const;
+    int aepNumThreads() const;
+    int aepRqindex() const;
+    bool aeUseRQueue() const;
+
+    //cache
+    void setCacheDir(QTemporaryDir *cacheDir, bool silent = false);
+    QTemporaryDir *cacheDir() const;
+
+    //streams
     void addAudioStream(AudioInfo *stream, bool silent = false);
+    AudioInfo *takeAudioStream(int index = 0, bool silent = false);
+    void clearAudioStreams(bool silent = false);
     void addVideoStream(VideoInfo *stream, bool silent = false);
+    VideoInfo *takeVideoStream(int index = 0, bool silent = false);
+    void clearVideoStreams(bool silent = false);
+    QList<VideoInfo *> videoStreams() const;
+    QList<AudioInfo *> audioStreams() const;
+
+    //maps
+    QList<StreamReference> maps() const;
     void addMap(int mediaId, int streamId, bool silent = false);
     void removeMap(int index, bool silent = false);
     void removeAllMaps(bool silent = false);
     void setMap(int mapIndex, int mediaId, int streamId, bool silentt = false);
     void setMapMedia(int mapIndex, int mediaId, bool silentt = false);
     void setMapStream(int mapIndex, int streamId, bool silentt = false);
-    void setId(int value);
-    //getters
-    int id() const;
-    FFMuxer *muxer() const;
-    int videoWidth();
-    int videoHeight();
-    double videoFramerate();
-    int audioSamplingRate();
-    QString audioChannels() const;
-    double duration();
-    QString fileName();
-    FFCodec *videoCodec();
-    FFCodec *defaultVideoCodec() const;
-    FFCodec *audioCodec();
-    FFCodec *defaultAudioCodec() const;
-    FFPixFormat *pixFormat();
-    FFPixFormat *defaultPixFormat() const;
-    qint64 audioBitrate();
-    qint64 videoBitrate();
-    qint64 size();
-    QList<QStringList> ffmpegOptions();
-    bool hasVideo();
-    bool hasAudio();
-    bool isImageSequence();
-    QStringList extensions() const;
-    int videoQuality() const;
-    FFProfile *videoProfile() const;
-    QString videoLevel() const;
-    int loop() const;
-    int startNumber() const;
-    QStringList frames() const;
-    bool premultipliedAlpha() const;
-    bool isAep() const;
-    QString aepCompName() const;
-    int aepNumThreads() const;
-    int aepRqindex() const;
-    QTemporaryDir *cacheDir() const;
-    bool aeUseRQueue() const;
-    QString ffmpegSequenceName() const;
-    qint64 bitrate() const;
-    float pixAspect() const;
-    float videoAspect() const;
-    bool hasAlpha() const;
-    bool canHaveAlpha() const;
-    bool copyVideo() const;
-    bool copyAudio() const;
-    QString colorPrimaries() const;
-    QString colorTRC() const;
-    QString colorSpace() const;
-    QString colorRange() const;
-    QList<VideoInfo *> videoStreams() const;
-    QList<AudioInfo *> audioStreams() const;
-    QList<StreamReference> maps() const;
 
-    FFmpeg *getFfmpeg() const;
+    //stream setters
+    //video
+    void setVideoQuality(int value, int id = -1, bool silent = false);
+    void setVideoProfile(QString value, int id = -1, bool silent = false);
+    void setVideoProfile(FFProfile *value, int id = -1, bool silent = false);
+    void setVideoLevel(QString value, int id = -1, bool silent = false);
+    void setPixAspect(float value, int id = -1, bool silent = false);
+    void setPixFormat(QString value, int id = -1, bool silent = false);
+    void setPixFormat(FFPixFormat *value, int id = -1, bool silent = false);
+    void setVideoBitrate(qint64 value, int id = -1, bool silent = false);
+    void setFramerate(double value, int id = -1, bool silent = false);
+    void setHeight(int value, int id = -1, bool silent = false);
+    void setWidth(int value, int id = -1, bool silent = false);
+    void setVideoCodec(QString value, int id = -1, bool silent = false);
+    void setVideoCodec(FFCodec *value, int id = -1, bool silent = false);
+    void setVideoLanguage(QString value, int id = -1, bool silent = false);
+    void setColorPrimaries(QString value, int id = -1, bool silent = false);
+    void setColorTRC(QString value, int id = -1, bool silent = false);
+    void setColorSpace(QString value, int id = -1, bool silent = false);
+    void setColorRange(QString value, int id = -1, bool silent = false);
+    void setPremultipliedAlpha(bool value, int id = -1, bool silent = false);
+    //audio
+    void setSamplingRate(int value, int id = -1, bool silent = false);
+    void setChannels(QString value, int id = -1, bool silent = false);
+    void setAudioBitrate(qint64 value, int id = -1, bool silent = false);
+    void setAudioCodec(QString value, int id = -1, bool silent = false);
+    void setAudioCodec(FFCodec *value, int id = -1, bool silent = false);
+    void setAudioLanguage(QString value, int id = -1, bool silent = false);
 
 signals:
     /**
@@ -203,66 +205,6 @@ private:
      */
     qint64 _bitrate;
     /**
-     * @brief _video Wether the file contains video
-     */
-    bool _video;
-    /**
-     * @brief _audio Wether the file contains audio
-     */
-    bool _audio;
-    /**
-     * @brief _imageSequence Wether this is a frame sequence instead of a single media file
-     */
-    bool _imageSequence;
-    /**
-     * @brief _videoCodec The norm or codec used for decoding or encoding the video
-     */
-    FFCodec *_videoCodec;
-    /**
-     * @brief _videoWidth The width in pixels
-     */
-    int _videoWidth;
-    /**
-     * @brief _videoHeight The height in pixels
-     */
-    int _videoHeight;
-    /**
-     * @brief _videoFramerate The framerate in frames per second
-     */
-    double _videoFramerate;
-    /**
-     * @brief _videoBitrate The video bitrate
-     */
-    qint64 _videoBitrate;
-    /**
-     * @brief _pixFormat The pixel format
-     */
-    FFPixFormat *_pixFormat;
-    /**
-     * @brief _pixRatio Pixel aspect ratio
-     */
-    float _pixAspect;
-    /**
-     * @brief _videoAspect Video aspect ratio
-     */
-    float _videoAspect;
-    /**
-     * @brief _audioCodec The norm or codec used for decoding or encoding audio
-     */
-    FFCodec *_audioCodec;
-    /**
-     * @brief _audioChannels The type of channels: mono/stereo/5.1
-     */
-    QString _audioChannels;
-    /**
-     * @brief _audioSamplingRate The audio sampling in kHz
-     */
-    int _audioSamplingRate;
-    /**
-     * @brief _audioBitrate The audio bitrate
-     */
-    qint64 _audioBitrate;
-    /**
      * @brief _fileName The filename of the media
      */
     QString _fileName;
@@ -271,18 +213,6 @@ private:
      */
     QStringList _frames;
     /**
-     * @brief _videoQuality The video quality, as used by some codecs like h264
-     */
-    int _videoQuality;
-    /**
-     * @brief _videoProfile The video profile, as used by some codecs like prores or h264
-     */
-    FFProfile *_videoProfile;
-    /**
-     * @brief _videoLevel The video level, as used by h264
-     */
-    QString _videoLevel;
-    /**
      * @brief _loop The number of loops to be encoded (-1 for inifite, available only with some specific formats like GIF)
      */
     int _loop;
@@ -290,21 +220,10 @@ private:
      * @brief _startNumber The number of the first frame
      */
     int _startNumber;
-    /**
-     * @brief _premultipliedAlpha Wether the Alpha is premultiplied
-     */
-    bool _premultipliedAlpha;
-    QString _videoLanguage;
-    QString _audioLanguage;
 
     QList<VideoInfo *> _videoStreams;
     QList<AudioInfo *> _audioStreams;
     QList<StreamReference> _maps;
-
-    QString _colorPrimaries;
-    QString _colorTRC;
-    QString _colorSpace;
-    QString _colorRange;
 
     // GENERAL Encoding/decoding parameters
 
