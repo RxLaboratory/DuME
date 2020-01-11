@@ -80,31 +80,11 @@ void BlockVideoProfile::update()
     }
 
     FFProfile *p = _mediaInfo->videoProfile();
-    if ( p != nullptr )
-    {
-        for (int i = 0; i < videoProfileBox->count(); i++)
-        {
-            if ( p->name() == videoProfileBox->itemData(i).toString() )
-            {
-                videoProfileBox->setCurrentIndex(i);
-                break;
-            }
-        }
-    }
-    else
-    {
-        videoProfileBox->setCurrentIndex( 0 );
-    }
+    if ( p != nullptr ) videoProfileBox->setCurrentData( p->name() );
+    else videoProfileBox->setCurrentIndex( 0 );
 
+    videoLevelBox->setCurrentData( _mediaInfo->videoLevel() );
 
-    for (int i = 0; i < videoLevelBox->count(); i++)
-    {
-        if ( _mediaInfo->videoLevel() == videoLevelBox->itemData(i).toString() )
-        {
-            videoLevelBox->setCurrentIndex(i);
-            break;
-        }
-    }
     _freezeUI = false;
 }
 
