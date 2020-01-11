@@ -41,7 +41,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _audioChannels = "";
     _frames.clear();
     _videoQuality = -1;
-    _videoProfile = "";
+    _videoProfile = nullptr;
     _videoLevel = "";
     _loop = -1;
     _startNumber = 0;
@@ -1033,7 +1033,7 @@ void MediaInfo::setVideoQuality(int quality, bool silent )
     if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoProfile(QString profile, bool silent )
+void MediaInfo::setVideoProfile(FFProfile *profile, bool silent )
 {
     _videoProfile = profile;
     if(!silent) emit changed();
@@ -1503,7 +1503,7 @@ int MediaInfo::videoQuality() const
     return _videoQuality;
 }
 
-QString MediaInfo::videoProfile() const
+FFProfile *MediaInfo::videoProfile() const
 {
     return _videoProfile;
 }
