@@ -10,6 +10,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _status = MediaUtils::Initializing;
 
     // The list of Profiles
+    _profiles << new FFProfile("", "Auto");
     _profiles << new FFProfile("0", "Proxy");
     _profiles << new FFProfile("1", "LT");
     _profiles << new FFProfile("2", "SQ");
@@ -20,6 +21,60 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _profiles << new FFProfile("high10", "High 10");
     _profiles << new FFProfile("high422", "High 422");
     _profiles << new FFProfile("high444", "High 444");
+
+    // The color TRCs
+    _colorTRCs << new FFBaseObject("", "Auto");
+    _colorTRCs << new FFBaseObject("iec61966_2_1", "sRGB");
+    _colorTRCs << new FFBaseObject("iec61966_2_4", "Extended-gamut YCC (xvYCC)");
+    _colorTRCs << new FFBaseObject("linear", "Linear");
+    _colorTRCs << new FFBaseObject("log100", "Log");
+    _colorTRCs << new FFBaseObject("log_sqrt", "Log square root");
+    _colorTRCs << new FFBaseObject("bt709", "BT.709");
+    _colorTRCs << new FFBaseObject("gamma22", "BT.470 M");
+    _colorTRCs << new FFBaseObject("gamma28", "BT.470 BG");
+    _colorTRCs << new FFBaseObject("bt1361","BT.1361");
+    _colorTRCs << new FFBaseObject("bt1361e","BT.1361 E");
+    _colorTRCs << new FFBaseObject("bt2020_10","BT.2020 - 10 bit");
+    _colorTRCs << new FFBaseObject("bt2020_12","BT.2020 - 12 bit");
+    _colorTRCs << new FFBaseObject("smpte170m","SMPTE 170 M");
+    _colorTRCs << new FFBaseObject("smpte240m","SMPTE 240 M");
+    _colorTRCs << new FFBaseObject("smpte428","SMPTE 428");
+    _colorTRCs << new FFBaseObject("smpte428_1","SMPTE 428-1");
+    _colorTRCs << new FFBaseObject("smpte2084","SMPTE 2084");
+
+    // The color Ranges
+    _colorRanges << new FFBaseObject("","Auto");
+    _colorRanges << new FFBaseObject("tv","Limited");
+    _colorRanges << new FFBaseObject("pc","Full");
+
+    // The color Spaces
+    _colorSpaces << new FFBaseObject("","Auto");
+    _colorSpaces << new FFBaseObject("rgb","RGB");
+    _colorSpaces << new FFBaseObject("bt709","BT.709");
+    _colorSpaces << new FFBaseObject("bt470bg","BT.470 BG");
+    _colorSpaces << new FFBaseObject("bt2020_ncl","BT.2020 NCL");
+    _colorSpaces << new FFBaseObject("bt2020_cl","BT.2020 CL");
+    _colorSpaces << new FFBaseObject("smpte2085","SMPTE 2085");
+    _colorSpaces << new FFBaseObject("smpte170m","SMPTE 170 M");
+    _colorSpaces << new FFBaseObject("smpte240m","SMPTE 240 M");
+    _colorSpaces << new FFBaseObject("ycgco","YCGCO");
+    _colorSpaces << new FFBaseObject("ycocg","YCOCG");
+    _colorSpaces << new FFBaseObject("fcc","FCC");
+
+    // The color Primaries
+    _colorPrimaries << new FFBaseObject("","Auto");
+    _colorPrimaries << new FFBaseObject("film","Film");
+    _colorPrimaries << new FFBaseObject("bt709","BT.709 / RGB");
+    _colorPrimaries << new FFBaseObject("bt470m","BT.470 M");
+    _colorPrimaries << new FFBaseObject("bt470bg","BT.470 BG");
+    _colorPrimaries << new FFBaseObject("bt2020","BT.2020");
+    _colorPrimaries << new FFBaseObject("smpte170m","SMPTE 170 M");
+    _colorPrimaries << new FFBaseObject("smpte240m","SMPTE 240 M");
+    _colorPrimaries << new FFBaseObject("smpte428","SMPTE 428");
+    _colorPrimaries << new FFBaseObject("smpte428_1","SMPTE 428-1");
+    _colorPrimaries << new FFBaseObject("smpte431","SMPTE 431");
+    _colorPrimaries << new FFBaseObject("smpte432","SMPTE 432");
+    _colorPrimaries << new FFBaseObject("jedec-p22","JEDEC P22");
 
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
@@ -112,6 +167,26 @@ void FFmpeg::init()
 
 #endif
     _status = MediaUtils::Waiting;
+}
+
+QList<FFBaseObject *> FFmpeg::colorRanges() const
+{
+    return _colorRanges;
+}
+
+QList<FFBaseObject *> FFmpeg::colorSpaces() const
+{
+    return _colorSpaces;
+}
+
+QList<FFBaseObject *> FFmpeg::colorTRCs() const
+{
+    return _colorTRCs;
+}
+
+QList<FFBaseObject *> FFmpeg::colorPrimaries() const
+{
+    return _colorPrimaries;
 }
 
 QList<FFMuxer *> FFmpeg::muxers()
@@ -207,6 +282,34 @@ FFCodec *FFmpeg::audioEncoder(QString name)
     return nullptr;
 }
 
+FFCodec *FFmpeg::videoDecoder(QString name)
+{
+    name = name.trimmed();
+    foreach(FFCodec *codec,_videoDecoders)
+    {
+        if (codec->name().toLower() == name.trimmed().toLower()) return codec;
+    }
+    foreach(FFCodec *codec,_videoDecoders)
+    {
+        if (codec->prettyName() == name) return codec;
+    }
+    return nullptr;
+}
+
+FFCodec *FFmpeg::audioDecoder(QString name)
+{
+    name = name.trimmed();
+    foreach(FFCodec *codec,_audioDecoders)
+    {
+        if (codec->name().toLower() == name.trimmed().toLower()) return codec;
+    }
+    foreach(FFCodec *codec,_audioDecoders)
+    {
+        if (codec->prettyName() == name) return codec;
+    }
+    return nullptr;
+}
+
 FFPixFormat *FFmpeg::pixFormat(QString name)
 {
     name = name.trimmed();
@@ -233,6 +336,62 @@ FFProfile *FFmpeg::profile(QString name)
         if (pf->prettyName() == name) return pf;
     }
     return nullptr;
+}
+
+FFBaseObject *FFmpeg::colorTRC(QString name)
+{
+    name = name.trimmed();
+    foreach(FFBaseObject *c,_colorTRCs)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFBaseObject *c,_colorTRCs)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorTRCs[0];
+}
+
+FFBaseObject *FFmpeg::colorPrimary(QString name)
+{
+    name = name.trimmed();
+    foreach(FFBaseObject *c,_colorPrimaries)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFBaseObject *c,_colorPrimaries)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorPrimaries[0];
+}
+
+FFBaseObject *FFmpeg::colorSpace(QString name)
+{
+    name = name.trimmed();
+    foreach(FFBaseObject *c,_colorSpaces)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFBaseObject *c,_colorSpaces)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorSpaces[0];
+}
+
+FFBaseObject *FFmpeg::colorRange(QString name)
+{
+    name = name.trimmed();
+    foreach(FFBaseObject *c,_colorRanges)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFBaseObject *c,_colorRanges)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorRanges[0];
 }
 
 QString FFmpeg::help()

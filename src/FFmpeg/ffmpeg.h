@@ -86,6 +86,18 @@ public:
      */
     FFCodec *audioEncoder(QString name);
     /**
+     * @brief getCodec Gets a video encoder using its name
+     * @param name The name of the codec
+     * @return A pointer to the codec
+     */
+    FFCodec *videoDecoder(QString name);
+    /**
+     * @brief getCodec Gets an audio encoder using its name
+     * @param name The name of the codec
+     * @return A pointer to the codec
+     */
+    FFCodec *audioDecoder(QString name);
+    /**
      * @brief getPixFormat Gets a pixel format using its name
      * @param name The name of the pixel format
      * @return A pointer to the pixel format
@@ -97,6 +109,15 @@ public:
      * @return  A pointer to the profile
      */
     FFProfile *profile(QString name);
+    //Colors
+    FFBaseObject *colorTRC(QString name);
+    FFBaseObject *colorPrimary(QString name);
+    FFBaseObject *colorSpace(QString name);
+    FFBaseObject *colorRange(QString name);
+    QList<FFBaseObject *> colorPrimaries() const;
+    QList<FFBaseObject *> colorTRCs() const;
+    QList<FFBaseObject *> colorSpaces() const;
+    QList<FFBaseObject *> colorRanges() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -123,6 +144,8 @@ public:
      * @return
      */
     MediaUtils::RenderStatus status() const;
+
+
 
 signals:
     void progress(int);
@@ -159,6 +182,11 @@ private:
     QList<FFPixFormat *> _pixFormats;
     // The list of profiles
     QList<FFProfile *> _profiles;
+    // The list of color profiles
+    QList<FFBaseObject *> _colorPrimaries;
+    QList<FFBaseObject *> _colorTRCs;
+    QList<FFBaseObject *> _colorSpaces;
+    QList<FFBaseObject *> _colorRanges;
     // The help
     QString _help;
     // The documentation
