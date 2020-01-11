@@ -43,10 +43,11 @@ void VideoInfo::reInit(bool silent)
     _codec = nullptr;
     delete _language;
     _language = new FFLanguage("");
-    _colorPrimaries = "";
-    _colorTRC = "";
-    _colorSpace = "";
-    _colorRange = "";
+    _colorPrimaries = _ffmpeg->colorPrimary("");
+    _colorTRC = _ffmpeg->colorTRC("");
+    _colorSpace = _ffmpeg->colorSpace("");
+    _colorRange = _ffmpeg->colorRange("");
+    _premultipliedAlpha = true;
 
     if(!silent) emit changed();
 }
@@ -70,6 +71,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _colorTRC = other->colorTRC();
     _colorSpace = other->colorSpace();
     _colorRange = other->colorRange();
+    _premultipliedAlpha = other->premultipliedAlpha();
 
     if(!silent) emit changed();
 }
@@ -103,10 +105,10 @@ QJsonObject VideoInfo::toJson()
         vStream.insert("codec", _codec->toJson() );
     }
     vStream.insert("language", _language->toJson());
-    vStream.insert("colorPrimaries", _colorPrimaries);
-    vStream.insert("colorTRC", _colorTRC);
-    vStream.insert("colorSpace", _colorSpace);
-    vStream.insert("colorRange", _colorRange);
+    vStream.insert("colorPrimaries", _colorPrimaries->toJson());
+    vStream.insert("colorTRC", _colorTRC->toJson());
+    vStream.insert("colorSpace", _colorSpace->toJson());
+    vStream.insert("colorRange", _colorRange->toJson());
 
     return vStream;
 }
@@ -250,25 +252,45 @@ void VideoInfo::setLanguage(const QString &languageId, bool silent)
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorPrimaries(const QString &primaries, bool silent)
+void VideoInfo::setColorPrimaries(QString primaries, bool silent)
+{
+    setColorPrimaries( _ffmpeg->colorPrimary(primaries), silent );
+}
+
+void VideoInfo::setColorTRC(QString tRC, bool silent)
+{
+    setColorTRC( _ffmpeg->colorTRC(tRC), silent );
+}
+
+void VideoInfo::setColorSpace(QString space, bool silent)
+{
+    setColorSpace( _ffmpeg->colorSpace(space), silent);
+}
+
+void VideoInfo::setColorRange(QString range, bool silent)
+{
+    setColorRange( _ffmpeg->colorRange(range), silent);
+}
+
+void VideoInfo::setColorPrimaries(FFBaseObject *primaries, bool silent)
 {
     _colorPrimaries = primaries;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorTRC(const QString &tRC, bool silent)
+void VideoInfo::setColorTRC(FFBaseObject *tRC, bool silent)
 {
     _colorTRC = tRC;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorSpace(const QString &space, bool silent)
+void VideoInfo::setColorSpace(FFBaseObject *space, bool silent)
 {
     _colorSpace = space;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorRange(const QString &range, bool silent)
+void VideoInfo::setColorRange(FFBaseObject *range, bool silent)
 {
     _colorRange = range;
     if(!silent) emit changed();
@@ -292,9 +314,8 @@ bool VideoInfo::setAlpha(bool alpha, bool silent)
 
 bool VideoInfo::hasAlpha()
 {
-    if ( _codec == nullptr ) return false;
-
     FFPixFormat *pf = _pixFormat;
+    if ( pf == nullptr && _codec == nullptr ) return false;
     if (pf == nullptr) pf = _codec->defaultPixFormat();
     if (pf == nullptr) return false;
 
@@ -346,22 +367,22 @@ void VideoInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent)
     if(!silent) emit changed();
 }
 
-QString VideoInfo::colorPrimaries() const
+FFBaseObject *VideoInfo::colorPrimaries()
 {
     return _colorPrimaries;
 }
 
-QString VideoInfo::colorTRC() const
+FFBaseObject *VideoInfo::colorTRC()
 {
     return _colorTRC;
 }
 
-QString VideoInfo::colorSpace() const
+FFBaseObject *VideoInfo::colorSpace()
 {
     return _colorSpace;
 }
 
-QString VideoInfo::colorRange() const
+FFBaseObject *VideoInfo::colorRange()
 {
     return _colorRange;
 }

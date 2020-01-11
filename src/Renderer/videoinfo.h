@@ -56,14 +56,18 @@ public:
     FFLanguage *language() const;
     void setLanguage(const QString &languageId, bool silent = false);
 
-    void setColorPrimaries(const QString &primaries, bool silent = false);
-    void setColorTRC(const QString &tRC, bool silent = false);
-    void setColorSpace(const QString &space, bool silent = false);
-    void setColorRange(const QString &range, bool silent = false);
-    QString colorPrimaries() const;
-    QString colorTRC() const;
-    QString colorSpace() const;
-    QString colorRange() const;
+    void setColorPrimaries(QString primaries, bool silent = false);
+    void setColorTRC(QString tRC, bool silent = false);
+    void setColorSpace(QString space, bool silent = false);
+    void setColorRange(QString range, bool silent = false);
+    void setColorPrimaries(FFBaseObject *primaries, bool silent = false);
+    void setColorTRC(FFBaseObject *tRC, bool silent = false);
+    void setColorSpace(FFBaseObject *space, bool silent = false);
+    void setColorRange(FFBaseObject *range, bool silent = false);
+    FFBaseObject *colorPrimaries();
+    FFBaseObject *colorTRC();
+    FFBaseObject *colorSpace();
+    FFBaseObject *colorRange();
 
     /**
      * @brief setAlpha Tries to set a pixel format which has alpha (or not)
@@ -100,10 +104,10 @@ private:
     int _width;
     FFCodec *_codec;
     FFLanguage *_language;
-    QString _colorPrimaries;
-    QString _colorTRC;
-    QString _colorSpace;
-    QString _colorRange;
+    FFBaseObject *_colorPrimaries;
+    FFBaseObject *_colorTRC;
+    FFBaseObject *_colorSpace;
+    FFBaseObject *_colorRange;
     bool _premultipliedAlpha;
 
     FFmpeg *_ffmpeg;
