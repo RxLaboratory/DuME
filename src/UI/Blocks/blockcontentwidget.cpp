@@ -10,6 +10,8 @@ BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMed
 
     connect( _mediaInfo, SIGNAL( changed() ), this, SLOT( changed() ) );
 
+    update();
+
     _freezeUI = false;
 }
 
