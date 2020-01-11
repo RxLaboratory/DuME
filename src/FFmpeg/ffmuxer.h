@@ -17,6 +17,7 @@ public:
 
     explicit FFMuxer(QString name, QString prettyName = "",QObject *parent = nullptr);
     explicit FFMuxer(QString name, QString prettyName,Type type, QObject *parent = nullptr);
+    QJsonObject toJson();
 
     /**
      * @brief defaultVideoCodec Gets the default video codec for this muxer

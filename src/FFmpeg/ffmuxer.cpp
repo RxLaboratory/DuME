@@ -13,7 +13,14 @@ FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *
     _defaultAudioCodec = nullptr;
     _defaultVideoCodec = nullptr;
     _type = type;
-     _sequence = false;
+    _sequence = false;
+}
+
+QJsonObject FFMuxer::toJson()
+{
+    QJsonObject obj = FFBaseObject::toJson();
+    obj.insert("sequence", _sequence);
+    return obj;
 }
 
 FFCodec *FFMuxer::defaultVideoCodec() const
