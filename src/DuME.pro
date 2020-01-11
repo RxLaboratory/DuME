@@ -33,6 +33,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 SOURCES += \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
+    FFmpeg/fflanguage.cpp \
     FFmpeg/ffprofile.cpp \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
@@ -89,6 +90,7 @@ SOURCES += \
 HEADERS += \
     AfterEffects/aftereffects.h \
     AfterEffects/aftereffectsversion.h \
+    FFmpeg/fflanguage.h \
     FFmpeg/ffprofile.h \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
