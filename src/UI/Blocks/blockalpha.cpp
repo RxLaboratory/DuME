@@ -43,17 +43,25 @@ void BlockAlpha::update()
         return;
     }
 
+    if (!_mediaInfo->canHaveAlpha())
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
     emit blockEnabled(true);
 
     //has alpha
-    alphaButton->setChecked( _mediaInfo->hasAlpha() );
-    if ( alphaButton->isChecked() )
+    if ( _mediaInfo->hasAlpha() )
     {
+        alphaButton->setChecked( true );
         unmultButton->setChecked( !stream->premultipliedAlpha() );
         unmultButton->setEnabled( true );
     }
     else
     {
+        alphaButton->setChecked( false );
         unmultButton->setChecked( false );
         unmultButton->setEnabled( false );
     }
