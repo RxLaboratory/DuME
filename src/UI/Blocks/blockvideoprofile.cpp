@@ -12,11 +12,11 @@ void BlockVideoProfile::activate(bool activate)
     if (activate)
     {
         _mediaInfo->setVideoProfile( videoProfileBox->currentData().toString() );
-        _mediaInfo->setVideoLevel( videoLevelBox->currentText() );
+        _mediaInfo->setVideoLevel( videoLevelBox->currentData().toString() );
     }
     else
     {
-        _mediaInfo->setVideoProfile( "" );
+        _mediaInfo->setVideoProfile( nullptr );
         _mediaInfo->setVideoLevel( "" );
     }
     _freezeUI = false;
@@ -47,28 +47,29 @@ void BlockVideoProfile::update()
         return;
     }
 
-    if ( c->name().startsWith("prores") )
+    // add levels
+    if ( c->name() == "h264" )
     {
-        videoProfileBox->addItem("Proxy", "0");
-        videoProfileBox->addItem("LT", "1");
-        videoProfileBox->addItem("Normal", "2");
-        videoProfileBox->addItem("HQ", "3");
-        videoLevelBox->hide();
-        emit blockEnabled(true);
-    }
-    else if ( c->name() == "h264" )
-    {
-        videoProfileBox->addItem("Auto", "");
-        videoProfileBox->addItem("Baseline", "baseline");
-        videoProfileBox->addItem("Main", "main");
-        videoProfileBox->addItem("High", "high");
-        videoLevelBox->show();
-        videoLevelBox->addItem("Auto", "");
+        videoLevelBox->addItem("Default", "");
         videoLevelBox->addItem("3.0", "3.0");
         videoLevelBox->addItem("3.1", "3.1");
         videoLevelBox->addItem("4.0", "4.0");
         videoLevelBox->addItem("4.1", "4.1");
         videoLevelBox->addItem("4.2", "4.2");
+
+        videoLevelBox->show();
+    }
+    else videoLevelBox->hide();
+
+    // add profiles
+    if ( c->profiles().count() > 0 )
+    {
+        videoProfileBox->addItem("Default", "");
+        foreach( FFProfile *p, c->profiles() )
+        {
+            videoProfileBox->addItem( p->prettyName(), p->name() );
+        }
+
         emit blockEnabled(true);
     }
     else
@@ -78,14 +79,23 @@ void BlockVideoProfile::update()
         return;
     }
 
-    for (int i = 0; i < videoProfileBox->count(); i++)
+    FFProfile *p = _mediaInfo->videoProfile();
+    if ( p != nullptr )
     {
-        if ( _mediaInfo->videoProfile() == videoProfileBox->itemData(i).toString() )
+        for (int i = 0; i < videoProfileBox->count(); i++)
         {
-            videoProfileBox->setCurrentIndex(i);
-            break;
+            if ( p->name() == videoProfileBox->itemData(i).toString() )
+            {
+                videoProfileBox->setCurrentIndex(i);
+                break;
+            }
         }
     }
+    else
+    {
+        videoProfileBox->setCurrentIndex( 0 );
+    }
+
 
     for (int i = 0; i < videoLevelBox->count(); i++)
     {

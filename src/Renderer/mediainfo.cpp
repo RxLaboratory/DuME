@@ -330,8 +330,8 @@ QString MediaInfo::getDescription()
             if (_videoFramerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number(_videoFramerate) + " fps";
             qint64 bitrate = _videoBitrate;
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
-            if (_videoProfile != "") mediaInfoString += "\nProfile: " + _videoProfile;
-            if (_videoProfile != "") mediaInfoString += "\nLevel: " + _videoLevel;
+            if (_videoProfile != nullptr) mediaInfoString += "\nProfile: " + _videoProfile->prettyName();
+            if (_videoLevel != "") mediaInfoString += "\nLevel: " + _videoLevel;
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(_pixAspect*100+0.5)/ 100.0) + ":1";
             FFPixFormat *pf = _pixFormat;
             if ( pf == nullptr ) pf = defaultPixFormat();
@@ -568,7 +568,7 @@ QString MediaInfo::exportPreset()
         //loop
         videoObj.insert("loop",_loop);
         //profile
-        videoObj.insert("profile",_videoProfile);
+        videoObj.insert("profile",_videoProfile->name());
         //start number
         videoObj.insert("startNumber",_startNumber);
         //pixel format
@@ -1033,9 +1033,15 @@ void MediaInfo::setVideoQuality(int quality, bool silent )
     if(!silent) emit changed();
 }
 
-void MediaInfo::setVideoProfile(FFProfile *profile, bool silent )
+void MediaInfo::setVideoProfile(FFProfile *profile, bool silent)
 {
     _videoProfile = profile;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setVideoProfile(QString name, bool silent )
+{
+    setVideoProfile( _ffmpeg->profile(name) );
     if(!silent) emit changed();
 }
 

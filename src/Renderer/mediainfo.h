@@ -73,6 +73,7 @@ public:
     void setVideo(bool video = true, bool silent = false);
     void setAudio(bool audio = true, bool silent = false);
     void setVideoProfile(FFProfile *profile, bool silent = false);
+    void setVideoProfile(QString name, bool silent = false);
     void setVideoLevel(const QString &videoLevel, bool silent = false);
     void setVideoQuality(int quality, bool silent = false);
     void setLoop(int loop, bool silent = false);
