@@ -36,8 +36,9 @@ int main(int argc, char *argv[])
 
 
     QSettings settings;
-    if (settings.value("version").toString() != APPVERSION)
+    if (settings.value("version", "").toString() != APPVERSION)
     {
+        settings.clear();
         settings.setValue("version",APPVERSION);
         settings.setValue("ffmpeg/version","");
     }
