@@ -25,6 +25,8 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
         connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
     }
 
+    _defaultPreset = ":/presets/MP4 - Standard";
+
     // CREATE MENUS
     blocksMenu = new QMenu(this);
     blocksMenu->setTearOffEnabled(true);
@@ -89,12 +91,17 @@ void OutputWidget::ffmpeg_init()
 
 void OutputWidget::ffmpeg_loadMuxers()
 {
+    bool uiFreezed = _freezeUI;
     _freezeUI = true;
 
     formatsBox->clear();
 
     QList<FFMuxer *> muxers = _ffmpeg->muxers();
-    if (muxers.count() == 0) return;
+    if (muxers.count() == 0)
+    {
+        _freezeUI = false;
+        return;
+    }
 
     int formatsFilter = formatsFilterBox->currentIndex();
 
@@ -113,9 +120,9 @@ void OutputWidget::ffmpeg_loadMuxers()
             formatsBox->addItem("." + muxer->extensions().join(", .") + " | " + muxer->prettyName(),QVariant(muxer->name()));
         }
     }
-    _freezeUI = false;
 
     formatsBox->setCurrentIndex( -1 );
+    _freezeUI = uiFreezed;
 }
 
 MediaInfo *OutputWidget::getMediaInfo()
@@ -167,6 +174,7 @@ void OutputWidget::mediaInfoChanged()
         {
             //try without filter
             formatsFilterBox->setCurrentIndex(0);
+            ffmpeg_loadMuxers();
             formatsBox->setCurrentData( m->name() );
         }
     }
@@ -353,6 +361,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
 {
+    if (_freezeUI) return;
     qDebug() << "Format filter selected: " + QString::number(index);
     ffmpeg_loadMuxers();
 }
@@ -363,13 +372,14 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _freezeUI = true;
-    actionDefaultPreset->setChecked( presetsBox->itemData(index).toString() == settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString());
+    actionDefaultPreset->setChecked( presetsBox->itemData(index).toString() == settings.value("presets/default",_defaultPreset).toString());
     _freezeUI = false;
 
     //load
     _loadingPreset = true;
     //load
     _mediaInfo->loadPreset(presetsBox->itemData(index).toString());
+    qDebug() << _mediaInfo->hasVideo();
     _loadingPreset = false;
 }
 
@@ -489,7 +499,7 @@ void OutputWidget::loadPresets()
 
 void OutputWidget::selectDefaultPreset()
 {
-    QString defaultPreset = settings.value("presets/default",":/presets/MP4 - Auto - Normal").toString();
+    QString defaultPreset = settings.value("presets/default",_defaultPreset).toString();
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )
     {
@@ -567,5 +577,5 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
 {
     if (_freezeUI) return;
     if (checked) settings.setValue("presets/default", presetsBox->currentData().toString());
-    else settings.setValue("presets/default", ":/presets/MP4 - Auto - Normal");
+    else settings.setValue("presets/default", _defaultPreset);
 }

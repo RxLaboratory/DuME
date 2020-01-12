@@ -107,6 +107,7 @@ private:
     MediaInfo *_mediaInfo;
     QList<BlockBaseWidget *> _customParams;
     MediaList *_inputMedias;
+    QString _defaultPreset;
 
     bool _freezeUI;
     bool _loadingPreset;
