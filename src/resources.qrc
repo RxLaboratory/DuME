@@ -34,9 +34,9 @@
         <file alias="GIF - 450p">resources/presets/GIF - 450p.meprst</file>
         <file alias="GIF - 720p">resources/presets/GIF - 720p.meprst</file>
         <file alias="GIF">resources/presets/GIF.meprst</file>
-        <file alias="MP4 - Auto - HQ">resources/presets/MP4 - Auto - HQ.meprst</file>
-        <file alias="MP4 - Auto - LQ">resources/presets/MP4 - Auto - LQ.meprst</file>
-        <file alias="MP4 - Auto - Normal">resources/presets/MP4 - Auto - Normal.meprst</file>
+        <file alias="MP4 - HQ">resources/presets/MP4 - HQ.meprst</file>
+        <file alias="MP4 - LQ">resources/presets/MP4 - LQ.meprst</file>
+        <file alias="MP4 - Standard">resources/presets/MP4 - Standard.meprst</file>
         <file alias="GIF - 800x600">resources/presets/GIF - 800x600.meprst</file>
         <file alias="MOV - HAP - Alpha">resources/presets/MOV - HAP - Alpha.meprst</file>
         <file alias="MOV - HAP - Q">resources/presets/MOV - HAP - Q.meprst</file>
@@ -47,6 +47,8 @@
         <file alias="PNG 16bpc">resources/presets/PNG 16bpc.meprst</file>
         <file alias="WAV 24-bit">resources/presets/WAV 24-bit.meprst</file>
         <file alias="WAV 32-bit">resources/presets/WAV 32-bit.meprst</file>
+        <file alias="MP4 - LQ - High Compat">resources/presets/MP4 - LQ - High Compat.meprst</file>
+        <file alias="MP4 - Standard - High Compat">resources/presets/MP4 - Standard - High Compat.meprst</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>

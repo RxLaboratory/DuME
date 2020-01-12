@@ -1,0 +1,59 @@
+{
+    "dume": {
+        "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "samplingRate": 0
+            }
+        ],
+        "muxer": {
+            "name": "mp4",
+            "prettyName": "MP4 (MPEG-4 Part 14)",
+            "sequence": false
+        },
+        "options": [
+        ],
+        "version": "0.1.0-Beta",
+        "videoStreams": [
+            {
+                "bitrate": 0,
+                "colorPrimaries": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorRange": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorSpace": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorTRC": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "framerate": 0,
+                "height": 0,
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "level": "3.0",
+                "pixAspect": 1,
+                "premultipliedAlpha": true,
+                "profile": {
+                    "name": "baseline",
+                    "prettyName": "Baseline"
+                },
+                "quality": -1,
+                "width": 0
+            }
+        ]
+    }
+}
