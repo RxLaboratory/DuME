@@ -9,8 +9,6 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
   <title>Changelog - DuME Documentation</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -121,7 +119,7 @@
     
         <ul>
         
-            <li><a class="toctree-l3" href="#010-beta">0.1.0-Beta</a></li>
+            <li><a class="toctree-l3" href="#010-betas">0.1.0-Betas</a></li>
         
             <li><a class="toctree-l3" href="#009-alpha">0.0.9-Alpha</a></li>
         
@@ -194,7 +192,22 @@
               
                 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>This is the list of what has changed since the first public version of <em>DuFFmpeg</em>.</p>
-<h2 id="010-beta">0.1.0-Beta<a class="headerlink" href="#010-beta" title="Permanent link">&para;</a></h2>
+<h2 id="010-betas">0.1.0-Betas<a class="headerlink" href="#010-betas" title="Permanent link">&para;</a></h2>
+<h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Beta2</strong> Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
+<li><strong>Beta2</strong> Multiple input files</li>
+<li><strong>Beta2</strong> Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)</li>
+<li>Added complete color management options (still need to add LUT support).</li>
+</ul>
+<h3 id="presets-and-formats">Presets and formats<a class="headerlink" href="#presets-and-formats" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Beta2</strong> Added high compatibility presets for MP4 (Baseline level 3.0)</li>
+<li><strong>Beta2</strong> Added 16 bpc PNG</li>
+<li><strong>Beta2</strong> Enabled alpha by default for PNG and TGA</li>
+<li><strong>Beta2</strong> Added 24-bit and 32-bit WAV</li>
+<li>Removed MP4 presets resized to 1080p and 720p. All presets now keep the input size by default, use the &ldquo;Resize&rdquo; option if you need to change the resolution.</li>
+</ul>
 <h3 id="general-improvements">General Improvements<a class="headerlink" href="#general-improvements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Complete code refactor. The application is now easier to maintain, and the groundwork is better for further development and new features. The application should be more stable.</li>
@@ -202,6 +215,7 @@
 <li>The color management has been completely changed and improved.</li>
 <li>The input information displayed when dropping a file onto DuME is a lot more detailed.</li>
 <li>The UI now uses nice &ldquo;blocks&rdquo; for options</li>
+<li>Some options come with useful presets (like standard resolutions for the <em>Resize</em> option, color profile settings for the <em>Color management</em> block, etc).</li>
 <li>A summary of the output settings is available</li>
 <li>Support of EXR (especially colors) have been improved</li>
 <li>Color conversion when transcoding to YUV files is better</li>
@@ -209,6 +223,7 @@
 <h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Saving presets no longer leads to a crash.</li>
+<li>Loading presets no longer fails for audio-only or video-only formats.</li>
 </ul>
 <h2 id="009-alpha">0.0.9-Alpha<a class="headerlink" href="#009-alpha" title="Permanent link">&para;</a></h2>
 <h3 id="general-improvements_1">General Improvements<a class="headerlink" href="#general-improvements_1" title="Permanent link">&para;</a></h3>
