@@ -3,33 +3,6 @@
 VideoInfo::VideoInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
 {
     _ffmpeg = ffmpeg;
-    _language = nullptr;
-    reInit(true);
-}
-
-VideoInfo::VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
-{
-    _ffmpeg = ffmpeg;
-    reInit(true);
-    setQuality( obj.value("quality").toInt(), true);
-    setProfile( obj.value("profile").toObject(), true);
-    setLevel( obj.value("level").toString(), true);
-    setPixAspect( obj.value("pixAspect").toDouble(), true);
-    setPixFormat( obj.value("pixFormat").toObject(), true);
-    setBitrate( obj.value("bitrate").toInt(), true);
-    setFramerate( obj.value("framerate").toDouble(), true);
-    setHeight( obj.value("height").toInt(), true);
-    setWidth( obj.value("width").toInt(), true);
-    setCodec( obj.value("codec").toObject(), true);
-    setLanguage( obj.value("language").toObject().value("name").toString(), true);
-    setColorPrimaries( obj.value("colorPrimaries").toString(), true);
-    setColorTRC( obj.value("colorTRC").toString(), true);
-    setColorSpace( obj.value("colorSpace").toString(), true);
-    setColorRange( obj.value("colorRange").toString(), true);
-}
-
-void VideoInfo::reInit(bool silent)
-{
     _id = -1;
     _quality = -1;
     _profile = nullptr;
@@ -41,15 +14,35 @@ void VideoInfo::reInit(bool silent)
     _height = 0;
     _width = 0;
     _codec = nullptr;
-    delete _language;
     _language = new FFLanguage("");
     _colorPrimaries = _ffmpeg->colorPrimary("");
     _colorTRC = _ffmpeg->colorTRC("");
     _colorSpace = _ffmpeg->colorSpace("");
     _colorRange = _ffmpeg->colorRange("");
     _premultipliedAlpha = true;
+}
 
-    if(!silent) emit changed();
+VideoInfo::VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+{
+    _ffmpeg = ffmpeg;
+    _language = nullptr;
+    setQuality( obj.value("quality").toInt(), true);
+    setProfile( obj.value("profile").toObject(), true);
+    setLevel( obj.value("level").toString(), true);
+    setPixAspect( obj.value("pixAspect").toDouble(), true);
+    setPixFormat( obj.value("pixFormat").toObject(), true);
+    if (!obj.value("premultipliedAlpha").isUndefined()) setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(), true);
+    else _premultipliedAlpha = true;
+    setBitrate( obj.value("bitrate").toInt(), true);
+    setFramerate( obj.value("framerate").toDouble(), true);
+    setHeight( obj.value("height").toInt(), true);
+    setWidth( obj.value("width").toInt(), true);
+    setCodec( obj.value("codec").toObject(), true);
+    setLanguage( obj.value("language").toObject().value("name").toString(), true);
+    setColorPrimaries( obj.value("colorPrimaries").toString(), true);
+    setColorTRC( obj.value("colorTRC").toString(), true);
+    setColorSpace( obj.value("colorSpace").toString(), true);
+    setColorRange( obj.value("colorRange").toString(), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -96,6 +89,7 @@ QJsonObject VideoInfo::toJson()
     {
         vStream.insert("pixFormat", _pixFormat->toJson() );
     }
+    vStream.insert("premultipliedAlpha", _premultipliedAlpha);
     vStream.insert("bitrate", _bitrate);
     vStream.insert("framerate", _framerate);
     vStream.insert("height", _height);

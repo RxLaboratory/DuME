@@ -3,22 +3,6 @@
 AudioInfo::AudioInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
 {
     _ffmpeg = ffmpeg;
-    _language = nullptr;
-    reInit(true);
-}
-
-AudioInfo::AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
-{
-    _ffmpeg = ffmpeg;
-    setSamplingRate(obj.value("samplingRate").toInt(), true);
-    setChannels(obj.value("channels").toString(), true);
-    setBitrate(obj.value("bitrate").toInt(), true);
-    setCodec(obj.value("codec").toObject(), true);
-    setLanguage(obj.value("language").toObject().value("name").toString(), true);
-}
-
-void AudioInfo::reInit(bool silent)
-{
     _id = -1;
     _samplingRate = 0;
     _channels = "";
@@ -26,8 +10,17 @@ void AudioInfo::reInit(bool silent)
     _codec = nullptr;
      delete _language;
     _language = new FFLanguage("");
+}
 
-    if(!silent) emit changed();
+AudioInfo::AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+{
+    _ffmpeg = ffmpeg;
+    _language = nullptr;
+    setSamplingRate(obj.value("samplingRate").toInt(), true);
+    setChannels(obj.value("channels").toString(), true);
+    setBitrate(obj.value("bitrate").toInt(), true);
+    setCodec(obj.value("codec").toObject(), true);
+    setLanguage(obj.value("language").toObject().value("name").toString(), true);
 }
 
 void AudioInfo::copyFrom(AudioInfo *other, bool silent)

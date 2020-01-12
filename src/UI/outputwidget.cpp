@@ -509,7 +509,7 @@ BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *ac
     connect( action, SIGNAL( triggered(bool) ), b, SLOT( activate(bool) ) );
     connect( b, SIGNAL( activated(bool) ), action, SLOT( setChecked( bool ) ) );
     connect( b, SIGNAL( blockEnabled(bool) ), action, SLOT(setVisible(bool)));
-
+    connect(b,  &BlockBaseWidget::hidden, action, [action]{ action->setChecked(false); });
     return b;
 }
 

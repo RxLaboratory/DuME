@@ -406,16 +406,19 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 
     //video
     QJsonArray vStreams = mediaObj.value("videoStreams").toArray();
+
     foreach( QJsonValue stream, vStreams )
     {
-        addVideoStream( new VideoInfo(stream.toObject(), _ffmpeg, this), true);
+        VideoInfo *s = new VideoInfo(stream.toObject(), _ffmpeg);
+        addVideoStream( s, true);
     }
 
     //audio
     QJsonArray aStreams = mediaObj.value("audioStreams").toArray();
     foreach( QJsonValue stream, aStreams )
     {
-        addAudioStream( new AudioInfo(stream.toObject(), _ffmpeg, this), true);
+        AudioInfo *s = new AudioInfo(stream.toObject(), _ffmpeg);
+        addAudioStream( s, true);
     }
 
     //options
@@ -534,23 +537,8 @@ void MediaInfo::setMuxer(FFMuxer *muxer, bool silent )
     qDeleteAll( _videoStreams );
     _videoStreams.clear();
     _muxer = muxer;
-    if (muxer != nullptr && muxer->isSequence())
-    {
-        addVideoStream( new VideoInfo(_ffmpeg, this), true );
-        loadSequence();
-    }
-    else if (muxer != nullptr)
-    {
-        if ( muxer->isAudio() )
-        {
-            addAudioStream( new AudioInfo(_ffmpeg, this), true );
-        }
+    if (muxer != nullptr && muxer->isSequence()) loadSequence();
 
-        if (muxer->isVideo() )
-        {
-            addVideoStream( new VideoInfo(_ffmpeg, this), true );
-        }
-    }
     if(!silent) emit changed();
 }
 

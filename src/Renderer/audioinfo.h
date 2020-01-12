@@ -12,7 +12,6 @@ class AudioInfo : public QObject
 public:
     explicit AudioInfo(FFmpeg *ffmpeg, QObject *parent = nullptr);
     explicit AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent = nullptr);
-    void reInit(bool silent = false);
     void copyFrom(AudioInfo *other, bool silent = false);
     bool isCopy();
     QJsonObject toJson();

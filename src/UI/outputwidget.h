@@ -30,6 +30,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QMenu>
+#include <QSignalMapper>
 
 class OutputWidget : public QWidget, private Ui::OutputWidget
 {

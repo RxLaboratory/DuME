@@ -12,7 +12,6 @@ class VideoInfo : public QObject
 public:
     explicit VideoInfo(FFmpeg *ffmpeg, QObject *parent = nullptr);
     explicit VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent = nullptr);
-    void reInit(bool silent = false);
     void copyFrom(VideoInfo *other, bool silent = false);
     bool isCopy();
     QJsonObject toJson();
