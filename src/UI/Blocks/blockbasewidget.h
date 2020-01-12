@@ -20,6 +20,10 @@ public slots:
 signals:
     void activated(bool);
     void blockEnabled(bool);
+    void hidden();
+
+protected:
+    void hideEvent(QHideEvent *event);
 
 private:
     BlockContentWidget *_content;

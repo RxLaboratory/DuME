@@ -1,20 +1,11 @@
 {
     "dume": {
         "audioStreams": [
-            {
-                "bitrate": 0,
-                "channels": "",
-                "language": {
-                    "name": "",
-                    "prettyName": "Undefined"
-                },
-                "samplingRate": 0
-            }
         ],
         "muxer": {
-            "name": "mov",
-            "prettyName": "QuickTime / MOV",
-            "sequence": false
+            "name": "png",
+            "prettyName": "PNG (Portable Network Graphics) Sequence",
+            "sequence": true
         },
         "options": [
         ],
@@ -22,10 +13,6 @@
         "videoStreams": [
             {
                 "bitrate": 0,
-                "codec": {
-                    "name": "prores",
-                    "prettyName": "Apple ProRes "
-                },
                 "colorPrimaries": {
                     "name": "",
                     "prettyName": "Auto"
@@ -50,10 +37,11 @@
                 },
                 "level": "",
                 "pixAspect": 1,
-                "profile": {
-                    "name": "2",
-                    "prettyName": "SQ"
+                "pixFormat": {
+                    "name": "rgba64be",
+                    "prettyName": "rgba64be (64 bits - 4 channels)"
                 },
+                "premultipliedAlpha": false,
                 "quality": -1,
                 "width": 0
             }

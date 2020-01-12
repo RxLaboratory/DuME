@@ -4,6 +4,10 @@
             {
                 "bitrate": 0,
                 "channels": "",
+                "codec": {
+                    "name": "pcm_s24le",
+                    "prettyName": "PCM signed 24-bit little-endian"
+                },
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"

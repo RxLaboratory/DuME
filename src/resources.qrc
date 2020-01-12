@@ -44,6 +44,9 @@
         <file alias="PNG">resources/presets/PNG.meprst</file>
         <file alias="TGA">resources/presets/TGA.meprst</file>
         <file alias="WAV">resources/presets/WAV.meprst</file>
+        <file alias="PNG 16bpc">resources/presets/PNG 16bpc.meprst</file>
+        <file alias="WAV 24-bit">resources/presets/WAV 24-bit.meprst</file>
+        <file alias="WAV 32-bit">resources/presets/WAV 32-bit.meprst</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>

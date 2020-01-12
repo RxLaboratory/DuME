@@ -53,3 +53,9 @@ void BlockBaseWidget::blockEnable(bool en)
     }
     emit blockEnabled(en);
 }
+
+void BlockBaseWidget::hideEvent(QHideEvent *event)
+{
+    emit hidden();
+    event->accept();
+}

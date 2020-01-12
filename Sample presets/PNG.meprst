@@ -1,29 +1,50 @@
 {
     "dume": {
-        "hasAudio": false,
-        "hasVideo": true,
+        "audioStreams": [
+        ],
         "muxer": {
-            "extensions": [
-                "png"
-            ],
-            "isSequence": true,
             "name": "png",
-            "prettyName": "PNG (Portable Network Graphics) Sequence"
+            "prettyName": "PNG (Portable Network Graphics) Sequence",
+            "sequence": true
         },
         "options": [
         ],
-        "version": "0.1.0",
-        "video": {
-            "bitrate": 0,
-            "codecName": "png",
-            "codecPrettyName": "PNG ",
-            "framerate": 0,
-            "height": 0,
-            "loop": -1,
-            "profile": -1,
-            "quality": -1,
-            "startNumber": 0,
-            "width": 0
-        }
+        "version": "0.1.0-Beta",
+        "videoStreams": [
+            {
+                "bitrate": 0,
+                "colorPrimaries": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorRange": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorSpace": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorTRC": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "framerate": 0,
+                "height": 0,
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "level": "",
+                "pixAspect": 1,
+                "pixFormat": {
+                    "name": "rgba",
+                    "prettyName": "rgba (32 bits - 4 channels)"
+                },
+                "premultipliedAlpha": false,
+                "quality": -1,
+                "width": 0
+            }
+        ]
     }
 }

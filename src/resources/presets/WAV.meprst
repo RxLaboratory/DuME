@@ -1,23 +1,25 @@
 {
     "dume": {
-        "audio": {
-            "bitrate": 0,
-            "codecName": "pcm_s16le",
-            "codecPrettyName": "PCM signed 16-bit little-endian\r",
-            "sampling": 0
-        },
-        "hasAudio": true,
-        "hasVideo": false,
+        "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "samplingRate": 0
+            }
+        ],
         "muxer": {
-            "extensions": [
-                "wav"
-            ],
-            "isSequence": false,
             "name": "wav",
-            "prettyName": "WAV / WAVE (Waveform Audio)"
+            "prettyName": "WAV / WAVE (Waveform Audio)",
+            "sequence": false
         },
         "options": [
         ],
-        "version": "0.0.2-Alpha2"
+        "version": "0.1.0-Beta",
+        "videoStreams": [
+        ]
     }
 }

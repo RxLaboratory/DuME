@@ -4,6 +4,10 @@
             {
                 "bitrate": 0,
                 "channels": "",
+                "codec": {
+                    "name": "pcm_u32le",
+                    "prettyName": "PCM unsigned 32-bit little-endian"
+                },
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"
