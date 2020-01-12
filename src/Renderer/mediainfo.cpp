@@ -409,7 +409,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 
     foreach( QJsonValue stream, vStreams )
     {
-        VideoInfo *s = new VideoInfo(stream.toObject(), _ffmpeg);
+        VideoInfo *s = new VideoInfo(stream.toObject(), _ffmpeg); 
         addVideoStream( s, true);
     }
 
@@ -597,7 +597,7 @@ void MediaInfo::clearAudioStreams(bool silent)
 
 void MediaInfo::addVideoStream(VideoInfo *stream, bool silent)
 {
-    if (_videoStreams.contains(stream)) return;
+    if ( _videoStreams.contains(stream) ) return;
     _videoStreams << stream;
     stream->setParent(this);
     connect(stream, SIGNAL(changed()), this, SLOT(streamChanged()));

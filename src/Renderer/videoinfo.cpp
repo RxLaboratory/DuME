@@ -26,6 +26,7 @@ VideoInfo::VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject
 {
     _ffmpeg = ffmpeg;
     _language = nullptr;
+    _id = -1;
     setQuality( obj.value("quality").toInt(), true);
     setProfile( obj.value("profile").toObject(), true);
     setLevel( obj.value("level").toString(), true);

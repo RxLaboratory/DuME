@@ -16,6 +16,7 @@ AudioInfo::AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject
 {
     _ffmpeg = ffmpeg;
     _language = nullptr;
+    _id = -1;
     setSamplingRate(obj.value("samplingRate").toInt(), true);
     setChannels(obj.value("channels").toString(), true);
     setBitrate(obj.value("bitrate").toInt(), true);
