@@ -66,7 +66,6 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
     _muxer = _ffmpeg->muxer(extension);
 
-
     QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
 
     QStringList infos = ffmpegOutput.split("\n");
@@ -162,6 +161,11 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             addAudioStream( stream );
         }
+    }
+
+    if (_muxer->isSequence())
+    {
+        loadSequence();
     }
 
     if(!silent) emit changed();
