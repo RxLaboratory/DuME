@@ -140,6 +140,7 @@ MediaInfo *OutputWidget::getMediaInfo()
         }
     }
     MediaInfo *mi = new MediaInfo( _ffmpeg );
+    qDebug() << _mediaInfo->fileName();
     mi->copyFrom( _mediaInfo, true, true);
     return mi;
 }
@@ -578,4 +579,9 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
     if (_freezeUI) return;
     if (checked) settings.setValue("presets/default", presetsBox->currentData().toString());
     else settings.setValue("presets/default", _defaultPreset);
+}
+
+void OutputWidget::on_outputEdit_textEdited(QString text)
+{
+    _mediaInfo->setFileName( text, true );
 }

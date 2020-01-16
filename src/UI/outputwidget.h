@@ -75,6 +75,8 @@ private slots:
     void on_actionOpenPreset_triggered();
     void on_actionDefaultPreset_triggered(bool checked);
 
+    void on_outputEdit_textEdited(QString text);
+
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
