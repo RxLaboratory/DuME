@@ -239,7 +239,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //profile
-                if (stream->profile() != nullptr) arguments << "-profile:v" << stream->profile()->name();
+                if (stream->profile() != nullptr && stream->profile()->name() != "") arguments << "-profile:v" << stream->profile()->name();
 
                 //level
                 if (stream->level() != "") arguments << "-level" << stream->level();
