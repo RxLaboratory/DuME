@@ -161,7 +161,6 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
             stream->setBitrate( match.captured(6).toInt()*1024 );
 
             addAudioStream( stream );
-            continue;
         }
     }
 

@@ -8,7 +8,6 @@ AudioInfo::AudioInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
     _channels = "";
     _bitrate = 0;
     _codec = nullptr;
-     delete _language;
     _language = new FFLanguage("");
 }
 
