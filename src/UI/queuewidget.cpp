@@ -12,7 +12,6 @@ QueueWidget::QueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     _ffmpeg = ffmpeg;
     _inputMedias = new MediaList();
 
-    addInput();
     addOutput();
 
     //hide close buttons on add buttons
@@ -56,13 +55,19 @@ QList<MediaInfo *> QueueWidget::getOutputMedia()
     return output;
 }
 
-void QueueWidget::addInputFile(QString file)
+void QueueWidget::openInputFile(QString file)
 {
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
-void QueueWidget::addInputFile(QUrl file)
+void QueueWidget::openInputFile(QUrl file)
 {
+    inputWidgets[ inputTab->currentIndex() ]->openFile(file);
+}
+
+void QueueWidget::addInputFile(QString file)
+{
+    addInput();
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 

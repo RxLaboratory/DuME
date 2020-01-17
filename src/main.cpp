@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     //build UI and show
     splash.newMessage("Building UI");
-    MainWindow *w = new MainWindow( ffmpeg );
+    MainWindow *w = new MainWindow( argc, argv, ffmpeg );
 #ifndef Q_OS_LINUX
     FrameLessWindow f(w);
 #endif

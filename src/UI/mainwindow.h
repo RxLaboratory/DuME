@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(FFmpeg *ff, QWidget *parent = nullptr);
+    explicit MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent = nullptr);
 
 public slots:
 

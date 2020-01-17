@@ -18,8 +18,9 @@ public:
     explicit QueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
     QList<MediaInfo *> getInputMedia();
     QList<MediaInfo *> getOutputMedia();
+    void openInputFile(QString file);
+    void openInputFile(QUrl file);
     void addInputFile(QString file);
-    void addInputFile(QUrl file);
 
 signals:
     /**

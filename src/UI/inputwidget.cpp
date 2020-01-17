@@ -80,6 +80,11 @@ void InputWidget::openFile(QUrl file)
     openFile(file.toLocalFile());
 }
 
+bool InputWidget::hasMedia()
+{
+    return inputEdit->text() == "";
+}
+
 void InputWidget::on_inputBrowseButton_clicked()
 {
     QSettings settings;

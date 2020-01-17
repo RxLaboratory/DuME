@@ -37,6 +37,7 @@ public:
     MediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
+    bool hasMedia();
 
 private slots:
     void on_inputBrowseButton_clicked();

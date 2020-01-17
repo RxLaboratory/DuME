@@ -4,7 +4,7 @@
 #include <QGraphicsDropShadowEffect>
 #include "duexr.h"
 
-MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
+MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
@@ -165,6 +165,16 @@ MainWindow::MainWindow(FFmpeg *ff, QWidget *parent) :
     RainboxUI::setFont();
 
     log("Ready!");
+
+    //add inputs
+    for (int i = 1; i < argc; i++)
+    {
+        log( "Opening " + QString(argv[i]) );
+        queueWidget->addInputFile(argv[i]);
+
+    }
+
+    if (argc == 1) queueWidget->addInputFile("");
 
 }
 
@@ -327,20 +337,20 @@ void MainWindow::log(QString log, LogUtils::LogType type)
     QString typeString = "";
     if ( type == LogUtils::Debug )
     {
-        qDebug() << log;
+        qDebug().noquote() << log;
     }
     else if ( type == LogUtils::Information )
     {
-        qInfo() << log;
+        qInfo().noquote() << log;
     }
     if (type == LogUtils::Warning)
     {
-        qWarning() << log;
+        qWarning().noquote() << log;
         typeString = "/!\\ Warning: ";
     }
     else if (type == LogUtils::Critical)
     {
-        qCritical() << log;
+        qCritical().noquote() << log;
         typeString = " --- !!! Critical: ";
     }
     else if (type == LogUtils::Fatal)
@@ -509,7 +519,7 @@ void MainWindow::dropEvent(QDropEvent *event)
             QString f = urlList[0].toLocalFile();
             if (QFile(f).exists())
             {
-                queueWidget->addInputFile(f);
+                queueWidget->openInputFile(f);
             }
         }
 
@@ -519,7 +529,7 @@ void MainWindow::dropEvent(QDropEvent *event)
         QString f = mimeData->text();
         if (QFile(f).exists())
         {
-            queueWidget->addInputFile(f);
+            queueWidget->openInputFile(f);
         }
     }
 
