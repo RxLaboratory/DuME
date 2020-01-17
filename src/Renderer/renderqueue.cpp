@@ -378,11 +378,16 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
     //launch
     _ffmpegRenderer->setOutputFileName( item->getOutputMedias()[0]->fileName() );
-    if ( item->getOutputMedias()[0]->hasVideo())
+
+    foreach (MediaInfo *m, item->getInputMedias())
     {
-        VideoInfo *stream = item->getOutputMedias()[0]->videoStreams()[0];
-        _ffmpegRenderer->setNumFrames( int( item->getOutputMedias()[0]->duration() * stream->framerate() ) );
-        _ffmpegRenderer->setFrameRate( stream->framerate() );
+        if (m->hasVideo())
+        {
+            VideoInfo *stream = m->videoStreams()[0];
+            _ffmpegRenderer->setNumFrames( int( m->duration() * stream->framerate() ) );
+            _ffmpegRenderer->setFrameRate( stream->framerate() );
+            break;
+        }
     }
 
     _ffmpegRenderer->start( arguments );

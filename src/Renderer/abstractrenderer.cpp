@@ -297,7 +297,7 @@ void AbstractRenderer::setNumFrames(int numFrames)
     _numFrames = numFrames;
 }
 
-void AbstractRenderer::setCurrentFrame(int currentFrame)
+void AbstractRenderer::setCurrentFrame(int currentFrame, double size, double bitrate, double speed)
 {
     _currentFrame = currentFrame;
 
@@ -324,43 +324,67 @@ void AbstractRenderer::setCurrentFrame(int currentFrame)
     _timeRemaining = QTime( 0, 0 ).addSecs( remainingSeconds );
 
     //compute size
-
-    //get file(s)
-    //check if it's a sequence
-    QRegularExpression regExDigits("({#+})");
-    QRegularExpressionMatch regExDigitsMatch = regExDigits.match( _outputFileName );
-    QFileInfo infoOutput( _outputFileName );
-    // get all frames
-    if ( regExDigitsMatch.hasMatch() )
+    if (size == 0)
     {
-        QDir containingDir = infoOutput.dir();
-        QString baseName = infoOutput.fileName();
-        QFileInfoList files = containingDir.entryInfoList( QStringList( baseName.replace( regExDigits, "*") ), QDir::Files);
-        _outputSize = 0;
-        foreach( QFileInfo file, files)
+        //get file(s)
+        //check if it's a sequence
+        QRegularExpression regExDigits("({#+})");
+        QRegularExpressionMatch regExDigitsMatch = regExDigits.match( _outputFileName );
+        QFileInfo infoOutput( _outputFileName );
+        // get all frames
+        if ( regExDigitsMatch.hasMatch() )
         {
-            _outputSize += file.size();
+            QDir containingDir = infoOutput.dir();
+            QString baseName = infoOutput.fileName();
+            QFileInfoList files = containingDir.entryInfoList( QStringList( baseName.replace( regExDigits, "*") ), QDir::Files);
+            _outputSize = 0;
+            foreach( QFileInfo file, files)
+            {
+                _outputSize += file.size();
+            }
+        }
+        //get video file
+        else
+        {
+            _outputSize = infoOutput.size();
         }
     }
-    //get video file
     else
     {
-        _outputSize = infoOutput.size();
+        _outputSize = size;
     }
 
-    //compute bitrate
 
-    double outputBits = _outputSize / 8;
-    double renderedSeconds = _currentFrame / _frameRate;
-    _outputBitrate = outputBits / renderedSeconds;
+    //compute bitrate
+    if (bitrate == 0)
+    {
+        double outputBits = _outputSize / 8;
+        double renderedSeconds = _currentFrame / _frameRate;
+        _outputBitrate = outputBits / renderedSeconds;
+    }
+    else
+    {
+        _outputBitrate = bitrate;
+    }
+
 
     //expected size
     _expectedSize = _outputSize * _numFrames / _currentFrame;
 
     //encoding speed
-    double expectedDuration = elapsedSeconds + remainingSeconds;
-    double videoDuration = _numFrames / _frameRate;
-    _encodingSpeed = videoDuration / expectedDuration;
+    if (speed == 0)
+    {
+        double expectedDuration = elapsedSeconds + remainingSeconds;
+        double videoDuration = _numFrames / _frameRate;
+        _encodingSpeed = videoDuration / expectedDuration;
+    }
+    else
+    {
+        _encodingSpeed = speed;
+    }
+
+       qDebug() << _timeRemaining;
+       qDebug() << _numFrames;
 }
 
 void AbstractRenderer::readyRead(QString output)

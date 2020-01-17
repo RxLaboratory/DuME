@@ -20,19 +20,14 @@ void FFmpegRenderer::readyRead(QString output)
         QString bitrate = match.captured(5);
         QString speed = match.captured(6);
 
-        //frame
-        setCurrentFrame( frame.toInt() );
-
-        //size
+         //size
         int sizeKB = size.toInt();
-        _outputSize = sizeKB * 1024;
 
         //bitrate
         int bitrateKB = bitrate.toInt();
-        _outputBitrate = bitrateKB * 1000;
 
-        //speed
-        _encodingSpeed = speed.toDouble();
+        //frame
+        setCurrentFrame( frame.toInt(), sizeKB * 1024, bitrateKB * 1000, speed.toDouble() );
 
         emit progress();
     }

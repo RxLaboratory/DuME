@@ -31,7 +31,7 @@ public:
      * @brief setCurrentFrame Sets the current frame being rendered and updates all progress info (size, time, bitrate...)
      * @param currentFrame
      */
-    void setCurrentFrame(int currentFrame);
+    void setCurrentFrame(int currentFrame, double size = 0, double bitrate = 0, double speed = 0);
     /**
      * @brief startTime The start time of the rendering process
      * @return
