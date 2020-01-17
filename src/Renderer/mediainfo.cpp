@@ -75,6 +75,10 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     QRegularExpression reVideoStream = RegExUtils::getRegEx("ffmpeg video stream");
     QRegularExpression reAudioStream = RegExUtils::getRegEx("ffmpeg audio stream");
     QRegularExpression reDuration = RegExUtils::getRegEx("ffmpeg duration");
+    QRegularExpression reResolution = RegExUtils::getRegEx("ffmpeg resolution");
+    QRegularExpression reFPS = RegExUtils::getRegEx("ffmpeg fps");
+    QRegularExpression reBitrate = RegExUtils::getRegEx("ffmpeg bitrate");
+    QRegularExpression reAspect = RegExUtils::getRegEx("ffmpeg aspect");
 
     bool input = false;
     foreach(QString info,infos)
@@ -108,7 +112,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
         //test video stream
         match = reVideoStream.match(info);
         if (match.hasMatch())
-        {
+        {           
             //add the stream
             VideoInfo *stream = new VideoInfo(_ffmpeg);
             stream->setId( match.captured(1).toInt() );
@@ -125,14 +129,31 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
             if ( pf == nullptr ) pf = new FFPixFormat( pixFormat );
             stream->setPixFormat( pf );
 
-            stream->setWidth( match.captured(5).toInt() );
-            stream->setHeight( match.captured(6).toInt() );
-            if ( match.captured(8) != "" ) stream->setPixAspect( match.captured(7).toFloat() / match.captured(8).toFloat() );
+            QRegularExpressionMatch matchRes = reResolution.match( info );
+            if (matchRes.hasMatch())
+            {
+                stream->setWidth( matchRes.captured(1).toInt() );
+                stream->setHeight( matchRes.captured(2).toInt() );
+            }
 
-            stream->setBitrate( match.captured(11).toInt()*1024 );
-            stream->setFramerate( match.captured(12).toDouble() );
+            QRegularExpressionMatch matchAspect = reAspect.match( info );
+            if (matchAspect.hasMatch())
+            {
+                stream->setPixAspect( matchAspect.captured(1).toFloat() / matchAspect.captured(2).toFloat() );
+            }
 
-            if ( int( stream->framerate() ) == 0 ) stream->setFramerate( 24 );
+
+            QRegularExpressionMatch matchBitrate = reBitrate.match( info );
+            if (matchBitrate.hasMatch())
+            {
+                stream->setBitrate( matchBitrate.captured(1).toInt()*1024 );
+            }
+
+            QRegularExpressionMatch matchFPS = reFPS.match( info );
+            if (matchFPS.hasMatch())
+            {
+                stream->setFramerate( matchFPS.captured(1).toDouble() );
+            }
 
             addVideoStream( stream );
             continue;
@@ -157,7 +178,11 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             stream->setChannels( match.captured(5) );
 
-            stream->setBitrate( match.captured(6).toInt()*1024 );
+            QRegularExpressionMatch matchBitrate = reBitrate.match( info );
+            if (matchBitrate.hasMatch())
+            {
+                stream->setBitrate( matchBitrate.captured(1).toInt()*1024 );
+            }
 
             addAudioStream( stream );
         }

@@ -129,35 +129,35 @@ void FFmpeg::init()
 
     //get pixFormats
     emit newLog( "Loading Pixel Formats" );
-    if (runCommand( "-pix_fmts", 10000))
+    if (runCommand( "-hide_banner -pix_fmts", 10000))
     {
         gotPixFormats( _output, newVersion );
     }
 
     //get codecs
     emit newLog( "Loading Codecs" );
-    if (runCommand( "-codecs" , 10000))
+    if (runCommand( "-hide_banner -codecs" , 10000))
     {
         gotCodecs( _output, newVersion );
     }
 
     //get muxers
     emit newLog( "Loading Muxers" );
-    if (runCommand( "-formats" , 10000))
+    if (runCommand( "-hide_banner -formats" , 10000))
     {
         gotMuxers( _output, newVersion );
     }
 
     //get long help
     emit newLog( "Loading Documentation" );
-    if (runCommand( "-h long", 3000))
+    if (runCommand( "-hide_banner -h long", 3000))
     {
         _longHelp = _output;
     }
 
     //get help
     _help = settings.value("ffmpeg/help","").toString();
-    if (runCommand( "-h", 3000))
+    if (runCommand( "-hide_banner -h", 3000))
     {
         _help = _output;
     }
@@ -406,8 +406,8 @@ QString FFmpeg::longHelp()
 
 QString FFmpeg::analyseMedia(QString mediaPath)
 {
-    QStringList args("-i");
-    args << QDir::toNativeSeparators(mediaPath);
+    QStringList args("-hide_banner");
+    args << "-i" << QDir::toNativeSeparators(mediaPath);
     if ( runCommand( args, 3000) )
     {
         return _output;

@@ -76,5 +76,10 @@
         <file alias="ffmpeg audio stream">resources/regex/ffmpegAudioStream.txt</file>
         <file alias="ffmpeg duration">resources/regex/ffmpegDuration.txt</file>
         <file alias="ffmpeg input">resources/regex/ffmpegInput.txt</file>
+        <file alias="ffmpeg aspect">resources/regex/ffmpegAspect.txt</file>
+        <file alias="ffmpeg bitrate">resources/regex/ffmpegBitrate.txt</file>
+        <file alias="ffmpeg fps">resources/regex/ffmpegFPS.txt</file>
+        <file alias="ffmpeg resolution">resources/regex/ffmpegResolution.txt</file>
+        <file alias="ffmpeg sampling">resources/regex/ffmpegSampling.txt</file>
     </qresource>
 </RCC>

@@ -101,8 +101,8 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 {
     setStatus( MediaUtils::Launching );
     //generate arguments
-    QStringList arguments("-stats");
-    arguments << "-y";
+    QStringList arguments;
+    arguments << "-loglevel" << "error" << "-stats" << "-y";
 
     //output checks
     MediaInfo *o = item->getOutputMedias()[0];
