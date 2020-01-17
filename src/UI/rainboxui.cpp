@@ -124,7 +124,9 @@ void UISplashScreen::newMessage(QString message, LogUtils::LogType lt)
 {
     if (lt == LogUtils::Debug) return;
     _progressBar->setFormat( "%p% - " + message );
+#ifdef QT_DEBUG
     qDebug() << message;
+#endif
     repaint();
 }
 
