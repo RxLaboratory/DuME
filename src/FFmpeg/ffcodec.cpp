@@ -114,6 +114,7 @@ FFPixFormat *FFCodec::defaultPixFormat(bool withAlpha) const
 
 FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha) const
 {
+    if (pf == nullptr) return nullptr;
     if ( pf->hasAlpha() != alpha )
     {
         //find the closest one with(out) alpha

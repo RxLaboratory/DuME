@@ -301,7 +301,7 @@ bool VideoInfo::setAlpha(bool alpha, bool silent)
     if ( pf == nullptr && _codec->pixFormats().count() > 0) pf = _codec->pixFormats()[0];
     if ( pf == nullptr ) return false;
 
-    _pixFormat = _codec->pixFormatWithAlpha(_pixFormat, alpha);
+    _pixFormat = _codec->pixFormatWithAlpha(pf, alpha);
 
     if(!silent) emit changed();
     return true;
