@@ -216,7 +216,13 @@ void OutputWidget::mediaInfoChanged()
     }
 
     //set the preset to custom if we're not loading a preset
-    if (!_loadingPreset) presetsBox->setCurrentIndex(0);
+    if (!_loadingPreset)
+    {
+        presetsBox->setCurrentIndex(0);
+
+        actionDefaultPreset->setChecked( false );
+        actionDefaultPreset->setText("Set as default preset");
+    }
 
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 
@@ -373,7 +379,17 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _freezeUI = true;
-    actionDefaultPreset->setChecked( presetsBox->itemData(index).toString() == settings.value("presets/default",_defaultPreset).toString());
+    bool def = presetsBox->itemData(index).toString() == settings.value("presets/default",_defaultPreset).toString();
+    if (def)
+    {
+        actionDefaultPreset->setChecked( true );
+        actionDefaultPreset->setText("Default preset");
+    }
+    else
+    {
+        actionDefaultPreset->setChecked( false );
+        actionDefaultPreset->setText("Set as default preset");
+    }
     _freezeUI = false;
 
     //load
@@ -577,8 +593,16 @@ void OutputWidget::on_actionOpenPreset_triggered()
 void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
 {
     if (_freezeUI) return;
-    if (checked) settings.setValue("presets/default", presetsBox->currentData().toString());
-    else settings.setValue("presets/default", _defaultPreset);
+    if (checked)
+    {
+        settings.setValue("presets/default", presetsBox->currentData().toString());
+        actionDefaultPreset->setText("Default preset");
+    }
+    else
+    {
+        settings.setValue("presets/default", _defaultPreset);
+        actionDefaultPreset->setText("Set as default preset");
+    }
 }
 
 void OutputWidget::on_outputEdit_textEdited(QString text)

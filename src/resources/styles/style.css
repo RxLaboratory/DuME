@@ -139,7 +139,7 @@ QCheckBox::indicator, QRadioButton::indicator {
         background-color: @color-medium;
 	width: @handle-size;
 	height: @handle-size;
-	border: @border-size solid @color-medium;
+        border: @border-size solid @color-medium;
 	border-radius: @border-radius;
 }
 
@@ -150,10 +150,9 @@ QMenu::indicator {
 }
 
 QMenu::indicator:non-exclusive {
-    background-color: @color-dark;
+    background-color: @color-less-dark;
     width: @handle-size;
     height: @handle-size;
-    border: none;
     border-radius: @border-radius;
 }
 
