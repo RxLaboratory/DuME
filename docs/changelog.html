@@ -9,6 +9,8 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
   <title>Changelog - DuME Documentation</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -195,17 +197,17 @@
 <h2 id="010-betas">0.1.0-Betas<a class="headerlink" href="#010-betas" title="Permanent link">&para;</a></h2>
 <h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Beta2</strong> Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
-<li><strong>Beta2</strong> Multiple input files</li>
-<li><strong>Beta2</strong> Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)</li>
+<li>(Beta2) Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
+<li>(Beta2) Multiple input files</li>
+<li>(Beta2) Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)</li>
 <li>Added complete color management options (still need to add LUT support).</li>
 </ul>
 <h3 id="presets-and-formats">Presets and formats<a class="headerlink" href="#presets-and-formats" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Beta2</strong> Added high compatibility presets for MP4 (Baseline level 3.0)</li>
-<li><strong>Beta2</strong> Added 16 bpc PNG</li>
-<li><strong>Beta2</strong> Enabled alpha by default for PNG and TGA</li>
-<li><strong>Beta2</strong> Added 24-bit and 32-bit WAV</li>
+<li>(Beta2) Added high compatibility presets for MP4 (Baseline level 3.0)</li>
+<li>(Beta2) Added 16 bpc PNG</li>
+<li>(Beta2) Enabled alpha by default for PNG and TGA</li>
+<li>(Beta2) Added 24-bit and 32-bit WAV</li>
 <li>Removed MP4 presets resized to 1080p and 720p. All presets now keep the input size by default, use the &ldquo;Resize&rdquo; option if you need to change the resolution.</li>
 </ul>
 <h3 id="general-improvements">General Improvements<a class="headerlink" href="#general-improvements" title="Permanent link">&para;</a></h3>
@@ -222,6 +224,11 @@
 </ul>
 <h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><strong>Beta3</strong> Fixed crash when loading a media with sound streams</li>
+<li><strong>Beta3</strong> Fixed image sequence incorrect loading</li>
+<li><strong>Beta3</strong> Set pixel format to yuv420 by default for .mp4 even when the codec is not explicitly set.</li>
+<li><strong>Beta3</strong> Fixed ignored output filename editions.</li>
+<li><strong>Beta3</strong> Fixed ignored codec profiles in some specific cases.</li>
 <li>Saving presets no longer leads to a crash.</li>
 <li>Loading presets no longer fails for audio-only or video-only formats.</li>
 </ul>
