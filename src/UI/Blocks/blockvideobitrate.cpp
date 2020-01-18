@@ -92,7 +92,7 @@ void BlockVideoBitrate::update()
 
     emit blockEnabled(true);
 
-    bool useQuality = c->name() == "h264";
+    bool useQuality = c->qualityParam() != "";
     bool useBitrate = !m->isSequence();
 
     actionPerfect_95->setVisible( useQuality );
@@ -182,9 +182,13 @@ void BlockVideoBitrate::update()
             videoQualitySlider->setValue( q );
             videoQualityWidget->setEnabled( true );
 
-            if (q >= 90)
+            if (q == 100)
             {
-                qualityLabel->setText("(Visually) Lossless | " + QString::number(q) + "%");
+                qualityLabel->setText("Lossless (if possible) | 100%");
+            }
+            else if (q >= 90)
+            {
+                qualityLabel->setText("Perfect | " + QString::number(q) + "%");
             }
             else if (q >= 75)
             {

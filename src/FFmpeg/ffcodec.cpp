@@ -9,12 +9,16 @@ FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObj
 {
     _abilities =  Abilities(0);
     _defaultPixFormat = nullptr;
+
+    setQualityParam();
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities = abilities;
     _defaultPixFormat = nullptr;
+
+    setQualityParam();
 }
 
 bool FFCodec::isVideo() const
@@ -193,4 +197,65 @@ QList<FFProfile *> FFCodec::profiles() const
 void FFCodec::addProfile(FFProfile *profile)
 {
     _profiles << profile;
+}
+
+QString FFCodec::qualityParam() const
+{
+    return _qualityParam;
+}
+
+QString FFCodec::qualityValue(int quality)
+{
+    if (_name == "h264")
+    {
+        quality = 100-quality;
+        //adjust to CRF values
+        if (quality < 10)
+        {
+            //convert to range 0-15 // visually lossless
+            quality = quality*15/10;
+        }
+        else if (quality < 25)
+        {
+            //convert to range 15-21 // very good
+            quality = quality-10;
+            quality = quality*6/15;
+            quality = quality+15;
+        }
+        else if (quality < 50)
+        {
+            //convert to range 22-28 // good
+            quality = quality-25;
+            quality = quality*6/25;
+            quality = quality+21;
+        }
+        else if (quality < 75)
+        {
+            //convert to range 29-34 // bad
+            quality = quality-50;
+            quality = quality*6/25;
+            quality = quality+28;
+        }
+        else
+        {
+            //convert to range 35-51 // very bad
+            quality = quality-75;
+            quality = quality*17/25;
+            quality = quality+34;
+        }
+        return QString::number(quality);
+    }
+    return "";
+}
+
+void FFCodec::setQualityParam()
+{
+    if (_name == "h264")
+    {
+        _qualityParam = "-crf";
+    }
+    else
+    {
+        _qualityParam = "";
+    }
 }

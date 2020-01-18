@@ -203,10 +203,11 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             VideoInfo *stream = output->videoStreams()[0];
 
             QString codec = "";
-            if (stream->codec() != nullptr) codec = stream->codec()->name();
-            if (codec != "") arguments << "-c:v" << codec;
+            FFCodec *vc = stream->codec();
+            if (vc == nullptr) vc = output->defaultVideoCodec();
+            if (vc != nullptr) codec = vc->name();
 
-            if (codec == "" && output->defaultVideoCodec() != nullptr) codec = output->defaultVideoCodec()->name();
+            if (codec != "") arguments << "-c:v" << codec;
 
             if (codec != "copy")
             {
@@ -248,47 +249,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //quality (h264)
                 int quality = stream->quality();
-                if ( quality > 0 )
+                if ( quality >= 0 && vc != nullptr )
                 {
-                    if (codec == "h264" || muxer == "mp4" )
-                    {
-                        quality = 100-quality;
-                        //adjust to CRF values
-                        if (quality < 10)
-                        {
-                            //convert to range 0-15 // visually lossless
-                            quality = quality*15/10;
-                        }
-                        else if (quality < 25)
-                        {
-                            //convert to range 15-21 // very good
-                            quality = quality-10;
-                            quality = quality*6/15;
-                            quality = quality+15;
-                        }
-                        else if (quality < 50)
-                        {
-                            //convert to range 22-28 // good
-                            quality = quality-25;
-                            quality = quality*6/25;
-                            quality = quality+21;
-                        }
-                        else if (quality < 75)
-                        {
-                            //convert to range 29-34 // bad
-                            quality = quality-50;
-                            quality = quality*6/25;
-                            quality = quality+28;
-                        }
-                        else
-                        {
-                            //convert to range 35-51 // very bad
-                            quality = quality-75;
-                            quality = quality*17/25;
-                            quality = quality+34;
-                        }
-                        arguments << "-crf" << QString::number(quality);
-                    }
+                    arguments << vc->qualityParam() << vc->qualityValue(quality);
                 }
 
                 //start number (sequences)

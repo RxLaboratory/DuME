@@ -98,11 +98,17 @@ public:
     QList<FFProfile *> profiles() const;
     void addProfile(FFProfile *profile);
 
+    QString qualityParam() const;
+    QString qualityValue( int quality );
+
 private:
     Abilities _abilities;
     QList<FFPixFormat *> _pixFormats;
     FFPixFormat *_defaultPixFormat;
     QList<FFProfile *> _profiles;
+
+    QString _qualityParam;
+    void setQualityParam();
 
 protected:
 

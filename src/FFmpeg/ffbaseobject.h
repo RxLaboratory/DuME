@@ -21,7 +21,7 @@ public:
 
     QJsonObject toJson();
 
-private:
+protected:
     QString _name;
     QString _prettyName;
 };
