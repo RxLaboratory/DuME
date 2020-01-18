@@ -112,4 +112,8 @@ namespace LanguageUtils
     static const LanguageList *languageList = new LanguageList();
 };
 
+namespace MathUtils {
+    double linearInterpolation( double val, double fromMin, double fromMax, double toMin = 0, double toMax = 100);
+}
+
 #endif // UTILS_H

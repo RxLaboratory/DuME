@@ -4,6 +4,7 @@
 #include "ffbaseobject.h"
 #include "ffpixformat.h"
 #include "ffprofile.h"
+#include "utils.h"
 
 #include <QString>
 

@@ -210,39 +210,30 @@ QString FFCodec::qualityValue(int quality)
     {
         quality = 100-quality;
         //adjust to CRF values
-        if (quality < 10)
-        {
-            //convert to range 0-15 // visually lossless
-            quality = quality*15/10;
-        }
-        else if (quality < 25)
-        {
-            //convert to range 15-21 // very good
-            quality = quality-10;
-            quality = quality*6/15;
-            quality = quality+15;
-        }
-        else if (quality < 50)
-        {
-            //convert to range 22-28 // good
-            quality = quality-25;
-            quality = quality*6/25;
-            quality = quality+21;
-        }
-        else if (quality < 75)
-        {
-            //convert to range 29-34 // bad
-            quality = quality-50;
-            quality = quality*6/25;
-            quality = quality+28;
-        }
-        else
-        {
-            //convert to range 35-51 // very bad
-            quality = quality-75;
-            quality = quality*17/25;
-            quality = quality+34;
-        }
+        if (quality < 10) quality = MathUtils::linearInterpolation( quality, 0, 10, 0, 15 );
+        else if (quality < 25) quality = MathUtils::linearInterpolation( quality, 10, 25, 15, 21 );
+        else if (quality < 50) quality = MathUtils::linearInterpolation( quality, 25, 50, 21, 28 );
+        else if (quality < 75) quality = MathUtils::linearInterpolation( quality, 50, 75, 28, 34 );
+        else quality = MathUtils::linearInterpolation( quality, 75, 100, 35, 51 );
+
+        return QString::number(quality);
+    }
+
+    if (_name.indexOf("prores") >= 0)
+    {
+        //0-32
+        quality = 100-quality;
+        //excellent 0-5
+        //very good 5-9
+        //good 9-13
+        //bad 14-23
+        //very bad 24-32
+        if (quality < 10) quality = MathUtils::linearInterpolation( quality, 0, 10, 0, 5 );
+        else if (quality < 25) quality = MathUtils::linearInterpolation( quality, 10, 25, 5, 9 );
+        else if (quality < 50) quality = MathUtils::linearInterpolation( quality, 25, 50, 9, 13 );
+        else if (quality < 75) quality = MathUtils::linearInterpolation( quality, 50, 75, 13, 23 );
+        else quality = MathUtils::linearInterpolation( quality, 75, 100, 23, 32 );
+
         return QString::number(quality);
     }
     return "";
@@ -253,6 +244,10 @@ void FFCodec::setQualityParam()
     if (_name == "h264")
     {
         _qualityParam = "-crf";
+    }
+    else if (_name.indexOf("prores") >= 0)
+    {
+        _qualityParam = "-qscale:v";
     }
     else
     {
