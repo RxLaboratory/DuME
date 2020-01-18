@@ -128,19 +128,21 @@ void OutputWidget::ffmpeg_loadMuxers()
 MediaInfo *OutputWidget::getMediaInfo()
 {
     //ADD CUSTOM PARAMS
+    _mediaInfo->clearFFmpegOptions( true );
     foreach ( BlockBaseWidget *b, _customParams )
     {
         BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
         QString param = bc->param();
+
         if (param != "")
         {
             QStringList option(param);
             option << bc->value();
-            _mediaInfo->addFFmpegOption(option);
+            _mediaInfo->addFFmpegOption(option, true);
         }
     }
     MediaInfo *mi = new MediaInfo( _ffmpeg );
-    qDebug() << _mediaInfo->fileName();
+
     mi->copyFrom( _mediaInfo, true, true);
     return mi;
 }
