@@ -40,10 +40,8 @@ private slots:
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
     void ffmpegConsole( QString c);
-    /**
-     * @brief ffmpeg_init Set FFmpeg binary path (using settings) and get help
-     */
-    void ffmpeg_init();
+    void ffmpegValid(bool valid);
+    void ffmpegStatus(MediaUtils::RenderStatus status);
 
     // AE
     void aeLog(QString l, LogUtils::LogType lt = LogUtils::Information);

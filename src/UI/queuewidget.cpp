@@ -137,6 +137,8 @@ void QueueWidget::log(QString log, LogUtils::LogType lt )
 
 void QueueWidget::addInput()
 {
+    if ( !_ffmpeg->isValid() ) return;
+
     int num = inputWidgets.count();
 
     //create widget
@@ -151,6 +153,8 @@ void QueueWidget::addInput()
 
 void QueueWidget::addOutput()
 {
+    if ( !_ffmpeg->isValid() ) return;
+
     //number of the output
     int num = outputWidgets.count()+1;
 

@@ -118,6 +118,7 @@ void FFmpeg::init()
 {   
 #if INIT_FFMPEG //used when developping to skip ffmpeg loading
     _status = MediaUtils::Initializing;
+    emit statusChanged(_status);
 
     //get version
     emit newLog( "Checking version" );
@@ -167,6 +168,7 @@ void FFmpeg::init()
 
 #endif
     _status = MediaUtils::Waiting;
+    emit statusChanged(_status);
 }
 
 QList<FFBaseObject *> FFmpeg::colorRanges() const
@@ -488,7 +490,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 settings.setValue("prettyName", prettyName);
 
                 //get default codecs
-                QStringList args("-h");
+                QStringList args("-hide_banner");
+                args << "-h";
                 args << "muxer=" + m->name();
                 if (runCommand(args,3000))
                 {
@@ -823,7 +826,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                     }
 
                     //get pixel formats
-                    QStringList args("-h");
+                    QStringList args("-hide_banner");
+                    args << "-h";
                     if (co->isEncoder()) args << "encoder=" + co->name();
                     else args << "decoder=" + co->name();
                     if ( runCommand(args, 3000))

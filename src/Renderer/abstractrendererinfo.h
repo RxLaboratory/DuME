@@ -17,10 +17,13 @@ public:
 
     QString lastErrorMessage() const;
 
+    bool isValid() const;
 signals:
     void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
     void console( QString );
     void binaryChanged( QString binary );
+    void valid(bool);
+    void statusChanged(MediaUtils::RenderStatus);
 
 public slots:
     bool setBinary( QString binary );
@@ -56,6 +59,8 @@ private:
     QString _lastErrorMessage;
 
     void readyRead(QString output);
+
+    bool _valid;
 };
 
 #endif // ABSTRACTRENDERERINFO_H

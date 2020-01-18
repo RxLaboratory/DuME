@@ -24,6 +24,8 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
     connect( _ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect(_ffmpeg,SIGNAL( binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
+    connect( _ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
+    connect( _ffmpeg,SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
     connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
     connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
@@ -120,16 +122,7 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
-    if (_ffmpeg->status() == MediaUtils::Error)
-    {
-        log("FFmpeg error", LogUtils::Critical );
-        log( _ffmpeg->lastErrorMessage() );
-        queuePage->setEnabled(false);
-    }
-    else
-    {
-        ffmpeg_init();
-    }
+    ffmpegValid( _ffmpeg->isValid() );
 
     // ==== Create RenderQueue ====
 
@@ -141,9 +134,6 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
     connect(_renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
     connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
-
-    //accept drops
-    setAcceptDrops(true);
 
     // final connections
 
@@ -166,16 +156,18 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
 
     log("Ready!");
 
-    //add inputs
-    for (int i = 1; i < argc; i++)
+    //add inputs if ffmpeg is valid
+    if (_ffmpeg->isValid())
     {
-        log( "Opening " + QString(argv[i]) );
-        queueWidget->addInputFile(argv[i]);
+        for (int i = 1; i < argc; i++)
+        {
+            log( "Opening " + QString(argv[i]) );
+            queueWidget->addInputFile(argv[i]);
 
+        }
+
+        if (argc == 1) queueWidget->addInputFile("");
     }
-
-    if (argc == 1) queueWidget->addInputFile("");
-
 }
 
 void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
@@ -193,11 +185,36 @@ void MainWindow::ffmpegConsole(QString c)
     consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
 }
 
-void MainWindow::ffmpeg_init()
+void MainWindow::ffmpegValid(bool valid)
 {
-    //get help
-    helpEdit->setText(_ffmpeg->longHelp());
-    queuePage->setEnabled(true);
+    if ( valid )
+    {
+        helpEdit->setText(_ffmpeg->longHelp());
+        queuePage->setEnabled(true);
+        setAcceptDrops( true );
+        actionStatus->setText( "Ready");
+    }
+    else
+    {
+        log("FFmpeg error", LogUtils::Critical );
+        log( _ffmpeg->lastErrorMessage() );
+        queuePage->setEnabled(false);
+        setAcceptDrops( false );
+        actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
+    }
+}
+
+void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
+{
+    if ( status == MediaUtils::Initializing )
+    {
+        ffmpegValid( false );
+        actionStatus->setText( "Initializing FFmpeg..." );
+    }
+    else
+    {
+       ffmpegValid( _ffmpeg->isValid() );
+    }
 }
 
 void MainWindow::aeLog(QString l, LogUtils::LogType lt)

@@ -145,8 +145,6 @@ public:
      */
     MediaUtils::RenderStatus status() const;
 
-
-
 signals:
     void progress(int);
     void progressMax(int);
@@ -221,6 +219,9 @@ private:
      * @param newVersion The version of ffmpeg from which tt output comes from
      */
     void gotPixFormats(QString output, QString newVersion);
+
+    // Is the process available and working
+    bool _valid;
 
 };
 

@@ -5,6 +5,7 @@ AbstractRendererInfo::AbstractRendererInfo(QObject *parent) : QObject(parent)
     _output = "";
     _status = MediaUtils::Waiting;
     _process = new QProcess();
+    _valid = true;
 
     //Connect process
     connect(_process,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
@@ -29,12 +30,17 @@ bool AbstractRendererInfo::setBinary(QString binary)
     {
         _binary = binary;
         _process->setProgram( binary );
+        //check result
         emit binaryChanged( binary );
+        emit valid(true);
+        _valid = true;
         return true;
     }
     else
     {
         emit newLog("Renderer executable binary not found.", LogUtils::Warning );
+        emit valid(false);
+        _valid = false;
         return false;
     }
 }
@@ -110,6 +116,8 @@ void AbstractRendererInfo::errorOccurred(QProcess::ProcessError e)
     emit newLog( error, LogUtils::Critical );
     _lastErrorMessage = error;
     _status = MediaUtils::Error;
+    _valid = false;
+    emit valid(false);
 }
 
 QString AbstractRendererInfo::lastErrorMessage() const
@@ -123,3 +131,9 @@ void AbstractRendererInfo::readyRead(QString output)
     emit console( output );
     _output += output;
 }
+
+bool AbstractRendererInfo::isValid() const
+{
+    return _valid;
+}
+
