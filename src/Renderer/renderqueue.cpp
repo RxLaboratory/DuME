@@ -323,6 +323,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //LUT for input EXR
                 if (exrInput) arguments << "-vf" << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
+
+                //Vendor
+                //set to ap10 with prores for improved compatibility
+                if (codec.indexOf("prores") >= 0) arguments << "-vendor" << "ap10";
             }
         }
         else
