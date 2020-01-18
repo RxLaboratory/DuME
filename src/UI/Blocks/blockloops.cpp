@@ -35,7 +35,7 @@ void BlockLoops::update()
     }
 
     FFMuxer *m = _mediaInfo->muxer();
-    if ( m == nullptr )
+    if ( m->name() == "" )
     {
         emit blockEnabled(false);
         _freezeUI = false;

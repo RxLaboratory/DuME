@@ -9,6 +9,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 {
     _status = MediaUtils::Initializing;
 
+    // Defaults
+    _defaultPixFormat = FFPixFormat::getDefault( this );
+    _defaultCodec = FFCodec::getDefault( this );
+    _defaultMuxer = FFMuxer::getDefault( this );
+
     // The list of Profiles
     _profiles << new FFProfile("", "Auto");
     _profiles << new FFProfile("0", "Proxy");
@@ -219,7 +224,7 @@ FFMuxer *FFmpeg::muxer(QString nameOrExtension)
             return muxer;
         }
     }
-    return nullptr;
+    return _defaultMuxer;
 }
 
 FFCodec *FFmpeg::muxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
@@ -231,7 +236,7 @@ FFCodec *FFmpeg::muxerDefaultCodec(FFMuxer *muxer, FFCodec::Ability ability)
     if (ability == FFCodec::Video) return videoCodec;
     if (ability == FFCodec::Audio) return audioCodec;
 
-    return nullptr;
+    return _defaultCodec;
 }
 
 FFCodec *FFmpeg::muxerDefaultCodec(QString name, FFCodec::Ability ability)
@@ -267,7 +272,7 @@ FFCodec *FFmpeg::videoEncoder(QString name)
     {
         if (codec->prettyName() == name) return codec;
     }
-    return nullptr;
+    return _defaultCodec;
 }
 
 FFCodec *FFmpeg::audioEncoder(QString name)
@@ -281,7 +286,7 @@ FFCodec *FFmpeg::audioEncoder(QString name)
     {
         if (codec->prettyName() == name) return codec;
     }
-    return nullptr;
+    return _defaultCodec;
 }
 
 FFCodec *FFmpeg::videoDecoder(QString name)
@@ -295,7 +300,7 @@ FFCodec *FFmpeg::videoDecoder(QString name)
     {
         if (codec->prettyName() == name) return codec;
     }
-    return nullptr;
+    return _defaultCodec;
 }
 
 FFCodec *FFmpeg::audioDecoder(QString name)
@@ -309,7 +314,7 @@ FFCodec *FFmpeg::audioDecoder(QString name)
     {
         if (codec->prettyName() == name) return codec;
     }
-    return nullptr;
+    return _defaultCodec;
 }
 
 FFPixFormat *FFmpeg::pixFormat(QString name)
@@ -323,7 +328,7 @@ FFPixFormat *FFmpeg::pixFormat(QString name)
     {
         if (pf->prettyName() == name) return pf;
     }
-    return nullptr;
+    return _defaultPixFormat;
 }
 
 FFProfile *FFmpeg::profile(QString name)
@@ -337,7 +342,7 @@ FFProfile *FFmpeg::profile(QString name)
     {
         if (pf->prettyName() == name) return pf;
     }
-    return nullptr;
+    return _profiles[0];
 }
 
 FFBaseObject *FFmpeg::colorTRC(QString name)
@@ -854,7 +859,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                                         QString pixFmt = pfStr.trimmed();
 
                                         FFPixFormat *pf = pixFormat(pixFmt);
-                                        if (pf == nullptr) continue;
+                                        if (pf->name() == "") continue;
                                         co->addPixFormat(pf);
                                         bool deflt = pixFmt == defaultPF;
                                         if ( deflt ) co->setDefaultPixFormat(pf);
@@ -953,7 +958,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                     QString pixFmt = settings.value("name").toString();
 
                     FFPixFormat *pf = pixFormat(pixFmt);
-                    if (pf == nullptr) continue;
+                    if (pf->name() == "") continue;
 
                     co->addPixFormat(pf);
 

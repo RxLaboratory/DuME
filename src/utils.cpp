@@ -159,7 +159,7 @@ QString LanguageUtils::get(QString id, LanguageList::LanguageIDType from, Langua
     return LanguageUtils::languageList->get(id, from, to);
 }
 
-double MathUtils::linearInterpolation(double val, double fromMin, double fromMax, double toMin, double toMax)
+double Interpolations::linear(double val, double fromMin, double fromMax, double toMin, double toMax)
 {
     double dFrom = fromMax - fromMin;
     double dTo = toMax - toMin;

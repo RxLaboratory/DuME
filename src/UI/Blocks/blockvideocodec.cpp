@@ -41,6 +41,11 @@ void BlockVideoCodec::listCodecs()
 void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
 {
     _freezeUI = true;
+    if (name == "")
+    {
+        setDefaultCodec();
+        return;
+    }
 
     if (videoCodecsFilterBox->currentIndex() == 0) videoCodecsFilterBox->setCurrentIndex(1);
 
@@ -82,7 +87,7 @@ void BlockVideoCodec::setDefaultCodec()
 
     //Select Default Codec
 
-    if ( videoCodec != nullptr )
+    if ( videoCodec->name() == "" )
     {
         setCodec( videoCodec->name(), false );
         _freezeUI = true;
@@ -108,7 +113,7 @@ void BlockVideoCodec::activate(bool activate)
     }
     else
     {
-        _mediaInfo->setVideoCodec( nullptr );
+        _mediaInfo->setVideoCodec( "" );
     }
 
     _freezeUI = false;
@@ -135,14 +140,7 @@ void BlockVideoCodec::update()
 
     // set codec
     FFCodec *c = stream->codec();
-    if ( c == nullptr )
-    {
-        setDefaultCodec();
-    }
-    else
-    {
-        setCodec( c->name() );
-    }
+    setCodec( c->name() );
 
 
     emit blockEnabled(true);
@@ -155,7 +153,7 @@ void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
     if (_freezeUI ) return;
     if (index == 0)
     {
-        _mediaInfo->setVideoCodec( nullptr );
+        _mediaInfo->setVideoCodec( "" );
     }
     else
     {

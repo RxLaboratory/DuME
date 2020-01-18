@@ -5,15 +5,15 @@ VideoInfo::VideoInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
     _ffmpeg = ffmpeg;
     _id = -1;
     _quality = -1;
-    _profile = nullptr;
+    _profile = _ffmpeg->profile("");
     _level = "";
     _pixAspect = 1;
-    _pixFormat = nullptr;
+    _pixFormat = _ffmpeg->pixFormat("");
     _bitrate = 0;
     _framerate = 0.0;
     _height = 0;
     _width = 0;
-    _codec = nullptr;
+    _codec = _ffmpeg->videoEncoder("");
     _language = new FFLanguage("");
     _colorPrimaries = _ffmpeg->colorPrimary("");
     _colorTRC = _ffmpeg->colorTRC("");
@@ -72,7 +72,6 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
 
 bool VideoInfo::isCopy()
 {
-    if (_codec == nullptr) return false;
     return _codec->name() == "copy";
 }
 
@@ -80,25 +79,16 @@ QJsonObject VideoInfo::toJson()
 {
     QJsonObject vStream;
     vStream.insert("quality", _quality);
-    if (_profile != nullptr)
-    {
-        vStream.insert("profile", _profile->toJson() );
-    }
+    vStream.insert("profile", _profile->toJson() );
     vStream.insert("level", _level);
     vStream.insert("pixAspect", _pixAspect);
-    if (_pixFormat != nullptr)
-    {
-        vStream.insert("pixFormat", _pixFormat->toJson() );
-    }
+    vStream.insert("pixFormat", _pixFormat->toJson() );
     vStream.insert("premultipliedAlpha", _premultipliedAlpha);
     vStream.insert("bitrate", _bitrate);
     vStream.insert("framerate", _framerate);
     vStream.insert("height", _height);
     vStream.insert("width", _width);
-    if (_codec != nullptr)
-    {
-        vStream.insert("codec", _codec->toJson() );
-    }
+    vStream.insert("codec", _codec->toJson() );
     vStream.insert("language", _language->toJson());
     vStream.insert("colorPrimaries", _colorPrimaries->toJson());
     vStream.insert("colorTRC", _colorTRC->toJson());
@@ -182,8 +172,7 @@ void VideoInfo::setPixFormat(QJsonObject obj, bool silent)
 
 FFPixFormat *VideoInfo::defaultPixFormat() const
 {
-    if (_codec != nullptr) return _codec->defaultPixFormat();
-    return nullptr;
+    return _codec->defaultPixFormat();
 }
 
 qint64 VideoInfo::bitrate() const
@@ -295,11 +284,8 @@ bool VideoInfo::setAlpha(bool alpha, bool silent)
 {
     //select a pixfmt which has an alpha, the closest to the current one (or default)
     FFPixFormat *pf = _pixFormat;
-    if (_codec == nullptr) return false;
-
-    if ( pf == nullptr ) pf = _codec->defaultPixFormat();
-    if ( pf == nullptr && _codec->pixFormats().count() > 0) pf = _codec->pixFormats()[0];
-    if ( pf == nullptr ) return false;
+    if ( pf->name() == "" ) pf = _codec->defaultPixFormat();
+    if ( pf->name() == "" && _codec->pixFormats().count() > 0) pf = _codec->pixFormats()[0];
 
     _pixFormat = _codec->pixFormatWithAlpha(pf, alpha);
 
@@ -310,17 +296,13 @@ bool VideoInfo::setAlpha(bool alpha, bool silent)
 bool VideoInfo::hasAlpha()
 {
     FFPixFormat *pf = _pixFormat;
-    if ( pf == nullptr && _codec == nullptr ) return false;
-    if (pf == nullptr) pf = _codec->defaultPixFormat();
-    if (pf == nullptr) return false;
+    if (pf->name() == "") pf = _codec->defaultPixFormat();
 
     return pf->hasAlpha();
 }
 
 bool VideoInfo::canHaveAlpha()
 {
-    if ( _codec == nullptr ) return false;
-
     foreach (FFPixFormat *pf, _codec->pixFormats())
     {
         if (pf->hasAlpha()) return true;

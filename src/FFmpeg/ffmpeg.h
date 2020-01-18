@@ -174,10 +174,16 @@ private:
     QList<FFCodec *> _videoDecoders;
     // The list of audio decoders
     QList<FFCodec *> _audioDecoders;
+    // The default coder
+    FFCodec *_defaultCodec;
     // The list of muxers
     QList<FFMuxer *> _muxers;
+    // The default muxer
+    FFMuxer *_defaultMuxer;
     // The list of pixel formats
     QList<FFPixFormat *> _pixFormats;
+    // The default pixel formats
+    FFPixFormat *_defaultPixFormat;
     // The list of profiles
     QList<FFProfile *> _profiles;
     // The list of color profiles

@@ -20,7 +20,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     // GENERAL
     if (removeFileName) _fileName = "";
     _extensions.clear();
-    _muxer = nullptr;
+    _muxer = _ffmpeg->muxer("");
     _duration = 0.0;
     _size = 0;
     _bitrate = 0;
@@ -120,13 +120,11 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->videoEncoder( codec );
-            if (c == nullptr ) c = _ffmpeg->videoDecoder( codec );
-            if (c == nullptr ) c = new FFCodec(codec);
+            if (c->name() == "" ) c = _ffmpeg->videoDecoder( codec );
             stream->setCodec( c );
 
             QString pixFormat = match.captured(4).left( match.captured(4).indexOf("(") );
             FFPixFormat *pf = _ffmpeg->pixFormat( pixFormat );
-            if ( pf == nullptr ) pf = new FFPixFormat( pixFormat );
             stream->setPixFormat( pf );
 
             QRegularExpressionMatch matchRes = reResolution.match( info );
@@ -170,8 +168,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = _ffmpeg->audioEncoder( codec );
-            if (c == nullptr ) c = _ffmpeg->audioDecoder( codec );
-            if ( c == nullptr ) c = new FFCodec( codec );
+            if (c->name() == "" ) c = _ffmpeg->audioDecoder( codec );
             stream->setCodec(c);
 
             stream->setSamplingRate( match.captured(4).toInt() );
@@ -256,7 +253,7 @@ QString MediaInfo::getDescription()
         if (fileInfo.suffix() == "aepx") mediaInfoString += "After Effects XML project.";
     }
 
-    if ( _muxer != nullptr )
+    if ( _muxer->name() != "" )
     {
         mediaInfoString += "File format: " + _muxer->prettyName();
     }
@@ -272,7 +269,7 @@ QString MediaInfo::getDescription()
         duration = duration.addSecs( int( _duration ) );
         mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
     }
-    else if ( _muxer != nullptr && _muxer->isSequence() )
+    else if ( _muxer->isSequence() )
     {
         mediaInfoString += "\nDuration: " + QString::number(  _frames.count() ) + " frames";
         mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
@@ -293,7 +290,7 @@ QString MediaInfo::getDescription()
         if ( hasAudio() ) mediaInfoString += "yes";
         else mediaInfoString += "no";
         mediaInfoString += "\nImage sequence: ";
-        if ( _muxer != nullptr && _muxer->isSequence() ) mediaInfoString += "yes";
+        if ( _muxer->isSequence() ) mediaInfoString += "yes";
         else mediaInfoString += "no";
 
         for ( int i = 0; i < _videoStreams.count(); i++)
@@ -306,38 +303,32 @@ QString MediaInfo::getDescription()
             if ( s->language()->name() != "") mediaInfoString += "\nVideo language: " + s->language()->prettyName();
             mediaInfoString += "\nVideo codec: ";
             FFCodec *vc = s->codec();
-            if (vc == nullptr) vc = defaultVideoCodec();
-            if (vc != nullptr)
-            {
-                mediaInfoString += vc->prettyName();
-            }
+            if (vc->name() == "" ) vc = defaultVideoCodec();
+            mediaInfoString += vc->prettyName();
 
             if ( vc->name() == "copy" ) continue;
 
             if (s->width() !=0 || s->height() != 0 ) mediaInfoString += "\nResolution: " + QString::number( s->width() ) + "x" + QString::number( s->height() );
             if (s->aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( s->aspect()*100+0.5 ) / 100.0) + ":1";
             if (s->framerate() != 0 ) mediaInfoString += "\nFramerate: " + QString::number(s->framerate()) + " fps";
-            if (s->profile() != nullptr) if (s->profile()->name() != "") mediaInfoString += "\nProfile: " + s->profile()->prettyName();
+            if (s->profile()->name() != "") mediaInfoString += "\nProfile: " + s->profile()->prettyName();
             if (s->level() != "") mediaInfoString += "\nLevel: " + s->level();
             qint64 bitrate = s->bitrate();
             if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
             if (s->quality() >= 0) mediaInfoString += "\nQuality: " + QString::number(s->quality()) + "%";
             mediaInfoString += "\nPixel Aspect: " + QString::number( int(s->pixAspect()*100+0.5)/ 100.0) + ":1";
             if (s->canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
-            else if (s->codec() == nullptr && canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
+            else if (canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
             else mediaInfoString += "\nCan have alpha: no";
             FFPixFormat *pf = s->pixFormat();
-            if ( pf == nullptr ) pf = defaultPixFormat();
-            if (pf != nullptr)
+            if ( pf->name() == "" ) pf = defaultPixFormat();
+            if (pf->hasAlpha())
             {
-                if (pf->hasAlpha())
-                {
-                    mediaInfoString += "\nAlpha: yes";
-                    if (!s->premultipliedAlpha()) mediaInfoString += " (Unmultiply)";
-                }
-                else mediaInfoString += "\nAlpha: no";
-                mediaInfoString += "\nPixel Format: " + pf->prettyName();
+                mediaInfoString += "\nAlpha: yes";
+                if (!s->premultipliedAlpha()) mediaInfoString += " (Unmultiply)";
             }
+            else mediaInfoString += "\nAlpha: no";
+            mediaInfoString += "\nPixel Format: " + pf->prettyName();
             if ( s->colorTRC()->name() == "iec61966_2_1" && s->colorPrimaries()->name() == "bt709" && s->colorSpace()->name() == "rgb")
             {
                 mediaInfoString += "\nColor profile: sRGB";
@@ -373,11 +364,8 @@ QString MediaInfo::getDescription()
             if ( s->language()->name() != "") mediaInfoString += "\nAudio language: " + s->language()->prettyName();
             mediaInfoString += "\nAudio codec: ";
             FFCodec *ac = s->codec();
-            if (ac == nullptr) ac = defaultAudioCodec();
-            if(ac != nullptr)
-            {
-                mediaInfoString += ac->prettyName();
-            }
+            if (ac->name() == "") ac = defaultAudioCodec();
+            mediaInfoString += ac->prettyName();
 
             if ( ac->name() == "copy" ) continue;
 
@@ -468,7 +456,7 @@ QString MediaInfo::exportPreset()
     mediaObj.insert("version", APPVERSION);
 
     //muxer
-    if (_muxer != nullptr) mediaObj.insert("muxer", _muxer->toJson());
+    mediaObj.insert("muxer", _muxer->toJson());
 
     //video streams
     QJsonArray vStreams = QJsonArray();
@@ -535,10 +523,7 @@ void MediaInfo::setDuration(double duration, bool silent )
 void MediaInfo::setFileName(QString fileName, bool silent )
 {
     _fileName = fileName;
-    if (_muxer != nullptr)
-    {
-        if ( _muxer->isSequence() ) loadSequence();
-    }
+    if ( _muxer->isSequence() ) loadSequence();
     if(!silent) emit changed();
 }
 
@@ -565,7 +550,7 @@ void MediaInfo::setMuxer(FFMuxer *muxer, bool silent )
     qDeleteAll( _videoStreams );
     _videoStreams.clear();
     _muxer = muxer;
-    if (muxer != nullptr && muxer->isSequence()) loadSequence();
+    if ( muxer->isSequence()) loadSequence();
 
     if(!silent) emit changed();
 }
@@ -1019,14 +1004,12 @@ QString MediaInfo::fileName()
 
 FFCodec *MediaInfo::defaultVideoCodec() const
 {
-    if (_muxer != nullptr) return _muxer->defaultVideoCodec();
-    return nullptr;
+    return _muxer->defaultVideoCodec();
 }
 
 FFCodec *MediaInfo::defaultAudioCodec() const
 {
-    if (_muxer != nullptr) return _muxer->defaultAudioCodec();
-    return nullptr;
+    return _muxer->defaultAudioCodec();
 }
 
 qint64 MediaInfo::size()
@@ -1051,13 +1034,11 @@ bool MediaInfo::hasAudio()
 
 bool MediaInfo::isSequence()
 {
-    if (_muxer == nullptr) return false;
     return _muxer->isSequence();
 }
 
 QStringList MediaInfo::extensions() const
 {
-    if (_muxer == nullptr) return _extensions;
     if (_muxer->extensions().count() == 0) return _extensions;
     return _muxer->extensions();
 }
@@ -1123,7 +1104,7 @@ bool MediaInfo::canHaveAlpha() const
 
     //Check with default video codec
     FFCodec *vc = defaultVideoCodec();
-    if (vc == nullptr) return false;
+    if (vc->name() == "") return false;
 
     foreach (FFPixFormat *pf, vc->pixFormats())
     {
@@ -1136,8 +1117,7 @@ bool MediaInfo::canHaveAlpha() const
 void MediaInfo::setAlpha(bool alpha, bool silent)
 {
     FFCodec *vc = defaultVideoCodec();
-    FFPixFormat *pf = nullptr;
-    if (vc != nullptr) pf = vc->defaultPixFormat(alpha);
+    FFPixFormat *pf = vc->defaultPixFormat(alpha);
 
     foreach( VideoInfo *stream, _videoStreams)
     {
@@ -1190,7 +1170,6 @@ bool MediaInfo::isAep() const
 FFPixFormat *MediaInfo::defaultPixFormat() const
 {
     FFCodec *c = defaultVideoCodec();
-    if (c == nullptr) return nullptr;
     return c->defaultPixFormat();
 }
 

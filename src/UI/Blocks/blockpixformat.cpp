@@ -19,7 +19,7 @@ void BlockPixFormat::activate(bool activate)
     }
     else
     {
-        _mediaInfo->setPixFormat( nullptr );
+        _mediaInfo->setPixFormat( "" );
     }
 
     _freezeUI = false;
@@ -53,14 +53,7 @@ void BlockPixFormat::update()
     _freezeUI = true;
 
     FFPixFormat *pf = stream->pixFormat();
-    if ( pf == nullptr )
-    {
-        setDefaultPixFormat();
-    }
-    else
-    {
-        setPixFormat( pf->name() );
-    }
+    setPixFormat( pf->name() );
 
     _freezeUI = false;
 }
@@ -82,12 +75,7 @@ void BlockPixFormat::listPixFormats()
     }
 
     FFCodec *vc = _mediaInfo->videoStreams()[0]->codec();
-    if ( vc == nullptr ) vc = _mediaInfo->defaultVideoCodec();
-    if ( vc == nullptr )
-    {
-        _freezeUI = false;
-        return;
-    }
+    if ( vc->name() == "" ) vc = _mediaInfo->defaultVideoCodec();
 
     _pixFormats = vc->pixFormats();
 
@@ -151,9 +139,9 @@ void BlockPixFormat::setDefaultPixFormat()
     }
 
     FFPixFormat *pf = _mediaInfo->videoStreams()[0]->defaultPixFormat();
-    if (pf == nullptr) pf = _mediaInfo->defaultPixFormat();
+    if (pf->name() == "") pf = _mediaInfo->defaultPixFormat();
 
-    if (pf == nullptr)
+    if (pf->name() == "")
     {
         pixFmtBox->setCurrentIndex( -1 );
     }
@@ -170,6 +158,12 @@ void BlockPixFormat::setDefaultPixFormat()
 void BlockPixFormat::setPixFormat(QString name, bool tryWithoutFilter )
 {
     _freezeUI = true;
+
+    if (name == "")
+    {
+        setDefaultPixFormat();
+        return;
+    }
 
     for(int i = 0; i < pixFmtBox->count(); i++)
     {
@@ -211,7 +205,7 @@ void BlockPixFormat::on_pixFmtFilterBox_currentIndexChanged(int index)
     if (_freezeUI) return;
     if ( index == 0 )
     {
-        _mediaInfo->setPixFormat( nullptr );
+        _mediaInfo->setPixFormat( "" );
     }
     else
     {

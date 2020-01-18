@@ -12,11 +12,15 @@ public:
     /**
      * @brief The muxer type
      */
-    enum Type { AudioOnly, VideoOnly, AudioVideo };
-    Q_ENUM(Type)
+    enum Type{ Audio = 1 << 0,
+               Video = 1 << 1,
+               Sequence = 1 << 2,
+               Subtitles = 1 << 3
+             };
+    Q_DECLARE_FLAGS(Types,Type)
 
     explicit FFMuxer(QString name, QString prettyName = "",QObject *parent = nullptr);
-    explicit FFMuxer(QString name, QString prettyName,Type type, QObject *parent = nullptr);
+    explicit FFMuxer(QString name, QString prettyName, Types types, QObject *parent = nullptr);
     QJsonObject toJson();
 
     /**
@@ -36,12 +40,14 @@ public:
     bool isAudio();
     bool isVideo();
     bool isSequence();
-    void setType(const Type &type);
+    void setAudio(bool audio = true);
+    void setVideo(bool video = true);
     void setSequence(bool sequence = true);
 
     QStringList extensions() const;
     void setExtensions(const QStringList &extensions);
 
+    static FFMuxer *getDefault(QObject *parent = nullptr);
 
 signals:
 
@@ -50,11 +56,8 @@ public slots:
 private:
     FFCodec *_defaultVideoCodec;
     FFCodec *_defaultAudioCodec;
-    Type _type;
+    Types _types;
     QStringList _extensions;
-    bool _sequence;
-
-    void checkType();
 };
 
 #endif // FFMUXER_H

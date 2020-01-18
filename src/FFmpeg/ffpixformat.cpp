@@ -93,6 +93,11 @@ FFPixFormat::ColorSpace FFPixFormat::colorSpace() const
     return _colorSpace;
 }
 
+FFPixFormat *FFPixFormat::getDefault( QObject *parent )
+{
+    return new FFPixFormat( "", "Default", 0, 0, parent );
+}
+
 void FFPixFormat::setAlpha(bool hasAlpha)
 {
     _hasAlpha = hasAlpha;

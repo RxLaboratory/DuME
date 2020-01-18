@@ -68,22 +68,10 @@ void BlockVideoBitrate::update()
     }
 
     FFCodec *c = stream->codec();
-    if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
-    if ( c == nullptr )
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
+    if ( c->name() == "" ) c = _mediaInfo->defaultVideoCodec();
 
     FFMuxer *m = _mediaInfo->muxer();
-    if ( m == nullptr )
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    else if (m->name() == "gif")
+    if (m->name() == "gif")
     {
         emit blockEnabled(false);
         _freezeUI = false;

@@ -92,15 +92,18 @@ public:
     void addPixFormat(FFPixFormat *pixFormat);
 
     FFPixFormat *defaultPixFormat() const;
-    FFPixFormat *defaultPixFormat(bool withAlpha) const;
-    FFPixFormat *pixFormatWithAlpha(FFPixFormat *pf, bool alpha) const;
+    FFPixFormat *defaultPixFormat(bool withAlpha);
+    FFPixFormat *pixFormatWithAlpha(FFPixFormat *pf, bool alpha);
     void setDefaultPixFormat(FFPixFormat *defaultPixFormat);
+    void setDefaultPixFormat();
 
     QList<FFProfile *> profiles() const;
     void addProfile(FFProfile *profile);
 
     QString qualityParam() const;
     QString qualityValue( int quality );
+
+    static FFCodec *getDefault(QObject *parent = nullptr);
 
 private:
     Abilities _abilities;

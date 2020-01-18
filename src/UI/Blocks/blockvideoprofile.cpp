@@ -16,7 +16,7 @@ void BlockVideoProfile::activate(bool activate)
     }
     else
     {
-        _mediaInfo->setVideoProfile( nullptr );
+        _mediaInfo->setVideoProfile( "" );
         _mediaInfo->setVideoLevel( "" );
     }
     _freezeUI = false;
@@ -46,13 +46,7 @@ void BlockVideoProfile::update()
     }
 
     FFCodec *c = stream->codec();
-    if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
-    if ( c == nullptr )
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
+    if ( c->name() == "" ) c = _mediaInfo->defaultVideoCodec();
 
     // add levels
     if ( c->name() == "h264" )
@@ -87,8 +81,7 @@ void BlockVideoProfile::update()
     }
 
     FFProfile *p = stream->profile();
-    if ( p != nullptr ) videoProfileBox->setCurrentData( p->name() );
-    else videoProfileBox->setCurrentIndex( 0 );
+    videoProfileBox->setCurrentData( p->name() );
 
     videoLevelBox->setCurrentData( stream->level() );
 

@@ -55,6 +55,8 @@ public:
     bool hasAlpha() const;
     ColorSpace colorSpace() const;
 
+    static FFPixFormat *getDefault(QObject *parent = nullptr);
+
 private:
     Abilities _abilities;
     int _numComponents;
@@ -63,5 +65,6 @@ private:
     ColorSpace _colorSpace;
 
 };
+
 
 #endif // FFPIXFORMAT_H

@@ -16,7 +16,7 @@ void BlockAlpha::activate(bool activate)
     }
     else
     {
-        _mediaInfo->setPixFormat( nullptr );
+        _mediaInfo->setPixFormat( "" );
         _mediaInfo->setPremultipliedAlpha( true );
     }
     _freezeUI = false;

@@ -2,24 +2,24 @@
 
 FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFBaseObject(name, prettyName, parent)
 {
-    _defaultAudioCodec = nullptr;
-    _defaultVideoCodec = nullptr;
-    _type = AudioVideo;
-     _sequence = false;
+    _defaultAudioCodec = FFCodec::getDefault( this );
+    _defaultVideoCodec = FFCodec::getDefault( this );
+    _types = Types( 0 );
 }
 
-FFMuxer::FFMuxer(QString name, QString prettyName, FFMuxer::Type type, QObject *parent) : FFBaseObject(name, prettyName, parent)
+FFMuxer::FFMuxer(QString name, QString prettyName, Types types, QObject *parent) : FFBaseObject(name, prettyName, parent)
 {
-    _defaultAudioCodec = nullptr;
-    _defaultVideoCodec = nullptr;
-    _type = type;
-    _sequence = false;
+    _defaultAudioCodec = FFCodec::getDefault( this );
+    _defaultVideoCodec = FFCodec::getDefault( this );
+    _types = types;
 }
 
 QJsonObject FFMuxer::toJson()
 {
     QJsonObject obj = FFBaseObject::toJson();
-    obj.insert("sequence", _sequence);
+    obj.insert("sequence", isSequence());
+    obj.insert("video", isVideo());
+    obj.insert("audio", isAudio());
     return obj;
 }
 
@@ -30,8 +30,14 @@ FFCodec *FFMuxer::defaultVideoCodec() const
 
 void FFMuxer::setDefaultVideoCodec(FFCodec *defaultVideoCodec)
 {
-    _defaultVideoCodec = defaultVideoCodec;
-    checkType();
+    if (defaultVideoCodec != nullptr && defaultVideoCodec->name() != "")
+    {
+        _types.setFlag(Video, true);
+        _defaultVideoCodec = defaultVideoCodec;
+        return;
+    }
+    _types.setFlag(Video, false);
+    _defaultVideoCodec = FFCodec::getDefault();
 }
 
 FFCodec *FFMuxer::defaultAudioCodec() const
@@ -41,28 +47,39 @@ FFCodec *FFMuxer::defaultAudioCodec() const
 
 void FFMuxer::setDefaultAudioCodec(FFCodec *defaultAudioCodec)
 {
-    _defaultAudioCodec = defaultAudioCodec;
-    checkType();
+    if (defaultAudioCodec != nullptr && defaultAudioCodec->name() != "")
+    {
+        _types.setFlag(Audio, true);
+        _defaultAudioCodec = defaultAudioCodec;
+        return;
+    }
+    _types.setFlag(Audio, false);
+    _defaultAudioCodec = FFCodec::getDefault();
 }
 
 bool FFMuxer::isAudio()
 {
-    return _type == AudioOnly || _type == AudioVideo;
+    return _types.testFlag(Audio);
 }
 
 bool FFMuxer::isVideo()
 {
-    return _type == VideoOnly || _type == AudioVideo;
+    return _types.testFlag(Video);
 }
 
 bool FFMuxer::isSequence()
 {
-    return _sequence;
+    return _types.testFlag(Sequence);
 }
 
-void FFMuxer::setType(const Type &type)
+void FFMuxer::setAudio(bool audio)
 {
-    _type = type;
+    _types.setFlag(Audio, audio);
+}
+
+void FFMuxer::setVideo(bool video)
+{
+    _types.setFlag(Video, video);
 }
 
 QStringList FFMuxer::extensions() const
@@ -75,14 +92,16 @@ void FFMuxer::setExtensions(const QStringList &extensions)
     _extensions = extensions;
 }
 
-void FFMuxer::setSequence(bool sequence)
+FFMuxer *FFMuxer::getDefault( QObject *parent )
 {
-    _sequence = sequence;
+    FFMuxer *m = new FFMuxer( "", "Default", parent );
+    m->setAudio();
+    m->setVideo();
+    return m;
 }
 
-void FFMuxer::checkType()
+void FFMuxer::setSequence(bool sequence)
 {
-    if (_defaultAudioCodec == nullptr && _defaultVideoCodec != nullptr) _type = VideoOnly;
-    else if (_defaultAudioCodec != nullptr && _defaultVideoCodec == nullptr) _type = AudioOnly;
-    else if (_defaultAudioCodec != nullptr && _defaultVideoCodec != nullptr) _type = AudioVideo;
+    if (sequence) _types.setFlag(Video, true);
+    _types.setFlag(Sequence, sequence);
 }

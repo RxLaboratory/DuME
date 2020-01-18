@@ -139,8 +139,7 @@ void BlockResize::checkSizes( )
     if (( h % 2 != 0 || w % 2 != 0 ) && _mediaInfo->hasVideo() )
     {
         FFCodec *c = _mediaInfo->videoStreams()[0]->codec();
-        if ( c == nullptr ) c = _mediaInfo->defaultVideoCodec();
-        if ( c == nullptr ) return;
+        if ( c->name() == "") c = _mediaInfo->defaultVideoCodec();
         if ( c->name() == "h264" )
         {
             emit status("h264 needs even numbers.");

@@ -108,10 +108,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     MediaInfo *o = item->getOutputMedias()[0];
     FFPixFormat *outputPixFmt = nullptr;
     if (o->hasVideo()) outputPixFmt = o->videoStreams()[0]->pixFormat();
-    if (outputPixFmt == nullptr) outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
-    if (outputPixFmt == nullptr) outputPixFmt = o->defaultPixFormat();
+    if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
+    if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
     FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
-    if (outputPixFmt != nullptr) outputColorSpace = outputPixFmt->colorSpace();
+    if (outputPixFmt->name() == "") outputColorSpace = outputPixFmt->colorSpace();
 
     //input checks
     bool exrInput = false;
@@ -145,9 +145,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             //add color management
             FFPixFormat::ColorSpace inputColorSpace = FFPixFormat::OTHER;
             FFPixFormat *inputPixFmt = stream->pixFormat();
-            if (inputPixFmt == nullptr) inputPixFmt = stream->defaultPixFormat();
-            if (inputPixFmt == nullptr) inputPixFmt = input->defaultPixFormat();
-            if (inputPixFmt != nullptr) inputColorSpace = inputPixFmt->colorSpace();
+            if (inputPixFmt->name() == "") inputPixFmt = stream->defaultPixFormat();
+            if (inputPixFmt->name() == "") inputPixFmt = input->defaultPixFormat();
+            inputColorSpace = inputPixFmt->colorSpace();
 
             bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
 
@@ -176,16 +176,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         }
 
         //muxer
-        QString muxer = "";
-        if (output->muxer() != nullptr)
-        {
-            muxer = output->muxer()->name();
-            if (output->muxer()->isSequence()) muxer = "image2";
-        }
-        if (muxer != "")
-        {
-            arguments << "-f" << muxer;
-        }
+        QString muxer = output->muxer()->name();
+        if (output->muxer()->isSequence()) muxer = "image2";
+
+        if (muxer != "") arguments << "-f" << muxer;
 
         //add custom options
         foreach(QStringList option,output->ffmpegOptions())
@@ -202,14 +196,11 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         {
             VideoInfo *stream = output->videoStreams()[0];
 
-            QString codec = "";
             FFCodec *vc = stream->codec();
-            if (vc == nullptr) vc = output->defaultVideoCodec();
-            if (vc != nullptr) codec = vc->name();
+            if (vc->name() != "") arguments << "-c:v" << vc->name();
+            else vc = output->defaultVideoCodec();
 
-            if (codec != "") arguments << "-c:v" << codec;
-
-            if (codec != "copy")
+            if (vc->name() != "copy")
             {
                 //bitrate
                 int bitrate = int( stream->bitrate() );
@@ -219,12 +210,12 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 int width = stream->width();
                 int height = stream->height();
                 //fix odd sizes (for h264)
-                if (codec == "h264" && width % 2 != 0)
+                if (vc->name() == "h264" && width % 2 != 0)
                 {
                     width--;
                     emit newLog("Adjusting width for h264 compatibility. New width: " + QString::number(width));
                 }
-                if (codec == "h264" && height % 2 != 0)
+                if (vc->name() == "h264" && height % 2 != 0)
                 {
                     height--;
                     emit newLog("Adjusting height for h264 compatibility. New height: " + QString::number(height));
@@ -235,21 +226,21 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (stream->framerate() != 0.0) arguments << "-r" << QString::number(stream->framerate());
 
                 //loop (gif)
-                if (codec == "gif")
+                if (vc->name() == "gif")
                 {
                     int loop = output->loop();
                     arguments << "-loop" << QString::number(loop);
                 }
 
                 //profile
-                if (stream->profile() != nullptr && stream->profile()->name() != "") arguments << "-profile:v" << stream->profile()->name();
+                if (stream->profile()->name() != "") arguments << "-profile:v" << stream->profile()->name();
 
                 //level
                 if (stream->level() != "") arguments << "-level" << stream->level();
 
                 //quality (h264)
                 int quality = stream->quality();
-                if ( quality >= 0 && vc != nullptr )
+                if ( quality >= 0 && vc->name() != "" )
                 {
                     arguments << vc->qualityParam() << vc->qualityValue(quality);
                 }
@@ -262,10 +253,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //pixel format
-                QString pixFmt = "";
-                if (stream->pixFormat() != nullptr) pixFmt = stream->pixFormat()->name();
+                QString pixFmt = stream->pixFormat()->name();
                 //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
-                if (pixFmt == "" && codec == "h264") pixFmt = "yuv420p";
+                if (pixFmt == "" && vc->name() == "h264") pixFmt = "yuv420p";
                 if (pixFmt == "" && muxer == "mp4") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
 
@@ -278,7 +268,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //b-pyramids
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
-                if (codec == "h264") arguments << "-x264opts" << "b_pyramid=0";
+                if (vc->name() == "h264") arguments << "-x264opts" << "b_pyramid=0";
 
                 //unpremultiply
                 bool unpremultiply = !stream->premultipliedAlpha();
@@ -289,7 +279,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //Vendor
                 //set to ap10 with prores for improved compatibility
-                if (codec.indexOf("prores") >= 0) arguments << "-vendor" << "ap10";
+                if (vc->name().indexOf("prores") >= 0) arguments << "-vendor" << "ap10";
             }
         }
         else
@@ -302,8 +292,8 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         {
             AudioInfo *stream = output->audioStreams()[0];
 
-            QString acodec = "";
-            if (stream->codec() != nullptr) acodec = stream->codec()->name();
+            QString acodec = stream->codec()->name();
+            if (acodec == "")
 
             //codec
             if (acodec != "") arguments << "-c:a" << acodec;
@@ -335,12 +325,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         QString outputPath = QDir::toNativeSeparators( output->fileName() );
 
         //if sequence, digits
-        if (output->muxer() != nullptr)
+        if (output->isSequence())
         {
-            if (output->isSequence())
-            {
-                outputPath = QDir::toNativeSeparators( output->ffmpegSequenceName() );
-            }
+            outputPath = QDir::toNativeSeparators( output->ffmpegSequenceName() );
         }
 
         arguments << outputPath;

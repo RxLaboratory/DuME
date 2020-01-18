@@ -8,17 +8,17 @@
 FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities =  Abilities(0);
-    _defaultPixFormat = nullptr;
 
     setQualityParam();
+    setDefaultPixFormat( );
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities = abilities;
-    _defaultPixFormat = nullptr;
 
     setQualityParam();
+    setDefaultPixFormat( );
 }
 
 bool FFCodec::isVideo() const
@@ -111,14 +111,15 @@ FFPixFormat *FFCodec::defaultPixFormat() const
     return _defaultPixFormat;
 }
 
-FFPixFormat *FFCodec::defaultPixFormat(bool withAlpha) const
+FFPixFormat *FFCodec::defaultPixFormat(bool withAlpha)
 {
     return pixFormatWithAlpha( _defaultPixFormat, withAlpha);
 }
 
-FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha) const
+FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
 {
-    if (pf == nullptr) return nullptr;
+    if (pf == nullptr) return FFPixFormat::getDefault( this );
+
     if ( pf->hasAlpha() != alpha )
     {
         //find the closest one with(out) alpha
@@ -189,6 +190,11 @@ void FFCodec::setDefaultPixFormat(FFPixFormat *defaultPixFormat)
     _defaultPixFormat = defaultPixFormat;
 }
 
+void FFCodec::setDefaultPixFormat( )
+{
+    _defaultPixFormat = FFPixFormat::getDefault(this);
+}
+
 QList<FFProfile *> FFCodec::profiles() const
 {
     return _profiles;
@@ -210,11 +216,11 @@ QString FFCodec::qualityValue(int quality)
     {
         quality = 100-quality;
         //adjust to CRF values
-        if (quality < 10) quality = MathUtils::linearInterpolation( quality, 0, 10, 0, 15 );
-        else if (quality < 25) quality = MathUtils::linearInterpolation( quality, 10, 25, 15, 21 );
-        else if (quality < 50) quality = MathUtils::linearInterpolation( quality, 25, 50, 21, 28 );
-        else if (quality < 75) quality = MathUtils::linearInterpolation( quality, 50, 75, 28, 34 );
-        else quality = MathUtils::linearInterpolation( quality, 75, 100, 35, 51 );
+        if (quality < 10) quality = Interpolations::linear( quality, 0, 10, 0, 15 );
+        else if (quality < 25) quality = Interpolations::linear( quality, 10, 25, 15, 21 );
+        else if (quality < 50) quality = Interpolations::linear( quality, 25, 50, 21, 28 );
+        else if (quality < 75) quality = Interpolations::linear( quality, 50, 75, 28, 34 );
+        else quality = Interpolations::linear( quality, 75, 100, 35, 51 );
 
         return QString::number(quality);
     }
@@ -228,15 +234,21 @@ QString FFCodec::qualityValue(int quality)
         //good 9-13
         //bad 14-23
         //very bad 24-32
-        if (quality < 10) quality = MathUtils::linearInterpolation( quality, 0, 10, 0, 5 );
-        else if (quality < 25) quality = MathUtils::linearInterpolation( quality, 10, 25, 5, 9 );
-        else if (quality < 50) quality = MathUtils::linearInterpolation( quality, 25, 50, 9, 13 );
-        else if (quality < 75) quality = MathUtils::linearInterpolation( quality, 50, 75, 13, 23 );
-        else quality = MathUtils::linearInterpolation( quality, 75, 100, 23, 32 );
+        if (quality < 10) quality = Interpolations::linear( quality, 0, 10, 0, 5 );
+        else if (quality < 25) quality = Interpolations::linear( quality, 10, 25, 5, 9 );
+        else if (quality < 50) quality = Interpolations::linear( quality, 25, 50, 9, 13 );
+        else if (quality < 75) quality = Interpolations::linear( quality, 50, 75, 13, 23 );
+        else quality = Interpolations::linear( quality, 75, 100, 23, 32 );
 
         return QString::number(quality);
     }
     return "";
+}
+
+FFCodec *FFCodec::getDefault( QObject* parent )
+{
+    FFCodec *c = new FFCodec( "", "Default", FFCodec::Audio | FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame , parent);
+    return c;
 }
 
 void FFCodec::setQualityParam()

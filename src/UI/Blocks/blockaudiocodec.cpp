@@ -25,7 +25,7 @@ void BlockAudioCodec::activate(bool activate)
     }
     else
     {
-        _mediaInfo->setAudioCodec( nullptr );
+        _mediaInfo->setAudioCodec( "" );
     }
 
     _freezeUI = false;
@@ -55,14 +55,7 @@ void BlockAudioCodec::update()
     _freezeUI = true;
 
     FFCodec *c = _mediaInfo->audioStreams()[0]->codec();
-    if ( c == nullptr )
-    {
-        setDefaultCodec();
-    }
-    else
-    {
-        setCodec( c->name() );
-    }
+    setCodec( c->name() );
 
     _freezeUI = false;
 }
@@ -75,7 +68,7 @@ void BlockAudioCodec::setDefaultCodec()
     listCodecs();
 
     FFCodec *c = _mediaInfo->defaultAudioCodec();
-    if (c != nullptr)
+    if (c->name() != "")
     {
         setCodec( c->name(), false );
     }
@@ -92,6 +85,12 @@ void BlockAudioCodec::setDefaultCodec()
 void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
 {
     _freezeUI = true;
+
+    if (name == "")
+    {
+        setDefaultCodec();
+        return;
+    }
 
     for (int i = 0; i < audioCodecsBox->count(); i++)
     {
@@ -150,7 +149,7 @@ void BlockAudioCodec::on_audioCodecsFilterBox_currentIndexChanged(int index)
     if (_freezeUI ) return;
     if (index == 0)
     {
-        _mediaInfo->setAudioCodec( nullptr );
+        _mediaInfo->setAudioCodec( "" );
     }
     else
     {

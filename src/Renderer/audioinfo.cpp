@@ -7,7 +7,7 @@ AudioInfo::AudioInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
     _samplingRate = 0;
     _channels = "";
     _bitrate = 0;
-    _codec = nullptr;
+    _codec = _ffmpeg->audioEncoder("");
     _language = new FFLanguage("");
 }
 
@@ -38,7 +38,6 @@ void AudioInfo::copyFrom(AudioInfo *other, bool silent)
 
 bool AudioInfo::isCopy()
 {
-    if (_codec == nullptr) return false;
     return _codec->name() == "copy";
 }
 
@@ -48,7 +47,7 @@ QJsonObject AudioInfo::toJson()
     obj.insert("samplingRate", _samplingRate);
     obj.insert("channels",_channels);
     obj.insert("bitrate", _bitrate);
-    if (_codec != nullptr) obj.insert( "codec", _codec->toJson());
+    obj.insert( "codec", _codec->toJson());
     obj.insert("language", _language->toJson());
 
     return obj;
