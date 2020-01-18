@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTime>
+#include <QElapsedTimer>
 #include <QProcess>
 #include <QTimer>
 #include <QElapsedTimer>

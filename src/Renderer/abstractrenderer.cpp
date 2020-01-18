@@ -83,7 +83,7 @@ void AbstractRenderer::start( QStringList arguments, int numThreads )
     {
         launchProcess( arguments );
     }
-    _startTime.start();
+    _startTime = QTime::currentTime();
 
     setStatus( MediaUtils::Encoding );
 }
@@ -382,9 +382,6 @@ void AbstractRenderer::setCurrentFrame(int currentFrame, double size, double bit
     {
         _encodingSpeed = speed;
     }
-
-       qDebug() << _timeRemaining;
-       qDebug() << _numFrames;
 }
 
 void AbstractRenderer::readyRead(QString output)
