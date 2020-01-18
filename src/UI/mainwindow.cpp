@@ -2,6 +2,7 @@
 
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
+#include <QGraphicsBlurEffect>
 #include "duexr.h"
 
 MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
@@ -189,18 +190,22 @@ void MainWindow::ffmpegValid(bool valid)
 {
     if ( valid )
     {
+        queuePage->setGraphicsEffect( nullptr );
         helpEdit->setText(_ffmpeg->longHelp());
         queuePage->setEnabled(true);
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
+        actionGo->setEnabled( true );
     }
     else
     {
+        queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
         log("FFmpeg error", LogUtils::Critical );
         log( _ffmpeg->lastErrorMessage() );
         queuePage->setEnabled(false);
         setAcceptDrops( false );
         actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
+        actionGo->setEnabled( false );
     }
 }
 
@@ -423,10 +428,12 @@ void MainWindow::on_actionSettings_triggered(bool checked)
 {
     if (checked)
     {
+        actionSettings->setIcon(QIcon(":/icons/close-thin"));
         mainStackWidget->setCurrentIndex(1);
     }
     else
     {
+        actionSettings->setIcon(QIcon(":/icons/settings"));
         mainStackWidget->setCurrentIndex(0);
     }
 }
