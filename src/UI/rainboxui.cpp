@@ -140,3 +140,44 @@ void UISplashScreen::progress(int val)
     _progressBar->setValue(val);
     repaint();
 }
+
+AppVersion::AppVersion(int major, int minor, int micro, QString suffix):
+    QVersionNumber(major, minor, micro)
+{
+    _suffix = suffix;
+}
+
+AppVersion::AppVersion(int major, int minor, int micro):
+    QVersionNumber(major, minor, micro)
+{
+    _suffix = "";
+}
+
+AppVersion::AppVersion(int major, int minor):
+    QVersionNumber(major, minor)
+{
+    _suffix = "";
+}
+
+AppVersion::AppVersion(int major):
+    QVersionNumber(major)
+{
+    _suffix = "";
+}
+
+QString AppVersion::getString()
+{
+    QString v = this->toString();
+    if (_suffix != "") v = v + "-" + _suffix;
+    return v;
+}
+
+QString AppVersion::suffix() const
+{
+    return _suffix;
+}
+
+void AppVersion::setSuffix(const QString &suffix)
+{
+    _suffix = suffix;
+}

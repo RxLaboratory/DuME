@@ -1,0 +1,26 @@
+1 ICON "dume.ico"
+
+#include "version.h"
+
+1 VERSIONINFO
+FILEVERSION    VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904b0"
+        {
+            VALUE "CompanyName",        STR_COMPANYNAME
+            VALUE "FileDescription",    STR_FILEDESCRIPTION
+            VALUE "FileVersion",        STR_FILEVERSION
+            VALUE "LegalCopyright",     STR_LEGALCOPYRIGHT
+            VALUE "OriginalFilename",   STR_ORIGINALFILENAME
+            VALUE "ProductName",        STR_PRODUCTNAME
+            VALUE "ProductVersion",     STR_PRODUCTVERSION
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x409, 1200
+    }
+}

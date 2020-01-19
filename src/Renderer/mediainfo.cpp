@@ -453,7 +453,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 QString MediaInfo::exportPreset()
 {
     QJsonObject mediaObj;
-    mediaObj.insert("version", APPVERSION);
+    mediaObj.insert("version", qApp->applicationVersion());
 
     //muxer
     mediaObj.insert("muxer", _muxer->toJson());

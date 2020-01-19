@@ -9,24 +9,29 @@
 
 #include "FFmpeg/ffmpeg.h"
 #include "UI/rainboxui.h"
+#include "version.h"
+
+//global: app version
+AppVersion DuMEVersion(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD,VERSION_SUFFIX);
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QString currentVersionStr = DuMEVersion.getString();
 
     //set style
     RainboxUI::updateCSS(":/styles/default", "dume");
 
     //load settings
-    QCoreApplication::setOrganizationName("Rainbox Laboratory");
-    QCoreApplication::setOrganizationDomain("rainboxlab.org");
-    QCoreApplication::setApplicationName("DuME");
-    QCoreApplication::setApplicationVersion(APPVERSION);
+    QCoreApplication::setOrganizationName(STR_COMPANYNAME);
+    QCoreApplication::setOrganizationDomain(STR_COMPANYDOMAIN);
+    QCoreApplication::setApplicationName(STR_PRODUCTNAME);
+    QCoreApplication::setApplicationVersion(currentVersionStr);
 
     //create splash screen
     QString v = "DuME v";
     QPixmap pixmap(":/images/splash");
-    UISplashScreen splash(pixmap, v+APPVERSION);
+    UISplashScreen splash(pixmap, v+currentVersionStr);
 
     //set app icon
     qApp->setWindowIcon(QIcon(":/icons/app"));
@@ -36,10 +41,15 @@ int main(int argc, char *argv[])
 
 
     QSettings settings;
-    if (settings.value("version", "").toString() != APPVERSION)
+    QString prevVersionStr = settings.value("version", "").toString();
+    QVersionNumber prevVersion = QVersionNumber::fromString( prevVersionStr );
+    if ( prevVersion.majorVersion() != DuMEVersion.majorVersion() || prevVersion.minorVersion() != DuMEVersion.minorVersion() )
     {
-        settings.clear();
-        settings.setValue("version",APPVERSION);
+        settings.clear(); 
+    }
+    if (prevVersionStr != currentVersionStr)
+    {
+        settings.setValue("version", currentVersionStr);
         settings.setValue("ffmpeg/version","");
     }
 

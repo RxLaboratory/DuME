@@ -10,6 +10,7 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QFontDatabase>
+#include <QVersionNumber>
 
 #include "utils.h"
 
@@ -52,5 +53,19 @@ private:
     QLabel *_versionLabel;
 };
 
+class AppVersion : public QVersionNumber
+{
+public:
+    AppVersion(int major, int minor, int micro, QString suffix);
+    AppVersion(int major, int minor, int micro);
+    AppVersion(int major, int minor);
+    AppVersion(int major);
+    QString getString();
+    QString suffix() const;
+    void setSuffix(const QString &suffix);
+
+private:
+    QString _suffix;
+};
 
 #endif // RAINBOXUI_H

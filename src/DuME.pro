@@ -22,13 +22,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-# The current version
-DEFINES += APPVERSION=\\\"0.1.0-RC1\\\"
-
 # For speeding up launch time when working, you can comment this line out.
 # Be sure to set it back when you're finished, before committing your changes.
 DEFINES += INIT_AE INIT_FFMPEG
-
 
 SOURCES += \
     AfterEffects/aftereffects.cpp \
@@ -141,7 +137,8 @@ HEADERS += \
     UI/streamreferencewidget.h \
     UI/toolbarspacer.h \
     languagelist.h \
-    utils.h
+    utils.h \
+    version.h
 
 FORMS += \
     UI/Blocks/blockaecomp.ui \
@@ -171,15 +168,13 @@ FORMS += \
     UI/streamreferencewidget.ui \
     UI/toolbarspacer.ui
 
-RESOURCES += \
-    resources.qrc
-
-!macx: DISTFILES += \
-    resources/ico.rc
-
-!macx: RC_FILE = resources/ico.rc
+RESOURCES += resources.qrc
 
 ICON = resources/icons/appIcon.icns
+
+win*:DISTFILES += DuME.rc
+win*:RC_FILE = DuME.rc
+win*:!build_pass:touch($$RC_FILE, version.h)
 
 # OpenImageIO
 
