@@ -3,6 +3,7 @@
 BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
+    qDebug() << "Create frame rate block";
     setupUi(this);
 
     _presets->addAction( action8_fps );

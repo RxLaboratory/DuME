@@ -3,6 +3,7 @@
 BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
+    qDebug() << "Create video bitrate/quality block";
     setupUi(this);
 
     _presets->addAction( actionPerfect_95 );

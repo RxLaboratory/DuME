@@ -3,6 +3,8 @@
 BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
+    qDebug() << "Create video codec block";
+
     _freezeUI = true;
 
     setupUi(this);
@@ -41,11 +43,6 @@ void BlockVideoCodec::listCodecs()
 void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
 {
     _freezeUI = true;
-    if (name == "")
-    {
-        setDefaultCodec();
-        return;
-    }
 
     if (videoCodecsFilterBox->currentIndex() == 0) videoCodecsFilterBox->setCurrentIndex(1);
 
@@ -66,7 +63,7 @@ void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
         listCodecs();
         setCodec( name, false );
     }
-    else // set none
+    else // set default
     {
         videoCodecsBox->setCurrentIndex( -1 );
     }
@@ -87,7 +84,7 @@ void BlockVideoCodec::setDefaultCodec()
 
     //Select Default Codec
 
-    if ( videoCodec->name() == "" )
+    if ( videoCodec->name() != "" )
     {
         setCodec( videoCodec->name(), false );
         _freezeUI = true;
@@ -140,7 +137,8 @@ void BlockVideoCodec::update()
 
     // set codec
     FFCodec *c = stream->codec();
-    setCodec( c->name() );
+    if ( c->name() == "" ) setDefaultCodec();
+    else setCodec( c->name() );
 
 
     emit blockEnabled(true);
