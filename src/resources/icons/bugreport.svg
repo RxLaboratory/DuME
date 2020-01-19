@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Calque_1"
+   data-name="Calque 1"
+   viewBox="0 0 32 32"
+   version="1.1"
+   sodipodi:docname="bugreport.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1131"
+     inkscape:window-height="850"
+     id="namedview11"
+     showgrid="false"
+     inkscape:zoom="15.078474"
+     inkscape:cx="6.7140132"
+     inkscape:cy="8.8919965"
+     inkscape:window-x="432"
+     inkscape:window-y="371"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Calque_1" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#e3e3e3;}</style>
+  </defs>
+  <title
+     id="title6">bugreport_l</title>
+  <path
+     class="cls-1"
+     d="M24.89,3.79H6.2A3.12,3.12,0,0,0,3.09,6.91v14A3.11,3.11,0,0,0,6.2,24h4.67v4.09a.58.58,0,0,0,.93.47L17.88,24h7A3.11,3.11,0,0,0,28,20.92v-14A3.12,3.12,0,0,0,24.89,3.79ZM12.69,8a3.28,3.28,0,0,1,4.48-1.2A3.14,3.14,0,0,1,18.37,8a3.25,3.25,0,0,1,.44,1.64H12.25A3.15,3.15,0,0,1,12.69,8Zm10,7.47a1,1,0,0,1-.68.26H20.42v.47A4,4,0,0,1,20,18l1.79,1.76a1,1,0,0,1,.26.67.9.9,0,0,1-.28.66.86.86,0,0,1-.65.28,1,1,0,0,1-.68-.26l-1.58-1.62a4.13,4.13,0,0,1-2.67.94V13.27a.34.34,0,0,0-.35-.35h-.7a.34.34,0,0,0-.35.35v7.15a4.13,4.13,0,0,1-2.67-.94L10.55,21.1a1,1,0,0,1-.67.26.87.87,0,0,1-.66-.28.9.9,0,0,1-.28-.66,1,1,0,0,1,.26-.67L11,18a4,4,0,0,1-.41-1.79v-.47H9a1,1,0,0,1-.68-.26A.88.88,0,0,1,8,14.81a.89.89,0,0,1,.28-.67.87.87,0,0,1,.66-.28h1.64V12.13L9.2,10.78a1,1,0,0,1-.26-.67,1,1,0,0,1,.94-.94,1,1,0,0,1,.67.26l1.58,1.62h6.74l1.58-1.62a1,1,0,0,1,.68-.26,1,1,0,0,1,.93.94,1,1,0,0,1-.26.67l-1.38,1.35v1.73h1.64a.87.87,0,0,1,.66.28.9.9,0,0,1,.28.69A.85.85,0,0,1,22.71,15.47Z"
+     id="path8"
+     style="fill:#6d6d6d;fill-opacity:1" />
+</svg>

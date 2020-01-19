@@ -13,6 +13,7 @@
 #include <QDateTime>
 #include <QMimeData>
 #include <QDebug>
+#include <QDesktopServices>
 
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
@@ -23,6 +24,7 @@
 #include "settingswidget.h"
 #include "queuewidget.h"
 #include "rainboxui.h"
+#include "version.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -62,6 +64,12 @@ private slots:
     void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionSettings_triggered(bool checked);
+    void on_actionBug_report_triggered();
+    void on_actionChat_triggered();
+
+    void on_actionForum_triggered();
+
+    void on_actionHelp_triggered();
 
 private:
     /**
@@ -84,6 +92,7 @@ private:
     QToolButton *quitButton;
     QToolButton *maximizeButton;
     QToolButton *minimizeButton;
+    QMenu *helpMenu;
     /**
      * @brief settingsWidget The settings page
      */

@@ -39,9 +39,23 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     ToolBarSpacer *tbs = new ToolBarSpacer();
     mainToolBar->addWidget(tbs);
 
-    //settings button
+    //settings and other buttons to the right
     mainToolBar->addAction(actionSettings);
     mainToolBar->widgetForAction( actionSettings )->setObjectName("windowButton");
+
+    QToolButton *helpButton = new QToolButton(this);
+    helpButton->setIcon(QIcon(":/icons/help"));
+    helpButton->setObjectName("windowButton");
+    helpButton->setPopupMode( QToolButton::InstantPopup );
+    helpMenu = new QMenu(this);
+    helpMenu->addAction(actionBug_report);
+    helpMenu->addAction(actionChat);
+    helpMenu->addAction(actionForum);
+    helpMenu->addAction(actionHelp);
+
+    helpButton->setMenu(helpMenu);
+
+    mainToolBar->addWidget( helpButton );
 
     //window buttons for frameless win
 
@@ -594,4 +608,24 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *event)
 void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
     event->accept();
+}
+
+void MainWindow::on_actionBug_report_triggered()
+{
+    QDesktopServices::openUrl ( QUrl( URL_BUGREPORT ) );
+}
+
+void MainWindow::on_actionChat_triggered()
+{
+    QDesktopServices::openUrl ( QUrl( URL_CHAT ) );
+}
+
+void MainWindow::on_actionForum_triggered()
+{
+    QDesktopServices::openUrl ( QUrl( URL_FORUM ) );
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+    QDesktopServices::openUrl ( QUrl( URL_DOC ) );
 }

@@ -2,7 +2,7 @@
 
 This is the list of what has changed since the first public version of *DuFFmpeg*.
 
-## 0.1.0
+## 0.1.1
 
 ### New Features
 
@@ -12,6 +12,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)
 - Added complete color management options (still need to add LUT support).
 - Ability to open files with DuME. They will be added as input medias.
+- Added a *Help menu* on the top right corner of the window with useful links
 
 ### Presets and formats
 

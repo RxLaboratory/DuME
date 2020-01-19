@@ -31,4 +31,9 @@
 
 #define STR_COMPANYDOMAIN "rainboxlab.org"
 
+#define URL_CHAT "https://discord.gg/7n9zwU"
+#define URL_FORUM "https://forum.rainboxlab.org"
+#define URL_DOC "https://dume-docs.rainboxlab.org"
+#define URL_BUGREPORT "https://github.com/Rainbox-dev/DuME/issues/new?assignees=&labels=Bug&template=bug_report.md&title="
+
 #endif // VERSION_H
