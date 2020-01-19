@@ -56,6 +56,7 @@ public slots:
 private slots:
     void mediaInfoChanged();
     void inputMediaChanged();
+    void newInputMedia(MediaInfo* m);
     void inputChanged();
     void customParamActivated(bool activated);
 
@@ -113,6 +114,7 @@ private:
 
     bool _freezeUI;
     bool _loadingPreset;
+    bool _outputPathIsCustom;
 
     int _index;
 };

@@ -20,10 +20,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
     // Input medias
     _inputMedias = inputMedias;
     connect( _inputMedias, SIGNAL(changed()), this, SLOT(inputMediaChanged()));
-    foreach (MediaInfo *m, _inputMedias->medias() )
-    {
-        connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
-    }
+    connect( _inputMedias, SIGNAL( newMedia(MediaInfo*)), this, SLOT( newInputMedia(MediaInfo*)) );
 
     _defaultPreset = ":/presets/MP4 - Standard";
 
@@ -73,6 +70,8 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
     on_presetsFilterBox_activated("");
     //choose preset
     selectDefaultPreset();
+
+    _outputPathIsCustom = false;
 
     //splitter sizes
     QList<int>sizes;
@@ -160,28 +159,27 @@ void OutputWidget::mediaInfoChanged()
 
     //Audio / Video Buttons and Muxer selection
     FFMuxer *m = _mediaInfo->muxer();
-    if ( m != nullptr )
+
+    bool audio = m->isAudio() && !m->isSequence();
+    audioButton->setEnabled ( audio );
+
+    bool video =  m->isVideo() || m->isSequence();
+    videoButton->setEnabled(  video  );
+
+    // select muxer in formats box
+    for (int i = 0; i < formatsBox->count(); i++)
     {
-        bool audio = m->isAudio() && !m->isSequence();
-        audioButton->setEnabled ( audio );
-
-        bool video =  m->isVideo() || m->isSequence();
-        videoButton->setEnabled(  video  );
-
-        // select muxer in formats box
-        for (int i = 0; i < formatsBox->count(); i++)
-        {
-            formatsBox->setCurrentData( m->name() );
-        }
-        if (formatsBox->currentIndex() == -1)
+        formatsBox->setCurrentData( m->name() );
+    }
+    if (formatsBox->currentIndex() == -1)
         {
             //try without filter
             formatsFilterBox->setCurrentIndex(0);
             ffmpeg_loadMuxers();
             formatsBox->setCurrentData( m->name() );
         }
-    }
-    else
+
+    if (m->name() == "")
     {
         audioButton->setEnabled( false );
         videoButton->setEnabled( false );
@@ -254,6 +252,11 @@ void OutputWidget::inputMediaChanged()
     }
 }
 
+void OutputWidget::newInputMedia(MediaInfo *m)
+{
+    connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
+}
+
 void OutputWidget::customParamActivated(bool activated)
 {
     if (!activated)
@@ -278,7 +281,7 @@ void OutputWidget::on_videoButton_clicked(bool checked)
         {
             //only if muxer is capable of video
             FFMuxer *m = _mediaInfo->muxer();
-            if (m == nullptr)
+            if (m->name() == "")
             {
                 videoButton->setChecked(false);
                 videoButton->setEnabled(false);
@@ -311,7 +314,7 @@ void OutputWidget::on_audioButton_clicked(bool checked)
         {
             //only if muxer is capable of video
             FFMuxer *m = _mediaInfo->muxer();
-            if (m == nullptr)
+            if (m->name() == "")
             {
                 videoButton->setChecked(false);
                 videoButton->setEnabled(false);
@@ -340,7 +343,7 @@ void OutputWidget::on_videoTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasVideo()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( nullptr );
+    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( "" );
     else _mediaInfo->videoStreams()[0]->setCodec( "copy" );
 }
 
@@ -348,7 +351,7 @@ void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasAudio()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    if ( checked ) _mediaInfo->setAudioCodec( nullptr );
+    if ( checked ) _mediaInfo->setAudioCodec( "" );
     else _mediaInfo->setAudioCodec( "copy" );
 }
 
@@ -357,6 +360,7 @@ void OutputWidget::on_outputBrowseButton_clicked()
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
     updateOutputExtension(outputPath);
+    _outputPathIsCustom = true;
 }
 
 void OutputWidget::on_formatsBox_currentIndexChanged(int index)
@@ -420,21 +424,18 @@ void OutputWidget::updateOutputExtension(QString outputPath)
     QString newExt = "";
 
     FFMuxer *_currentMuxer = _mediaInfo->muxer();
+    //add {#####}
 
-    if (_currentMuxer != nullptr)
+    if (_currentMuxer->isSequence())
     {
-        //add {#####}
-        if (_currentMuxer->isSequence())
-        {
-            newExt = "_{#####}";
-        }
-
-        if (_currentMuxer->extensions().count() > 0)
-        {
-            newExt += "." + _currentMuxer->extensions()[0];
-        }
-
+        newExt = "_{#####}";
     }
+
+    if (_currentMuxer->extensions().count() > 0)
+    {
+        newExt += "." + _currentMuxer->extensions()[0];
+    }
+
     QString num = "";
     if (_index > 1) num = "_" + QString::number(_index);
     outputName.replace(QRegularExpression(num + "$"),"");
@@ -468,9 +469,12 @@ void OutputWidget::inputChanged()
     MediaInfo *input = static_cast<MediaInfo *>(sender());
 
     //set output fileName
-    QFileInfo inputFile(input->fileName());
-    QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
-    updateOutputExtension(outputPath);
+    if ( outputEdit->text() == "" || !_outputPathIsCustom )
+    {
+        QFileInfo inputFile(input->fileName());
+        QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
+        updateOutputExtension(outputPath);
+    }
 
     //If ae render queue
     this->setVisible( !(input->isAep() && input->aeUseRQueue()));
@@ -610,4 +614,5 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
 void OutputWidget::on_outputEdit_textEdited(QString text)
 {
     _mediaInfo->setFileName( text, true );
+    _outputPathIsCustom = true;
 }
