@@ -30,3 +30,10 @@ With Aptitude (Ubuntu / Debian): `sudo apt-get install ffmpeg`.
 - Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
 - OpenImageIO: TODO
 - FFmpeg can be downloaded [here](https://ffmpeg.zeranoe.com/builds/). In order to let DuME use it automatically, you can copy `ffmpeg.exe` in the same directory where you build DuME.
+
+### Mac OS X
+
+
+- Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
+- OpenImageIO: TODO
+- FFmpeg can be downloaded [here](https://evermeet.cx/ffmpeg/). In order to let DuME use it automatically, you can copy `ffmpeg` in the the application package once you've built it, in `Contents/MacOS`.
