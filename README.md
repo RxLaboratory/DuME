@@ -1,11 +1,17 @@
 # DuME - The Duduf Media Encoder
 Rendering and transcoding medias.
 
-A **comprehensive user documentation** is [available here](https://dume-docs.rainboxlab.org).
+📖 A **comprehensive user documentation** is [available here](https://dume-docs.rainboxlab.org).
 
-You can **download the latest public version [here](https://rainboxlab.org/tools/dume/)**.
+🎥 You can **download the latest public version [here](https://rainboxlab.org/tools/dume/)**.
 
-You can also **help the developper** (Nicolas "Duduf" Dufresne) **and access Beta versions** on [Patreon](https://patreon.com/duduf).
+📣 You can also **help the developper** (Nicolas "Duduf" Dufresne) **and access Beta versions** on [Patreon](https://patreon.com/duduf).
+
+## Community
+
+🚀 [Join us and have a chat](http://chat.rainboxlab.org) to get started!
+
+🤗 We'd be happy to welcome you on the [forum](https://forum.rainboxlab.org) too.
 
 ## Dependencies
 
