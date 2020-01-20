@@ -13,6 +13,8 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Added complete color management options (still need to add LUT support).
 - Ability to open files with DuME. They will be added as input medias.
 - Added a *Help menu* on the top right corner of the window with useful links
+- Included a script to be used in After Effects to send compositions to DuME
+- Added the ability to add [command line options](cli-options.md) when launching DuME, to automatically add input medias.
 
 ### Presets and formats
 

@@ -65,10 +65,12 @@ void QueueWidget::openInputFile(QUrl file)
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
-void QueueWidget::addInputFile(QString file)
+MediaInfo *QueueWidget::addInputFile(QString file)
 {
     addInput();
-    inputWidgets[ inputTab->currentIndex() ]->openFile(file);
+    InputWidget *iw = inputWidgets[ inputTab->currentIndex() ];
+    iw->openFile(file);
+    return iw->mediaInfo();
 }
 
 void QueueWidget::presetsPathChanged()

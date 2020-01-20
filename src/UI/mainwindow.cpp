@@ -170,17 +170,78 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
 
     log("Ready!");
 
-    //add inputs if ffmpeg is valid
+    //parse arguments if ffmpeg is valid
     if (_ffmpeg->isValid())
     {
-        for (int i = 1; i < argc; i++)
-        {
-            log( "Opening " + QString(argv[i]) );
-            queueWidget->addInputFile(argv[i]);
-
-        }
-
         if (argc == 1) queueWidget->addInputFile("");
+        else
+        {
+            int i = 1;
+
+            //Arguments
+            QString compName = "";
+            int rqItem = 0;
+            bool useQueue = false;
+            double framerate = 0;
+            QString colorProfile = "";
+
+            while (i < argc)
+            {
+                QString arg = argv[i];
+                if (arg.startsWith("-"))
+                {
+                    if ( arg == "-useQueue" ) useQueue = true;
+                    else if ( arg == "-comp" && i < argc-1 )
+                    {
+                        i++;
+                        compName = argv[i];
+                    }
+                    else if (arg == "-rqItem" && i < argc-1 )
+                    {
+                        i++;
+                        rqItem = QString(argv[i]).toInt();
+                    }
+                    else if ( (arg == "-framerate" || arg == "-fps" ) && i < argc-1 )
+                    {
+                        i++;
+                        framerate = QString(argv[i]).toDouble();
+                    }
+                    else if (arg == "-colorProfile" && i < argc-1 )
+                    {
+                        i++;
+                        colorProfile = argv[i];
+                    }
+                    else
+                    {
+                        log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);
+                        break;
+                    }
+                    i++;
+                }
+                else
+                {
+                    //open
+                    log( "Opening " + arg );
+                    MediaInfo *input = queueWidget->addInputFile( arg );
+                    //set params
+                    if (input->isAep())
+                    {
+                        if (compName != "") input->setAepCompName(compName);
+                        else if (rqItem > 0) input->setAepRqindex(rqItem);
+                        input->setAeUseRQueue(useQueue);
+                    }
+                    input->setFramerate(framerate);
+                    input->setColorProfile( colorProfile );
+                    //reinit args
+                    compName = "";
+                    rqItem = 0;
+                    useQueue = false;
+                    framerate = 0;
+                    colorProfile = "";
+                    i++;
+                }
+            }
+        }
     }
 }
 

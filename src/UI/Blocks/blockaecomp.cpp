@@ -19,11 +19,9 @@ void BlockAEComp::activate(bool activate)
     }
     else
     {
-
         _mediaInfo->setAeUseRQueue( true );
         _mediaInfo->setAepCompName( "" );
         _mediaInfo->setAepRqindex( -1 );
-
     }
 
     _freezeUI = false;
@@ -33,13 +31,27 @@ void BlockAEComp::update()
 {
     _freezeUI = true;
 
-    aeRenderQueueButton->setChecked( _mediaInfo->aeUseRQueue() );
-    QString compName = _mediaInfo->aepCompName();
-    if ( compName != "" ) compButton->setChecked( true );
-    compEdit->setText( compName );
-    int rqindex = _mediaInfo->aepRqindex();
-    if (rqindex != -1 ) rqindexButton->setChecked( true );
-    rqindexBox->setValue( rqindex );
+    if (_mediaInfo->aeUseRQueue())
+    {
+        aeRenderQueueButton->setChecked( true );
+        compEdit->setEnabled( false );
+        rqindexBox->setEnabled( false );
+    }
+    else if ( _mediaInfo->aepCompName() != "")
+    {
+        compButton->setChecked( true );
+        compEdit->setEnabled( true );
+        rqindexBox->setEnabled( false );
+        compEdit->setText( _mediaInfo->aepCompName() );
+    }
+    else if ( _mediaInfo->aepRqindex() > 0 )
+    {
+        rqindexButton->setChecked( true );
+        compEdit->setEnabled( false );
+        rqindexBox->setEnabled( true );
+        rqindexBox->setValue( _mediaInfo->aepRqindex() );
+
+    }
 
     _freezeUI = false;
 }

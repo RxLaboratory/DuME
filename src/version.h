@@ -24,7 +24,7 @@
 #define STR_COMPANYNAME "Rainbox Laboratory"
 #define STR_FILEDESCRIPTION "DuME"
 #define STR_INTERNALNAME "DuME"
-#define STR_LEGALCOPYRIGHT "Copyright © 2019-2020 Rainbox Laboratory, Nicolas Dufresne and cotributors"
+#define STR_LEGALCOPYRIGHT "Copyright (c) 2019-2020 Rainbox Laboratory, Nicolas Dufresne and contributors"
 #define STR_LEGALTRADEMARKS1 "All Rights Reserved"
 #define STR_ORIGINALFILENAME "DuME.exe"
 #define STR_PRODUCTNAME "DuME - Duduf Media Encoder"

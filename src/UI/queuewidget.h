@@ -20,7 +20,7 @@ public:
     QList<MediaInfo *> getOutputMedia();
     void openInputFile(QString file);
     void openInputFile(QUrl file);
-    void addInputFile(QString file);
+    MediaInfo *addInputFile(QString file);
 
 signals:
     /**

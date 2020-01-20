@@ -41,6 +41,10 @@ nav:
     - After Effects Rendering:
         - Installation: after-effects-install.md
         - Rendering: after-effects-rendering.md
+    - Control and automation:
+        - Introduction: api.md
+        - Command line options: cli-options.md
+        - Server API: server-api.md
     - Changelog: changelog.md
     - License:
         - GNU GPLv3: gnu-gpl.md

@@ -81,6 +81,13 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorPrimaries << new FFBaseObject("smpte432","SMPTE 432");
     _colorPrimaries << new FFBaseObject("jedec-p22","JEDEC P22");
 
+    // The complete color Profiles
+    _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
+    _colorProfiles << new FFColorProfile("srgb", "Images (sRGB)", colorPrimary("bt709"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
+
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
     _version = settings.value("ffmpeg/version","").toString();
@@ -174,6 +181,11 @@ void FFmpeg::init()
 #endif
     _status = MediaUtils::Waiting;
     emit statusChanged(_status);
+}
+
+QList<FFColorProfile *> FFmpeg::colorProfiles() const
+{
+    return _colorProfiles;
 }
 
 QList<FFBaseObject *> FFmpeg::colorRanges() const
@@ -399,6 +411,20 @@ FFBaseObject *FFmpeg::colorRange(QString name)
         if (c->prettyName() == name) return c;
     }
     return _colorRanges[0];
+}
+
+FFColorProfile *FFmpeg::colorProfile(QString name)
+{
+    name = name.trimmed();
+    foreach(FFColorProfile *c,_colorProfiles)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFColorProfile *c,_colorProfiles)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorProfiles[0];
 }
 
 QString FFmpeg::help()

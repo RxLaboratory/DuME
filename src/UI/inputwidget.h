@@ -44,6 +44,7 @@ private slots:
     void on_inputEdit_editingFinished();
     void on_actionAddCustom_triggered();
     void customParamActivated(bool activated);
+    void updateOptions();
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
@@ -65,7 +66,6 @@ private:
 
     MediaInfo *_mediaInfo;
     QList<BlockBaseWidget *> _customParams;
-    void updateOptions();
     void updateCustomParams();
 };
 

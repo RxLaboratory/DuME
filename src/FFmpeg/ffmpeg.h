@@ -15,6 +15,7 @@
 #include "ffmuxer.h"
 #include "ffpixformat.h"
 #include "ffprofile.h"
+#include "ffcolorprofile.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -114,10 +115,12 @@ public:
     FFBaseObject *colorPrimary(QString name);
     FFBaseObject *colorSpace(QString name);
     FFBaseObject *colorRange(QString name);
+    FFColorProfile *colorProfile(QString name);
     QList<FFBaseObject *> colorPrimaries() const;
     QList<FFBaseObject *> colorTRCs() const;
     QList<FFBaseObject *> colorSpaces() const;
     QList<FFBaseObject *> colorRanges() const;
+    QList<FFColorProfile *> colorProfiles() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -144,6 +147,8 @@ public:
      * @return
      */
     MediaUtils::RenderStatus status() const;
+
+
 
 signals:
     void progress(int);
@@ -191,6 +196,8 @@ private:
     QList<FFBaseObject *> _colorTRCs;
     QList<FFBaseObject *> _colorSpaces;
     QList<FFBaseObject *> _colorRanges;
+    // The list of color profiles
+    QList<FFColorProfile *> _colorProfiles;
     // The help
     QString _help;
     // The documentation

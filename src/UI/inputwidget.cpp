@@ -11,6 +11,7 @@ InputWidget::InputWidget(FFmpeg *ff, int id, QWidget *parent) :
 
     _mediaInfo = new MediaInfo( ff, this);
     _mediaInfo->setId(id);
+    connect ( _mediaInfo, SIGNAL(changed()), this, SLOT (updateOptions()));
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);
@@ -170,6 +171,7 @@ void InputWidget::updateOptions()
     }
 
 
+    // After Effects options
     if (_mediaInfo->isAep())
     {
         actionAfter_Effects_composition->setVisible(true);
@@ -181,8 +183,23 @@ void InputWidget::updateOptions()
         actionAfter_Effects_composition->setVisible(false);
         blockAEComp->hide();
         actionAfter_Effects_threads->setVisible(false);
+        blockAEThreads->hide();
     }
-    blockAEThreads->hide();
+
+    //Color options
+    if ( _mediaInfo->hasVideo() )
+    {
+        VideoInfo *stream = _mediaInfo->videoStreams()[0];
+        if ( stream->colorTRC()->name() != "" || stream->colorPrimaries()->name() != "" || stream->colorRange()->name() != "" || stream->colorSpace()->name() != "")
+        {
+            blockColor->show();
+        }
+        else
+        {
+            blockColor->hide();
+        }
+    }
+
 }
 
 void InputWidget::updateCustomParams()
