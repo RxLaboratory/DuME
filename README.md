@@ -1,6 +1,12 @@
 # DuME - The Duduf Media Encoder
 Rendering and transcoding medias.
 
+A **comprehensive user documentation** is [available here](https://dume-docs.rainboxlab.org).
+
+You can **download the latest public version [here](https://rainboxlab.org/tools/dume/)**.
+
+You can also **help the developper** (Nicolas "Duduf" Dufresne) **and access Beta versions** on [Patreon](https://patreon.com/duduf).
+
 ## Dependencies
 
 - Qt >= 5.14.0
