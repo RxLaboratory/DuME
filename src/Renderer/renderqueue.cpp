@@ -107,11 +107,15 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     //output checks
     MediaInfo *o = item->getOutputMedias()[0];
     FFPixFormat *outputPixFmt = nullptr;
-    if (o->hasVideo()) outputPixFmt = o->videoStreams()[0]->pixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
     FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
-    if (outputPixFmt->name() == "") outputColorSpace = outputPixFmt->colorSpace();
+
+    if (o->hasVideo())
+    {
+        outputPixFmt = o->videoStreams()[0]->pixFormat();
+        if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
+        if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
+        if (outputPixFmt->name() != "") outputColorSpace = outputPixFmt->colorSpace();
+    }
 
     //input checks
     bool exrInput = false;
