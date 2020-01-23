@@ -19,7 +19,6 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
 
     // Input medias
     _inputMedias = inputMedias;
-    connect( _inputMedias, SIGNAL(changed()), this, SLOT(inputMediaChanged()));
     connect( _inputMedias, SIGNAL( newMedia(MediaInfo*)), this, SLOT( newInputMedia(MediaInfo*)) );
 
     _defaultPreset = ":/presets/MP4 - Standard";
@@ -227,29 +226,6 @@ void OutputWidget::mediaInfoChanged()
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 
     _freezeUI = false;
-}
-
-void OutputWidget::inputMediaChanged()
-{
-    if (_inputMedias->hasVideo())
-    {
-        videoButton->setEnabled( true );
-    }
-    else
-    {
-        videoButton->setChecked( false );
-        videoButton->setEnabled( false );
-    }
-
-    if (_inputMedias->hasAudio())
-    {
-        audioButton->setEnabled(true);
-    }
-    else
-    {
-        audioButton->setEnabled(false);
-        audioButton->setChecked(false);
-    }
 }
 
 void OutputWidget::newInputMedia(MediaInfo *m)
