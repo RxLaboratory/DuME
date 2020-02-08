@@ -120,7 +120,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     //input checks
     bool exrInput = false;
     MediaInfo *i = item->getInputMedias()[0];
-    if ( i->extensions().count() > 0 ) exrInput = i->extensions()[0] == "exr_pipe";
+    if (i->hasVideo()) exrInput = i->videoStreams()[0]->codec()->name() == "exr";
 
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
@@ -141,8 +141,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             //add sequence options
             if (input->isSequence())
             {
-                arguments << "-framerate" << QString::number(stream->framerate());
                 arguments << "-start_number" << QString::number(input->startNumber());
+                if (stream->framerate() != 0.0) arguments << "-framerate" << QString::number(stream->framerate());
+                else arguments << "-framerate" << "24";
                 inputFileName = input->ffmpegSequenceName();
             }
 
