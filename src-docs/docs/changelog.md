@@ -2,6 +2,12 @@
 
 This is the list of what has changed since the first public version of *DuFFmpeg*.
 
+## 0.1.2
+
+### Fixes
+
+- EXR sequences are now correctly detected.
+
 ## 0.1.1
 
 ### New Features
