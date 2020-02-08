@@ -7,6 +7,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 ### Fixes
 
 - EXR sequences are now correctly detected.
+- Fixed transcoding sequence not working if the framerate is kept to the default value.
 
 ## 0.1.1
 
