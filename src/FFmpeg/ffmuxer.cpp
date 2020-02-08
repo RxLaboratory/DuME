@@ -4,6 +4,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFBaseObje
 {
     _defaultAudioCodec = FFCodec::getDefault( this );
     _defaultVideoCodec = FFCodec::getDefault( this );
+    _decodeOnly = false;
     _types = Types( 0 );
 }
 
@@ -11,6 +12,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, Types types, QObject *parent)
 {
     _defaultAudioCodec = FFCodec::getDefault( this );
     _defaultVideoCodec = FFCodec::getDefault( this );
+    _decodeOnly = false;
     _types = types;
 }
 
@@ -98,6 +100,16 @@ FFMuxer *FFMuxer::getDefault( QObject *parent )
     m->setAudio();
     m->setVideo();
     return m;
+}
+
+bool FFMuxer::isDecodeOnly() const
+{
+    return _decodeOnly;
+}
+
+void FFMuxer::setDecodeOnly(bool decodeOnly)
+{
+    _decodeOnly = decodeOnly;
 }
 
 void FFMuxer::setSequence(bool sequence)

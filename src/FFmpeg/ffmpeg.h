@@ -33,7 +33,7 @@ public:
      * @brief getMuxers Gets the list of available muxers
      * @return
      */
-    QList<FFMuxer *> muxers();
+    QList<FFMuxer *> muxers(bool encodeOnly = true);
     /**
      * @brief getMuxer Retrieves a muxer with its name
      * @param name
@@ -182,6 +182,8 @@ private:
     // The default coder
     FFCodec *_defaultCodec;
     // The list of muxers
+    QList<FFMuxer *> _encodeMuxers;
+    QList<FFMuxer *> _decodeMuxers;
     QList<FFMuxer *> _muxers;
     // The default muxer
     FFMuxer *_defaultMuxer;

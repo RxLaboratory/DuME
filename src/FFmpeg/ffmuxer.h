@@ -40,9 +40,11 @@ public:
     bool isAudio();
     bool isVideo();
     bool isSequence();
+    bool isDecodeOnly() const;
     void setAudio(bool audio = true);
     void setVideo(bool video = true);
     void setSequence(bool sequence = true);
+    void setDecodeOnly(bool decodeOnly);
 
     QStringList extensions() const;
     void setExtensions(const QStringList &extensions);
@@ -58,6 +60,7 @@ private:
     FFCodec *_defaultAudioCodec;
     Types _types;
     QStringList _extensions;
+    bool _decodeOnly;
 };
 
 #endif // FFMUXER_H

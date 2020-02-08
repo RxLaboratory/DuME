@@ -65,6 +65,9 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     _size = mediaFile.size();
 
     _muxer = _ffmpeg->muxer(extension);
+    qDebug() << extension;
+    qDebug() << _muxer->isSequence();
+    qDebug() << _muxer->name();
 
     if (!mediaFile.exists())
     {
