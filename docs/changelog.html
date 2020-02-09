@@ -112,6 +112,25 @@
     </ul>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Control and automation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="api.html">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="cli-options.html">Command line options</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="server-api.html">Server API</a>
+                </li>
+    </ul>
+	    </li>
+          
             <li class="toctree-l1 current">
 		
     <a class="current" href="changelog.html">Changelog</a>
@@ -121,9 +140,11 @@
     
         <ul>
         
-            <li><a class="toctree-l3" href="#010-betas">0.1.0-Betas</a></li>
+            <li><a class="toctree-l3" href="#012">0.1.2</a></li>
         
-            <li><a class="toctree-l3" href="#009-alpha">0.0.9-Alpha</a></li>
+            <li><a class="toctree-l3" href="#011">0.1.1</a></li>
+        
+            <li><a class="toctree-l3" href="#009">0.0.9</a></li>
         
             <li><a class="toctree-l3" href="#008-alpha">0.0.8-Alpha</a></li>
         
@@ -194,20 +215,31 @@
               
                 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>This is the list of what has changed since the first public version of <em>DuFFmpeg</em>.</p>
-<h2 id="010-betas">0.1.0-Betas<a class="headerlink" href="#010-betas" title="Permanent link">&para;</a></h2>
+<h2 id="012">0.1.2<a class="headerlink" href="#012" title="Permanent link">&para;</a></h2>
+<h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>EXR sequences are now correctly detected.</li>
+<li>Fixed transcoding sequence not working if the framerate is kept to the default value.</li>
+</ul>
+<h2 id="011">0.1.1<a class="headerlink" href="#011" title="Permanent link">&para;</a></h2>
 <h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>(Beta2) Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
-<li>(Beta2) Multiple input files</li>
-<li>(Beta2) Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)</li>
+<li>Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
+<li>Added <em>Quality</em> control for ProRes.</li>
+<li>Multiple input files</li>
+<li>Select and map streams from the input file(s) to the output media (i.e. easily add sound to an image sequence, or change the sound of a video)</li>
 <li>Added complete color management options (still need to add LUT support).</li>
+<li>Ability to open files with DuME. They will be added as input medias.</li>
+<li>Added a <em>Help menu</em> on the top right corner of the window with useful links</li>
+<li>Included a script to be used in After Effects to send compositions to DuME</li>
+<li>Added the ability to add <a href="cli-options.html">command line options</a> when launching DuME, to automatically add input medias.</li>
 </ul>
 <h3 id="presets-and-formats">Presets and formats<a class="headerlink" href="#presets-and-formats" title="Permanent link">&para;</a></h3>
 <ul>
-<li>(Beta2) Added high compatibility presets for MP4 (Baseline level 3.0)</li>
-<li>(Beta2) Added 16 bpc PNG</li>
-<li>(Beta2) Enabled alpha by default for PNG and TGA</li>
-<li>(Beta2) Added 24-bit and 32-bit WAV</li>
+<li>Added high compatibility presets for MP4 (Baseline level 3.0)</li>
+<li>Added 16 bpc PNG</li>
+<li>Enabled alpha by default for PNG and TGA</li>
+<li>Added 24-bit and 32-bit WAV</li>
 <li>Removed MP4 presets resized to 1080p and 720p. All presets now keep the input size by default, use the &ldquo;Resize&rdquo; option if you need to change the resolution.</li>
 </ul>
 <h3 id="general-improvements">General Improvements<a class="headerlink" href="#general-improvements" title="Permanent link">&para;</a></h3>
@@ -221,18 +253,9 @@
 <li>A summary of the output settings is available</li>
 <li>Support of EXR (especially colors) have been improved</li>
 <li>Color conversion when transcoding to YUV files is better</li>
+<li>Improved compatibility of ProRes files.</li>
 </ul>
-<h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Beta3</strong> Fixed crash when loading a media with sound streams</li>
-<li><strong>Beta3</strong> Fixed image sequence incorrect loading</li>
-<li><strong>Beta3</strong> Set pixel format to yuv420 by default for .mp4 even when the codec is not explicitly set.</li>
-<li><strong>Beta3</strong> Fixed ignored output filename editions.</li>
-<li><strong>Beta3</strong> Fixed ignored codec profiles in some specific cases.</li>
-<li>Saving presets no longer leads to a crash.</li>
-<li>Loading presets no longer fails for audio-only or video-only formats.</li>
-</ul>
-<h2 id="009-alpha">0.0.9-Alpha<a class="headerlink" href="#009-alpha" title="Permanent link">&para;</a></h2>
+<h2 id="009">0.0.9<a class="headerlink" href="#009" title="Permanent link">&para;</a></h2>
 <h3 id="general-improvements_1">General Improvements<a class="headerlink" href="#general-improvements_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>The User Interface has been improved, using drop shadows to group parameters. This is a first step to future improvements of the UI.</li>
@@ -256,7 +279,7 @@
         <a href="gnu-gpl.html" class="btn btn-neutral float-right" title="GNU GPLv3">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="after-effects-rendering.html" class="btn btn-neutral" title="Rendering"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="server-api.html" class="btn btn-neutral" title="Server API"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -284,7 +307,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="after-effects-rendering.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="server-api.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="gnu-gpl.html" style="color: #fcfcfc">Next &raquo;</a></span>

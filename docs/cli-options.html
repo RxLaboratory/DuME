@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>MP4 / h.264 - DuME Documentation</title>
+  <title>Command line options - DuME Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -19,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "MP4 / h.264";
-    var mkdocs_page_input_path = "h264.md";
-    var mkdocs_page_url = "/h264.html";
+    var mkdocs_page_name = "Command line options";
+    var mkdocs_page_input_path = "cli-options.md";
+    var mkdocs_page_url = "/cli-options.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -82,15 +82,9 @@
                     
     <a class="" href="presets.html">Manage presets</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="h264.html">MP4 / h.264</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a></li>
-    
-
-    </ul>
+    <a class="" href="h264.html">MP4 / h.264</a>
                 </li>
                 <li class="">
                     
@@ -126,9 +120,29 @@
                     
     <a class="" href="api.html">Introduction</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="cli-options.html">Command line options</a>
+    <a class="current" href="cli-options.html">Command line options</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#command-line-options">Command Line options</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#examples">Examples</a></li>
+        
+            <li><a class="toctree-l4" href="#getting-help">Getting help</a></li>
+        
+            <li><a class="toctree-l4" href="#global-input-options">Global Input options</a></li>
+        
+            <li><a class="toctree-l4" href="#image-sequence-and-after-effects-options">Image Sequence and After Effects options</a></li>
+        
+            <li><a class="toctree-l4" href="#after-effects-options">After Effects options</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -189,14 +203,14 @@
     
       
         
-          <li>Transcoding &raquo;</li>
+          <li>Control and automation &raquo;</li>
         
       
     
-    <li>MP4 / h.264</li>
+    <li>Command line options</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/h264.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/cli-options.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -205,8 +219,107 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="transcoding-to-mp4-h264">Transcoding to MP4 / h.264<a class="headerlink" href="#transcoding-to-mp4-h264" title="Permanent link">&para;</a></h1>
-<p><em>This section still has to be written</em></p>
+                <h1 id="command-line-options">Command Line options<a class="headerlink" href="#command-line-options" title="Permanent link">&para;</a></h1>
+<p>DuME can be launched with several options, which is an easy way to add medias in DuME from other applications and scripts.</p>
+<p><code>DuME [options] inputFile1 [[options] inputFile2 ... [options] inputFileN]</code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On Windows, don&rsquo;t forget to add the extension <code>.exe</code> to the DuME command if it&rsquo;s not in your <em>PATH</em> variable.</p>
+</div>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<p>Add a PNG sequence and set its framerate:<br />
+<code>DuME -framerate 29.97 "image sequence_0001.png"</code></p>
+<p>Add a PNG sequence and set its framerate along with a WAV sound file:<br />
+<code>DuME -framerate 24 "image sequence_0001.png" "an awesome sound.wav"</code></p>
+<h2 id="getting-help">Getting help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h</code></td>
+<td></td>
+<td>print options but does not launch DuME.</td>
+</tr>
+<tr>
+<td><code>-help</code></td>
+<td></td>
+<td>print options but does not launch DuME.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="global-input-options">Global Input options<a class="headerlink" href="#global-input-options" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-colorProfile profile</code></td>
+<td>string</td>
+<td>Sets the input color profile. One of:<br><code>srgb</code> sRGB<br><code>bt709</code> HD Video BT.709<br><code>bt2020_10</code> UHD (4K/8K) Video BT.2020-10bits<br><code>bt2020_12</code> UHD (4K/8K) HDR Video BT.2020-12bits</td>
+</tr>
+</tbody>
+</table>
+<h2 id="image-sequence-and-after-effects-options">Image Sequence and After Effects options<a class="headerlink" href="#image-sequence-and-after-effects-options" title="Permanent link">&para;</a></h2>
+<p>Read the <a href="after-effects-rendering.html">After Effects Rendering</a> section for more details about these options.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-framerate fps</code></td>
+<td>float</td>
+<td>Sets the input framerate.</td>
+</tr>
+<tr>
+<td><code>-fps fps</code></td>
+<td>float</td>
+<td>Sets the input framerate.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="after-effects-options">After Effects options<a class="headerlink" href="#after-effects-options" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-comp composition</code></td>
+<td>string</td>
+<td>The name of the composition to render.</td>
+</tr>
+<tr>
+<td><code>-rqItem item</code></td>
+<td>integer</td>
+<td>The index of the After EFfects render queue item to render.</td>
+</tr>
+<tr>
+<td><code>-useQueue</code></td>
+<td></td>
+<td>Just launches the After Effects render queue.</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div>
@@ -214,10 +327,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sequences.html" class="btn btn-neutral float-right" title="Image sequences">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="server-api.html" class="btn btn-neutral float-right" title="Server API">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="presets.html" class="btn btn-neutral" title="Manage presets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -245,10 +358,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="presets.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="api.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="sequences.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="server-api.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -3,6 +3,10 @@
 !!! note
     For now, DuME on linux is only availabe in 64bit and will not work on 32bit systems (unless you build it from source by yourself).
 
+**You can [download DuME here](https://rainboxlab.org/tools/dume/).**
+
+[TOC]
+
 ## Debian and Ubuntu
 
 If you're using Debian or Ubuntu, you can download the `.deb` package and install it the usual way.
