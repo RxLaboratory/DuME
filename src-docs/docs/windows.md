@@ -1,5 +1,8 @@
 # Install DuME on Windows
 
+!!! note
+    For now, DuME on Windows is only availabe in 64bit and will not work on 32bit systems (unless you build it from source by yourself).
+
 **You can [download DuME here](https://rainboxlab.org/tools/dume/).**
 
 !!! note
