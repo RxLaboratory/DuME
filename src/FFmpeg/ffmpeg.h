@@ -15,6 +15,7 @@
 #include "ffmuxer.h"
 #include "ffpixformat.h"
 #include "ffprofile.h"
+#include "ffcolorprofile.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -32,7 +33,7 @@ public:
      * @brief getMuxers Gets the list of available muxers
      * @return
      */
-    QList<FFMuxer *> muxers();
+    QList<FFMuxer *> muxers(bool encodeOnly = true);
     /**
      * @brief getMuxer Retrieves a muxer with its name
      * @param name
@@ -114,10 +115,12 @@ public:
     FFBaseObject *colorPrimary(QString name);
     FFBaseObject *colorSpace(QString name);
     FFBaseObject *colorRange(QString name);
+    FFColorProfile *colorProfile(QString name);
     QList<FFBaseObject *> colorPrimaries() const;
     QList<FFBaseObject *> colorTRCs() const;
     QList<FFBaseObject *> colorSpaces() const;
     QList<FFBaseObject *> colorRanges() const;
+    QList<FFColorProfile *> colorProfiles() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -144,6 +147,8 @@ public:
      * @return
      */
     MediaUtils::RenderStatus status() const;
+
+
 
 signals:
     void progress(int);
@@ -177,6 +182,8 @@ private:
     // The default coder
     FFCodec *_defaultCodec;
     // The list of muxers
+    QList<FFMuxer *> _encodeMuxers;
+    QList<FFMuxer *> _decodeMuxers;
     QList<FFMuxer *> _muxers;
     // The default muxer
     FFMuxer *_defaultMuxer;
@@ -191,6 +198,8 @@ private:
     QList<FFBaseObject *> _colorTRCs;
     QList<FFBaseObject *> _colorSpaces;
     QList<FFBaseObject *> _colorRanges;
+    // The list of color profiles
+    QList<FFColorProfile *> _colorProfiles;
     // The help
     QString _help;
     // The documentation

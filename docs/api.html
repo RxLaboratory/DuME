@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>MP4 / h.264 - DuME Documentation</title>
+  <title>Introduction - DuME Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -19,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "MP4 / h.264";
-    var mkdocs_page_input_path = "h264.md";
-    var mkdocs_page_url = "/h264.html";
+    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_input_path = "api.md";
+    var mkdocs_page_url = "/api.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -82,15 +82,9 @@
                     
     <a class="" href="presets.html">Manage presets</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="h264.html">MP4 / h.264</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a></li>
-    
-
-    </ul>
+    <a class="" href="h264.html">MP4 / h.264</a>
                 </li>
                 <li class="">
                     
@@ -122,9 +116,15 @@
 		
     <span class="caption-text">Control and automation</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="api.html">Introduction</a>
+    <a class="current" href="api.html">Introduction</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#controlling-dume">Controlling DuME</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -189,14 +189,14 @@
     
       
         
-          <li>Transcoding &raquo;</li>
+          <li>Control and automation &raquo;</li>
         
       
     
-    <li>MP4 / h.264</li>
+    <li>Introduction</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/h264.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/api.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -205,8 +205,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="transcoding-to-mp4-h264">Transcoding to MP4 / h.264<a class="headerlink" href="#transcoding-to-mp4-h264" title="Permanent link">&para;</a></h1>
-<p><em>This section still has to be written</em></p>
+                <h1 id="controlling-dume">Controlling DuME<a class="headerlink" href="#controlling-dume" title="Permanent link">&para;</a></h1>
+<p>DuME is a stand-alone application, but it can easily be controlled from other applications and scripts.</p>
+<p>There are two ways to control <em>DuME</em> from outside:</p>
+<ul>
+<li><a href="cli-options.html"><strong>Command line options</strong></a>, which can launch <em>DuME</em> with specific instructions.</li>
+<li>The <a href="server-api.html"><strong>server API</strong></a> provides an easy way to control <em>DuME</em> through a socket, from the same computer or over the network.</li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>It is not yet possible to completely control every feature of <em>DuME</em> and automate everything.</p>
+<p>If you need deep control over the transcoding from another application, or if you&rsquo;d like a headless version of <em>DuME</em>, it would be easier to use <em>FFmpeg</em> (and the <em>After Effects&rsquo;</em> <code>aerender</code> command) by yourself, as <em>DuME</em> does not do a lot more than correctly handling these third-party command-line tools.</p>
+<p>In the future, we hope to provide more control over <em>DuME</em>, so it could be used in a completely automated workflow and provide renderfarm-like features. Some other important features (like the render queue) have to be implemented first.</p>
+</div>
               
             </div>
           </div>
@@ -214,10 +225,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sequences.html" class="btn btn-neutral float-right" title="Image sequences">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="cli-options.html" class="btn btn-neutral float-right" title="Command line options">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="presets.html" class="btn btn-neutral" title="Manage presets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="after-effects-rendering.html" class="btn btn-neutral" title="Rendering"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -245,10 +256,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="presets.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="after-effects-rendering.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="sequences.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="cli-options.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

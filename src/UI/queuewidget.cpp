@@ -7,6 +7,9 @@
 QueueWidget::QueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Queue Widget";
+#endif
     setupUi(this);
 
     _ffmpeg = ffmpeg;
@@ -65,10 +68,12 @@ void QueueWidget::openInputFile(QUrl file)
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
-void QueueWidget::addInputFile(QString file)
+MediaInfo *QueueWidget::addInputFile(QString file)
 {
     addInput();
-    inputWidgets[ inputTab->currentIndex() ]->openFile(file);
+    InputWidget *iw = inputWidgets[ inputTab->currentIndex() ];
+    iw->openFile(file);
+    return iw->mediaInfo();
 }
 
 void QueueWidget::presetsPathChanged()

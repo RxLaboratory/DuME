@@ -81,6 +81,13 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorPrimaries << new FFBaseObject("smpte432","SMPTE 432");
     _colorPrimaries << new FFBaseObject("jedec-p22","JEDEC P22");
 
+    // The complete color Profiles
+    _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
+    _colorProfiles << new FFColorProfile("srgb", "Images (sRGB)", colorPrimary("bt709"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
+
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
     _version = settings.value("ffmpeg/version","").toString();
@@ -176,6 +183,11 @@ void FFmpeg::init()
     emit statusChanged(_status);
 }
 
+QList<FFColorProfile *> FFmpeg::colorProfiles() const
+{
+    return _colorProfiles;
+}
+
 QList<FFBaseObject *> FFmpeg::colorRanges() const
 {
     return _colorRanges;
@@ -196,9 +208,10 @@ QList<FFBaseObject *> FFmpeg::colorPrimaries() const
     return _colorPrimaries;
 }
 
-QList<FFMuxer *> FFmpeg::muxers()
+QList<FFMuxer *> FFmpeg::muxers(bool encodeOnly)
 {
-    return _muxers;
+    if (encodeOnly) return _encodeMuxers;
+    else return _muxers;
 }
 
 FFMuxer *FFmpeg::muxer(QString nameOrExtension)
@@ -401,6 +414,20 @@ FFBaseObject *FFmpeg::colorRange(QString name)
     return _colorRanges[0];
 }
 
+FFColorProfile *FFmpeg::colorProfile(QString name)
+{
+    name = name.trimmed();
+    foreach(FFColorProfile *c,_colorProfiles)
+    {
+        if (c->name().toLower() == name.trimmed().toLower()) return c;
+    }
+    foreach(FFColorProfile *c,_colorProfiles)
+    {
+        if (c->prettyName() == name) return c;
+    }
+    return _colorProfiles[0];
+}
+
 QString FFmpeg::help()
 {
     return _help;
@@ -487,6 +514,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
                 FFMuxer *m = new FFMuxer(name,prettyName,this);
                 _muxers << m;
+                _decodeMuxers << m;
+                _encodeMuxers << m;
 
                 //save to settings
                 n++;
@@ -567,6 +596,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
             FFMuxer *m = new FFMuxer(name,prettyName,this);  
             _muxers << m;
+            _decodeMuxers << m;
+            _encodeMuxers << m;
 
             //get default codecs
             QString defltVideoCodec = settings.value("defaultVideoCodec").toString();
@@ -590,17 +621,31 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
     emit newLog("Image sequences muxers...");
 
-    FFMuxer *muxer = new FFMuxer("bmp","Bitmap Sequence");
+    FFMuxer *muxer = new FFMuxer("exr","openEXR Sequence");
+    muxer->setSequence(true);
+    extensions << "exr" << "exr_pipe";
+    muxer->setExtensions( extensions );
+    extensions.clear();
+    muxer->setDefaultVideoCodec(videoDecoder("exr"));
+    muxer->setDecodeOnly(true);
+    _muxers << muxer;
+    _decodeMuxers << muxer;
+
+    muxer = new FFMuxer("bmp","Bitmap Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("bmp"));
     muxer->setDefaultVideoCodec(videoEncoder("bmp"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("dpx","DPX Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("dpx"));
     muxer->setDefaultVideoCodec(videoEncoder("dpx"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("mjpeg","JPEG Sequence");
     muxer->setSequence(true);
@@ -609,66 +654,88 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions.clear();
     muxer->setDefaultVideoCodec(videoEncoder("mjpeg"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("jpegls","Lossless JPEG Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("ljpg"));
     muxer->setDefaultVideoCodec(videoEncoder("jpegls"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("pam","PAM (Portable AnyMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pam"));
     muxer->setDefaultVideoCodec(videoEncoder("pam"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("pbm","PBM (Portable BitMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pbm"));
     muxer->setDefaultVideoCodec(videoEncoder("pbm"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("pcx","PC Paintbrush PCX Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pcx"));
     muxer->setDefaultVideoCodec(videoEncoder("pcx"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("pgm","PGM (Portable GrayMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pgm"));
     muxer->setDefaultVideoCodec(videoEncoder("pgm"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("pgmyuv","PGMYUV (Portable GrayMap YUV) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("pgmyuv"));
     muxer->setDefaultVideoCodec(videoEncoder("pgmyuv"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("png","PNG (Portable Network Graphics) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("png"));
     muxer->setDefaultVideoCodec(videoEncoder("png"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("ppm","PPM (Portable PixelMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("ppm"));
     muxer->setDefaultVideoCodec(videoEncoder("ppm"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("sgi","SGI Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("sgi"));
     muxer->setDefaultVideoCodec(videoEncoder("sgi"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("targa","TARGA (Truevision Targa) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("tga"));
     muxer->setDefaultVideoCodec(videoEncoder("targa"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("tiff","TIFF Sequence");
     muxer->setSequence(true);
@@ -677,6 +744,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions.clear();
     muxer->setDefaultVideoCodec(videoEncoder("tiff"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("jpeg2000","JPEG 2000 Sequence");
     muxer->setSequence(true);
@@ -685,22 +754,30 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     extensions.clear();
     muxer->setDefaultVideoCodec(videoEncoder("jpeg2000"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("xwd","XWD (X Window Dump) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("xwd"));
     muxer->setDefaultVideoCodec(videoEncoder("xwd"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
     muxer = new FFMuxer("xbm","XBM (X BitMap) Sequence");
     muxer->setSequence(true);
     muxer->setExtensions(QStringList("xbm"));
     muxer->setDefaultVideoCodec(videoEncoder("xbm"));
     _muxers << muxer;
+    _decodeMuxers << muxer;
+    _encodeMuxers << muxer;
 
 
     emit newLog("Sorting muxers...");
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
+    std::sort(_decodeMuxers.begin(),_decodeMuxers.end(),muxerSorter);
+    std::sort(_encodeMuxers.begin(),_encodeMuxers.end(),muxerSorter);
 }
 
 bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)

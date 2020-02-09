@@ -280,6 +280,20 @@ void VideoInfo::setColorRange(FFBaseObject *range, bool silent)
     if(!silent) emit changed();
 }
 
+void VideoInfo::setColorProfile(FFColorProfile *colorProfile, bool silent)
+{
+    _colorPrimaries = colorProfile->primaries();
+    _colorTRC = colorProfile->trc();
+    _colorSpace = colorProfile->space();
+    _colorRange = colorProfile->range();
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setColorProfile(QString profile, bool silent)
+{
+    setColorProfile( _ffmpeg->colorProfile(profile), silent );
+}
+
 bool VideoInfo::setAlpha(bool alpha, bool silent)
 {
     //select a pixfmt which has an alpha, the closest to the current one (or default)

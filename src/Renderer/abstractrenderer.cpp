@@ -247,6 +247,9 @@ void AbstractRenderer::processOutput(QString output)
     {
         _output += output;
     }
+#ifdef QT_DEBUG
+    qDebug() << output;
+#endif
 }
 
 MediaUtils::RenderStatus AbstractRenderer::status() const
@@ -404,6 +407,16 @@ void AbstractRenderer::launchProcess( QStringList arguments )
     renderer->setProgram( _binaryFileName );
     renderer->setArguments( arguments );
     renderer->start(QIODevice::ReadWrite);
+
+#ifdef QT_DEBUG
+    QString args = "";
+    foreach(QString arg, arguments)
+    {
+        if (arg.indexOf(" ") > 0) args = args + " \"" + arg + "\"";
+        else args = args + " " + arg;
+    }
+    qDebug().noquote() << renderer->program() + args;
+#endif
 
     //TODO check processor affinity?
 

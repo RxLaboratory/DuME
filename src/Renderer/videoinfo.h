@@ -63,6 +63,8 @@ public:
     void setColorTRC(FFBaseObject *tRC, bool silent = false);
     void setColorSpace(FFBaseObject *space, bool silent = false);
     void setColorRange(FFBaseObject *range, bool silent = false);
+    void setColorProfile(FFColorProfile *colorProfile, bool silent = false);
+    void setColorProfile(QString profile, bool silent = false);
     FFBaseObject *colorPrimaries();
     FFBaseObject *colorTRC();
     FFBaseObject *colorSpace();

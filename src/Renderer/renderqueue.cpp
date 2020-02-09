@@ -107,16 +107,20 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     //output checks
     MediaInfo *o = item->getOutputMedias()[0];
     FFPixFormat *outputPixFmt = nullptr;
-    if (o->hasVideo()) outputPixFmt = o->videoStreams()[0]->pixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
     FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
-    if (outputPixFmt->name() == "") outputColorSpace = outputPixFmt->colorSpace();
+
+    if (o->hasVideo())
+    {
+        outputPixFmt = o->videoStreams()[0]->pixFormat();
+        if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
+        if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
+        if (outputPixFmt->name() != "") outputColorSpace = outputPixFmt->colorSpace();
+    }
 
     //input checks
     bool exrInput = false;
     MediaInfo *i = item->getInputMedias()[0];
-    if ( i->extensions().count() > 0 ) exrInput = i->extensions()[0] == "exr_pipe";
+    if (i->hasVideo()) exrInput = i->videoStreams()[0]->codec()->name() == "exr";
 
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
@@ -137,8 +141,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             //add sequence options
             if (input->isSequence())
             {
-                arguments << "-framerate" << QString::number(stream->framerate());
                 arguments << "-start_number" << QString::number(input->startNumber());
+                if (stream->framerate() != 0.0) arguments << "-framerate" << QString::number(stream->framerate());
+                else arguments << "-framerate" << "24";
                 inputFileName = input->ffmpegSequenceName();
             }
 

@@ -65,6 +65,15 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     _size = mediaFile.size();
 
     _muxer = _ffmpeg->muxer(extension);
+    qDebug() << extension;
+    qDebug() << _muxer->isSequence();
+    qDebug() << _muxer->name();
+
+    if (!mediaFile.exists())
+    {
+        if (!silent) emit changed();
+        return;
+    }
 
     QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
 
@@ -861,6 +870,16 @@ void MediaInfo::setColorRange(QString value, int id, bool silent)
         _videoStreams[id]->setColorRange(value, silent);
 }
 
+void MediaInfo::setColorProfile(QString profile, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setColorProfile(profile, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setColorProfile(profile, silent);
+}
+
 void MediaInfo::setPremultipliedAlpha(bool value, int id, bool silent)
 {
     if (!hasVideo()) return;
@@ -981,6 +1000,8 @@ void MediaInfo::setStartNumber(int startNumber, bool silent )
 void MediaInfo::setAep(bool isAep, bool silent )
 {
     _isAep = isAep;
+    addVideoStream(new VideoInfo(_ffmpeg, this));
+    addAudioStream(new AudioInfo(_ffmpeg, this));
     if(!silent) emit changed();
 }
 

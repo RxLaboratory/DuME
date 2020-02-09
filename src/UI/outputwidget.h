@@ -55,7 +55,6 @@ public slots:
 
 private slots:
     void mediaInfoChanged();
-    void inputMediaChanged();
     void newInputMedia(MediaInfo* m);
     void inputChanged();
     void customParamActivated(bool activated);

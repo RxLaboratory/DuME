@@ -3,6 +3,9 @@
 BlockPixFormat::BlockPixFormat(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create PixFormat block";
+#endif
     setupUi(this);
     _freezeUI = true;
     listPixFormats();

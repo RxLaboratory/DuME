@@ -3,6 +3,9 @@
 OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Output Widget";
+#endif
     _freezeUI = true;
     _loadingPreset = false;
 
@@ -19,7 +22,6 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
 
     // Input medias
     _inputMedias = inputMedias;
-    connect( _inputMedias, SIGNAL(changed()), this, SLOT(inputMediaChanged()));
     connect( _inputMedias, SIGNAL( newMedia(MediaInfo*)), this, SLOT( newInputMedia(MediaInfo*)) );
 
     _defaultPreset = ":/presets/MP4 - Standard";
@@ -229,29 +231,6 @@ void OutputWidget::mediaInfoChanged()
     _freezeUI = false;
 }
 
-void OutputWidget::inputMediaChanged()
-{
-    if (_inputMedias->hasVideo())
-    {
-        videoButton->setEnabled( true );
-    }
-    else
-    {
-        videoButton->setChecked( false );
-        videoButton->setEnabled( false );
-    }
-
-    if (_inputMedias->hasAudio())
-    {
-        audioButton->setEnabled(true);
-    }
-    else
-    {
-        audioButton->setEnabled(false);
-        audioButton->setChecked(false);
-    }
-}
-
 void OutputWidget::newInputMedia(MediaInfo *m)
 {
     connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
@@ -402,7 +381,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     _loadingPreset = true;
     //load
     _mediaInfo->loadPreset(presetsBox->itemData(index).toString());
-    qDebug() << _mediaInfo->hasVideo();
+
     _loadingPreset = false;
 }
 

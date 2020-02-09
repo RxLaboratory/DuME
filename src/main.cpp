@@ -19,6 +19,45 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QString currentVersionStr = DuMEVersion.getString();
 
+    //if DuME is launched with the -h or -help option, just print some informations
+    for (int i = 1; i < argc; i++)
+    {
+        QString arg = argv[i];
+        if (arg == "-h" || arg == "-help" )
+        {
+            qInfo().noquote() << "DuME - The Duduf Media Encoder version " + DuMEVersion.getString() + " " + STR_LEGALCOPYRIGHT;
+            qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
+            qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
+            qInfo() << "";
+            qInfo() << "A fast, versatile, and easy-to-use Media Encoder.";
+            qInfo() << "Usage: DuME [options] inputFile1 [[options] inputFile2 ... [options] inputFileN]";
+            qInfo() << "";
+            qInfo() << "Example: add a PNG sequence and set its framerate:";
+            qInfo() << "    DuME -framerate 29.97 \"image sequence_0001.png\"";
+            qInfo() << "";
+            qInfo() << "Example: add a PNG sequence and set its framerate along with a WAV sound file:";
+            qInfo() << "    DuME -framerate 24 \"image sequence_0001.png\" \"an awesome sound.wav\"";
+            qInfo() << "";
+            qInfo() << "Getting help";
+            qInfo() << "    -h / -help    Print basic options without launching DuME";
+            qInfo() << "    See the documentation at https://dume-docs.rainboxlab.org for detailed descriptions of the options";
+            qInfo() << "";
+            qInfo() << "Global Input Options";
+            qInfo() << "    -colorProfile profile    The input color profile. One of: srgb, bt709, bt2020_10, bt2020_12";
+            qInfo() << "";
+            qInfo() << "Image Sequence and After Effects options";
+            qInfo() << "    -framerate fps    The input framerate";
+            qInfo() << "    -fps fps          The input framerate";
+            qInfo() << "";
+            qInfo() << "After Effects options";
+            qInfo() << "    -comp composition    The name of the composition to render";
+            qInfo() << "    -rqItem item         The index of the After EFfects render queue item to render";
+            qInfo() << "    -useQueue            Just launch the After Effects render queue";
+
+            return 0;
+        }
+    }
+
     //set style
     RainboxUI::updateCSS(":/styles/default", "dume");
 

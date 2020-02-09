@@ -72,6 +72,19 @@
     <a class="current" href="linux.html">Linux</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#install-dume-on-linux">Install DuME on linux</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#debian-and-ubuntu">Debian and Ubuntu</a></li>
+        
+            <li><a class="toctree-l4" href="#appimage-for-all-distributions">AppImage for all distributions</a></li>
+        
+            <li><a class="toctree-l4" href="#build-from-source">Build from source</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
     </ul>
@@ -111,6 +124,25 @@
                 <li class="">
                     
     <a class="" href="after-effects-rendering.html">Rendering</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Control and automation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="api.html">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="cli-options.html">Command line options</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="server-api.html">Server API</a>
                 </li>
     </ul>
 	    </li>
@@ -183,7 +215,41 @@
           <div role="main">
             <div class="section">
               
-                <p><em>To be written&hellip;</em></p>
+                <h1 id="install-dume-on-linux">Install DuME on linux<a class="headerlink" href="#install-dume-on-linux" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For now, DuME on linux is only availabe in 64bit and will not work on 32bit systems (unless you build it from source by yourself).</p>
+</div>
+<p><strong>You can <a href="https://rainboxlab.org/tools/dume/">download DuME here</a>.</strong></p>
+<div class="toc">
+<ul>
+<li><a href="#install-dume-on-linux">Install DuME on linux</a><ul>
+<li><a href="#debian-and-ubuntu">Debian and Ubuntu</a></li>
+<li><a href="#appimage-for-all-distributions">AppImage for all distributions</a></li>
+<li><a href="#build-from-source">Build from source</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="debian-and-ubuntu">Debian and Ubuntu<a class="headerlink" href="#debian-and-ubuntu" title="Permanent link">&para;</a></h2>
+<p>If you&rsquo;re using Debian or Ubuntu, you can download the <code>.deb</code> package and install it the usual way.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DuME depends on the package qt5-default in version 5.9.5 or more recent. If it&rsquo;s not available in your package manager, use the AppImage instead.<br />
+For Ubuntu, these libraries are available since Bionic Beaver (18.04).</p>
+</div>
+<h2 id="appimage-for-all-distributions">AppImage for all distributions<a class="headerlink" href="#appimage-for-all-distributions" title="Permanent link">&para;</a></h2>
+<p>An easy way to use DuME is to download the AppImage file.</p>
+<p>Make the file executable, either with your file explorer or the command line (replace <code>x.x.x</code> by the actual version):<br />
+<code>chmod u=rwx DuME-x.x.x-x86_64.AppImage</code></p>
+<p>You&rsquo;ll also need to <a href="https://ffmpeg.org/download.html#build-linux">download and install FFmpeg</a>. Most of the time, it should be available in your distribution package manager. For example, in Debian or Ubuntu:<br />
+<code>sudo apt-get install ffmpeg</code></p>
+<p>Then you can launch it by double clicking on the AppImage file or with the command line:<br />
+<code>./DuME-x.x.x-x86_64.AppImage</code></p>
+<h2 id="build-from-source">Build from source<a class="headerlink" href="#build-from-source" title="Permanent link">&para;</a></h2>
+<p>You can <a href="https://github.com/Rainbox-dev/DuME">get the source code on Github</a>, and easily build DuME using Qt and the Qt Creator.</p>
+<p>You&rsquo;ll also need to <a href="https://ffmpeg.org/download.html#build-linux">download and install FFmpeg</a>. Most of the time, it should be available in your distribution package manager. For example, in Debian or Ubuntu:<br />
+<code>sudo apt-get install ffmpeg</code></p>
               
             </div>
           </div>

@@ -154,6 +154,7 @@ public:
     void setColorTRC(QString value, int id = -1, bool silent = false);
     void setColorSpace(QString value, int id = -1, bool silent = false);
     void setColorRange(QString value, int id = -1, bool silent = false);
+    void setColorProfile(QString profile, int id = -1, bool silent = false);
     void setPremultipliedAlpha(bool value, int id = -1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);

@@ -1,11 +1,23 @@
 # DuME - The Duduf Media Encoder
 Rendering and transcoding medias.
 
+📖 A **comprehensive user documentation** is [available here](https://dume-docs.rainboxlab.org).
+
+🎥 You can **download the latest public version [here](https://rainboxlab.org/tools/dume/)**.
+
+📣 You can also **help the developper** (Nicolas "Duduf" Dufresne) **and access Beta versions** on [Patreon](https://patreon.com/duduf).
+
+## Community
+
+🚀 [Join us and have a chat](http://chat.rainboxlab.org) to get started!
+
+🤗 We'd be happy to welcome you on the [forum](https://forum.rainboxlab.org) too.
+
 ## Dependencies
 
-- Qt >= 5.9.8
-- OpenImageIO >= 2.0
-- FFmpeg executable binary >= 3.4
+- Qt >= 5.14.0
+- ( OpenImageIO >= 2.0 ) (not implemented yet)
+- FFmpeg executable binary >= 4.0
 
 ## Build
 
@@ -30,3 +42,9 @@ With Aptitude (Ubuntu / Debian): `sudo apt-get install ffmpeg`.
 - Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
 - OpenImageIO: TODO
 - FFmpeg can be downloaded [here](https://ffmpeg.zeranoe.com/builds/). In order to let DuME use it automatically, you can copy `ffmpeg.exe` in the same directory where you build DuME.
+
+### Mac OS X
+
+- Qt: use the [online installer for Qt](https://www.qt.io/download-open-source).
+- OpenImageIO: TODO
+- FFmpeg can be downloaded [here](https://evermeet.cx/ffmpeg/). In order to let DuME use it automatically, you can copy `ffmpeg` in the the application package once you've built it, in `Contents/MacOS`.

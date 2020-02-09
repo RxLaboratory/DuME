@@ -3,6 +3,9 @@
 BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Color block";
+#endif
     _freezeUI = true;
     setupUi(this);
 
@@ -24,10 +27,14 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
         rangeBox->addItem( c->prettyName(), c->name() );
     }
 
-    _presets->addAction( actionsRGB );
-    _presets->addAction( actionBT709 );
-    _presets->addAction( actionUHD10 );
-    _presets->addAction( actionUHD12 );
+    //create actions
+    foreach(FFColorProfile *cp, _mediaInfo->getFfmpeg()->colorProfiles())
+    {
+        QAction *a = new QAction(cp->prettyName());
+        a->setData(cp->name());
+        connect(a, SIGNAL(triggered()), this, SLOT(presetTriggered()));
+        _presets->addAction(a);
+    }
 
     _freezeUI = false;
 }
@@ -104,6 +111,12 @@ void BlockColor::on_rangeBox_currentIndexChanged(int index)
 {
     if(_freezeUI) return;
     _mediaInfo->setColorRange( rangeBox->itemData(index).toString() );
+}
+
+void BlockColor::presetTriggered()
+{
+    QAction *a = static_cast<QAction *>(sender());
+    _mediaInfo->setColorProfile( a->data().toString() );
 }
 
 void BlockColor::on_actionsRGB_triggered()
