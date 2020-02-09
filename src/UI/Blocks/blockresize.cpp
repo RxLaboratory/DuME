@@ -3,7 +3,9 @@
 BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
+#ifdef QT_DEBUG
     qDebug() << "Create resize block";
+#endif
     setupUi(this);
 
     _presets->addAction( actionKeepRatio );

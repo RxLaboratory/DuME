@@ -3,6 +3,9 @@
 BlockAlpha::BlockAlpha(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Alpha block";
+#endif
     setupUi(this);
 }
 

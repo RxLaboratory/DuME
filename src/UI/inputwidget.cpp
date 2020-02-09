@@ -7,6 +7,9 @@
 InputWidget::InputWidget(FFmpeg *ff, int id, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Input Widget";
+#endif
     setupUi(this);
 
     _mediaInfo = new MediaInfo( ff, this);
@@ -125,7 +128,6 @@ BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *act
 void InputWidget::addNewParam(QString name, QString value)
 {
     //add a param and a value
-    qDebug() << "New Custom param: " + name + " " + value;
     BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
     BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
     blocksLayout->addWidget( bw );

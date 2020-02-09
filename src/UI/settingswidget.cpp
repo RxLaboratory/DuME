@@ -8,6 +8,9 @@
 SettingsWidget::SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Settings Widget";
+#endif
     setupUi(this);
 
     _ffmpeg = ffmpeg;

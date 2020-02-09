@@ -8,6 +8,9 @@
 MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     QMainWindow(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Main Window";
+#endif
     setupUi(this);
     log("Initialization");
 

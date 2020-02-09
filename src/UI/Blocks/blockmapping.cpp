@@ -4,6 +4,9 @@
 BlockMapping::BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent) :
     BlockContentWidget(mediaInfo,inputMedias,parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Mapping block";
+#endif
     setupUi(this);
 
     _presets->addAction( actionAdd );

@@ -3,6 +3,9 @@
 BlockVideoProfile::BlockVideoProfile(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Video Profile block";
+#endif
     setupUi(this);
 }
 

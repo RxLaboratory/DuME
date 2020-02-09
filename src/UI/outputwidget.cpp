@@ -3,6 +3,9 @@
 OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Output Widget";
+#endif
     _freezeUI = true;
     _loadingPreset = false;
 
@@ -378,7 +381,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     _loadingPreset = true;
     //load
     _mediaInfo->loadPreset(presetsBox->itemData(index).toString());
-    qDebug() << _mediaInfo->hasVideo();
+
     _loadingPreset = false;
 }
 

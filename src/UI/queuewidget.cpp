@@ -7,6 +7,9 @@
 QueueWidget::QueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     QWidget(parent)
 {
+#ifdef QT_DEBUG
+    qDebug() << "Create Queue Widget";
+#endif
     setupUi(this);
 
     _ffmpeg = ffmpeg;

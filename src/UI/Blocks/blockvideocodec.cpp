@@ -3,7 +3,9 @@
 BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
+#ifdef QT_DEBUG
     qDebug() << "Create video codec block";
+#endif
 
     _freezeUI = true;
 

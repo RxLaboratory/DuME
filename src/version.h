@@ -6,7 +6,7 @@
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 1
 #define VERSION_BUILD 2
-#define VERSION_SUFFIX "Beta"
+#define VERSION_SUFFIX "RC1"
 
 #define STRINGIFY_VERSION(A, B, C) CONCAT(A, B, C )
 #define CONCAT(A, B, C ) STRINGIFY( A##.##B##.##C )
