@@ -16,7 +16,7 @@ If you're using Debian or Ubuntu, you can download the `.deb` package and instal
 An easy way to use DuME is to download the AppImage file.
 
 Make the file executable, either with your file explorer or the command line (replace `x.x.x` by the actual version):  
-`chmod -x DuME-x.x.x-x86_64.AppImage`
+`chmod u=rwx DuME-x.x.x-x86_64.AppImage`
 
 You'll also need to [download and install FFmpeg](https://ffmpeg.org/download.html#build-linux). Most of the time, it should be available in your distribution package manager. For example, in Debian or Ubuntu:  
 `sudo apt-get install ffmpeg`
