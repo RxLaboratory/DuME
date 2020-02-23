@@ -58,7 +58,8 @@
     }
 
     function addCompToDuME()
-    {try {
+    {
+        try {
         //TODO Use sockets in DuME.
         //In the meantime, use command line arguments
 
@@ -82,17 +83,17 @@
         var projectName = DuAEF.DuJS.Fs.getBasename( projectFile );
 
         var currentDate = new Date();
-        var dumeProjectFile = new File( dumeFolder.absoluteURI + "/" + projectName + "-" + currentDate.toString() + ".aep");
+        var dumeProjectFile = new File( dumeFolder.absoluteURI + "/" + projectName + " (" + DuAEF.DuJS.Date.toString(currentDate) + ").aep");
         app.project.save( dumeProjectFile );
 
         //launch process
         DuMEProcess = new DuProcess( DuMEPath );
-        DuMEProcess.start( [ dumeProjectFile.fsName, "-comp", compName, "-framerate", framerate ]);
+        DuMEProcess.start( ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName ]);
 
         app.project.close( CloseOptions.DO_NOT_SAVE_CHANGES );
         app.open( projectFile );
 
-    }catch(e)  {alert(e)};
+        }catch(e)  {alert(e)};
     }
 
     function selectDuMEPath()
@@ -149,25 +150,29 @@
     }
 
     // _______ UI SETUP _______
+
+    #include "dume_required/icons.jsxinc"
+
     var ui = DuAEF.DuScriptUI.createUI(thisObj);
 
     ui.contents.orientation = 'stack';
-    var mainGroup = DuAEF.DuScriptUI.addGroup(ui.contents, 'row');
+    var mainGroup = DuAEF.DuScriptUI.addGroup(ui.contents, 'column');
     mainGroup.alignment = ['fill', 'top'];
     mainGroup.alignChildren = ['fill', 'fill'];
 
     var addCompButton = DuAEF.DuScriptUI.addButton(
         mainGroup,
         "Send comp. to DuME",
-        undefined,
+        DuAEF.DuBinary.toFile(dume),
         "Add the composition as a new input in DuME"
         );
 
     var settingsButton = DuAEF.DuScriptUI.addButton(
         mainGroup,
-        "S",
-        undefined,
-        "Change the settings"
+        '',
+        DuAEF.DuBinary.toFile(w18_settings_l),
+        "Change the settings",
+        DuAEF.DuBinary.toFile(w18_settings_r)
         );
     settingsButton.alignment = ['right', 'fill'];
 
