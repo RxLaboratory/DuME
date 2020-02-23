@@ -23,18 +23,22 @@
     function loadSettings()
     {
         if (app.settings.haveSetting("DuME","DuMEPath")) setDuMEPath( app.settings.getSetting( "DuME","DuMEPath" ));
+        setupTemplates();
     }
 
     function setupTemplates()
     {
         //TODO first check if the presets are already installed
 
-        //TODO (store and) extract the aep from the include
+        //The aep containing the presets
+        #include "dume_required/renderPresets.aep.jsxinc"
 
         var previousProject = app.project.file;
 
-        var projectFile = new File("Render Presets.aep");
+        var projectFile = DuAEF.DuBinary.toFile(renderPresets);
         app.beginSuppressDialogs();
+        //TODO import instead of opening
+        //then remove items
         app.open(projectFile);
         app.endSuppressDialogs(false);
 
@@ -88,6 +92,8 @@
 
         //launch process
         DuMEProcess = new DuProcess( DuMEPath );
+        //TODO add output path
+        //TODO maybe add a preset selector
         DuMEProcess.start( ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName ]);
 
         app.project.close( CloseOptions.DO_NOT_SAVE_CHANGES );
