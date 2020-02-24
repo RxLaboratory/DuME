@@ -28,37 +28,37 @@
 
     function setupTemplates()
     {
-        //TODO first check if the presets are already installed
+        // first check if the presets are already installed
+        var itemDuBest = DuAEF.DuAE.RQueue.hasRenderSettingsTemplate("DuBest");
+        var itemDuMultiMachine = DuAEF.DuAE.RQueue.hasRenderSettingsTemplate("DuMultiMachine");
+        var omDuWAV = DuAEF.DuAE.RQueue.hasOutputModuleTemplate("DuWAV");
+        var omDuEXR = DuAEF.DuAE.RQueue.hasOutputModuleTemplate("DuEXR");
+        if (itemDuBest && itemDuMultiMachine && omDuWAV && omDuEXR) return;
 
         //The aep containing the presets
         #include "dume_required/renderPresets.aep.jsxinc"
 
-        var previousProject = app.project.file;
-
         var projectFile = DuAEF.DuBinary.toFile(renderPresets);
-        app.beginSuppressDialogs();
-        //TODO import instead of opening
-        //then remove items
-        app.open(projectFile);
-        app.endSuppressDialogs(false);
+        //import
+        var io = new ImportOptions(projectFile);
+        io.importAs = ImportAsType.PROJECT;
+        var tempItem = app.project.importFile(io);
 
         //get rqitems
-
         var rqueueItems = app.project.renderQueue.items;
 
         //save presets
-        var item = rqueueItems[1];
+        var item = rqueueItems[ rqueueItems.length - 2 ];
         item.saveAsTemplate("DuBest");
         var om = item.outputModules[1];
         om.saveAsTemplate("DuWAV");
-        var item = rqueueItems[2];
+        var item = rqueueItems[ rqueueItems.length - 1 ];
         item.saveAsTemplate("DuMultiMachine");
         var om = item.outputModules[1];
         om.saveAsTemplate("DuEXR");
 
-        //close and reopen previous
-        app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
-        app.open( previousProject );
+        //remove items
+        tempItem.remove();
     }
 
     function addCompToDuME()
