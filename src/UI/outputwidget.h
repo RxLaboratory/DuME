@@ -52,6 +52,7 @@ public slots:
     void ffmpeg_init();
     void ffmpeg_loadMuxers();
     void loadPresets();
+    void setOutputPath(QString outputPath);
 
 private slots:
     void mediaInfoChanged();
@@ -99,7 +100,6 @@ private:
     QMenu *blocksMenu;
     QMenu *presetsMenu;
 
-    void updateOutputExtension(QString outputPath);
     void addNewParam(QString name = "",QString value = "");
 
     void selectDefaultPreset();

@@ -35,24 +35,31 @@ int main(int argc, char *argv[])
             qInfo() << "Example: add a PNG sequence and set its framerate:";
             qInfo() << "    DuME -framerate 29.97 \"image sequence_0001.png\"";
             qInfo() << "";
-            qInfo() << "Example: add a PNG sequence and set its framerate along with a WAV sound file:";
-            qInfo() << "    DuME -framerate 24 \"image sequence_0001.png\" \"an awesome sound.wav\"";
+            qInfo() << "Example: add a PNG sequence and set its framerate along with a WAV sound file, select a preset, and autostart the transcoding process::";
+            qInfo() << "    DuME -framerate 24 \"image sequence_0001.png\" \"an awesome sound.wav\" -preset \"MP4 - Standard\" -autostart";
             qInfo() << "";
             qInfo() << "Getting help";
-            qInfo() << "    -h / -help    Print basic options without launching DuME";
+            qInfo() << "    -h / -help                    Print basic options without launching DuME";
+            qInfo() << "    -help:presets / -h:presets    Prints the list of available presets";
             qInfo() << "    See the documentation at https://dume-docs.rainboxlab.org for detailed descriptions of the options";
             qInfo() << "";
             qInfo() << "Global Input Options";
             qInfo() << "    -colorProfile profile    The input color profile. One of: srgb, bt709, bt2020_10, bt2020_12";
             qInfo() << "";
-            qInfo() << "Image Sequence and After Effects options";
+            qInfo() << "Image Sequence and After Effects Input Options";
             qInfo() << "    -framerate fps    The input framerate";
             qInfo() << "    -fps fps          The input framerate";
             qInfo() << "";
-            qInfo() << "After Effects options";
+            qInfo() << "After Effects Input Options";
             qInfo() << "    -comp composition    The name of the composition to render";
             qInfo() << "    -rqItem item         The index of the After EFfects render queue item to render";
             qInfo() << "    -useQueue            Just launch the After Effects render queue";
+            qInfo() << "";
+            qInfo() << "Global Output Options";
+            qInfo() << "    -output file / -o file    The name of the output file";
+            qInfo() << "    -preset name / -p name    The name of the preset to use. Use `-help:presets` to get the list of available presets";
+            qInfo() << "    -autostart                Autostart the transcoding process";
+            qInfo() << "    -autoquit                 If `autostart` is set, automatically closes DuME once the transcoding process is finished";
 
             return 0;
         }

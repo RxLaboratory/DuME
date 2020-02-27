@@ -214,6 +214,11 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
                         i++;
                         colorProfile = argv[i];
                     }
+                    else if ( (arg == "-output" || arg == "-o") && i < argc-1 )
+                    {
+                        i++;
+                        queueWidget->setOutputPath( argv[i] );
+                    }
                     else
                     {
                         log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);

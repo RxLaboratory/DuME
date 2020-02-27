@@ -84,6 +84,14 @@ void QueueWidget::presetsPathChanged()
     }
 }
 
+void QueueWidget::setOutputPath(QString outputPath, int outputIndex)
+{
+    if (outputIndex >= 0 && outputIndex < outputWidgets.count())
+    {
+        outputWidgets[outputIndex]->setOutputPath( outputPath );
+    }
+}
+
 void QueueWidget::on_outputTab_tabCloseRequested(int index)
 {
     int numTabs = outputTab->count();

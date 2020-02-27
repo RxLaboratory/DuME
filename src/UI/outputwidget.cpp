@@ -338,7 +338,7 @@ void OutputWidget::on_outputBrowseButton_clicked()
 {
     QString outputPath = QFileDialog::getSaveFileName(this,"Output file",outputEdit->text());
     if (outputPath == "") return;
-    updateOutputExtension(outputPath);
+    setOutputPath(outputPath);
     _outputPathIsCustom = true;
 }
 
@@ -348,7 +348,7 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _mediaInfo->setMuxer( formatsBox->currentData().toString() );
-    updateOutputExtension(outputEdit->text());
+    setOutputPath(outputEdit->text());
 }
 
 void OutputWidget::on_formatsFilterBox_currentIndexChanged(int index)
@@ -391,7 +391,7 @@ void OutputWidget::on_presetsFilterBox_activated(QString arg1)
     loadPresets( );
 }
 
-void OutputWidget::updateOutputExtension(QString outputPath)
+void OutputWidget::setOutputPath(QString outputPath)
 {
     if (outputPath == "") return;
     QFileInfo output(outputPath);
@@ -428,6 +428,7 @@ void OutputWidget::updateOutputExtension(QString outputPath)
     outputPath = QDir::toNativeSeparators(outputPath);
     outputEdit->setText( outputPath );
     _mediaInfo->setFileName( outputPath, true );
+    emit newLog( "Output path set to: \"" + outputPath + "\"", LogUtils::Debug );
 }
 
 void OutputWidget::addNewParam(QString name, QString value)
@@ -452,7 +453,7 @@ void OutputWidget::inputChanged()
     {
         QFileInfo inputFile(input->fileName());
         QString outputPath = inputFile.path() + "/" + inputFile.completeBaseName();
-        updateOutputExtension(outputPath);
+        setOutputPath(outputPath);
     }
 
     //If ae render queue
