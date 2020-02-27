@@ -321,7 +321,6 @@ QMenu::item:disabled {
     color: @color-less-light;
 }
 
-
 QMenu::item:selected {
   background: @color-light;
   color: @color-dark;
@@ -362,7 +361,24 @@ QToolButton {
 
 QToolButton::menu-indicator {
     image: none;
-    }
+}
+
+QToolBar QToolButton[popupMode="1"] { /* only for MenuButtonPopup */
+    padding-right: @bars-size; /* make way for the popup button */
+}
+
+/* the subcontrols below are used only in the MenuButtonPopup mode */
+QToolButton::menu-button {
+  border-top-right-radius: @border-radius;
+  border-bottom-right-radius: @border-radius;
+  border-left: @margin solid @color-medium;
+}
+
+QToolButton::menu-arrow {
+  image: url(":/icons/down");
+  width:@bars-size;
+  height:@bars-size;
+}
 
 QToolBar QPushButton {
         background-color: @color-dark;
@@ -436,6 +452,10 @@ QToolButton:checked:hover, QToolBar QPushButton:checked:hover {
 #windowButton {
     width:@handle-size;
     height:@handle-size;
+}
+
+#windowButton::menu-indicator {
+     image: none;
 }
 
 /* SCROLLBAR */

@@ -38,7 +38,23 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     log("Init - UI");
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+
     //populate toolbar
+    QMenu *goMenu = new QMenu();
+    goMenu->addAction( actionGo );
+    goMenu->addAction( actionGoQuit );
+
+    QToolButton *goButton = new QToolButton(this);
+    goButton->setIcon(actionGo->icon());
+    goButton->setText(actionGo->text());
+    goButton->setToolTip(actionGo->toolTip());
+    goButton->setMenu(goMenu);
+    goButton->setPopupMode(QToolButton::MenuButtonPopup);
+    connect( goButton, SIGNAL( clicked()), this, SLOT ( on_actionGo_triggered()) );
+    mainToolBar->addWidget(goButton);
+    mainToolBar->addAction(actionStop);
+    mainToolBar->addAction(actionStatus);
+
     ToolBarSpacer *tbs = new ToolBarSpacer();
     mainToolBar->addWidget(tbs);
 
@@ -174,6 +190,8 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     log("Ready!");
 
     //parse arguments if ffmpeg is valid
+    autoQuit = false;
+
     if (_ffmpeg->isValid())
     {
         if (argc == 1) queueWidget->addInputFile("");
@@ -224,6 +242,10 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
                     else if ( arg == "-autostart" )
                     {
                         autoStart = true;
+                    }
+                    else if ( arg == "-autoquit" )
+                    {
+                        autoQuit = true;
                     }
                     else
                     {
@@ -441,6 +463,14 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
         actionStop->setEnabled(false);
         mainStatusBar->clearMessage();
         setCursor(Qt::ArrowCursor);
+
+        if ( autoQuit )
+        {
+            // Quit after a few seconds to be sure we're finished
+            QTimer::singleShot(2000, this, SLOT(quit()));
+            // Display a warning
+            actionStatus->setText("About to quit. See you soon!");
+        }
     }
 }
 
@@ -711,4 +741,15 @@ void MainWindow::on_actionForum_triggered()
 void MainWindow::on_actionHelp_triggered()
 {
     QDesktopServices::openUrl ( QUrl( URL_DOC ) );
+}
+
+void MainWindow::on_actionGoQuit_triggered()
+{
+    go();
+    autoQuit = true;
+}
+
+void MainWindow::quit(bool force)
+{
+    if (!MediaUtils::isBusy( _renderQueue->status() )) close();
 }

@@ -66,10 +66,12 @@ private slots:
     void on_actionSettings_triggered(bool checked);
     void on_actionBug_report_triggered();
     void on_actionChat_triggered();
-
     void on_actionForum_triggered();
-
     void on_actionHelp_triggered();
+    void on_actionGoQuit_triggered();
+
+    // GENERAL
+    void quit(bool force = false);
 
 private:
     /**
@@ -128,6 +130,7 @@ private:
      * @brief _renderQueue The render queue
      */
     RenderQueue *_renderQueue;
+    bool autoQuit;
 
 protected:
     void closeEvent(QCloseEvent *event);

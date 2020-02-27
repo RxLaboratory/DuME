@@ -24,6 +24,7 @@
         <file alias="info">resources/icons/info.svg</file>
         <file alias="help">resources/icons/help.svg</file>
         <file alias="help_m">resources/icons/help_m.svg</file>
+        <file alias="down">resources/icons/down.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default">resources/styles/style.css</file>
