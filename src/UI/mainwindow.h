@@ -73,6 +73,10 @@ private slots:
 
 private:
     /**
+     * @brief go Launches the transcoding process
+     */
+    void go();
+    /**
      * @brief settings The application settings
      */
     QSettings *settings;

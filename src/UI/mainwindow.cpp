@@ -187,19 +187,21 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
             bool useQueue = false;
             double framerate = 0;
             QString colorProfile = "";
+            bool autoStart = false;
 
             while (i < argc)
             {
                 QString arg = argv[i];
                 if (arg.startsWith("-"))
                 {
-                    if ( arg == "-useQueue" ) useQueue = true;
+                    arg = arg.toLower();
+                    if ( arg == "-usequeue" ) useQueue = true;
                     else if ( arg == "-comp" && i < argc-1 )
                     {
                         i++;
                         compName = argv[i];
                     }
-                    else if (arg == "-rqItem" && i < argc-1 )
+                    else if (arg == "-rqitem" && i < argc-1 )
                     {
                         i++;
                         rqItem = QString(argv[i]).toInt();
@@ -209,7 +211,7 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
                         i++;
                         framerate = QString(argv[i]).toDouble();
                     }
-                    else if (arg == "-colorProfile" && i < argc-1 )
+                    else if (arg == "-colorprofile" && i < argc-1 )
                     {
                         i++;
                         colorProfile = argv[i];
@@ -218,6 +220,10 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
                     {
                         i++;
                         queueWidget->setOutputPath( argv[i] );
+                    }
+                    else if ( arg == "-autostart" )
+                    {
+                        autoStart = true;
                     }
                     else
                     {
@@ -249,6 +255,9 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
                     i++;
                 }
             }
+
+            //autostart
+            if (autoStart) go();
         }
     }
 }
@@ -488,7 +497,7 @@ void MainWindow::on_ffmpegCommandsButton_clicked()
     _ffmpeg->runCommand(commands);
 }
 
-void MainWindow::on_actionGo_triggered()
+void MainWindow::go()
 {
     //generate input and output
     QList<MediaInfo *> input = queueWidget->getInputMedia();
@@ -497,6 +506,11 @@ void MainWindow::on_actionGo_triggered()
     //Launch!
     log("=== Beginning encoding ===");
     _renderQueue->encode(input,output);
+}
+
+void MainWindow::on_actionGo_triggered()
+{
+    go();
 }
 
 void MainWindow::on_actionStop_triggered()
