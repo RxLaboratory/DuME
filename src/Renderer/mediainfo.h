@@ -54,7 +54,7 @@ public:
     //presets
     QString exportPreset();
     void exportPreset(QString jsonPath);
-    void loadPreset(QFileInfo presetFile, bool silent = false);
+    void loadPreset(QFileInfo presetFilePath, bool silent = false);
 
     //general
     void setId(int value);

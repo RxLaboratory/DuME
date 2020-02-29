@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-QueueWidget::QueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
+QueueWidget::QueueWidget(FFmpeg *ffmpeg, PresetManager *pM, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -13,6 +13,7 @@ QueueWidget::QueueWidget(FFmpeg *ffmpeg, QWidget *parent) :
     setupUi(this);
 
     _ffmpeg = ffmpeg;
+    _presetManager = pM;
     _inputMedias = new MediaList();
 
     addOutput();
@@ -172,7 +173,7 @@ void QueueWidget::addOutput()
     int num = outputWidgets.count()+1;
 
     //create widget
-    OutputWidget *ow = new OutputWidget(_ffmpeg, num, _inputMedias, this);
+    OutputWidget *ow = new OutputWidget(_ffmpeg, _presetManager, num, _inputMedias, this);
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
 

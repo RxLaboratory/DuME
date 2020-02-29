@@ -5,7 +5,7 @@
 #include <QGraphicsBlurEffect>
 #include "duexr.h"
 
-MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
+MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QWidget *parent) :
     QMainWindow(parent)
 {
 #ifdef QT_DEBUG
@@ -109,7 +109,7 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent) :
     log("Init - Add queue widget", LogUtils::Debug);
 
     //queue widget
-    queueWidget = new QueueWidget(_ffmpeg, this);
+    queueWidget = new QueueWidget(_ffmpeg, pM, this);
     queueLayout->addWidget(queueWidget);
 
     log("Init - Appearance", LogUtils::Debug);
@@ -751,5 +751,6 @@ void MainWindow::on_actionGoQuit_triggered()
 
 void MainWindow::quit(bool force)
 {
-    if (!MediaUtils::isBusy( _renderQueue->status() )) close();
+    if (force) close();
+    else if (!MediaUtils::isBusy( _renderQueue->status() )) close();
 }

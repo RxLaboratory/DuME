@@ -9,13 +9,14 @@
 #include "inputwidget.h"
 #include "outputwidget.h"
 #include "Renderer/medialist.h"
+#include "Renderer/presetmanager.h"
 
 class QueueWidget : public QWidget, private Ui::QueueWidget
 {
     Q_OBJECT
 
 public:
-    explicit QueueWidget(FFmpeg *ffmpeg, QWidget *parent = nullptr);
+    explicit QueueWidget(FFmpeg *ffmpeg, PresetManager *pM, QWidget *parent = nullptr);
     QList<MediaInfo *> getInputMedia();
     QList<MediaInfo *> getOutputMedia();
     void openInputFile(QString file);
@@ -44,6 +45,7 @@ private slots:
 private:
     QSettings _settings;
     FFmpeg *_ffmpeg;
+    PresetManager *_presetManager;
     QList<OutputWidget*> outputWidgets;
     QList<InputWidget*> inputWidgets;
     MediaList *_inputMedias;

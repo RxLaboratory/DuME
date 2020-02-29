@@ -36,6 +36,8 @@ SOURCES += \
     Renderer/abstractrendererinfo.cpp \
     Renderer/audioinfo.cpp \
     Renderer/medialist.cpp \
+    Renderer/preset.cpp \
+    Renderer/presetmanager.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
     FFmpeg/ffmpegrenderer.cpp \
@@ -94,6 +96,8 @@ HEADERS += \
     Renderer/abstractrendererinfo.h \
     Renderer/audioinfo.h \
     Renderer/medialist.h \
+    Renderer/preset.h \
+    Renderer/presetmanager.h \
     Renderer/queueitem.h \
     Renderer/renderqueue.h \
     FFmpeg/ffmpegrenderer.h \

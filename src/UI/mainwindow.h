@@ -18,6 +18,7 @@
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
+#include "Renderer/presetmanager.h"
 #include "utils.h"
 
 #include "toolbarspacer.h"
@@ -31,7 +32,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(int argc, char *argv[], FFmpeg *ff, QWidget *parent = nullptr);
+    explicit MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QWidget *parent = nullptr);
 
 public slots:
 

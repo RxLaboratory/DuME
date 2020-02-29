@@ -1,6 +1,6 @@
 #include "outputwidget.h"
 
-OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent) :
+OutputWidget::OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -20,11 +20,13 @@ OutputWidget::OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *
     _mediaInfo = new MediaInfo( _ffmpeg, this);
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(mediaInfoChanged()));
 
+    // preset manager
+    _presetManager = pM;
+    connect( _presetManager, SIGNAL(changed()), this, SLOT(loadPresets()));
+
     // Input medias
     _inputMedias = inputMedias;
     connect( _inputMedias, SIGNAL( newMedia(MediaInfo*)), this, SLOT( newInputMedia(MediaInfo*)) );
-
-    _defaultPreset = ":/presets/MP4 - Standard";
 
     // CREATE MENUS
     blocksMenu = new QMenu(this);
@@ -364,7 +366,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _freezeUI = true;
-    bool def = presetsBox->itemData(index).toString() == settings.value("presets/default",_defaultPreset).toString();
+    bool def = presetsBox->itemData(index).toString() == _presetManager->defaultPreset().file().absoluteFilePath();
     if (def)
     {
         actionDefaultPreset->setChecked( true );
@@ -380,7 +382,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     //load
     _loadingPreset = true;
     //load
-    _mediaInfo->loadPreset(presetsBox->itemData(index).toString());
+    _mediaInfo->loadPreset( QFileInfo(presetsBox->itemData(index).toString()) );
 
     _loadingPreset = false;
 }
@@ -468,33 +470,16 @@ void OutputWidget::loadPresets()
     presetsBox->clear();
     int index = presetsFilterBox->currentIndex();
 
-    QStringList presets;
-    //list internal
-    if (index == 0 || index == 1)
-    {
-        foreach(QString preset, QDir(":/presets/").entryList(QDir::Files))
-        {
-            presets << ":/presets/" + preset;
-        }
-    }
-    //list users
-    if (index == 0 || index == 2)
-    {
-        QString userPresetsPath = settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString();
-        QStringList filters("*.meprst");
-        filters << "*.json" << "*.dffp";
-        foreach (QString preset, QDir(userPresetsPath).entryList(filters,QDir::Files))
-        {
-            presets << userPresetsPath + "/" + preset;
-        }
-    }
+    QList<Preset> presets;
+    if (index == 0) presets = _presetManager->presets();
+    else if (index == 1) presets = _presetManager->internalPresets();
+    else if (index == 2) presets = _presetManager->userPresets();
 
-    presets.sort();
     //add custom
     presetsBox->addItem("Custom");
-    foreach(QString preset,presets)
+    foreach(Preset preset, presets)
     {
-        presetsBox->addItem(QFileInfo(preset).completeBaseName(),preset);
+        presetsBox->addItem(preset.name(), preset.file().absoluteFilePath() );
     }
 
     _freezeUI = false;
@@ -502,7 +487,7 @@ void OutputWidget::loadPresets()
 
 void OutputWidget::selectDefaultPreset()
 {
-    QString defaultPreset = settings.value("presets/default",_defaultPreset).toString();
+    QString defaultPreset = _presetManager->defaultPreset().file().absoluteFilePath();
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )
     {
@@ -554,7 +539,7 @@ void OutputWidget::on_actionSavePreset_triggered()
     _mediaInfo->exportPreset(saveFileName);
     //add to box
     _freezeUI = false;
-    loadPresets();
+    _presetManager->load();
 }
 
 void OutputWidget::on_actionOpenPreset_triggered()
@@ -581,12 +566,13 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
     if (_freezeUI) return;
     if (checked)
     {
-        settings.setValue("presets/default", presetsBox->currentData().toString());
+        Preset p = Preset( QFileInfo( presetsBox->currentData().toString() ) );
+        _presetManager->setDefaultPreset(p);
         actionDefaultPreset->setText("Default preset");
     }
     else
     {
-        settings.setValue("presets/default", _defaultPreset);
+        _presetManager->resetDefaultPreset();
         actionDefaultPreset->setText("Set as default preset");
     }
 }

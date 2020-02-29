@@ -2,8 +2,8 @@
 #define OUTPUTWIDGET_H
 
 #include "ui_outputwidget.h"
-
 #include "Renderer/mediainfo.h"
+#include "Renderer/presetmanager.h"
 
 // BLOCKS
 #include "UI/Blocks/blockbasewidget.h"
@@ -37,7 +37,7 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
     Q_OBJECT
 
 public:
-    explicit OutputWidget(FFmpeg *ff, int id, MediaList *inputMedias, QWidget *parent = nullptr);
+    explicit OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inputMedias, QWidget *parent = nullptr);
     MediaInfo *getMediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
 
@@ -106,10 +106,10 @@ private:
 
     QSettings settings;
     FFmpeg *_ffmpeg;
+    PresetManager *_presetManager;
     MediaInfo *_mediaInfo;
     QList<BlockBaseWidget *> _customParams;
     MediaList *_inputMedias;
-    QString _defaultPreset;
 
     bool _freezeUI;
     bool _loadingPreset;

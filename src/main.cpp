@@ -8,6 +8,7 @@
 #include <QtDebug>
 
 #include "FFmpeg/ffmpeg.h"
+#include "Renderer/presetmanager.h"
 #include "UI/rainboxui.h"
 #include "version.h"
 
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
     for (int i = 1; i < argc; i++)
     {
         QString arg = argv[i];
-        if (arg == "-h" || arg == "-help" )
+        if (arg.toLower() == "-h" || arg.toLower() == "-help" )
         {
             qInfo().noquote() << "DuME - The Duduf Media Encoder version " + DuMEVersion.getString() + " " + STR_LEGALCOPYRIGHT;
             qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
@@ -74,6 +75,32 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(STR_PRODUCTNAME);
     QCoreApplication::setApplicationVersion(currentVersionStr);
 
+    //load presets
+    PresetManager *presetManager = new PresetManager();
+
+    //return the list of presets with -h:presets or -help:presets
+    for (int i = 1; i < argc; i++)
+    {
+        QString arg = argv[i];
+        if (arg.toLower() == "-h:presets" || arg.toLower() == "-help:presets" )
+        {
+            qInfo().noquote() << "DuME - The Duduf Media Encoder version " + DuMEVersion.getString() + " " + STR_LEGALCOPYRIGHT;
+            qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
+            qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
+            qInfo() << "";
+            qInfo() << "Default Preset:";
+            qInfo().noquote() << presetManager->defaultPreset().name();
+            qInfo() << "";
+            qInfo() << "Available presets:";
+            foreach(Preset p, presetManager->presets())
+            {
+                qInfo().noquote() << p.name();
+            }
+
+            return 0;
+        }
+    }
+
     //create splash screen
     QString v = "DuME v";
     QPixmap pixmap(":/images/splash");
@@ -115,7 +142,7 @@ int main(int argc, char *argv[])
 
     //build UI and show
     splash.newMessage("Building UI");
-    MainWindow *w = new MainWindow( argc, argv, ffmpeg );
+    MainWindow *w = new MainWindow( argc, argv, ffmpeg, presetManager );
 #ifndef Q_OS_LINUX
     FrameLessWindow f(w);
 #endif
