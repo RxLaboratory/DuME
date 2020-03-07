@@ -20,16 +20,18 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QString currentVersionStr = DuMEVersion.getString();
 
+    qInfo().noquote() << "DuME - The Duduf Media Encoder\nversion " + DuMEVersion.getString() + "\n" + STR_LEGALCOPYRIGHT;
+    qInfo() << "";
+    qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
+    qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
+    qInfo() << "";
+
     //if DuME is launched with the -h or -help option, just print some informations
     for (int i = 1; i < argc; i++)
     {
         QString arg = argv[i];
         if (arg.toLower() == "-h" || arg.toLower() == "-help" )
         {
-            qInfo().noquote() << "DuME - The Duduf Media Encoder version " + DuMEVersion.getString() + " " + STR_LEGALCOPYRIGHT;
-            qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
-            qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
-            qInfo() << "";
             qInfo() << "A fast, versatile, and easy-to-use Media Encoder.";
             qInfo() << "Usage: DuME [options] inputFile1 [[options] inputFile2 ... [options] inputFileN]";
             qInfo() << "";
@@ -84,10 +86,6 @@ int main(int argc, char *argv[])
         QString arg = argv[i];
         if (arg.toLower() == "-h:presets" || arg.toLower() == "-help:presets" )
         {
-            qInfo().noquote() << "DuME - The Duduf Media Encoder version " + DuMEVersion.getString() + " " + STR_LEGALCOPYRIGHT;
-            qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
-            qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
-            qInfo() << "";
             qInfo() << "Default Preset:";
             qInfo().noquote() << presetManager->defaultPreset().name();
             qInfo() << "";
