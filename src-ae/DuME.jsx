@@ -4,7 +4,7 @@
     //================
     #include DuAEF.jsxinc
     #include "dume_required/icons.jsxinc"
-    
+
     DuAEF.init("DuME", "0.1.3-RC2");
 
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
@@ -14,11 +14,12 @@
     DuAEF.bugReportURL = 'https://github.com/Rainbox-dev/DuME/issues/new?assignees=&labels=Bug&template=bug_report.md&title=';
     //DuAEF.featureRequestURL = 'https://github.com/Rainbox-dev/DuAEF/issues/new?template=feature_request.md';
     DuAEF.aboutURL = 'https://rainboxlab.org/tools/dume/';
+    DuAEF.docURL = 'http://dume-docs.rainboxlab.org';
     DuAEF.scriptAbout = 'The Duduf Media Encoder\nDeveloped by Nicolas Dufresne and Contributors.\n\nLicensed under the GNU General Public License v3.';
     DuAEF.newsServer = 'rainboxprod.net'
     DuAEF.newsArgs = 'wp/?call_custom_simple_rss=1&csrp_show_meta=0&csrp_cat=20';
 
-    DuMEPath = "";
+    var settings = new DuSettings();
 
     // ================ FUNCTIONS =============
 
@@ -26,8 +27,17 @@
 
     function loadSettings()
     {
-        if (app.settings.haveSetting("DuME","DuMEPath")) setDuMEPath( app.settings.getSetting( "DuME","DuMEPath" ));
         setupTemplates();
+
+        //defaults
+        settings.data.dumePath = def(settings.data.dumePath, "");
+        settings.data.autoStart = def(settings.data.autoStart, true);
+        settings.data.autoQuit = def(settings.data.autoQuit, false);
+
+        setDuMEPath( settings.data.dumePath );
+        autoStartButton.setChecked( settings.data.autoStart );
+        autoQuitButton.enabled = autoStartButton.checked;
+        autoQuitButton.setChecked( settings.data.autoQuit );
     }
 
     function setupTemplates()
@@ -96,9 +106,16 @@
         var outputFile = new File( projectFolder.fsName + "/" + projectName )
 
         //launch process
-        DuMEProcess = new DuProcess( DuMEPath );
+        DuMEProcess = new DuProcess( settings.data.dumePath );
+        var args = ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName  ];
+        if (settings.data.autoStart)
+        {
+            args.push("-autostart");
+            if (settings.data.autoQuit) args.push("-autoquit");
+        }
         //TODO maybe add a preset selector
-        DuMEProcess.start( ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName  ]);
+        DuMEProcess.start( args );
+
 
         app.project.close( CloseOptions.DO_NOT_SAVE_CHANGES );
         app.open( projectFile );
@@ -118,14 +135,14 @@
     function setDuMEPath( path )
     {
         if (!checkDuMEPath( path )) return;
-        DuMEPath = path;
         browseDuMEEdit.setText( path );
-        app.settings.saveSetting("DuME","DuMEPath", path );
+        settings.data.dumePath = path;
+        settings.save();
     }
 
     function checkDuMEPath( path )
     {
-        if (typeof path === 'undefined') path = DuMEPath;
+        if (typeof path === 'undefined') path = settings.data.dumePath;
 
         var DuMEFile = new File( path );
         return DuMEFile.exists;
@@ -157,16 +174,33 @@
         addCompToDuME();
     }
 
+    function autoStartButton_clicked() {
+        autoQuitButton.enabled = autoStartButton.checked;
+        settings.data.autoStart = autoStartButton.checked;
+        settings.save();
+    }
+
+    function autoQuitButton_clicked() {
+        settings.data.autoQuit = autoQuitButton.checked;
+        settings.save();
+    }
+
     // _______ UI SETUP _______
 
-    var ui = DuAEF.DuScriptUI.createMainPanel(thisObj);
+    var ui = DuAEF.DuScriptUI.createMainPanel(thisObj, true, true);
 
     var addCompButton = DuAEF.DuScriptUI.addButton(
         ui.mainGroup,
         "Send comp. to DuME",
         DuAEF.DuBinary.toFile(dume),
-        "Add the composition as a new input in DuME"
-        );
+        "Add the composition as a new input in DuME",
+        undefined,
+        true
+    );
+
+    var autoStartButton = DuAEF.DuScriptUI.addCheckBox( addCompButton.optionsPanel, "Auto-start rendering process");
+    autoStartButton.setChecked(true);
+    var autoQuitButton = DuAEF.DuScriptUI.addCheckBox(  addCompButton.optionsPanel, "Auto-quit DuME after rendering");
 
     var browseDuMEGroup = DuAEF.DuScriptUI.addGroup( ui.settingsGroup, 'row');
     var browseDuMEButton = DuAEF.DuScriptUI.addButton(
@@ -174,7 +208,7 @@
         "Browse",
         undefined,
         "Select DuME"
-        );
+    );
     browseDuMEButton.alignment = ['left','fill'];
     var browseDuMEEdit = DuAEF.DuScriptUI.addEditText(
         browseDuMEGroup,
@@ -182,11 +216,13 @@
         "",
         "",
         "Path to DuME..."
-        );
-
+    );
+    
     // Connections
     browseDuMEButton.onClick = selectDuMEPath;
     addCompButton.onClick = addCompButton_clicked;
+    autoStartButton.onClick = autoStartButton_clicked;
+    autoQuitButton.onClick = autoQuitButton_clicked;
 
     //Init
     loadSettings();
