@@ -3,8 +3,12 @@
 
     //================
     #include DuAEF.jsxinc
-    DuAEF.init("DuME", "0.1.0");
+    #include "dume_required/icons.jsxinc"
+    
+    DuAEF.init("DuME", "0.1.3-RC2");
 
+    DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
+    DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
     DuAEF.forumURL = 'https://forum.rainboxlab.org';
     DuAEF.chatURL = 'http://chat.rainboxlab.org';
     DuAEF.bugReportURL = 'https://github.com/Rainbox-dev/DuME/issues/new?assignees=&labels=Bug&template=bug_report.md&title=';
@@ -48,11 +52,11 @@
         var rqueueItems = app.project.renderQueue.items;
 
         //save presets
-        var item = rqueueItems[ rqueueItems.length - 2 ];
+        var item = rqueueItems[ rqueueItems.length - 1 ];
         item.saveAsTemplate("DuBest");
         var om = item.outputModules[1];
         om.saveAsTemplate("DuWAV");
-        var item = rqueueItems[ rqueueItems.length - 1 ];
+        var item = rqueueItems[ rqueueItems.length ];
         item.saveAsTemplate("DuMultiMachine");
         var om = item.outputModules[1];
         om.saveAsTemplate("DuEXR");
@@ -63,7 +67,6 @@
 
     function addCompToDuME()
     {
-        try {
         //TODO Use sockets in DuME.
         //In the meantime, use command line arguments
 
@@ -90,16 +93,15 @@
         var dumeProjectFile = new File( dumeFolder.absoluteURI + "/" + projectName + " (" + DuAEF.DuJS.Date.toString(currentDate) + ").aep");
         app.project.save( dumeProjectFile );
 
+        var outputFile = new File( projectFolder.fsName + "/" + projectName )
+
         //launch process
         DuMEProcess = new DuProcess( DuMEPath );
-        //TODO add output path
         //TODO maybe add a preset selector
-        DuMEProcess.start( ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName ]);
+        DuMEProcess.start( ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName  ]);
 
         app.project.close( CloseOptions.DO_NOT_SAVE_CHANGES );
         app.open( projectFile );
-
-        }catch(e)  {alert(e)};
     }
 
     function selectDuMEPath()
@@ -157,38 +159,16 @@
 
     // _______ UI SETUP _______
 
-    #include "dume_required/icons.jsxinc"
-
-    var ui = DuAEF.DuScriptUI.createUI(thisObj);
-
-    ui.contents.orientation = 'stack';
-    var mainGroup = DuAEF.DuScriptUI.addGroup(ui.contents, 'column');
-    mainGroup.alignment = ['fill', 'top'];
-    mainGroup.alignChildren = ['fill', 'fill'];
+    var ui = DuAEF.DuScriptUI.createMainPanel(thisObj);
 
     var addCompButton = DuAEF.DuScriptUI.addButton(
-        mainGroup,
+        ui.mainGroup,
         "Send comp. to DuME",
         DuAEF.DuBinary.toFile(dume),
         "Add the composition as a new input in DuME"
         );
 
-    var settingsButton = DuAEF.DuScriptUI.addButton(
-        mainGroup,
-        '',
-        DuAEF.DuBinary.toFile(w18_settings_l),
-        "Change the settings",
-        DuAEF.DuBinary.toFile(w18_settings_r)
-        );
-    settingsButton.alignment = ['right', 'fill'];
-
-    var settingsGroup = DuAEF.DuScriptUI.addGroup(ui.contents, 'column');
-    settingsGroup.alignment = ['fill', 'top'];
-    settingsGroup.alignChildren = ['fill', 'fill'];
-    settingsGroup.visible = false;
-
-    var browseDuMEGroup = DuAEF.DuScriptUI.addGroup(settingsGroup, 'row');
-    
+    var browseDuMEGroup = DuAEF.DuScriptUI.addGroup( ui.settingsGroup, 'row');
     var browseDuMEButton = DuAEF.DuScriptUI.addButton(
         browseDuMEGroup,
         "Browse",
@@ -204,18 +184,7 @@
         "Path to DuME..."
         );
 
-    var settingsValidGroup = DuAEF.DuScriptUI.addGroup(settingsGroup, 'row');
-
-    var settingsCancelutton = DuAEF.DuScriptUI.addButton(
-        settingsValidGroup,
-        "<- Back",
-        undefined
-        );
-
-
     // Connections
-    settingsButton.onClick = settingsButton_clicked;
-    settingsCancelutton.onClick = settingsCancelutton_clicked;
     browseDuMEButton.onClick = selectDuMEPath;
     addCompButton.onClick = addCompButton_clicked;
 
