@@ -1,6 +1,6 @@
 # Controlling DuME
 
-DuME is a stand-alone application, but it can easily be controlled from other applications and scripts.
+DuME is a stand-alone application, but it can easily be controlled from other applications and scripts (like [the *DuME* script for *After Effects*](after-effects-install.md)).
 
 There are two ways to control *DuME* from outside:
 

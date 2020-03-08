@@ -27,12 +27,11 @@ To achieve this goal, the development of the application follows these guideline
 - Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF... - *evolving list*.
 - Transcode to and from [Image Sequences](sequences.md) (PNG, EXR...).
 - [Mix Media files](mapping.md) (e.g. add sound to an image sequence).
-- Render After Effects projects and transcode to any format supported by FFmpeg - *work in progress*.
+- Easily render *After Effects* projects and transcode to any format supported by *FFmpeg* - *work in progress*.
 
 ### Planned Features
 
 - Render/Transcode queue.
-- Simplify *After Effects* rendering setup.
 - Simple media player (using ffplay).  
     - Preview of the input.
     - Preview of the output.

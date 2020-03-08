@@ -1,5 +1,25 @@
 # *After Effects* Rendering
 
+[TOC]
+
+DuME for After Effects has to be correctly installed and configured first, [read the installation section](after-effects-install.md) of this documentation.
+
+## From After Effects, using the script
+
+You can also use the *DuME script for After Effects* to easily.
+
+![](img/captures/aePanel.png)
+
+The *Send Comp. to DuME* button will launch DuME and add the active composition to it.
+
+Click on the ![icon](img/icons/options_r.svg) options button to adjust a few settings.
+
+![](img/captures/aeLaunchOptionsPopup.png)
+
+All the options you change there will be kept even if you restart *After Effects*. The list of presets is pulled from *DuME* when the script is opened, use the update button at the right if you've made changes to the list of presets in *DuMe* after you have opened the script.
+
+## Add a composition to DuME
+
 Drop or open an *After Effects* project on the input side of *DuME*.
 
 ![](img/captures/ae_input_options.png)

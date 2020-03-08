@@ -2,6 +2,20 @@
 
 This is the list of what has changed since the first public version of *DuFFmpeg*.
 
+[TOC]
+
+## 0.1.3
+
+### New Features
+
+- Now comes with [a script for *After Effects*](after-effects-install.md).
+- Added more [command line options](cli-options.md).
+
+### Fixes
+
+- Fixed crash with the Vidvox HAP codec.
+- Fixed console output on Windows.
+
 ## 0.1.2
 
 ### Fixes

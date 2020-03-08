@@ -22,11 +22,38 @@ a:hover {
     border-color: #710132;
 }
 .wy-menu-vertical li a {
-    color: #ec1818;
+    color: #e3e3e3;
+    margin-left:20px;
 }
 .wy-menu-vertical span {
     color: #ec1818;
 }
+
+h2, h3, h4 {
+    margin-top: 15px;
+}
+
+h3 {
+    margin-left: 20px;
+}
+
+h4 {
+    margin-left: 40px;
+}
+
+table tr:nth-child(odd) {
+    background-color:#c8c8c8;
+}
+
+table tr:nth-child(even) {
+    background-color:#d8d8d8;
+}
+
+thead tr {
+    background-color:#737373 !important;
+    color:#e3e3e3;
+}
+
 
 img[alt=icon] {
     width: 24px;

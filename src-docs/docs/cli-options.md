@@ -26,6 +26,13 @@ Add a PNG sequence and set its framerate along with a WAV sound file, select a p
 | `-help:presets` | | prints the list of available presets. |
 | `-h:presets` | | prints the list of available presets. |
 
+## General options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `-nobanner` | | Does not output the first descriptive paragraphs (name, version, license and copyright notice). |
+| `-hideconsole` | | On *Windows*, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications. |
+
 ## Input options
 
 | Option | Type | Description |
