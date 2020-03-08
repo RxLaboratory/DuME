@@ -68,4 +68,10 @@ private:
     QString _suffix;
 };
 
+class MessageHandler
+{
+public:
+    static void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+};
+
 #endif // RAINBOXUI_H

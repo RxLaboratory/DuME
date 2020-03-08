@@ -185,6 +185,8 @@ win* {
     DISTFILES += DuME.rc
     RC_FILE = DuME.rc
     !build_pass:touch($$RC_FILE, version.h)
+    # Enable console output
+    CONFIG += console
 } else:unix {
     # Fix issue with c++ version used to compile Qt in some distros (Ubuntu) with Qt <= 5.12.
     # Need to check the version of c++ used with distros providing Qt > 12

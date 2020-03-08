@@ -54,6 +54,9 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
     mainToolBar->addWidget(goButton);
     mainToolBar->addAction(actionStop);
     mainToolBar->addAction(actionStatus);
+#ifdef QT_DEBUG
+    mainToolBar->addAction(actionDevBuild);
+#endif
 
     ToolBarSpacer *tbs = new ToolBarSpacer();
     mainToolBar->addWidget(tbs);
