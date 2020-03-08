@@ -53,6 +53,7 @@ public slots:
     void ffmpeg_loadMuxers();
     void loadPresets();
     void setOutputPath(QString outputPath);
+    void setOutputPreset(QString preset);
 
 private slots:
     void mediaInfoChanged();

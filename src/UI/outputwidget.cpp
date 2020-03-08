@@ -160,7 +160,7 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 void OutputWidget::mediaInfoChanged()
 {
     _freezeUI = true;
-
+qDebug() << "changed";
     //Audio / Video Buttons and Muxer selection
     FFMuxer *m = _mediaInfo->muxer();
 
@@ -169,7 +169,7 @@ void OutputWidget::mediaInfoChanged()
 
     bool video =  m->isVideo() || m->isSequence();
     videoButton->setEnabled(  video  );
-
+qDebug() << "changed";
     // select muxer in formats box
     for (int i = 0; i < formatsBox->count(); i++)
     {
@@ -383,7 +383,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     _loadingPreset = true;
     //load
     _mediaInfo->loadPreset( QFileInfo(presetsBox->itemData(index).toString()) );
-
+qDebug() << "ok2";
     _loadingPreset = false;
 }
 
@@ -431,6 +431,12 @@ void OutputWidget::setOutputPath(QString outputPath)
     outputEdit->setText( outputPath );
     _mediaInfo->setFileName( outputPath, true );
     emit newLog( "Output path set to: \"" + outputPath + "\"", LogUtils::Debug );
+}
+
+void OutputWidget::setOutputPreset(QString preset)
+{
+    presetsBox->setCurrentData(preset);
+    if (presetsBox->currentIndex() < 0) presetsBox->setCurrentText(preset);
 }
 
 void OutputWidget::addNewParam(QString name, QString value)

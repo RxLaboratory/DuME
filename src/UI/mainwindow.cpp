@@ -250,6 +250,11 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
                     {
                         autoQuit = true;
                     }
+                    else if ( arg == "-preset" && i < argc-1 )
+                    {
+                        i++;
+                        queueWidget->setOutputPreset( argv[i] );
+                    }
                     else
                     {
                         log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);

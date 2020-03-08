@@ -32,6 +32,7 @@ signals:
 public slots:
     void presetsPathChanged();
     void setOutputPath(QString outputPath, int outputIndex = 0);
+    void setOutputPreset(QString preset, int outputIndex = 0);
 
 private slots:
     void on_outputTab_tabCloseRequested(int index);

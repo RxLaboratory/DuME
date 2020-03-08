@@ -93,6 +93,14 @@ void QueueWidget::setOutputPath(QString outputPath, int outputIndex)
     }
 }
 
+void QueueWidget::setOutputPreset(QString preset, int outputIndex)
+{
+    if (outputIndex >= 0 && outputIndex < outputWidgets.count())
+    {
+        outputWidgets[outputIndex]->setOutputPreset( preset );
+    }
+}
+
 void QueueWidget::on_outputTab_tabCloseRequested(int index)
 {
     int numTabs = outputTab->count();

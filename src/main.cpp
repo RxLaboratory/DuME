@@ -27,16 +27,16 @@ PresetManager *presetManager = new PresetManager();
 // Process the CLI arguments
 bool processArgs(int argc, char *argv[])
 {
-    // No console without args on windows
-#ifdef Q_OS_WIN
-    if (argc == 1) ShowWindow(GetConsoleWindow(), SW_HIDE);
-#endif
-
-    // Banner
     bool nobanner = false;
     bool hideConsole = false;
     bool help = false;
     bool presets = false;
+
+    // No console without args on windows
+#ifdef Q_OS_WIN
+    if (argc == 1) hideConsole = true;
+#endif
+
     for (int i = 1; i < argc; i++)
     {
         QString arg = argv[i];
@@ -110,10 +110,14 @@ bool processArgs(int argc, char *argv[])
         }
     }
 
+#ifdef Q_OS_WIN
+#ifndef QT_DEBUG
     if (hideConsole)
     {
         ShowWindow(GetConsoleWindow(), SW_HIDE);
     }
+#endif
+#endif
 
     return presets || help;
 }
