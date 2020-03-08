@@ -5,7 +5,7 @@
     #include DuAEF.jsxinc
     #include "dume_required/icons.jsxinc"
 
-    DuAEF.init("DuME", "0.1.3-RC2");
+    DuAEF.init("DuME", "0.1.3-RC");
 
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
     DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
@@ -33,6 +33,7 @@
         settings.data.dumePath = def(settings.data.dumePath, "");
         settings.data.autoStart = def(settings.data.autoStart, true);
         settings.data.autoQuit = def(settings.data.autoQuit, false);
+        settings.data.defaultPreset = def(settings.data.defaultPreset, "");
 
         setDuMEPath( settings.data.dumePath );
         autoStartButton.setChecked( settings.data.autoStart );
@@ -107,7 +108,7 @@
 
         //launch process
         DuMEProcess = new DuProcess( settings.data.dumePath );
-        var args = ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName  ];
+        var args = ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName, "-preset", presetsButton.text, "-hideconsole"  ];
         if (settings.data.autoStart)
         {
             args.push("-autostart");
@@ -134,7 +135,45 @@
 
     function setDuMEPath( path )
     {
+        if (typeof path === 'undefined') path = settings.data.dumePath;
         if (!checkDuMEPath( path )) return;
+        // load DuME version and presets
+        var output = DuAEF.DuProcess.run(path, ["-h:presets"]);
+
+        // process output
+        output = output.split("\n");
+        var dumeVersion = "";
+        var presets = [];
+        var inPresets = false;
+        for (var i = 0, n = output.length; i < n; i++)
+        {
+            var l = DuAEF.DuJS.String.trim(output[i]);
+
+            if (inPresets && l != "") presets.push(l);
+            if (l.indexOf("version") == 0) dumeVersion = l.substring(8);
+            if (l == "Default Preset:" && settings.data.defaultPreset == "") settings.data.defaultPreset = DuAEF.DuJS.String.trim(output[i+1]);
+            if (l == "Available presets:" ) inPresets = true;
+            
+        }
+
+        //check version
+        if (dumeVersion != DuAEF.scriptVersion.fullVersion)
+        {
+            alert( "Warning! The version of DuME is not the same as the version of the After Effects script." +
+                "\nSome features may not work properly." + 
+                "\nDuME version is " + dumeVersion +
+                "\nThe script version is " + DuAEF.scriptVersion.fullVersion
+            );
+        }
+
+        //populate presets
+        presetsButton.removeAll();
+        for (var i = 0, n = presets.length; i < n; i++)
+        {
+            presetsButton.addButton(presets[i]);
+        }
+        presetsButton.setCurrentText( settings.data.defaultPreset );
+        
         browseDuMEEdit.setText( path );
         settings.data.dumePath = path;
         settings.save();
@@ -185,6 +224,11 @@
         settings.save();
     }
 
+    function presetsButton_changed() {
+        settings.data.defaultPreset =  presetsButton.text;
+        settings.save();
+    }
+
     // _______ UI SETUP _______
 
     var ui = DuAEF.DuScriptUI.createMainPanel(thisObj, true, true);
@@ -198,6 +242,7 @@
         true
     );
 
+    var presetsButton = DuAEF.DuScriptUI.addSelector( addCompButton.optionsPanel, true );
     var autoStartButton = DuAEF.DuScriptUI.addCheckBox( addCompButton.optionsPanel, "Auto-start rendering process");
     autoStartButton.setChecked(true);
     var autoQuitButton = DuAEF.DuScriptUI.addCheckBox(  addCompButton.optionsPanel, "Auto-quit DuME after rendering");
@@ -223,6 +268,8 @@
     addCompButton.onClick = addCompButton_clicked;
     autoStartButton.onClick = autoStartButton_clicked;
     autoQuitButton.onClick = autoQuitButton_clicked;
+    presetsButton.onChange = presetsButton_changed;
+    presetsButton.onRefresh = setDuMEPath;
 
     //Init
     loadSettings();
