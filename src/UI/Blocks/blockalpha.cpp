@@ -27,6 +27,7 @@ void BlockAlpha::activate(bool activate)
 
 void BlockAlpha::update()
 {
+    qDebug() << "Update Alpha block";
     if (_freezeUI) return;
     _freezeUI = true;
 
@@ -69,6 +70,7 @@ void BlockAlpha::update()
         unmultButton->setEnabled( false );
     }
     _freezeUI = false;
+    qDebug() << "Alpha block updated";
 }
 
 void BlockAlpha::on_alphaButton_clicked(bool checked)

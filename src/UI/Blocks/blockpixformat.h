@@ -18,7 +18,7 @@ private slots:
     void on_pixFmtBox_currentIndexChanged(int index);
 private:
     void listPixFormats();
-    void filterPixFormats();
+    void filterPixFormats(bool resetPrevious = true);
     void setDefaultPixFormat();
     void setPixFormat(QString name,  bool tryWithoutFilter = true );
     QList<FFPixFormat *> _pixFormats;

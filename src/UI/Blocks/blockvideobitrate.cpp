@@ -53,6 +53,7 @@ void BlockVideoBitrate::activate(bool activate)
 
 void BlockVideoBitrate::update()
 {
+    qDebug() << "Update Video Bitrate Block";
     if (_freezeUI) return;
     _freezeUI = true;
 
@@ -201,6 +202,7 @@ void BlockVideoBitrate::update()
     }
 
     _freezeUI = false;
+    qDebug() << "Video Bitrate Block updated";
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)

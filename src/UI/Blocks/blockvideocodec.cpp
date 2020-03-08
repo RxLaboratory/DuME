@@ -120,6 +120,7 @@ void BlockVideoCodec::activate(bool activate)
 
 void BlockVideoCodec::update()
 {
+    qDebug() << "Update Video Codec Block";
     if (_freezeUI) return;
     _freezeUI = true;
 
@@ -146,6 +147,7 @@ void BlockVideoCodec::update()
     emit blockEnabled(true);
 
     _freezeUI = false;
+    qDebug() << "Video Codec Block updated";
 }
 
 void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
@@ -165,5 +167,6 @@ void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
 void BlockVideoCodec::on_videoCodecsBox_currentIndexChanged(int index)
 {
     if ( _freezeUI ) return;
+    qDebug() << "Video Codec Block changed codec to " + videoCodecsBox->currentText();
     _mediaInfo->setVideoCodec( videoCodecsBox->itemData(index, Qt::UserRole).toString() );
 }

@@ -30,6 +30,7 @@ void BlockPixFormat::activate(bool activate)
 
 void BlockPixFormat::update()
 {
+    qDebug() << "Update Pix format Block";
     if (_freezeUI) return;
 
     if (!_mediaInfo->hasVideo())
@@ -38,6 +39,7 @@ void BlockPixFormat::update()
         _freezeUI = false;
         return;
     }
+
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
     if(stream->isCopy())
     {
@@ -49,9 +51,16 @@ void BlockPixFormat::update()
 
     listPixFormats( );
 
+    if (_pixFormats.count() == 0)
+    {
+        emit blockEnabled(false);
+        _freezeUI = false;
+        return;
+    }
+
     _freezeUI = true;
 
-    filterPixFormats();
+    filterPixFormats(false);
 
     _freezeUI = true;
 
@@ -59,6 +68,7 @@ void BlockPixFormat::update()
     setPixFormat( pf->name() );
 
     _freezeUI = false;
+    qDebug() << "Pix format Block updated";
 }
 
 void BlockPixFormat::listPixFormats()
@@ -97,6 +107,12 @@ void BlockPixFormat::listPixFormats()
         pixFmtFilterBox->addItem(filter);
     }
 
+    if (_pixFormats.count() == 0)
+    {
+        _freezeUI = false;
+        return;
+    }
+
     // reselect previous
     setFilter( prevFilter );
     setPixFormat( prevFormat );
@@ -104,7 +120,7 @@ void BlockPixFormat::listPixFormats()
     _freezeUI = false;
 }
 
-void BlockPixFormat::filterPixFormats()
+void BlockPixFormat::filterPixFormats(bool resetPrevious)
 {
     _freezeUI = true;
 
@@ -121,7 +137,7 @@ void BlockPixFormat::filterPixFormats()
         }
     }
 
-    setPixFormat( prevFormat, false );
+    if (resetPrevious) setPixFormat( prevFormat, false );
 
     _freezeUI = false;
 }
@@ -131,7 +147,7 @@ void BlockPixFormat::setDefaultPixFormat()
     _freezeUI = true;
 
     pixFmtFilterBox->setCurrentIndex( 0 );
-    filterPixFormats();
+    filterPixFormats(false);
 
     _freezeUI = true;
 
@@ -150,7 +166,7 @@ void BlockPixFormat::setDefaultPixFormat()
     }
     else
     {
-        setPixFormat( pf->name() );
+        setPixFormat( pf->name(), false );
     }
 
     pixFmtBox->setEnabled( false );
@@ -162,26 +178,24 @@ void BlockPixFormat::setPixFormat(QString name, bool tryWithoutFilter )
 {
     _freezeUI = true;
 
-    if (name == "")
+    if (name == "" && _pixFormats.count() > 0)
     {
         setDefaultPixFormat();
+        _freezeUI = false;
         return;
     }
 
-    for(int i = 0; i < pixFmtBox->count(); i++)
+    pixFmtBox->setCurrentData(name);
+    if (pixFmtBox->currentIndex() >= 0)
     {
-        if (pixFmtBox->itemData( i ).toString() == name )
-        {
-            pixFmtBox->setCurrentIndex( i );
-            _freezeUI = false;
-            return;
-        }
+        _freezeUI = false;
+        return;
     }
 
     //try again without filter
     if ( tryWithoutFilter )
     {
-        pixFmtFilterBox->setCurrentIndex( 0 );
+        pixFmtFilterBox->setCurrentIndex( 1 );
         filterPixFormats();
         setPixFormat( name, false );
     }

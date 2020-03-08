@@ -63,6 +63,7 @@ void BlockColor::activate(bool activate)
 
 void BlockColor::update()
 {
+    qDebug() << "Update Color Block";
     if (_freezeUI) return;
     _freezeUI = true;
 
@@ -87,6 +88,7 @@ void BlockColor::update()
     primariesBox->setCurrentData( stream->colorPrimaries()->name());
 
     _freezeUI = false;
+    qDebug() << "Color block updated";
 }
 
 void BlockColor::on_spaceBox_currentIndexChanged(int index)

@@ -190,7 +190,7 @@ void MessageHandler::messageOutput(QtMsgType type, const QMessageLogContext &con
     switch (type) {
     case QtDebugMsg:
 #ifdef QT_DEBUG
-        fprintf(stderr, "Debug: %s\n", localMsg.constData());
+        fprintf(stderr, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
 #endif
         break;
     case QtInfoMsg:

@@ -159,8 +159,9 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 
 void OutputWidget::mediaInfoChanged()
 {
+    qDebug() << "changed";
     _freezeUI = true;
-qDebug() << "changed";
+
     //Audio / Video Buttons and Muxer selection
     FFMuxer *m = _mediaInfo->muxer();
 
@@ -169,7 +170,7 @@ qDebug() << "changed";
 
     bool video =  m->isVideo() || m->isSequence();
     videoButton->setEnabled(  video  );
-qDebug() << "changed";
+
     // select muxer in formats box
     for (int i = 0; i < formatsBox->count(); i++)
     {
@@ -227,10 +228,10 @@ qDebug() << "changed";
         actionDefaultPreset->setChecked( false );
         actionDefaultPreset->setText("Set as default preset");
     }
-
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 
     _freezeUI = false;
+    qDebug() << "change ok";
 }
 
 void OutputWidget::newInputMedia(MediaInfo *m)
@@ -382,8 +383,9 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     //load
     _loadingPreset = true;
     //load
+
     _mediaInfo->loadPreset( QFileInfo(presetsBox->itemData(index).toString()) );
-qDebug() << "ok2";
+
     _loadingPreset = false;
 }
 
@@ -447,6 +449,7 @@ void OutputWidget::addNewParam(QString name, QString value)
     BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
     blocksLayout->addWidget( bw );
     bw->show();
+
     connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
     //add to list
     _customParams << bw;

@@ -27,6 +27,7 @@ void BlockVideoProfile::activate(bool activate)
 
 void BlockVideoProfile::update()
 {
+    qDebug() << "Update Video Profile Block";
     if(_freezeUI) return;
     _freezeUI = true;
 
@@ -89,6 +90,7 @@ void BlockVideoProfile::update()
     videoLevelBox->setCurrentData( stream->level() );
 
     _freezeUI = false;
+    qDebug() << "Video Profile Block updated";
 }
 
 void BlockVideoProfile::on_videoProfileBox_currentIndexChanged(int index)

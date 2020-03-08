@@ -380,6 +380,7 @@ FFBaseObject *VideoInfo::colorRange()
 
 void VideoInfo::setCodec(FFCodec *codec, bool silent)
 {
+    qDebug() << "Codec changed to " + codec->name();
     _codec = codec;
     if(!silent) emit changed();
 }
