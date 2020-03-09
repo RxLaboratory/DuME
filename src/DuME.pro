@@ -76,6 +76,7 @@ SOURCES += \
     UI/streamreferencewidget.cpp \
     UI/toolbarspacer.cpp \
     FFmpeg/ffcolorprofile.cpp \
+    global.cpp \
     languagelist.cpp \
     main.cpp \
     Renderer/mediainfo.cpp \
@@ -142,6 +143,7 @@ HEADERS += \
     UI/streamreferencewidget.h \
     UI/toolbarspacer.h \
     FFmpeg/ffcolorprofile.h \
+    global.h \
     languagelist.h \
     utils.h \
     version.h

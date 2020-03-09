@@ -1,7 +1,11 @@
 #include "presetmanager.h"
 
+#include <QtDebug>
+
 PresetManager::PresetManager(QObject *parent) : QObject(parent)
 {
+    qDebug() << "Preset Manager initialization";
+
     load();
     _resetDefaultPreset = ":/presets/MP4 - Standard";
     _defaultPreset = QFileInfo( settings.value("presets/default", _resetDefaultPreset).toString() );
@@ -25,6 +29,7 @@ void PresetManager::load()
     {
         _userPresets << Preset(preset);
     }
+    qDebug() << "Presets loaded";
 }
 
 QList<Preset> PresetManager::internalPresets() const

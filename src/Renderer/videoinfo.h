@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "global.h"
+
 #include "FFmpeg/ffmpeg.h"
 #include "FFmpeg/fflanguage.h"
 
@@ -10,8 +12,8 @@ class VideoInfo : public QObject
 {
     Q_OBJECT
 public:
-    explicit VideoInfo(FFmpeg *ffmpeg, QObject *parent = nullptr);
-    explicit VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent = nullptr);
+    explicit VideoInfo(QObject *parent = nullptr);
+    explicit VideoInfo(QJsonObject obj, QObject *parent = nullptr);
     void copyFrom(VideoInfo *other, bool silent = false);
     bool isCopy();
     QJsonObject toJson();
@@ -110,8 +112,6 @@ private:
     FFBaseObject *_colorSpace;
     FFBaseObject *_colorRange;
     bool _premultipliedAlpha;
-
-    FFmpeg *_ffmpeg;
 };
 
 #endif // VIDEOINFO_H

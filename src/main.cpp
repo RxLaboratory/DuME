@@ -1,40 +1,28 @@
-#include "UI/mainwindow.h"
-#include "UI/framelesswindow.h"
-
 #include <QApplication>
 #include <QBitmap>
 #include <QSettings>
 #include <QStringList>
 #include <QtDebug>
 
-#include "FFmpeg/ffmpeg.h"
-#include "Renderer/presetmanager.h"
-#include "UI/rainboxui.h"
-#include "version.h"
-
 #ifdef Q_OS_WIN
 #include "windows.h"
 #endif
 
-// Global objects
+#include "global.h"
 
-// App version
-AppVersion DuMEVersion(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD,VERSION_SUFFIX);
-
-// Presets
-PresetManager *presetManager = new PresetManager();
+#include "UI/mainwindow.h"
+#include "UI/framelesswindow.h"
 
 // Process the CLI arguments
 bool processArgs(int argc, char *argv[])
 {
     bool nobanner = false;
-    bool hideConsole = false;
     bool help = false;
     bool presets = false;
 
     // No console without args on windows
 #ifdef Q_OS_WIN
-    if (argc == 1) hideConsole = true;
+    hideConsole = argc == 1;
 #endif
 
     for (int i = 1; i < argc; i++)
@@ -43,7 +31,9 @@ bool processArgs(int argc, char *argv[])
         if ( arg.toLower() == "-nobanner" ) nobanner = true;
         if (arg.toLower() == "-h" || arg.toLower() == "-help" ) help = true;
         if (arg.toLower() == "-h:presets" || arg.toLower() == "-help:presets" ) presets = true;
+#ifdef Q_OS_WIN
         if (arg.toLower() == "-hideconsole") hideConsole = true;
+#endif
     }
 
     if (!nobanner)
@@ -127,8 +117,6 @@ int main(int argc, char *argv[])
     // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
     qInstallMessageHandler(MessageHandler::messageOutput);
 
-    if ( processArgs(argc, argv) ) return 0;
-
     QApplication a(argc, argv);
     QString currentVersionStr = DuMEVersion.getString();
 
@@ -140,6 +128,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(STR_COMPANYDOMAIN);
     QCoreApplication::setApplicationName(STR_PRODUCTNAME);
     QCoreApplication::setApplicationVersion(currentVersionStr);
+
+    //load presets
+    presetManager->load();
+    //process CLI arguments
+    if ( processArgs(argc, argv) ) return 0;
 
     //create splash screen
     QString v = "DuME v";
@@ -170,7 +163,6 @@ int main(int argc, char *argv[])
 
     //load FFmpeg
     splash.newMessage("Loading FFmpeg...");
-    FFmpeg *ffmpeg = new FFmpeg();
     QObject::connect(ffmpeg,&FFmpeg::newLog,&splash,&UISplashScreen::newMessage);
     QObject::connect(ffmpeg,&FFmpeg::progressMax,&splash,&UISplashScreen::progressMax);
     QObject::connect(ffmpeg,&FFmpeg::progress,&splash,&UISplashScreen::progress);
@@ -179,7 +171,7 @@ int main(int argc, char *argv[])
 
     //build UI and show
     splash.newMessage("Building UI");
-    MainWindow *w = new MainWindow( argc, argv, ffmpeg, presetManager );
+    MainWindow *w = new MainWindow( argc, argv );
 #ifndef Q_OS_LINUX
     FrameLessWindow f(w);
 #endif

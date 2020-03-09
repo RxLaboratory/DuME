@@ -1,6 +1,6 @@
 #include "outputwidget.h"
 
-OutputWidget::OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inputMedias, QWidget *parent) :
+OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -12,17 +12,15 @@ OutputWidget::OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inp
     setupUi(this);
 
     // FFmpeg
-    _ffmpeg = ff;
-    connect( _ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
+    connect( ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
     // Keep the id
     _index = id;
     // Associated MediaInfo
-    _mediaInfo = new MediaInfo( _ffmpeg, this);
+    _mediaInfo = new MediaInfo( this);
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(mediaInfoChanged()));
 
     // preset manager
-    _presetManager = pM;
-    connect( _presetManager, SIGNAL(changed()), this, SLOT(loadPresets()));
+    connect( presetManager, SIGNAL(changed()), this, SLOT(loadPresets()));
 
     // Input medias
     _inputMedias = inputMedias;
@@ -44,7 +42,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inp
     blocksMenu->addAction(actionVideo);
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize );
     blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate );
-    blockVideoCodec = addBlock( new BlockVideoCodec( _ffmpeg, _mediaInfo ), actionVideoCodec );
+    blockVideoCodec = addBlock( new BlockVideoCodec( ffmpeg, _mediaInfo ), actionVideoCodec );
     blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate );
     blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile );
     blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops );
@@ -54,7 +52,7 @@ OutputWidget::OutputWidget(FFmpeg *ff, PresetManager *pM, int id, MediaList *inp
     blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat );
     blocksMenu->addAction(actionAudio);
     blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling );
-    blockAudioCodec = addBlock( new BlockAudioCodec( _ffmpeg, _mediaInfo ), actionAudioCodec );
+    blockAudioCodec = addBlock( new BlockAudioCodec( ffmpeg, _mediaInfo ), actionAudioCodec );
     blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate );
     blocksMenu->addAction( actionOther );
     blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap );
@@ -99,7 +97,7 @@ void OutputWidget::ffmpeg_loadMuxers()
 
     formatsBox->clear();
 
-    QList<FFMuxer *> muxers = _ffmpeg->muxers();
+    QList<FFMuxer *> muxers = ffmpeg->muxers();
     if (muxers.count() == 0)
     {
         _freezeUI = false;
@@ -144,7 +142,7 @@ MediaInfo *OutputWidget::getMediaInfo()
             _mediaInfo->addFFmpegOption(option, true);
         }
     }
-    MediaInfo *mi = new MediaInfo( _ffmpeg );
+    MediaInfo *mi = new MediaInfo( ffmpeg );
 
     mi->copyFrom( _mediaInfo, true, true);
     return mi;
@@ -279,7 +277,7 @@ void OutputWidget::on_videoButton_clicked(bool checked)
                 videoCopyButton->setEnabled( false );
                 return;
             }
-            _mediaInfo->addVideoStream( new VideoInfo(_ffmpeg) );
+            _mediaInfo->addVideoStream( new VideoInfo(ffmpeg) );
         }
     }
     else
@@ -312,7 +310,7 @@ void OutputWidget::on_audioButton_clicked(bool checked)
                 videoCopyButton->setEnabled( false );
                 return;
             }
-            _mediaInfo->addAudioStream( new AudioInfo(_ffmpeg) );
+            _mediaInfo->addAudioStream( new AudioInfo(ffmpeg) );
         }
     }
     else
@@ -367,7 +365,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _freezeUI = true;
-    bool def = presetsBox->itemData(index).toString() == _presetManager->defaultPreset().file().absoluteFilePath();
+    bool def = presetsBox->itemData(index).toString() == presetManager->defaultPreset().file().absoluteFilePath();
     if (def)
     {
         actionDefaultPreset->setChecked( true );
@@ -480,9 +478,9 @@ void OutputWidget::loadPresets()
     int index = presetsFilterBox->currentIndex();
 
     QList<Preset> presets;
-    if (index == 0) presets = _presetManager->presets();
-    else if (index == 1) presets = _presetManager->internalPresets();
-    else if (index == 2) presets = _presetManager->userPresets();
+    if (index == 0) presets = presetManager->presets();
+    else if (index == 1) presets = presetManager->internalPresets();
+    else if (index == 2) presets = presetManager->userPresets();
 
     //add custom
     presetsBox->addItem("Custom");
@@ -496,7 +494,7 @@ void OutputWidget::loadPresets()
 
 void OutputWidget::selectDefaultPreset()
 {
-    QString defaultPreset = _presetManager->defaultPreset().file().absoluteFilePath();
+    QString defaultPreset = presetManager->defaultPreset().file().absoluteFilePath();
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )
     {
@@ -548,7 +546,7 @@ void OutputWidget::on_actionSavePreset_triggered()
     _mediaInfo->exportPreset(saveFileName);
     //add to box
     _freezeUI = false;
-    _presetManager->load();
+    presetManager->load();
 }
 
 void OutputWidget::on_actionOpenPreset_triggered()
@@ -576,12 +574,12 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
     if (checked)
     {
         Preset p = Preset( QFileInfo( presetsBox->currentData().toString() ) );
-        _presetManager->setDefaultPreset(p);
+        presetManager->setDefaultPreset(p);
         actionDefaultPreset->setText("Default preset");
     }
     else
     {
-        _presetManager->resetDefaultPreset();
+        presetManager->resetDefaultPreset();
         actionDefaultPreset->setText("Set as default preset");
     }
 }

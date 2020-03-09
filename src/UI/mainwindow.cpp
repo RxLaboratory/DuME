@@ -5,7 +5,7 @@
 #include <QGraphicsBlurEffect>
 #include "duexr.h"
 
-MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QWidget *parent) :
+MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     QMainWindow(parent)
 {
 #ifdef QT_DEBUG
@@ -22,13 +22,12 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
     home.mkdir("DuME Presets");
 
     // Load Renderers info (to be passed to other widgets)
-    _ffmpeg = ff;
     _ae = new AfterEffects( this );
     //FFmpeg
-    connect(_ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
-    connect( _ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
-    connect( _ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
-    connect( _ffmpeg,SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
+    connect( ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect( ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
+    connect( ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
+    connect( ffmpeg,SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
     connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
     connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
@@ -106,13 +105,13 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
     log("Init - Add settings widget", LogUtils::Debug);
 
     //settings widget
-    settingsWidget = new SettingsWidget(_ffmpeg, _ae, this);
+    settingsWidget = new SettingsWidget(_ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     log("Init - Add queue widget", LogUtils::Debug);
 
     //queue widget
-    queueWidget = new QueueWidget(_ffmpeg, pM, this);
+    queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
 
     log("Init - Appearance", LogUtils::Debug);
@@ -158,13 +157,13 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
-    ffmpegValid( _ffmpeg->isValid() );
+    ffmpegValid( ffmpeg->isValid() );
 
     // ==== Create RenderQueue ====
 
     log("Init - Create render queue");
 
-    _renderQueue = new RenderQueue( _ffmpeg, _ae, this );
+    _renderQueue = new RenderQueue( _ae, this );
     connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
     connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
     connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
@@ -195,7 +194,7 @@ MainWindow::MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QW
     //parse arguments if ffmpeg is valid
     autoQuit = false;
 
-    if (_ffmpeg->isValid())
+    if (ffmpeg->isValid())
     {
         if (argc == 1) queueWidget->addInputFile("");
         else
@@ -312,7 +311,7 @@ void MainWindow::ffmpegValid(bool valid)
     if ( valid )
     {
         queuePage->setGraphicsEffect( nullptr );
-        helpEdit->setText(_ffmpeg->longHelp());
+        helpEdit->setText(ffmpeg->longHelp());
         queuePage->setEnabled(true);
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
@@ -322,7 +321,7 @@ void MainWindow::ffmpegValid(bool valid)
     {
         queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
         log("FFmpeg error", LogUtils::Critical );
-        log( _ffmpeg->lastErrorMessage() );
+        log( ffmpeg->lastErrorMessage() );
         queuePage->setEnabled(false);
         setAcceptDrops( false );
         actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
@@ -339,7 +338,7 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
     }
     else
     {
-       ffmpegValid( _ffmpeg->isValid() );
+       ffmpegValid( ffmpeg->isValid() );
     }
 }
 
@@ -532,7 +531,7 @@ void MainWindow::on_ffmpegCommandsButton_clicked()
 {
     QString commands = ffmpegCommandsEdit->text();
     if (commands == "") commands = "-h";
-    _ffmpeg->runCommand(commands);
+    ffmpeg->runCommand(commands);
 }
 
 void MainWindow::go()

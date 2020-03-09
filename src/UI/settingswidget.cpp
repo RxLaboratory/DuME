@@ -5,7 +5,7 @@
 #include <QtDebug>
 #endif
 
-SettingsWidget::SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent) :
+SettingsWidget::SettingsWidget(AfterEffects *ae, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -13,7 +13,6 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent
 #endif
     setupUi(this);
 
-    _ffmpeg = ffmpeg;
     _ae = ae;
     _freezeUI = true;
 
@@ -21,7 +20,7 @@ SettingsWidget::SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent
     generalWidget->setGraphicsEffect(new DropShadow);
     aeWidget->setGraphicsEffect(new DropShadow);
 
-    ffmpegPathEdit->setText( QDir::toNativeSeparators( _ffmpeg->binary() ) );
+    ffmpegPathEdit->setText( QDir::toNativeSeparators( ffmpeg->binary() ) );
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
     //Temp path
@@ -54,12 +53,12 @@ void SettingsWidget::on_ffmpegBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
     ffmpegPathEdit->setText(path);
-    _ffmpeg->setBinary( path, true );
+    ffmpeg->setBinary( path, true );
 }
 
 void SettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
-    _ffmpeg->setBinary( ffmpegPathEdit->text(), true );
+    ffmpeg->setBinary( ffmpegPathEdit->text(), true );
 }
 
 void SettingsWidget::on_userPresetsBrowseButton_clicked()

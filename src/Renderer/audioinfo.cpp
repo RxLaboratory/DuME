@@ -1,19 +1,17 @@
 #include "audioinfo.h"
 
-AudioInfo::AudioInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+AudioInfo::AudioInfo(QObject *parent) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _id = -1;
     _samplingRate = 0;
     _channels = "";
     _bitrate = 0;
-    _codec = _ffmpeg->audioEncoder("");
+    _codec = ffmpeg->audioEncoder("");
     _language = new FFLanguage("");
 }
 
-AudioInfo::AudioInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+AudioInfo::AudioInfo(QJsonObject obj, QObject *parent) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _language = nullptr;
     _id = -1;
     setSamplingRate(obj.value("samplingRate").toInt(), true);
@@ -99,7 +97,7 @@ void AudioInfo::setCodec(FFCodec *codec, bool silent)
 
 void AudioInfo::setCodec(QString name, bool silent)
 {
-    setCodec( _ffmpeg->audioEncoder(name), silent);
+    setCodec( ffmpeg->audioEncoder(name), silent);
 }
 
 void AudioInfo::setCodec(QJsonObject obj, bool silent)

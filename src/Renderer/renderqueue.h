@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QTimer>
 
+#include "global.h"
+
 #include "FFmpeg/ffmpegrenderer.h"
 #include "AfterEffects/aerenderer.h"
 #include "FFmpeg/ffmpeg.h"
@@ -26,7 +28,7 @@ public:
      * @param aeRenderer The After Effects Renderer
      * @param parent The parent QObject
      */
-    explicit RenderQueue( FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *parent = nullptr);
+    explicit RenderQueue( AfterEffects *afterEffects, QObject *parent = nullptr);
     ~RenderQueue();
 
     /**
@@ -202,8 +204,6 @@ private:
 
     // ========== FFMPEG ============
 
-    // The FFmpeg transcoder info
-    FFmpeg *_ffmpeg;
     // The FFmpeg transcoder
     FFmpegRenderer *_ffmpegRenderer;
 

@@ -12,6 +12,7 @@ class PresetManager : public QObject
     Q_OBJECT
 public:
     explicit PresetManager(QObject *parent = nullptr);
+
     void load();
     QList<Preset> internalPresets() const;
     QList<Preset> userPresets() const;

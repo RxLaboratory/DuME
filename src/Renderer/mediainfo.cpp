@@ -1,15 +1,13 @@
 #include "mediainfo.h"
 
-MediaInfo::MediaInfo( FFmpeg *ffmpeg, QObject *parent ) : QObject(parent)
+MediaInfo::MediaInfo( QObject *parent ) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _id = -1;
     reInit();
 }
 
-MediaInfo::MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent ) : QObject(parent)
+MediaInfo::MediaInfo(QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _id = -1;
     if ( mediaFile.suffix() == "dffp" ) loadPreset( mediaFile );
     else update( mediaFile );
@@ -20,7 +18,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     // GENERAL
     if (removeFileName) _fileName = "";
     _extensions.clear();
-    _muxer = _ffmpeg->muxer("");
+    _muxer = ffmpeg->muxer("");
     _duration = 0.0;
     _size = 0;
     _bitrate = 0;
@@ -64,7 +62,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     _fileName = QDir::toNativeSeparators( mediaFile.absoluteFilePath() ) ;
     _size = mediaFile.size();
 
-    _muxer = _ffmpeg->muxer(extension);
+    _muxer = ffmpeg->muxer(extension);
     qDebug() << extension;
     qDebug() << _muxer->isSequence();
     qDebug() << _muxer->name();
@@ -75,7 +73,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
         return;
     }
 
-    QString ffmpegOutput = _ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
+    QString ffmpegOutput = ffmpeg->analyseMedia( mediaFile.absoluteFilePath() );
 
     QStringList infos = ffmpegOutput.split("\n");
 
@@ -123,17 +121,17 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
         if (match.hasMatch())
         {           
             //add the stream
-            VideoInfo *stream = new VideoInfo(_ffmpeg);
+            VideoInfo *stream = new VideoInfo();
             stream->setId( match.captured(1).toInt() );
             stream->setLanguage( (match.captured(2)) );
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
-            FFCodec *c = _ffmpeg->videoEncoder( codec );
-            if (c->name() == "" ) c = _ffmpeg->videoDecoder( codec );
+            FFCodec *c = ffmpeg->videoEncoder( codec );
+            if (c->name() == "" ) c = ffmpeg->videoDecoder( codec );
             stream->setCodec( c );
 
             QString pixFormat = match.captured(4).left( match.captured(4).indexOf("(") );
-            FFPixFormat *pf = _ffmpeg->pixFormat( pixFormat );
+            FFPixFormat *pf = ffmpeg->pixFormat( pixFormat );
             stream->setPixFormat( pf );
 
             QRegularExpressionMatch matchRes = reResolution.match( info );
@@ -171,13 +169,13 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
         if (match.hasMatch())
         {
             //add the stream
-            AudioInfo *stream = new AudioInfo(_ffmpeg);
+            AudioInfo *stream = new AudioInfo();
             stream->setId( match.captured(1).toInt() );
             stream->setLanguage( match.captured(2) );
 
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
-            FFCodec *c = _ffmpeg->audioEncoder( codec );
-            if (c->name() == "" ) c = _ffmpeg->audioDecoder( codec );
+            FFCodec *c = ffmpeg->audioEncoder( codec );
+            if (c->name() == "" ) c = ffmpeg->audioDecoder( codec );
             stream->setCodec(c);
 
             stream->setSamplingRate( match.captured(4).toInt() );
@@ -221,13 +219,13 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     _audioStreams.clear();
     foreach(VideoInfo *stream, other->videoStreams())
     {
-        VideoInfo *st = new VideoInfo(_ffmpeg, this);
+        VideoInfo *st = new VideoInfo(this);
         st->copyFrom(stream, true);
         _videoStreams << st;
     }
     foreach(AudioInfo *stream, other->audioStreams())
     {
-        AudioInfo *st = new AudioInfo(_ffmpeg, this);
+        AudioInfo *st = new AudioInfo(this);
         st->copyFrom(stream, true);
         _audioStreams << st;
     }
@@ -434,7 +432,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
 
     foreach( QJsonValue stream, vStreams )
     {
-        VideoInfo *s = new VideoInfo(stream.toObject(), _ffmpeg); 
+        VideoInfo *s = new VideoInfo(stream.toObject(), ffmpeg);
         addVideoStream( s, true);
     }
 
@@ -442,7 +440,7 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     QJsonArray aStreams = mediaObj.value("audioStreams").toArray();
     foreach( QJsonValue stream, aStreams )
     {
-        AudioInfo *s = new AudioInfo(stream.toObject(), _ffmpeg);
+        AudioInfo *s = new AudioInfo(stream.toObject(), ffmpeg);
         addAudioStream( s, true);
     }
 
@@ -566,7 +564,7 @@ void MediaInfo::setMuxer(FFMuxer *muxer, bool silent )
 
 void MediaInfo::setMuxer(QString name, bool silent )
 {
-    setMuxer( _ffmpeg->muxer( name ), silent);
+    setMuxer( ffmpeg->muxer( name ), silent);
 }
 
 void MediaInfo::addFFmpegOption(QStringList option, bool silent )
@@ -1000,8 +998,8 @@ void MediaInfo::setStartNumber(int startNumber, bool silent )
 void MediaInfo::setAep(bool isAep, bool silent )
 {
     _isAep = isAep;
-    addVideoStream(new VideoInfo(_ffmpeg, this));
-    addAudioStream(new AudioInfo(_ffmpeg, this));
+    addVideoStream(new VideoInfo(this));
+    addAudioStream(new AudioInfo(this));
     if(!silent) emit changed();
 }
 
@@ -1067,11 +1065,6 @@ QStringList MediaInfo::extensions() const
 FFMuxer *MediaInfo::muxer() const
 {
     return _muxer;
-}
-
-FFmpeg *MediaInfo::getFfmpeg() const
-{
-    return _ffmpeg;
 }
 
 int MediaInfo::id() const

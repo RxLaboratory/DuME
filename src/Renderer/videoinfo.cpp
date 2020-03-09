@@ -1,30 +1,28 @@
 #include "videoinfo.h"
 
-VideoInfo::VideoInfo(FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _id = -1;
     _quality = -1;
-    _profile = _ffmpeg->profile("");
+    _profile = ffmpeg->profile("");
     _level = "";
     _pixAspect = 1;
-    _pixFormat = _ffmpeg->pixFormat("");
+    _pixFormat = ffmpeg->pixFormat("");
     _bitrate = 0;
     _framerate = 0.0;
     _height = 0;
     _width = 0;
-    _codec = _ffmpeg->videoEncoder("");
+    _codec = ffmpeg->videoEncoder("");
     _language = new FFLanguage("");
-    _colorPrimaries = _ffmpeg->colorPrimary("");
-    _colorTRC = _ffmpeg->colorTRC("");
-    _colorSpace = _ffmpeg->colorSpace("");
-    _colorRange = _ffmpeg->colorRange("");
+    _colorPrimaries = ffmpeg->colorPrimary("");
+    _colorTRC = ffmpeg->colorTRC("");
+    _colorSpace = ffmpeg->colorSpace("");
+    _colorRange = ffmpeg->colorRange("");
     _premultipliedAlpha = true;
 }
 
-VideoInfo::VideoInfo(QJsonObject obj, FFmpeg *ffmpeg, QObject *parent) : QObject(parent)
+VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
 {
-    _ffmpeg = ffmpeg;
     _language = nullptr;
     _id = -1;
     setQuality( obj.value("quality").toInt(), true);
@@ -122,7 +120,7 @@ void VideoInfo::setProfile(FFProfile *profile, bool silent)
 
 void VideoInfo::setProfile(QString name, bool silent)
 {
-    setProfile( _ffmpeg->profile( name ), silent );
+    setProfile( ffmpeg->profile( name ), silent );
 }
 
 void VideoInfo::setProfile(QJsonObject obj, bool silent)
@@ -162,7 +160,7 @@ void VideoInfo::setPixFormat(FFPixFormat *pixFormat, bool silent)
 
 void VideoInfo::setPixFormat(QString name, bool silent)
 {
-    setPixFormat( _ffmpeg->pixFormat( name ), silent );
+    setPixFormat( ffmpeg->pixFormat( name ), silent );
 }
 
 void VideoInfo::setPixFormat(QJsonObject obj, bool silent)
@@ -238,22 +236,22 @@ void VideoInfo::setLanguage(const QString &languageId, bool silent)
 
 void VideoInfo::setColorPrimaries(QString primaries, bool silent)
 {
-    setColorPrimaries( _ffmpeg->colorPrimary(primaries), silent );
+    setColorPrimaries( ffmpeg->colorPrimary(primaries), silent );
 }
 
 void VideoInfo::setColorTRC(QString tRC, bool silent)
 {
-    setColorTRC( _ffmpeg->colorTRC(tRC), silent );
+    setColorTRC( ffmpeg->colorTRC(tRC), silent );
 }
 
 void VideoInfo::setColorSpace(QString space, bool silent)
 {
-    setColorSpace( _ffmpeg->colorSpace(space), silent);
+    setColorSpace( ffmpeg->colorSpace(space), silent);
 }
 
 void VideoInfo::setColorRange(QString range, bool silent)
 {
-    setColorRange( _ffmpeg->colorRange(range), silent);
+    setColorRange( ffmpeg->colorRange(range), silent);
 }
 
 void VideoInfo::setColorPrimaries(FFBaseObject *primaries, bool silent)
@@ -291,7 +289,7 @@ void VideoInfo::setColorProfile(FFColorProfile *colorProfile, bool silent)
 
 void VideoInfo::setColorProfile(QString profile, bool silent)
 {
-    setColorProfile( _ffmpeg->colorProfile(profile), silent );
+    setColorProfile( ffmpeg->colorProfile(profile), silent );
 }
 
 bool VideoInfo::setAlpha(bool alpha, bool silent)
@@ -387,7 +385,7 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
 
 void VideoInfo::setCodec(QString name, bool silent)
 {
-    setCodec( _ffmpeg->videoEncoder(name), silent);
+    setCodec( ffmpeg->videoEncoder(name), silent);
 }
 
 void VideoInfo::setCodec(QJsonObject obj, bool silent)
