@@ -88,23 +88,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
 
-    //TODO auto find ffmpeg if no settings or path invalid
-    QSettings settings;
-    _version = settings.value("ffmpeg/version","").toString();
-
-#ifdef Q_OS_LINUX
-    QString defaultFFmpegPath = "ffmpeg";
-#endif
-#ifdef Q_OS_WIN
-    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
-#endif
-#ifdef Q_OS_MAC
-    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
-#endif
-
-    if (path == "") path = settings.value("ffmpeg/path",defaultFFmpegPath).toString();
-    qDebug() << "Using FFmpeg path: " + path;
-    setBinary(path, false);
+    if (path != "") setBinary(path, false);
 }
 
 FFmpeg::~FFmpeg()
@@ -128,6 +112,23 @@ bool FFmpeg::setBinary(QString path, bool initialize)
 
 void FFmpeg::init()
 {   
+    //TODO auto find ffmpeg if no settings or path invalid
+    QSettings settings;
+    _version = settings.value("ffmpeg/version","").toString();
+
+#ifdef Q_OS_LINUX
+    QString defaultFFmpegPath = "ffmpeg";
+#endif
+#ifdef Q_OS_WIN
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
+#endif
+#ifdef Q_OS_MAC
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
+#endif
+
+    QString path = settings.value("ffmpeg/path",defaultFFmpegPath).toString();
+    setBinary(path, false);
+
 #if INIT_FFMPEG //used when developping to skip ffmpeg loading
     _status = MediaUtils::Initializing;
     emit statusChanged(_status);
