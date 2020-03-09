@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-QueueWidget::QueueWidget(FFmpeg *ffmpeg, PresetManager *pM, QWidget *parent) :
+QueueWidget::QueueWidget(QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -12,8 +12,6 @@ QueueWidget::QueueWidget(FFmpeg *ffmpeg, PresetManager *pM, QWidget *parent) :
 #endif
     setupUi(this);
 
-    _ffmpeg = ffmpeg;
-    _presetManager = pM;
     _inputMedias = new MediaList();
 
     addOutput();
@@ -159,12 +157,12 @@ void QueueWidget::log(QString log, LogUtils::LogType lt )
 
 void QueueWidget::addInput()
 {
-    if ( !_ffmpeg->isValid() ) return;
+    if ( !ffmpeg->isValid() ) return;
 
     int num = inputWidgets.count();
 
     //create widget
-    InputWidget *inputWidget = new InputWidget(_ffmpeg, num, this);
+    InputWidget *inputWidget = new InputWidget(num, this);
     inputWidgets << inputWidget;
     _inputMedias->addMedia( inputWidget->mediaInfo() );
     inputTab->insertTab( inputTab->count()-1, inputWidget, "Input " + QString::number(num + 1));
@@ -175,13 +173,13 @@ void QueueWidget::addInput()
 
 void QueueWidget::addOutput()
 {
-    if ( !_ffmpeg->isValid() ) return;
+    if ( !ffmpeg->isValid() ) return;
 
     //number of the output
     int num = outputWidgets.count()+1;
 
     //create widget
-    OutputWidget *ow = new OutputWidget(_ffmpeg, _presetManager, num, _inputMedias, this);
+    OutputWidget *ow = new OutputWidget(num, _inputMedias, this);
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
 

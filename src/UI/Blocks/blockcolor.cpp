@@ -10,25 +10,25 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 
     //pouplate boxes
-    foreach(FFBaseObject *c, _mediaInfo->getFfmpeg()->colorPrimaries())
+    foreach(FFBaseObject *c, ffmpeg->colorPrimaries())
     {
         primariesBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, _mediaInfo->getFfmpeg()->colorTRCs())
+    foreach(FFBaseObject *c, ffmpeg->colorTRCs())
     {
         trcBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, _mediaInfo->getFfmpeg()->colorSpaces())
+    foreach(FFBaseObject *c, ffmpeg->colorSpaces())
     {
         spaceBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, _mediaInfo->getFfmpeg()->colorRanges())
+    foreach(FFBaseObject *c, ffmpeg->colorRanges())
     {
         rangeBox->addItem( c->prettyName(), c->name() );
     }
 
     //create actions
-    foreach(FFColorProfile *cp, _mediaInfo->getFfmpeg()->colorProfiles())
+    foreach(FFColorProfile *cp, ffmpeg->colorProfiles())
     {
         QAction *a = new QAction(cp->prettyName());
         a->setData(cp->name());

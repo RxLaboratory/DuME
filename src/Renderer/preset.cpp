@@ -12,14 +12,14 @@ Preset::Preset(QFileInfo file, QObject *parent): QObject(parent)
     _file = file;
 }
 
-Preset::Preset(Preset &&other)
+Preset::Preset(Preset &&other): QObject(other.parent())
 {
     _name = other.name();
     _file = other.file();
     setParent(other.parent());
 }
 
-Preset::Preset(const Preset &other)
+Preset::Preset(const Preset &other): QObject(other.parent())
 {
     _name = other.name();
     _file = other.file();

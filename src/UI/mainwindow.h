@@ -15,7 +15,8 @@
 #include <QDebug>
 #include <QDesktopServices>
 
-#include "FFmpeg/ffmpeg.h"
+#include "global.h"
+
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
 #include "Renderer/presetmanager.h"
@@ -32,8 +33,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(int argc, char *argv[], FFmpeg *ff, PresetManager *pM, QWidget *parent = nullptr);
+    explicit MainWindow(int argc, char *argv[], QWidget *parent = nullptr);
 
+    void onffmpegCommandsButton_clicked();
 public slots:
 
     void maximize(bool max);
@@ -113,12 +115,6 @@ private:
      * Used for drag n drop feature
      */
     QPoint dragPosition;
-
-    // ===== FFMPEG ======
-    /**
-     * @brief ffmpeg The FFmpeg information and utils
-     */
-    FFmpeg *_ffmpeg;
 
     // ===== AE =====
     /**

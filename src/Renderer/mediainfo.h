@@ -26,16 +26,14 @@ public:
      * @brief DuMediaInfo Constructs an empty MediaInfo
      * @param parent The QObject parent
      */
-    explicit MediaInfo( FFmpeg *ffmpeg, QObject *parent = nullptr );
+    explicit MediaInfo( QObject *parent = nullptr );
 
     /**
      * @brief DuMediaInfo Constructs a new MediaInfo for the given file.
      * @param mediaFile The media file or a JSON preset. For a frame sequence, it can be any frame from the sequence
      * @param parent The QObject parent
      */
-    explicit MediaInfo( FFmpeg *ffmpeg, QFileInfo mediaFile, QObject *parent = nullptr );
-
-    FFmpeg *getFfmpeg() const;
+    explicit MediaInfo( QFileInfo mediaFile, QObject *parent = nullptr );
 
     /**
      * @brief updateInfo Updates all the information for this media file
@@ -176,12 +174,6 @@ private slots:
     void streamChanged();
 
 private:
-
-    // === FOR INTERNAL USE ===
-
-    // The ffmpeg pointer to get all ffmpeg information and analyse medias
-    FFmpeg *_ffmpeg;
-
     // ========== ATTRIBUTES ==============
 
     int _id;

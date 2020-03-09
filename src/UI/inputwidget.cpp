@@ -4,7 +4,7 @@
 #include <QtDebug>
 #endif
 
-InputWidget::InputWidget(FFmpeg *ff, int id, QWidget *parent) :
+InputWidget::InputWidget(int id, QWidget *parent) :
     QWidget(parent)
 {
 #ifdef QT_DEBUG
@@ -12,7 +12,7 @@ InputWidget::InputWidget(FFmpeg *ff, int id, QWidget *parent) :
 #endif
     setupUi(this);
 
-    _mediaInfo = new MediaInfo( ff, this);
+    _mediaInfo = new MediaInfo(this);
     _mediaInfo->setId(id);
     connect ( _mediaInfo, SIGNAL(changed()), this, SLOT (updateOptions()));
 
@@ -52,7 +52,7 @@ MediaInfo *InputWidget::mediaInfo()
 MediaInfo *InputWidget::getMediaInfo()
 {
     updateCustomParams();
-    MediaInfo *mi = new MediaInfo( _mediaInfo->getFfmpeg() );
+    MediaInfo *mi = new MediaInfo();
     mi->copyFrom( _mediaInfo, true, true);
     return mi;
 }

@@ -3,6 +3,8 @@
 
 #include "ui_settingswidget.h"
 
+#include "global.h"
+
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
 
@@ -18,7 +20,7 @@ class SettingsWidget : public QWidget, private Ui::SettingsWidget
     Q_OBJECT
 
 public:
-    explicit SettingsWidget(FFmpeg *ffmpeg, AfterEffects *ae, QWidget *parent = nullptr);
+    explicit SettingsWidget(AfterEffects *ae, QWidget *parent = nullptr);
 
 signals:
     void presetsPathChanged();
@@ -36,7 +38,6 @@ private slots:
 
 private:
     QSettings settings;
-    FFmpeg *_ffmpeg;
     AfterEffects *_ae;
     bool _freezeUI;
 

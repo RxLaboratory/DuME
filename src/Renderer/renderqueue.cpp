@@ -1,17 +1,16 @@
 ﻿#include "Renderer/renderqueue.h"
 
-RenderQueue::RenderQueue(FFmpeg *ffmpeg, AfterEffects *afterEffects, QObject *parent ) : QObject(parent)
+RenderQueue::RenderQueue(AfterEffects *afterEffects, QObject *parent ) : QObject(parent)
 {
     setStatus( MediaUtils::Initializing );
 
     // === FFmpeg ===
 
     // The transcoder
-    _ffmpeg = ffmpeg;
     // Create the renderer
-    _ffmpegRenderer = new FFmpegRenderer( _ffmpeg->binary() );
+    _ffmpegRenderer = new FFmpegRenderer( ffmpeg->binary() );
     // Connections
-    connect( _ffmpeg, &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
+    connect( ffmpeg, &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::console, this, &RenderQueue::ffmpegConsole ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::statusChanged, this, &RenderQueue::ffmpegStatusChanged ) ;
