@@ -45,9 +45,10 @@ nav:
         - Introduction: api.md
         - Command line options: cli-options.md
         - Server API: server-api.md
-    - Changelog: changelog.md
     - License:
         - GNU GPLv3: gnu-gpl.md
         - Documentation license: doc-license.md
-    - Contact: https://rainboxlab.org/about/contact/
-    - Donate: https://rainboxlab.org/about/donate/
+    - About:
+        - Changelog: changelog.md
+        - Contact: https://rainboxlab.org/about/contact/
+        - Donate: https://rainboxlab.org/about/donate/
