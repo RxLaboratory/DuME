@@ -22,7 +22,7 @@ bool processArgs(int argc, char *argv[])
 
     // No console without args on windows
 #ifdef Q_OS_WIN
-    hideConsole = argc == 1;
+    bool hideConsole = argc == 1;
 #endif
 
     for (int i = 1; i < argc; i++)

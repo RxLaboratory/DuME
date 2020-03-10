@@ -1,6 +1,6 @@
 #include "blockaudiocodec.h"
 
-BlockAudioCodec::BlockAudioCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
+BlockAudioCodec::BlockAudioCodec(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
 #ifdef QT_DEBUG
@@ -10,8 +10,7 @@ BlockAudioCodec::BlockAudioCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *
 
     setupUi(this);
 
-    _ffmpeg = ffmpeg;
-    connect( _ffmpeg, SIGNAL(binaryChanged(QString)), this, SLOT(listCodecs()));
+    connect( ffmpeg, SIGNAL(binaryChanged(QString)), this, SLOT(listCodecs()));
 
     listCodecs();
 
@@ -122,12 +121,20 @@ void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
 
 void BlockAudioCodec::listCodecs()
 {
+    // If FFmpeg is not available/not loaded correctly
+    // Only the "copy" codec is available, we can't do anything with this block
+    if (ffmpeg->audioEncoders().count() < 2)
+    {
+        activate(false);
+        return;
+    }
+
     _freezeUI = true;
     QString prevSelection = audioCodecsBox->currentData(Qt::UserRole).toString();
 
     audioCodecsBox->clear();
 
-    foreach (FFCodec *c, _ffmpeg->audioEncoders() )
+    foreach (FFCodec *c, ffmpeg->audioEncoders() )
     {
         if ( audioCodecsFilterBox->currentIndex() <= 1 || (audioCodecsFilterBox->currentIndex() == 3 && c->isLossless()) || (audioCodecsFilterBox->currentIndex() == 2 && c->isLossy()))
         {

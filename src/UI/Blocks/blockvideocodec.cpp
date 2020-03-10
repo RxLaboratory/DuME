@@ -1,6 +1,6 @@
 #include "blockvideocodec.h"
 
-BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *parent) :
+BlockVideoCodec::BlockVideoCodec(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
 #ifdef QT_DEBUG
@@ -11,8 +11,7 @@ BlockVideoCodec::BlockVideoCodec(FFmpeg *ffmpeg, MediaInfo *mediaInfo, QWidget *
 
     setupUi(this);
 
-    _ffmpeg = ffmpeg;
-    connect( _ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
+    connect( ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
 
     listCodecs();
 
@@ -27,7 +26,7 @@ void BlockVideoCodec::listCodecs()
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
 
-    foreach(FFCodec *encoder, _ffmpeg->videoEncoders())
+    foreach(FFCodec *encoder, ffmpeg->videoEncoders())
     {
         if (encoder->name() == "copy") continue;
         if (videoFilter <= 1 || (videoFilter == 2 && encoder->isLossy()) || (videoFilter == 3 && encoder->isLossless()) || (videoFilter == 4 && encoder->isIframe()))

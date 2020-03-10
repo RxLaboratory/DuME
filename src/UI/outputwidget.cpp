@@ -42,7 +42,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blocksMenu->addAction(actionVideo);
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize );
     blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate );
-    blockVideoCodec = addBlock( new BlockVideoCodec( ffmpeg, _mediaInfo ), actionVideoCodec );
+    blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec );
     blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate );
     blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile );
     blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops );
@@ -52,7 +52,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat );
     blocksMenu->addAction(actionAudio);
     blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling );
-    blockAudioCodec = addBlock( new BlockAudioCodec( ffmpeg, _mediaInfo ), actionAudioCodec );
+    blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec );
     blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate );
     blocksMenu->addAction( actionOther );
     blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap );
@@ -157,7 +157,6 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 
 void OutputWidget::mediaInfoChanged()
 {
-    qDebug() << "changed";
     _freezeUI = true;
 
     //Audio / Video Buttons and Muxer selection
@@ -229,7 +228,6 @@ void OutputWidget::mediaInfoChanged()
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
 
     _freezeUI = false;
-    qDebug() << "change ok";
 }
 
 void OutputWidget::newInputMedia(MediaInfo *m)
@@ -494,6 +492,7 @@ void OutputWidget::loadPresets()
 
 void OutputWidget::selectDefaultPreset()
 {
+    qDebug() << "Selecting default preset";
     QString defaultPreset = presetManager->defaultPreset().file().absoluteFilePath();
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )

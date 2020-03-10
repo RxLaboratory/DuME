@@ -35,6 +35,7 @@ QueueWidget::QueueWidget(QWidget *parent) :
     sizes << settings.value("outputSize",50).toInt();
     splitter->setSizes(sizes);
     settings.endGroup();
+    qDebug() << "Queue Widget created";
 }
 
 QList<MediaInfo *> QueueWidget::getInputMedia()
@@ -173,6 +174,7 @@ void QueueWidget::addInput()
 
 void QueueWidget::addOutput()
 {
+    qDebug() << "Add output widget";
     if ( !ffmpeg->isValid() ) return;
 
     //number of the output
@@ -187,6 +189,7 @@ void QueueWidget::addOutput()
     connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
     //set tab index
     outputTab->setCurrentIndex(outputTab->count()-2);
+    qDebug() << "Output widget added";
 }
 
 void QueueWidget::on_splitter_splitterMoved()

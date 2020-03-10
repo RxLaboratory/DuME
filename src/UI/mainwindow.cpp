@@ -15,26 +15,29 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     log("Initialization");
 
     // === SETTINGS ===
-    log("Init - Settings");
+    log("Init - Loading settings");
     settings = new QSettings(this);
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
     home.mkdir("DuME Presets");
 
     // Load Renderers info (to be passed to other widgets)
-    _ae = new AfterEffects( this );
+    log("Init - Connecting to FFmpeg");
     //FFmpeg
     connect( ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
     connect( ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect( ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( ffmpeg,SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
+    log("Init - Initializing the After Effects renderer");
+    _ae = new AfterEffects( this );
+    log("Init - Connecting to After Effects");
     connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
     connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
-    log("Init - UI");
+    log("Init - Completing User Interface");
     //remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 
@@ -102,19 +105,19 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     toolBarClicked = false;
     mainToolBar->installEventFilter(this);
 
-    log("Init - Add settings widget", LogUtils::Debug);
+    log("Init - Adding settings widget");
 
     //settings widget
     settingsWidget = new SettingsWidget(_ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
-    log("Init - Add queue widget", LogUtils::Debug);
+    log("Init - Adding queue widget");
 
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
 
-    log("Init - Appearance", LogUtils::Debug);
+    log("Init - Adding shadows");
 
     //add nice shadows
     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
@@ -125,7 +128,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     progressWidget->setGraphicsEffect(effect);
 
-    log("Init - Load Defaults", LogUtils::Debug);
+    log("Init - Setting default UI items");
 
     //init UI
     consoleTabs->setCurrentIndex(0);
@@ -134,7 +137,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     mainStatusBar->addWidget(statusLabel);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
 
-    log("Init - Set Geometry", LogUtils::Debug);
+    log("Init - Setting window geometry");
 
     //restore geometry
     settings->beginGroup("mainwindow");
@@ -161,7 +164,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     // ==== Create RenderQueue ====
 
-    log("Init - Create render queue");
+    log("Init - Creating render queue");
 
     _renderQueue = new RenderQueue( _ae, this );
     connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
@@ -184,12 +187,11 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
+    log("Init - Setting stylesheet");
     //Re-set StyleSheet
     RainboxUI::updateCSS(":/styles/default", "dume");
     //and font
     RainboxUI::setFont();
-
-    log("Ready!");
 
     //parse arguments if ffmpeg is valid
     autoQuit = false;
@@ -199,6 +201,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
         if (argc == 1) queueWidget->addInputFile("");
         else
         {
+            log("Reading arguments.");
             int i = 1;
 
             //Arguments
@@ -254,7 +257,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
                         i++;
                         queueWidget->setOutputPreset( argv[i] );
                     }
-                    else
+                    else if (arg != "-nobanner" && arg != "-hideconsole")
                     {
                         log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);
                         break;
@@ -289,6 +292,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
             if (autoStart) go();
         }
     }
+    log("Ready!");
 }
 
 void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)

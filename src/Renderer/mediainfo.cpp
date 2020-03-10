@@ -430,11 +430,15 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     //video
     QJsonArray vStreams = mediaObj.value("videoStreams").toArray();
 
+    qDebug() << "Video streams";
+
     foreach( QJsonValue stream, vStreams )
     {
         VideoInfo *s = new VideoInfo(stream.toObject(), ffmpeg);
         addVideoStream( s, true);
     }
+
+    qDebug() << "Audio streams";
 
     //audio
     QJsonArray aStreams = mediaObj.value("audioStreams").toArray();
@@ -443,6 +447,8 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
         AudioInfo *s = new AudioInfo(stream.toObject(), ffmpeg);
         addAudioStream( s, true);
     }
+
+    qDebug() << "Custom parameters";
 
     //options
     QJsonArray options = mediaObj.value("options").toArray();
@@ -454,7 +460,11 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
         addFFmpegOption(opt, true );
     }
 
+    qDebug() << "OK!";
+
     if(!silent) emit changed();
+
+    qDebug() << presetFile.completeBaseName() + " Loaded.";
 }
 
 QString MediaInfo::exportPreset()
