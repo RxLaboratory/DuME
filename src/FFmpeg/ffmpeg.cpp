@@ -129,7 +129,8 @@ void FFmpeg::init()
     QString path = settings.value("ffmpeg/path",defaultFFmpegPath).toString();
     setBinary(path, false);
 
-#if INIT_FFMPEG //used when developping to skip ffmpeg loading
+    qDebug() << "Init FFmpeg. Path " + path;
+
     _status = MediaUtils::Initializing;
     emit statusChanged(_status);
 
@@ -179,7 +180,6 @@ void FFmpeg::init()
     _version = newVersion;
     settings.setValue("ffmpeg/version",_version);
 
-#endif
     _status = MediaUtils::Waiting;
     emit statusChanged(_status);
 }
@@ -479,8 +479,53 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     qDeleteAll(_muxers);
     _muxers.clear();
 
-    //if the version is different, get from the output
-    if (newVersion != _version)
+    //if the version is the same as previously, just read data from settings
+    if (newVersion == _version)
+    {
+        emit newLog("Getting muxers from stored list.");
+
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/muxers");
+
+        _progressMax = _prevMax + arraySize; //pixfmts + codecs + muxers
+        emit progressMax( _progressMax );
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            settings.setArrayIndex(i);
+
+            emit progress( _prevMax + i);
+
+            QString name = settings.value("name").toString();
+            QString prettyName = settings.value("prettyName").toString();
+
+            emit newLog("Loading muxer:" + name);
+            if (name == "") continue;
+
+            FFMuxer *m = new FFMuxer(name,prettyName,this);
+            _muxers << m;
+            _decodeMuxers << m;
+            _encodeMuxers << m;
+
+            //get default codecs
+            QString defltVideoCodec = settings.value("defaultVideoCodec").toString();
+            m->setDefaultVideoCodec(videoEncoder( defltVideoCodec ));
+
+            QString defltAudioCodec = settings.value("defaultAudioCodec").toString();
+            m->setDefaultAudioCodec(audioEncoder( defltAudioCodec ));
+
+            QString extensions = settings.value("extensions").toString();
+            QStringList extensionsList = extensions.split(",");
+            if (extensionsList[0] != "") m->setExtensions(extensionsList);
+        }
+
+        settings.endArray();
+
+        _prevMax = _prevMax + arraySize;
+    }
+
+    //if the version has changed, or if we did not get the list from settings
+    if (newVersion != _version || _muxers.count() == 0)
     {
         emit newLog("Updating muxers list.");
 
@@ -572,49 +617,6 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         settings.endArray();
 
         _prevMax = _prevMax + max;
-    }
-    else //other wise, get from settings
-    {
-        emit newLog("Getting muxers from stored list.");
-
-        //open array
-        int arraySize = settings.beginReadArray("ffmpeg/muxers");
-
-        _progressMax = _prevMax + arraySize; //pixfmts + codecs + muxers
-        emit progressMax( _progressMax );
-
-        for (int i = 0; i < arraySize; i++)
-        {
-            settings.setArrayIndex(i);
-
-            emit progress( _prevMax + i);
-
-            QString name = settings.value("name").toString();
-            QString prettyName = settings.value("prettyName").toString();
-
-            emit newLog("Loading muxer:" + name);
-            if (name == "") continue;
-
-            FFMuxer *m = new FFMuxer(name,prettyName,this);  
-            _muxers << m;
-            _decodeMuxers << m;
-            _encodeMuxers << m;
-
-            //get default codecs
-            QString defltVideoCodec = settings.value("defaultVideoCodec").toString();
-            m->setDefaultVideoCodec(videoEncoder( defltVideoCodec ));
-
-            QString defltAudioCodec = settings.value("defaultAudioCodec").toString();
-            m->setDefaultAudioCodec(audioEncoder( defltAudioCodec ));
-
-            QString extensions = settings.value("extensions").toString();
-            QStringList extensionsList = extensions.split(",");
-            if (extensionsList[0] != "") m->setExtensions(extensionsList);
-        }
-
-        settings.endArray();
-
-        _prevMax = _prevMax + arraySize;
     }
 
     //add image sequences
@@ -826,8 +828,99 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
-    //if the version is different, get from the output
-    if (newVersion != _version)
+    //if the version is the same as previously, just read data from settings
+    if (newVersion == _version)
+    {
+        emit newLog("Getting codecs from stored list.");
+
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/codecs");
+
+        _progressMax = _prevMax + arraySize + arraySize/1.5; //pixfmts + codecs + estimated muxers
+        emit progressMax( _progressMax );
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            settings.setArrayIndex(i);
+
+            emit progress( _prevMax + i);
+
+            QString codecName = settings.value("codecName").toString();
+            QString codecPrettyName = settings.value("codecPrettyName").toString();
+            FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
+
+            emit newLog("Loading codec: " + codecName);
+
+            bool decoder = settings.value("decoder").toBool();
+            bool encoder = settings.value("encoder").toBool();
+            bool video = settings.value("video").toBool();
+            bool audio = settings.value("audio").toBool();
+            bool iFrame = settings.value("iFrame").toBool();
+            bool lossy = settings.value("lossy").toBool();
+            bool lossless = settings.value("lossless").toBool();
+
+            co->setDecoder( decoder );
+            co->setEncoder( encoder );
+            co->setVideo( video );
+            co->setAudio( audio );
+            co->setIframe( iFrame );
+            co->setLossy( lossy );
+            co->setLossless( lossless );
+
+            if (co->isVideo())
+            {
+                //add profiles
+                if( co->name().startsWith("prores") )
+                {
+                    co->addProfile( profile("0") );
+                    co->addProfile( profile("1") );
+                    co->addProfile( profile("2") );
+                    co->addProfile( profile("3") );
+                }
+                else if (co->name() == "h264")
+                {
+                    co->addProfile( profile("baseline") );
+                    co->addProfile( profile("main") );
+                    co->addProfile( profile("high") );
+                    co->addProfile( profile("high10") );
+                    co->addProfile( profile("high422") );
+                    co->addProfile( profile("high444") );
+                }
+
+                //get pixel formats
+                int pArraySize = settings.beginReadArray("pixFmts");
+                for (int j = 0; j < pArraySize; j++)
+                {
+                    settings.setArrayIndex(j);
+
+                    QString pixFmt = settings.value("name").toString();
+
+                    FFPixFormat *pf = pixFormat(pixFmt);
+                    if (pf->name() == "") continue;
+
+                    co->addPixFormat(pf);
+
+                    bool deflt = settings.value("default").toBool();
+                    if ( deflt ) co->setDefaultPixFormat(pf);
+                }
+
+                settings.endArray();
+            }
+
+            if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
+            else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
+            else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
+            else if (co->isAudio() && co->isDecoder()) _audioDecoders << co;
+        }
+
+        //close the array
+        settings.endArray();
+
+        _prevMax = _prevMax + arraySize;
+    }
+
+    //if the version has changed, or if we did not get the list from settings
+    if (newVersion != _version || _audioEncoders.count() < 2 || _videoEncoders.count() < 2)
     {
         emit newLog("Updating codec list.");
 
@@ -969,95 +1062,6 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
         _prevMax = _prevMax + max;
     }
-    else //other wise, get from settings
-    {
-        emit newLog("Getting codecs from stored list.");
-
-        //open array
-        int arraySize = settings.beginReadArray("ffmpeg/codecs");
-
-        _progressMax = _prevMax + arraySize + arraySize/1.5; //pixfmts + codecs + estimated muxers
-        emit progressMax( _progressMax );
-
-        for (int i = 0; i < arraySize; i++)
-        {
-            settings.setArrayIndex(i);
-
-            emit progress( _prevMax + i);
-
-            QString codecName = settings.value("codecName").toString();
-            QString codecPrettyName = settings.value("codecPrettyName").toString();
-            FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
-
-            emit newLog("Loading codec: " + codecName);
-
-            bool decoder = settings.value("decoder").toBool();
-            bool encoder = settings.value("encoder").toBool();
-            bool video = settings.value("video").toBool();
-            bool audio = settings.value("audio").toBool();
-            bool iFrame = settings.value("iFrame").toBool();
-            bool lossy = settings.value("lossy").toBool();
-            bool lossless = settings.value("lossless").toBool();
-
-            co->setDecoder( decoder );
-            co->setEncoder( encoder );
-            co->setVideo( video );
-            co->setAudio( audio );
-            co->setIframe( iFrame );
-            co->setLossy( lossy );
-            co->setLossless( lossless );
-
-            if (co->isVideo())
-            {
-                //add profiles
-                if( co->name().startsWith("prores") )
-                {
-                    co->addProfile( profile("0") );
-                    co->addProfile( profile("1") );
-                    co->addProfile( profile("2") );
-                    co->addProfile( profile("3") );
-                }
-                else if (co->name() == "h264")
-                {
-                    co->addProfile( profile("baseline") );
-                    co->addProfile( profile("main") );
-                    co->addProfile( profile("high") );
-                    co->addProfile( profile("high10") );
-                    co->addProfile( profile("high422") );
-                    co->addProfile( profile("high444") );
-                }
-
-                //get pixel formats
-                int pArraySize = settings.beginReadArray("pixFmts");
-                for (int j = 0; j < pArraySize; j++)
-                {
-                    settings.setArrayIndex(j);
-
-                    QString pixFmt = settings.value("name").toString();
-
-                    FFPixFormat *pf = pixFormat(pixFmt);
-                    if (pf->name() == "") continue;
-
-                    co->addPixFormat(pf);
-
-                    bool deflt = settings.value("default").toBool();
-                    if ( deflt ) co->setDefaultPixFormat(pf);
-                }
-
-                settings.endArray();
-            }
-
-            if (co->isVideo() && co->isEncoder()) _videoEncoders << co;
-            else if (co->isAudio() && co->isEncoder()) _audioEncoders << co;
-            else if (co->isVideo() && co->isDecoder()) _videoDecoders << co;
-            else if (co->isAudio() && co->isDecoder()) _audioDecoders << co;
-        }
-
-        //close the array
-        settings.endArray();
-
-        _prevMax = _prevMax + arraySize;
-    }
 
 
     emit newLog("Sorting Codecs...");
@@ -1071,8 +1075,50 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     qDeleteAll(_pixFormats);
     _pixFormats.clear();
 
-    //if the version is different, get from the output
-    if (newVersion != _version)
+    //if the version is the same as previously, just read data from settings
+    if (newVersion == _version)
+    {
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/pixFmts");
+        _progressMax = arraySize + arraySize*2 + arraySize/3; //pixfmts + estimated codecs + estimated muxers
+        _prevMax = arraySize;
+        emit progressMax( _progressMax );
+
+        for (int i = 0; i < arraySize; ++i)
+        {
+            settings.setArrayIndex(i);
+            emit progress(i);
+
+
+            QString name = settings.value("name").toString();
+            int numComponents = settings.value("numComponents").toInt();
+            int bpp = settings.value("bpp").toInt();
+
+            FFPixFormat *pf = new FFPixFormat(name, "", numComponents, bpp);
+
+            emit newLog("Loading pixel format: " + name);
+
+            bool input = settings.value("input").toBool();
+            bool output = settings.value("output").toBool();
+            bool hardware = settings.value("hardware").toBool();
+            bool paletted = settings.value("paletted").toBool();
+            bool bitStream = settings.value("bitStream").toBool();
+
+            pf->setInput( input );
+            pf->setOutput( output );
+            pf->setHardware( hardware );
+            pf->setPaletted( paletted );
+            pf->setBitstream( bitStream );
+
+            _pixFormats << pf;
+        }
+
+        //close the array
+        settings.endArray();
+    }
+
+    //if the version has changed, or if we did not get the list from settings
+    if (newVersion != _version || _pixFormats.count() == 0)
     {
         QStringList pixFmts = output.split("\n");
         int max = pixFmts.count();
@@ -1131,46 +1177,6 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
                 settings.setValue("paletted", paletted);
                 settings.setValue("bitStream", bitStream);
             }
-        }
-
-        //close the array
-        settings.endArray();
-    }
-    else //other wise, get from settings
-    {
-        //open array
-        int arraySize = settings.beginReadArray("ffmpeg/pixFmts");
-        _progressMax = arraySize + arraySize*2 + arraySize/3; //pixfmts + estimated codecs + estimated muxers
-        _prevMax = arraySize;
-        emit progressMax( _progressMax );
-
-        for (int i = 0; i < arraySize; ++i)
-        {
-            settings.setArrayIndex(i);
-            emit progress(i);
-
-
-            QString name = settings.value("name").toString();
-            int numComponents = settings.value("numComponents").toInt();
-            int bpp = settings.value("bpp").toInt();
-
-            FFPixFormat *pf = new FFPixFormat(name, "", numComponents, bpp);
-
-            emit newLog("Loading pixel format: " + name);
-
-            bool input = settings.value("input").toBool();
-            bool output = settings.value("output").toBool();
-            bool hardware = settings.value("hardware").toBool();
-            bool paletted = settings.value("paletted").toBool();
-            bool bitStream = settings.value("bitStream").toBool();
-
-            pf->setInput( input );
-            pf->setOutput( output );
-            pf->setHardware( hardware );
-            pf->setPaletted( paletted );
-            pf->setBitstream( bitStream );
-
-            _pixFormats << pf;
         }
 
         //close the array
