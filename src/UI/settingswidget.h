@@ -36,6 +36,8 @@ private slots:
     void on_aeCacheEdit_textChanged(const QString &arg1);
     void on_aeCacheBrowseButton_clicked();
 
+    void on_resetDefaultsButton_clicked();
+
 private:
     QSettings settings;
     AfterEffects *_ae;

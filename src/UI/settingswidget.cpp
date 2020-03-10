@@ -162,3 +162,8 @@ void SettingsWidget::refreshAeVersionBox()
 
     _freezeUI = false;
 }
+
+void SettingsWidget::on_resetDefaultsButton_clicked()
+{
+    settings.clear();
+}

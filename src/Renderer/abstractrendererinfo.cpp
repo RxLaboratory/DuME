@@ -6,6 +6,7 @@ AbstractRendererInfo::AbstractRendererInfo(QObject *parent) : QObject(parent)
     _status = MediaUtils::Waiting;
     _process = new QProcess();
     _valid = true;
+    _ignoreErrors = false;
 
     //Connect process
     connect(_process,SIGNAL(readyReadStandardError()),this,SLOT(stdError()));
@@ -45,7 +46,7 @@ bool AbstractRendererInfo::setBinary(QString binary)
     }
 }
 
-bool AbstractRendererInfo::runCommand(QString commands, int timeout, QIODevice::OpenModeFlag of)
+bool AbstractRendererInfo::runCommand(QString commands, int timeout, QIODevice::OpenModeFlag of, bool ignoreErrors)
 {
     //detect arguments
     QRegularExpression re("(\"[^\"]*\"|[\\S]+)");
@@ -57,13 +58,14 @@ bool AbstractRendererInfo::runCommand(QString commands, int timeout, QIODevice::
         command.replace("\"","");
         commandList << command;
     }
-    return runCommand(commandList, timeout, of);
+    return runCommand(commandList, timeout, of, ignoreErrors);
 }
 
-bool AbstractRendererInfo::runCommand(QStringList commands, int timeout, QIODevice::OpenModeFlag of)
+bool AbstractRendererInfo::runCommand(QStringList commands, int timeout, QIODevice::OpenModeFlag of, bool ignoreErrors)
 {
     _output = "";
     _process->setArguments(commands);
+    _ignoreErrors = ignoreErrors;
     _process->start(of);
     return _process->waitForFinished(timeout);
 }
@@ -113,11 +115,16 @@ void AbstractRendererInfo::errorOccurred(QProcess::ProcessError e)
         error = "An unknown process error occured.";
     }
 
-    emit newLog( error, LogUtils::Critical );
+    if (_ignoreErrors) emit newLog( error, LogUtils::Warning );
+    else emit newLog( error, LogUtils::Critical );
     _lastErrorMessage = error;
     _status = MediaUtils::Error;
-    _valid = false;
-    emit valid(false);
+
+    if (!_ignoreErrors)
+    {
+        _valid = false;
+        emit valid(false);
+    }
 }
 
 QString AbstractRendererInfo::lastErrorMessage() const

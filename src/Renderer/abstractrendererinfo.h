@@ -31,12 +31,12 @@ public slots:
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments, space separated. Use double quotes for any argument containing spaces
      */
-    bool runCommand(QString commands, int timeout = 0, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
+    bool runCommand(QString commands, int timeout = 0, QIODevice::OpenModeFlag of = QIODevice::ReadOnly, bool ignoreErrors = false);
     /**
      * @brief runCommand Runs FFmpeg with the commands
      * @param commands The arguments
      */
-    bool runCommand(QStringList commands, int timeout = 0, QIODevice::OpenModeFlag of = QIODevice::ReadOnly);
+    bool runCommand(QStringList commands, int timeout = 0, QIODevice::OpenModeFlag of = QIODevice::ReadOnly, bool ignoreErrors = false);
 
 protected slots:
     void log( QString l, LogUtils::LogType lt = LogUtils::Information );
@@ -61,6 +61,7 @@ private:
     void readyRead(QString output);
 
     bool _valid;
+    bool _ignoreErrors;
 };
 
 #endif // ABSTRACTRENDERERINFO_H

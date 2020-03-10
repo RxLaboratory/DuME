@@ -122,6 +122,7 @@ UISplashScreen::UISplashScreen(const QPixmap &pixmap, QString version, Qt::Windo
 
 void UISplashScreen::newMessage(QString message, LogUtils::LogType lt)
 {
+    if (!this->isVisible()) return;
     if (lt == LogUtils::Debug) return;
     _progressBar->setFormat( "%p% - " + message );
 #ifdef QT_DEBUG
@@ -132,11 +133,13 @@ void UISplashScreen::newMessage(QString message, LogUtils::LogType lt)
 
 void UISplashScreen::progressMax(int max)
 {
+    if (!this->isVisible()) return;
     _progressBar->setMaximum( max );
 }
 
 void UISplashScreen::progress(int val)
 {
+    if (!this->isVisible()) return;
     _progressBar->setValue(val);
     repaint();
 }

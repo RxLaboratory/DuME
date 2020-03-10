@@ -104,6 +104,7 @@ bool FFmpeg::setBinary(QString path, bool initialize)
         settings.setValue("ffmpeg/path", path );
         if (initialize) init();
         emit binaryChanged( path );
+        qDebug() << "New FFmpeg path correctly set: " + path;
         return true;
     }
 
@@ -165,20 +166,25 @@ void FFmpeg::init()
 
     //get long help
     emit newLog( "Loading Documentation" );
-    if (runCommand( "-hide_banner -h long", 3000))
+    // ignore errors as this is not so important and sometimes fails to start for some reason...
+    if (runCommand( "-h long", 3000, QIODevice::ReadOnly, true))
     {
         _longHelp = _output;
     }
 
     //get help
     _help = settings.value("ffmpeg/help","").toString();
-    if (runCommand( "-hide_banner -h", 3000))
+    emit newLog( "Loading help" );
+    // ignore errors as this is not so important and sometimes fails to start for some reason...
+    if (runCommand( "-h", 3000, QIODevice::ReadOnly, true))
     {
         _help = _output;
     }
 
     _version = newVersion;
     settings.setValue("ffmpeg/version",_version);
+
+    emit newLog( "FFmpeg ready" );
 
     _status = MediaUtils::Waiting;
     emit statusChanged(_status);
