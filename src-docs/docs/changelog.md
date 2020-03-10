@@ -15,6 +15,8 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 - Fixed crash with the Vidvox HAP codec.
 - Fixed console output on Windows.
+- Fixed crash when FFmpeg was incorrectly loaded.
+- Automatically reload features from FFmpeg if the settings are corrupted.
 - Reduced launch time (again).
 
 ## 0.1.2
