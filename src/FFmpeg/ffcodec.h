@@ -103,6 +103,9 @@ public:
     QString qualityParam() const;
     QString qualityValue( int quality );
 
+    QString speedParam() const;
+    QString speedValue(int speed );
+
     static FFCodec *getDefault(QObject *parent = nullptr);
 
 private:
@@ -113,6 +116,9 @@ private:
 
     QString _qualityParam;
     void setQualityParam();
+
+    QString _speedParam;
+    void setSpeedParam();
 
 protected:
 

@@ -17,7 +17,7 @@ private slots:
     void on_videoBitrateButton_clicked(bool checked);
     void on_videoBitRateEdit_editingFinished();
     void on_videoQualityButton_clicked(bool checked);
-    void on_videoQualitySlider_valueChanged(int value);
+    void on_videoQualitySlider_sliderMoved(int value);
     void on_actionPerfect_95_triggered();
     void on_actionAuto_triggered();
     void on_actionGood_60_triggered();
@@ -26,6 +26,10 @@ private slots:
     void on_actionBlu_Ray_triggered();
     void on_actionDVD_triggered();
     void on_actionStreaming_12_Mbps_triggered();
+    void on_speedButton_clicked(bool checked);
+    void on_speedSlider_sliderMoved(int value);
+    void on_tuneButton_clicked(bool checked);
+    void on_tuneBox_currentIndexChanged(int index);
 };
 
 #endif // BLOCKVIDEOBITRATE_H

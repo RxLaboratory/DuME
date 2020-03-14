@@ -41,11 +41,21 @@ void BlockVideoBitrate::activate(bool activate)
         {
             _mediaInfo->setVideoQuality( -1 );
         }
+
+        if (speedButton->isChecked())
+        {
+            _mediaInfo->setVideoEncodingSpeed( speedSlider->value());
+        }
+        else
+        {
+            _mediaInfo->setVideoEncodingSpeed( -1 );
+        }
     }
     else
     {
         _mediaInfo->setVideoBitrate( 0 );
         _mediaInfo->setVideoQuality( -1 );
+        _mediaInfo->setVideoEncodingSpeed( -1 );
     }
 
     _freezeUI = false;
@@ -86,6 +96,7 @@ void BlockVideoBitrate::update()
 
     bool useQuality = c->qualityParam() != "";
     bool useBitrate = !m->isSequence();
+    bool useSpeed = c->name() == "h264";
 
     actionPerfect_95->setVisible( useQuality );
     actionAuto->setVisible( useQuality );
@@ -174,31 +185,48 @@ void BlockVideoBitrate::update()
             videoQualitySlider->setValue( q );
             videoQualityWidget->setEnabled( true );
 
-            if (q == 100)
-            {
-                qualityLabel->setText("Lossless (if possible) | 100%");
-            }
-            else if (q >= 90)
-            {
-                qualityLabel->setText("Perfect | " + QString::number(q) + "%");
-            }
-            else if (q >= 75)
-            {
-                qualityLabel->setText("Very good | " + QString::number(q) + "%");
-            }
-            else if (q >= 50)
-            {
-                qualityLabel->setText("Good | " + QString::number(q) + "%");
-            }
-            else if (q >= 25)
-            {
-                qualityLabel->setText("Bad | " + QString::number(q) + "%");
-            }
-            else
-            {
-                qualityLabel->setText("Very bad | " + QString::number(q) + "%");
-            }
+            if (q == 100) qualityLabel->setText("Lossless (if possible) | 100%");
+            else if (q >= 90) qualityLabel->setText("Perfect | " + QString::number(q) + "%");
+            else if (q >= 75) qualityLabel->setText("Very good | " + QString::number(q) + "%");
+            else if (q >= 50) qualityLabel->setText("Good | " + QString::number(q) + "%");
+            else if (q >= 25) qualityLabel->setText("Bad | " + QString::number(q) + "%");
+            else qualityLabel->setText("Very bad | " + QString::number(q) + "%");
         }
+    }
+
+
+    if ( useSpeed )
+    {
+        int s = stream->encodingSpeed();
+        speedButton->setVisible( true );
+        speedWidget->setVisible( true );
+        if (s == -1 )
+        {
+            speedWidget->setEnabled( false );
+            speedLabel->setText("Default - Medium");
+            speedButton->setChecked( false );
+            speedSlider->setValue( 35 );
+        }
+        else
+        {
+            speedWidget->setEnabled( true );
+            speedButton->setChecked( true );
+            if (s >= 90) speedLabel->setText("Ultra fast");
+            else if ( s >= 80 ) speedLabel->setText("Super fast");
+            else if ( s >= 70 ) speedLabel->setText("Very fast");
+            else if ( s >= 60 ) speedLabel->setText("Faster");
+            else if ( s >= 50 ) speedLabel->setText("Fast");
+            else if ( s >= 40 ) speedLabel->setText("Medium");
+            else if ( s >= 30 ) speedLabel->setText("Slow");
+            else if ( s >= 20 ) speedLabel->setText("Slower");
+            else speedLabel->setText("Very Slow");
+            speedSlider->setValue( s );
+        }
+    }
+    else
+    {
+        speedButton->setVisible( false );
+        speedWidget->setVisible( false );
     }
 
     _freezeUI = false;
@@ -239,10 +267,39 @@ void BlockVideoBitrate::on_videoQualityButton_clicked(bool checked)
     }
 }
 
-void BlockVideoBitrate::on_videoQualitySlider_valueChanged(int value)
+void BlockVideoBitrate::on_videoQualitySlider_sliderMoved(int value)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoQuality( value );
+}
+
+void BlockVideoBitrate::on_speedButton_clicked(bool checked)
+{
+    if (_freezeUI) return;
+    if (checked)
+    {
+        _mediaInfo->setVideoEncodingSpeed( 35 );
+    }
+    else
+    {
+        _mediaInfo->setVideoEncodingSpeed( -1 );
+    }
+}
+
+void BlockVideoBitrate::on_speedSlider_sliderMoved(int value)
+{
+    if (_freezeUI) return;
+    _mediaInfo->setVideoEncodingSpeed( value );
+}
+
+void BlockVideoBitrate::on_tuneButton_clicked(bool checked)
+{
+
+}
+
+void BlockVideoBitrate::on_tuneBox_currentIndexChanged(int index)
+{
+
 }
 
 void BlockVideoBitrate::on_actionPerfect_95_triggered()

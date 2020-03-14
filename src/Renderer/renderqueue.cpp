@@ -242,11 +242,18 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 //level
                 if (stream->level() != "") arguments << "-level" << stream->level();
 
-                //quality (h264)
+                //quality
                 int quality = stream->quality();
                 if ( quality >= 0 && vc->name() != "" )
                 {
                     arguments << vc->qualityParam() << vc->qualityValue(quality);
+                }
+
+                //encoding speed
+                int speed = stream->encodingSpeed();
+                if (vc->name() == "h264" && speed >= 0)
+                {
+                    arguments << vc->speedParam() << vc->speedValue(speed);
                 }
 
                 //start number (sequences)

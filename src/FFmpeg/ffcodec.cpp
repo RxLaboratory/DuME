@@ -11,6 +11,7 @@ FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObj
 
     setQualityParam();
     setDefaultPixFormat( );
+    setSpeedParam();
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
@@ -19,6 +20,7 @@ FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject 
 
     setQualityParam();
     setDefaultPixFormat( );
+    setSpeedParam();
 }
 
 bool FFCodec::isVideo() const
@@ -245,6 +247,29 @@ QString FFCodec::qualityValue(int quality)
     return "";
 }
 
+QString FFCodec::speedParam() const
+{
+    return _speedParam;
+}
+
+QString FFCodec::speedValue(int speed)
+{
+    if (_name == "h264")
+    {
+        if (speed >= 90) return "ultrafast";
+        else if (speed >= 80) return "superfast";
+        else if (speed >= 70) return "veryfast";
+        else if (speed >= 60) return "faster";
+        else if (speed >= 50) return "fast";
+        else if (speed >= 40) return "medium";
+        else if (speed >= 30) return "slow";
+        else if (speed >= 20) return "slower";
+        else return "veryslow";
+    }
+
+    return "";
+}
+
 FFCodec *FFCodec::getDefault( QObject* parent )
 {
     FFCodec *c = new FFCodec( "", "Default", FFCodec::Audio | FFCodec::Video | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame , parent);
@@ -264,5 +289,17 @@ void FFCodec::setQualityParam()
     else
     {
         _qualityParam = "";
+    }
+}
+
+void FFCodec::setSpeedParam()
+{
+    if (_name == "h264")
+    {
+        _speedParam = "-preset";
+    }
+    else
+    {
+        _speedParam = "";
     }
 }

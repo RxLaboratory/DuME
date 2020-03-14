@@ -10,6 +10,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 - Now comes with [a script for *After Effects*](after-effects-install.md).
 - Added more [command line options](cli-options.md).
+- Added some options to tweak [h264](h264.md) encoding (including the ability to output CBR streams).
 
 ### Fixes
 

@@ -505,7 +505,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
             QString name = settings.value("name").toString();
             QString prettyName = settings.value("prettyName").toString();
 
-            emit newLog("Loading muxer:" + name);
+            //emit newLog("Loading muxer:" + name);
             if (name == "") continue;
 
             FFMuxer *m = new FFMuxer(name,prettyName,this);
@@ -533,7 +533,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _muxers.count() == 0)
     {
-        emit newLog("Updating muxers list.");
+        emit newLog("Updating muxers list from FFmpeg.");
 
         QStringList muxers = output.split("\n");
         QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
@@ -855,7 +855,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
             QString codecPrettyName = settings.value("codecPrettyName").toString();
             FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
 
-            emit newLog("Loading codec: " + codecName);
+            //emit newLog("Loading codec: " + codecName);
 
             bool decoder = settings.value("decoder").toBool();
             bool encoder = settings.value("encoder").toBool();
@@ -928,7 +928,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _audioEncoders.count() < 2 || _videoEncoders.count() < 2)
     {
-        emit newLog("Updating codec list.");
+        emit newLog("Updating codec list from FFmpeg.");
 
         QStringList codecs = output.split("\n");
         QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
@@ -1102,7 +1102,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
             FFPixFormat *pf = new FFPixFormat(name, "", numComponents, bpp);
 
-            emit newLog("Loading pixel format: " + name);
+            //emit newLog("Loading pixel format: " + name);
 
             bool input = settings.value("input").toBool();
             bool output = settings.value("output").toBool();
@@ -1126,6 +1126,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _pixFormats.count() == 0)
     {
+        emit newLog("Updating pixel formats list from FFmpeg.");
         QStringList pixFmts = output.split("\n");
         int max = pixFmts.count();
         _progressMax = max + max*2 + max/3; //pixfmts + estimated codecs + estimated muxers
