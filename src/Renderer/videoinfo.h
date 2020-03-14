@@ -95,6 +95,11 @@ public:
     bool premultipliedAlpha() const;
     void setPremultipliedAlpha(bool premultipliedAlpha, bool silent = false);
 
+    FFBaseObject *tuning() const;
+    void setTuning(FFBaseObject *tuning, bool silent = false);
+    void setTuning( QString tuning, bool silent = false);
+    void setTuning( QJsonObject tuning, bool silent = false);
+
 signals:
     void changed();
 
@@ -123,6 +128,11 @@ private:
      * Supported codecs: h264
      */
     QString _level;
+    /**
+     * @brief _tuning Preset to fine-tune the encoding.
+     * Supported codecs: h264
+     */
+    FFBaseObject *_tuning;
     float _pixAspect;
     FFPixFormat *_pixFormat;
     qint64 _bitrate;

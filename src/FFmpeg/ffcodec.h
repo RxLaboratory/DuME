@@ -108,6 +108,9 @@ public:
 
     static FFCodec *getDefault(QObject *parent = nullptr);
 
+    QList<FFBaseObject *> getTunings() const;
+    FFBaseObject *getTuning(QString name);
+
 private:
     Abilities _abilities;
     QList<FFPixFormat *> _pixFormats;
@@ -119,6 +122,9 @@ private:
 
     QString _speedParam;
     void setSpeedParam();
+
+    QList<FFBaseObject *> _tunings;
+    void setTunings();
 
 protected:
 

@@ -12,6 +12,7 @@ FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObj
     setQualityParam();
     setDefaultPixFormat( );
     setSpeedParam();
+    setTunings();
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
@@ -21,6 +22,7 @@ FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject 
     setQualityParam();
     setDefaultPixFormat( );
     setSpeedParam();
+    setTunings();
 }
 
 bool FFCodec::isVideo() const
@@ -302,4 +304,39 @@ void FFCodec::setSpeedParam()
     {
         _speedParam = "";
     }
+}
+
+void FFCodec::setTunings()
+{
+    if (_name == "h264")
+    {
+        _tunings << new FFBaseObject("film", "Film", this);
+        _tunings << new FFBaseObject("animation", "Animation", this);
+        _tunings << new FFBaseObject("grain", "Video with grain", this);
+        _tunings << new FFBaseObject("stillimage", "Slideshow", this);
+        _tunings << new FFBaseObject("fastdecode", "Fast decode", this);
+        _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
+    }
+}
+
+QList<FFBaseObject *> FFCodec::getTunings() const
+{
+    return _tunings;
+}
+
+FFBaseObject *FFCodec::getTuning(QString name)
+{
+    qDebug() << name;
+    foreach( FFBaseObject *t, _tunings)
+    {
+        qDebug() << t->name().toLower();
+        if (t->name().toLower() == name.toLower()) return t;
+    }
+
+    foreach( FFBaseObject *t, _tunings)
+    {
+        if (t->prettyName().toLower() == name.toLower()) return t;
+    }
+
+    return new FFBaseObject("", "Default");
 }

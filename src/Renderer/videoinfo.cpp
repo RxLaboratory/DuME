@@ -7,6 +7,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _encodingSpeed = -1;
     _profile = ffmpeg->profile("");
     _level = "";
+    _tuning = ffmpeg->defaultObject();
     _pixAspect = 1;
     _pixFormat = ffmpeg->pixFormat("");
     _bitrate = 0;
@@ -26,10 +27,12 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
 {
     _language = nullptr;
     _id = -1;
+    setCodec( obj.value("codec").toObject(), true);
     setQuality( obj.value("quality").toInt(-1), true);
     setEncodingSpeed( obj.value("encodingSpeed").toInt(-1), true);
     setProfile( obj.value("profile").toObject(), true);
     setLevel( obj.value("level").toString(), true);
+    setTuning( obj.value("tuning").toObject(), true);
     setPixAspect( obj.value("pixAspect").toDouble(1), true);
     setPixFormat( obj.value("pixFormat").toObject(), true);
     setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(true), true);
@@ -37,7 +40,6 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setFramerate( obj.value("framerate").toDouble(0.0), true);
     setHeight( obj.value("height").toInt(0), true);
     setWidth( obj.value("width").toInt(0), true);
-    setCodec( obj.value("codec").toObject(), true);
     setLanguage( obj.value("language").toObject().value("name").toString(), true);
     setColorPrimaries( obj.value("colorPrimaries").toString(), true);
     setColorTRC( obj.value("colorTRC").toString(), true);
@@ -52,6 +54,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _encodingSpeed = other->encodingSpeed();
     _profile = other->profile();
     _level = other->level();
+    _tuning = other->tuning();
     _pixAspect = other->pixAspect();
     _pixFormat = other->pixFormat();
     _bitrate = other->bitrate();
@@ -82,6 +85,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("encodingSpeed", _encodingSpeed);
     vStream.insert("profile", _profile->toJson() );
     vStream.insert("level", _level);
+    vStream.insert("tuning", _tuning->toJson());
     vStream.insert("pixAspect", _pixAspect);
     vStream.insert("pixFormat", _pixFormat->toJson() );
     vStream.insert("premultipliedAlpha", _premultipliedAlpha);
@@ -117,6 +121,7 @@ QString VideoInfo::getDescription()
     if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
     if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
     if ( _level != "") mediaInfoString += "\nLevel: " + _level;
+    if ( _tuning->name() != "") mediaInfoString += "\nFine tune: " + _tuning->prettyName();
     if ( _bitrate != 0 ) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(_bitrate);
     if ( _quality >= 0) mediaInfoString += "\nQuality: " + QString::number( _quality ) + "%";
      if ( _encodingSpeed >= 0) mediaInfoString += "\nEncoding speed: " + QString::number( _encodingSpeed ) + "%";
@@ -155,6 +160,8 @@ QString VideoInfo::getDescription()
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
     }
     if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
+
+    return mediaInfoString;
 }
 
 int VideoInfo::quality() const
@@ -415,6 +422,27 @@ void VideoInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent)
 {
     _premultipliedAlpha = premultipliedAlpha;
     if(!silent) emit changed();
+}
+
+FFBaseObject *VideoInfo::tuning() const
+{
+    return _tuning;
+}
+
+void VideoInfo::setTuning(FFBaseObject *tuning, bool silent)
+{
+    _tuning = tuning;
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setTuning(QString tuning, bool silent)
+{
+    setTuning(_codec->getTuning(tuning), silent);
+}
+
+void VideoInfo::setTuning(QJsonObject tuning, bool silent)
+{
+    setTuning(tuning.value("name").toString(), silent);
 }
 
 int VideoInfo::encodingSpeed() const
