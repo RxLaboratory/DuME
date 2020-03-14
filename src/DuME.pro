@@ -66,12 +66,12 @@ SOURCES += \
     UI/bigcombobox.cpp \
     UI/datacombobox.cpp \
     UI/dropshadow.cpp \
+    UI/duapplicationutils.cpp \
     UI/framelesswindow.cpp \
     UI/inputwidget.cpp \
     UI/mainwindow.cpp \
     UI/outputwidget.cpp \
     UI/queuewidget.cpp \
-    UI/rainboxui.cpp \
     UI/settingswidget.cpp \
     UI/streamreferencewidget.cpp \
     UI/toolbarspacer.cpp \
@@ -133,12 +133,12 @@ HEADERS += \
     UI/bigcombobox.h \
     UI/datacombobox.h \
     UI/dropshadow.h \
+    UI/duapplicationutils.h \
     UI/framelesswindow.h \
     UI/inputwidget.h \
     UI/mainwindow.h \
     UI/outputwidget.h \
     UI/queuewidget.h \
-    UI/rainboxui.h \
     UI/settingswidget.h \
     UI/streamreferencewidget.h \
     UI/toolbarspacer.h \

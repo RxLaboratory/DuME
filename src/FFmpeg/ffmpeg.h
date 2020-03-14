@@ -1,6 +1,9 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
+// When debugging, it may be useful to output the codec list being loaded at startup. Uncomment this line
+//#define FFMPEG_VERBOSE_DEBUG
+
 #include <QSettings>
 #include <QObject>
 #include <QDir>
@@ -29,6 +32,11 @@ public:
     explicit FFmpeg(QString path = "", QObject *parent = nullptr);
     ~FFmpeg();
 
+    /**
+     * @brief defaultObject The default base object, empty name and "Default" base name
+     * @return
+     */
+    FFBaseObject *defaultObject();
     /**
      * @brief getMuxers Gets the list of available muxers
      * @return
@@ -200,6 +208,8 @@ private:
     QList<FFBaseObject *> _colorRanges;
     // The list of color profiles
     QList<FFColorProfile *> _colorProfiles;
+    // A default object
+    FFBaseObject *_defaultObject;
     // The help
     QString _help;
     // The documentation

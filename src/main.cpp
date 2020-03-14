@@ -1,4 +1,3 @@
-#include <QApplication>
 #include <QBitmap>
 #include <QSettings>
 #include <QStringList>
@@ -112,65 +111,36 @@ bool processArgs(int argc, char *argv[])
     return presets || help;
 }
 
-int main(int argc, char *argv[])
+void initSettings(UISplashScreen *s)
 {
-    // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
-    qInstallMessageHandler(MessageHandler::messageOutput);
-
-    QApplication a(argc, argv);
-    QString currentVersionStr = DuMEVersion.getString();
-
-    //set style
-    RainboxUI::updateCSS(":/styles/default", "dume");
-
-    //load settings
-    QCoreApplication::setOrganizationName(STR_COMPANYNAME);
-    QCoreApplication::setOrganizationDomain(STR_COMPANYDOMAIN);
-    QCoreApplication::setApplicationName(STR_PRODUCTNAME);
-    QCoreApplication::setApplicationVersion(currentVersionStr);
-
-    //load presets
-    presetManager->load();
-    //process CLI arguments
-    if ( processArgs(argc, argv) ) return 0;
-
-    //create splash screen
-    QString v = "DuME v";
-    QPixmap pixmap(":/images/splash");
-    UISplashScreen splash(pixmap, v+currentVersionStr);
-
-    //set app icon
-    qApp->setWindowIcon(QIcon(":/icons/app"));
-
-    //show
-    splash.show();
-
+    s->newMessage("Reading settings...");
     QSettings settings;
     QString prevVersionStr = settings.value("version", "").toString();
     QVersionNumber prevVersion = QVersionNumber::fromString( prevVersionStr );
     if ( prevVersion.majorVersion() != DuMEVersion.majorVersion() || prevVersion.minorVersion() != DuMEVersion.minorVersion() )
     {
-        settings.clear(); 
+        settings.clear();
     }
-    if (prevVersionStr != currentVersionStr)
+    if (prevVersionStr != DuMEVersion.getString())
     {
-        settings.setValue("version", currentVersionStr);
+        settings.setValue("version", DuMEVersion.getString());
         settings.setValue("ffmpeg/version","");
     }
+}
 
-    // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD. COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
-    //settings.setValue("ffmpeg/version","");
-
-    //load FFmpeg
-    splash.newMessage("Loading FFmpeg...");
-    QObject::connect(ffmpeg,&FFmpeg::newLog,&splash,&UISplashScreen::newMessage);
-    QObject::connect(ffmpeg,&FFmpeg::progressMax,&splash,&UISplashScreen::progressMax);
-    QObject::connect(ffmpeg,&FFmpeg::progress,&splash,&UISplashScreen::progress);
-    splash.newMessage("Initializing FFmpeg...");
+void initFFmpeg(UISplashScreen *s)
+{
+    s->newMessage("Loading FFmpeg...");
+    QObject::connect(ffmpeg,&FFmpeg::newLog,s,&UISplashScreen::newMessage);
+    QObject::connect(ffmpeg,&FFmpeg::progressMax,s,&UISplashScreen::progressMax);
+    QObject::connect(ffmpeg,&FFmpeg::progress,s,&UISplashScreen::progress);
+    s->newMessage("Initializing FFmpeg...");
     ffmpeg->init();
+}
 
-    //build UI and show
-    splash.newMessage("Building UI");
+void buildUI(int argc, char *argv[], UISplashScreen *s)
+{
+    s->newMessage("Building UI");
     MainWindow *w = new MainWindow( argc, argv );
 #ifndef Q_OS_LINUX
     FrameLessWindow f(w);
@@ -178,7 +148,32 @@ int main(int argc, char *argv[])
     w->show();
 
     //hide splash when finished
-    splash.finish(w);
+    s->finish(w);
+}
+
+int main(int argc, char *argv[])
+{
+    DuApplication a(argc, argv, DuMEVersion.getString());
+
+    //load presets
+    presetManager->load();
+    //process CLI arguments
+    if ( processArgs(argc, argv) ) return 0;
+
+    //show splashscreen
+    a.showSplashScreen();
+
+    initSettings(a.splashScreen());
+
+    // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD.
+    // COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
+    // settings.setValue("ffmpeg/version","");
+
+    //load FFmpeg
+    initFFmpeg(a.splashScreen());
+
+    //build UI and show
+    buildUI(argc, argv, a.splashScreen());
 
     //end appli
     return a.exec();

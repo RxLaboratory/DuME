@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QDir>
 #include <QSettings>
+#include <QCoreApplication>
 
+#include "version.h"
 #include "preset.h"
 
 class PresetManager : public QObject
@@ -31,7 +33,6 @@ private:
     Preset _defaultPreset;
     QString _resetDefaultPreset;
     QSettings settings;
-
 };
 
 #endif // PRESETMANAGER_H

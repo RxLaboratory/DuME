@@ -13,6 +13,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _defaultPixFormat = FFPixFormat::getDefault( this );
     _defaultCodec = FFCodec::getDefault( this );
     _defaultMuxer = FFMuxer::getDefault( this );
+    _defaultObject = new FFBaseObject("", "Default", this);
 
     // The list of Profiles
     _profiles << new FFProfile("", "Auto");
@@ -94,6 +95,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 FFmpeg::~FFmpeg()
 {
 
+}
+
+FFBaseObject *FFmpeg::defaultObject()
+{
+    return _defaultObject;
 }
 
 bool FFmpeg::setBinary(QString path, bool initialize)
@@ -533,7 +539,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _muxers.count() == 0)
     {
-        emit newLog("Updating muxers list from FFmpeg.");
+        emit newLog("Updating muxers list...");
 
         QStringList muxers = output.split("\n");
         QRegularExpression re("[D. ]E (\\w+)\\s+(.+)");
@@ -559,7 +565,9 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
                 QString name = match.captured(1).trimmed();
                 QString prettyName = match.captured(2).trimmed();
 
+#ifdef FFMPEG_VERBOSE_DEBUG
                 emit newLog("Loading muxer: " + name);
+#endif
 
                 // skip image sequence
                 if (name == "image2") continue;
@@ -834,6 +842,8 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     FFCodec *copyAudio = new FFCodec("copy","Copy audio stream",FFCodec::Audio | FFCodec::Encoder | FFCodec::Lossless | FFCodec::Lossy | FFCodec::IFrame,this);
     _audioEncoders << copyAudio;
 
+    qDebug() << newVersion + " - " + _version;
+
     //if the version is the same as previously, just read data from settings
     if (newVersion == _version)
     {
@@ -928,7 +938,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _audioEncoders.count() < 2 || _videoEncoders.count() < 2)
     {
-        emit newLog("Updating codec list from FFmpeg.");
+        emit newLog("Updating codec list...");
 
         QStringList codecs = output.split("\n");
         QRegularExpression re("([D.])([E.])([VAS])([I.])([L.])([S.]) (\\w+) +([^\\(\\n]+)");
@@ -955,7 +965,9 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
                 QString codecPrettyName = match.captured(8);
                 FFCodec *co = new FFCodec(codecName,codecPrettyName,this);
 
+#ifdef FFMPEG_VERBOSE_DEBUG
                 emit newLog("Loading codec: " + codecName);
+#endif
 
                 bool decoder = match.captured(1) == "D";
                 bool encoder = match.captured(2) == "E";
@@ -1069,6 +1081,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
         _prevMax = _prevMax + max;
     }
 
+    qDebug() << "Found " + QString::number(_audioEncoders.count()) + " audio encoders and " + QString::number(_videoEncoders.count()) + " video encoders.";
 
     emit newLog("Sorting Codecs...");
     std::sort(_videoEncoders.begin(),_videoEncoders.end(),ffSorter);
@@ -1126,7 +1139,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     //if the version has changed, or if we did not get the list from settings
     if (newVersion != _version || _pixFormats.count() == 0)
     {
-        emit newLog("Updating pixel formats list from FFmpeg.");
+        emit newLog("Updating pixel formats list...");
         QStringList pixFmts = output.split("\n");
         int max = pixFmts.count();
         _progressMax = max + max*2 + max/3; //pixfmts + estimated codecs + estimated muxers
@@ -1154,8 +1167,9 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
                 QString numComponents = match.captured(7);
                 QString bpp = match.captured(8);
                 FFPixFormat *pf = new FFPixFormat(name, "", numComponents.toInt(), bpp.toInt());
-
+#ifdef FFMPEG_VERBOSE_DEBUG
                 emit newLog("Loading pixel format: " + name);
+#endif
 
                 bool input = match.captured(1) == "I";
                 bool output = match.captured(2) == "O";

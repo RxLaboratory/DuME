@@ -1,13 +1,14 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "version.h"
+#include "UI/duapplicationutils.h"
 #include "Renderer/presetmanager.h"
 #include "FFmpeg/ffmpeg.h"
-#include "UI/rainboxui.h"
 
 // App version
 extern AppVersion DuMEVersion;
+// Application
+extern InitApplication *initApplication;
 // Presets
 extern PresetManager *presetManager;
 // FFmpeg Infos

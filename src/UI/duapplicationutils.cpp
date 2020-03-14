@@ -1,4 +1,4 @@
-#include "rainboxui.h"
+#include "duapplicationutils.h"
 
 #ifdef QT_DEBUG
 #include <QtDebug>
@@ -209,4 +209,40 @@ void MessageHandler::messageOutput(QtMsgType type, const QMessageLogContext &con
         fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
         break;
     }
+}
+
+InitApplication::InitApplication(QString version)
+{
+    //load settings
+    QCoreApplication::setOrganizationName(STR_COMPANYNAME);
+    QCoreApplication::setOrganizationDomain(STR_COMPANYDOMAIN);
+    QCoreApplication::setApplicationName(STR_PRODUCTNAME);
+    QCoreApplication::setApplicationVersion(version);
+}
+
+DuApplication::DuApplication(int argc, char *argv[], QString version) : QApplication(argc, argv)
+{
+    // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
+    qInstallMessageHandler(MessageHandler::messageOutput);
+
+    //set style
+    RainboxUI::updateCSS(":/styles/default", QString(STR_INTERNALNAME).toLower());
+
+    //create splash screen
+    QString v = QString(STR_INTERNALNAME) + " v";
+    QPixmap pixmap(":/images/splash");
+    _splashScreen = new UISplashScreen(pixmap, v + version);
+
+    //set app icon
+    qApp->setWindowIcon(QIcon(":/icons/app"));
+}
+
+UISplashScreen *DuApplication::splashScreen() const
+{
+    return _splashScreen;
+}
+
+void DuApplication::showSplashScreen()
+{
+    _splashScreen->show();
 }

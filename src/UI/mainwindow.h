@@ -25,7 +25,7 @@
 #include "toolbarspacer.h"
 #include "settingswidget.h"
 #include "queuewidget.h"
-#include "rainboxui.h"
+#include "duapplicationutils.h"
 #include "version.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow

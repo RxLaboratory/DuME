@@ -11,8 +11,11 @@
 #include <QLabel>
 #include <QFontDatabase>
 #include <QVersionNumber>
+#include <QApplication>
+#include <QIcon>
 
 #include "utils.h"
+#include "version.h"
 
 class RainboxUI
 {
@@ -72,6 +75,23 @@ class MessageHandler
 {
 public:
     static void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+};
+
+class InitApplication
+{
+public:
+    InitApplication(QString version);
+};
+
+class DuApplication : public QApplication
+{
+public:
+    DuApplication(int argc, char *argv[], QString version = "");
+    UISplashScreen *splashScreen() const;
+    void showSplashScreen();
+
+private:
+    UISplashScreen *_splashScreen;
 };
 
 #endif // RAINBOXUI_H
