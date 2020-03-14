@@ -1,12 +1,13 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "UI/duapplicationutils.h"
+#include "DuF/duapplication.h"
+#include "DuF/duversion.h"
 #include "Renderer/presetmanager.h"
 #include "FFmpeg/ffmpeg.h"
 
 // App version
-extern AppVersion DuMEVersion;
+extern DuVersion DuMEVersion;
 // Application
 extern InitApplication *initApplication;
 // Presets

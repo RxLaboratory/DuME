@@ -29,6 +29,10 @@ DEFINES += INIT_AE INIT_FFMPEG
 SOURCES += \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
+    DuF/duapplication.cpp \
+    DuF/dusplashscreen.cpp \
+    DuF/duui.cpp \
+    DuF/duversion.cpp \
     FFmpeg/fflanguage.cpp \
     FFmpeg/ffprofile.cpp \
     Renderer/abstractrenderer.cpp \
@@ -66,7 +70,6 @@ SOURCES += \
     UI/bigcombobox.cpp \
     UI/datacombobox.cpp \
     UI/dropshadow.cpp \
-    UI/duapplicationutils.cpp \
     UI/framelesswindow.cpp \
     UI/inputwidget.cpp \
     UI/mainwindow.cpp \
@@ -90,6 +93,11 @@ SOURCES += \
 HEADERS += \
     AfterEffects/aftereffects.h \
     AfterEffects/aftereffectsversion.h \
+    DuF/duapplication.h \
+    DuF/dusplashscreen.h \
+    DuF/duui.h \
+    DuF/duversion.h \
+    DuF/version.h \
     FFmpeg/fflanguage.h \
     FFmpeg/ffprofile.h \
     Renderer/abstractrenderer.h \
@@ -133,7 +141,6 @@ HEADERS += \
     UI/bigcombobox.h \
     UI/datacombobox.h \
     UI/dropshadow.h \
-    UI/duapplicationutils.h \
     UI/framelesswindow.h \
     UI/inputwidget.h \
     UI/mainwindow.h \
@@ -145,8 +152,7 @@ HEADERS += \
     FFmpeg/ffcolorprofile.h \
     global.h \
     languagelist.h \
-    utils.h \
-    version.h
+    utils.h
 
 FORMS += \
     UI/Blocks/blockaecomp.ui \
@@ -184,9 +190,9 @@ ICON = resources/icons/appIcon.icns
 # OS Specific configurations
 win* {
     # Add version and other metadata
-    DISTFILES += DuME.rc
-    RC_FILE = DuME.rc
-    !build_pass:touch($$RC_FILE, version.h)
+    DISTFILES += app.rc
+    RC_FILE = app.rc
+    !build_pass:touch($$RC_FILE, DuF/version.h)
     # Enable console output
     CONFIG += console
 } else:unix {

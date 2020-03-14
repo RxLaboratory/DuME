@@ -12,6 +12,10 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Added more [command line options](cli-options.md).
 - Added some options to tweak [h264](h264.md) encoding (including the ability to output CBR streams).
 
+### Improvements
+
+- Lots of code improvements to make maintenance and contributions easier.
+
 ### Fixes
 
 - Fixed crash with the Vidvox HAP codec.

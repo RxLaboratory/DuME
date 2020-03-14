@@ -6,7 +6,6 @@
 #include <QSettings>
 #include <QCoreApplication>
 
-#include "version.h"
 #include "preset.h"
 
 class PresetManager : public QObject

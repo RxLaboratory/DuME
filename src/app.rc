@@ -1,6 +1,6 @@
 1 ICON "dume.ico"
 
-#include "version.h"
+#include "DuF/version.h"
 
 1 VERSIONINFO
 FILEVERSION    VER_FILEVERSION

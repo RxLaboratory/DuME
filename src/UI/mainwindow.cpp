@@ -189,9 +189,9 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     log("Init - Setting stylesheet");
     //Re-set StyleSheet
-    RainboxUI::updateCSS(":/styles/default", "dume");
+    DuUI::updateCSS(":/styles/default", "dume");
     //and font
-    RainboxUI::setFont();
+    DuUI::setFont();
 
     //parse arguments if ffmpeg is valid
     autoQuit = false;

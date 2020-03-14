@@ -111,7 +111,7 @@ bool processArgs(int argc, char *argv[])
     return presets || help;
 }
 
-void initSettings(UISplashScreen *s)
+void initSettings(DuSplashScreen *s)
 {
     s->newMessage("Reading settings...");
     QSettings settings;
@@ -128,17 +128,17 @@ void initSettings(UISplashScreen *s)
     }
 }
 
-void initFFmpeg(UISplashScreen *s)
+void initFFmpeg(DuSplashScreen *s)
 {
     s->newMessage("Loading FFmpeg...");
-    QObject::connect(ffmpeg,&FFmpeg::newLog,s,&UISplashScreen::newMessage);
-    QObject::connect(ffmpeg,&FFmpeg::progressMax,s,&UISplashScreen::progressMax);
-    QObject::connect(ffmpeg,&FFmpeg::progress,s,&UISplashScreen::progress);
+    QObject::connect(ffmpeg,&FFmpeg::newLog,s,&DuSplashScreen::newMessage);
+    QObject::connect(ffmpeg,&FFmpeg::progressMax,s,&DuSplashScreen::progressMax);
+    QObject::connect(ffmpeg,&FFmpeg::progress,s,&DuSplashScreen::progress);
     s->newMessage("Initializing FFmpeg...");
     ffmpeg->init();
 }
 
-void buildUI(int argc, char *argv[], UISplashScreen *s)
+void buildUI(int argc, char *argv[], DuSplashScreen *s)
 {
     s->newMessage("Building UI");
     MainWindow *w = new MainWindow( argc, argv );
