@@ -17,9 +17,13 @@ public:
     void copyFrom(VideoInfo *other, bool silent = false);
     bool isCopy();
     QJsonObject toJson();
+    QString getDescription();
 
     int quality() const;
     void setQuality(int quality, bool silent = false);
+
+    int encodingSpeed() const;
+    void setEncodingSpeed(int encodingSpeed, bool silent = false);
 
     FFProfile *profile() const;
     void setProfile(FFProfile *profile, bool silent = false);
@@ -95,9 +99,29 @@ signals:
     void changed();
 
 private:
+    /**
+     * @brief _id UUID of this stream
+     */
     int _id;
+    /**
+     * @brief _quality Quality of the video, influences bitrate. -1: auto, 0: worst, 100: best.
+     * Supported codecs: h264
+     */
     int _quality;
+    /**
+     * @brief _encodingSpeed Quality vs Encoding speed on supported codecs. -1: default, 0: best quality, 100: fastest.
+     * Supported codecs: h264
+     */
+    int _encodingSpeed;
+    /**
+     * @brief _profile Codec/Video profile.
+     * Supported codecs: h264, prores
+     */
     FFProfile *_profile;
+    /**
+     * @brief _profile Codec level.
+     * Supported codecs: h264
+     */
     QString _level;
     float _pixAspect;
     FFPixFormat *_pixFormat;

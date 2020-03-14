@@ -135,6 +135,7 @@ public:
     //stream setters
     //video
     void setVideoQuality(int value, int id = -1, bool silent = false);
+    void setVideoEncodingSpeed(int value, int id = -1, bool silent = false);
     void setVideoProfile(QString value, int id = -1, bool silent = false);
     void setVideoProfile(FFProfile *value, int id = -1, bool silent = false);
     void setVideoLevel(QString value, int id = -1, bool silent = false);

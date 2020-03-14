@@ -4,6 +4,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
 {
     _id = -1;
     _quality = -1;
+    _encodingSpeed = -1;
     _profile = ffmpeg->profile("");
     _level = "";
     _pixAspect = 1;
@@ -25,17 +26,17 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
 {
     _language = nullptr;
     _id = -1;
-    setQuality( obj.value("quality").toInt(), true);
+    setQuality( obj.value("quality").toInt(-1), true);
+    setEncodingSpeed( obj.value("encodingSpeed").toInt(-1), true);
     setProfile( obj.value("profile").toObject(), true);
     setLevel( obj.value("level").toString(), true);
-    setPixAspect( obj.value("pixAspect").toDouble(), true);
+    setPixAspect( obj.value("pixAspect").toDouble(1), true);
     setPixFormat( obj.value("pixFormat").toObject(), true);
-    if (!obj.value("premultipliedAlpha").isUndefined()) setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(), true);
-    else _premultipliedAlpha = true;
-    setBitrate( obj.value("bitrate").toInt(), true);
-    setFramerate( obj.value("framerate").toDouble(), true);
-    setHeight( obj.value("height").toInt(), true);
-    setWidth( obj.value("width").toInt(), true);
+    setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(true), true);
+    setBitrate( obj.value("bitrate").toInt(0), true);
+    setFramerate( obj.value("framerate").toDouble(0.0), true);
+    setHeight( obj.value("height").toInt(0), true);
+    setWidth( obj.value("width").toInt(0), true);
     setCodec( obj.value("codec").toObject(), true);
     setLanguage( obj.value("language").toObject().value("name").toString(), true);
     setColorPrimaries( obj.value("colorPrimaries").toString(), true);
@@ -48,6 +49,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
 {
     _id = other->id();
     _quality = other->quality();
+    _encodingSpeed = other->encodingSpeed();
     _profile = other->profile();
     _level = other->level();
     _pixAspect = other->pixAspect();
@@ -77,6 +79,7 @@ QJsonObject VideoInfo::toJson()
 {
     QJsonObject vStream;
     vStream.insert("quality", _quality);
+    vStream.insert("encodingSpeed", _encodingSpeed);
     vStream.insert("profile", _profile->toJson() );
     vStream.insert("level", _level);
     vStream.insert("pixAspect", _pixAspect);
@@ -94,6 +97,64 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("colorRange", _colorRange->toJson());
 
     return vStream;
+}
+
+QString VideoInfo::getDescription()
+{
+    QString mediaInfoString;
+    mediaInfoString += "Video stream";
+    if (_id >= 0) mediaInfoString += " #" + QString::number( _id ) + ":";
+
+    if ( _language->name() != "") mediaInfoString += "\nVideo language: " + _language->prettyName();
+    mediaInfoString += "\nVideo codec: ";
+    FFCodec *vc = _codec;
+    mediaInfoString += vc->prettyName();
+
+    if ( vc->name() == "copy" ) return mediaInfoString;
+
+    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "x" + QString::number( _height );
+    if ( aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( aspect()*100+0.5 ) / 100.0) + ":1";
+    if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
+    if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
+    if ( _level != "") mediaInfoString += "\nLevel: " + _level;
+    if ( _bitrate != 0 ) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(_bitrate);
+    if ( _quality >= 0) mediaInfoString += "\nQuality: " + QString::number( _quality ) + "%";
+     if ( _encodingSpeed >= 0) mediaInfoString += "\nEncoding speed: " + QString::number( _encodingSpeed ) + "%";
+    mediaInfoString += "\nPixel Aspect: " + QString::number( int(_pixAspect*100+0.5)/ 100.0) + ":1";
+    if (canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
+    else mediaInfoString += "\nCan have alpha: no";
+    FFPixFormat *pf =_pixFormat;
+    if ( pf->name() == "" ) pf = defaultPixFormat();
+    if (pf->hasAlpha())
+    {
+        mediaInfoString += "\nAlpha: yes";
+        if (!_premultipliedAlpha) mediaInfoString += " (Unmultiply)";
+    }
+    else mediaInfoString += "\nAlpha: no";
+    mediaInfoString += "\nPixel Format: " + pf->prettyName();
+    if ( _colorTRC->name() == "iec61966_2_1" && _colorPrimaries->name() == "bt709" && _colorSpace->name() == "rgb")
+    {
+        mediaInfoString += "\nColor profile: sRGB";
+    }
+    else if ( _colorTRC->name() == "bt709" && _colorPrimaries->name() == "bt709" && _colorSpace->name() == "bt709")
+    {
+        mediaInfoString += "\nColor profile: HD video, BT.709";
+    }
+    else if ( _colorTRC->name() == "bt2020_10" && _colorPrimaries->name() == "bt2020" && _colorSpace->name() == "bt2020_cl")
+    {
+        mediaInfoString += "\nColor profile: UHD video, BT.2020 10 bits";
+    }
+    else if ( _colorTRC->name() == "bt2020_12" && _colorPrimaries->name() == "bt2020" && _colorSpace->name() == "bt2020_cl")
+    {
+        mediaInfoString += "\nColor profile: UHD HDR video, BT.2020 12 bits";
+    }
+    else
+    {
+        if ( _colorSpace->name() != "") mediaInfoString += "\nColor space: " + _colorSpace->prettyName();
+        if ( _colorPrimaries->name() != "") mediaInfoString += "\nColor primaries: " + _colorPrimaries->prettyName();
+        if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
+    }
+    if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
 }
 
 int VideoInfo::quality() const
@@ -353,6 +414,17 @@ bool VideoInfo::premultipliedAlpha() const
 void VideoInfo::setPremultipliedAlpha(bool premultipliedAlpha, bool silent)
 {
     _premultipliedAlpha = premultipliedAlpha;
+    if(!silent) emit changed();
+}
+
+int VideoInfo::encodingSpeed() const
+{
+    return _encodingSpeed;
+}
+
+void VideoInfo::setEncodingSpeed(int encodingSpeed, bool silent)
+{
+    _encodingSpeed = encodingSpeed;
     if(!silent) emit changed();
 }
 

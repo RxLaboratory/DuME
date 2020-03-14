@@ -303,62 +303,8 @@ QString MediaInfo::getDescription()
         for ( int i = 0; i < _videoStreams.count(); i++)
         {
             VideoInfo *s = _videoStreams[i];
-
-            mediaInfoString += "\n\nVideo stream";
-            if (s->id() >= 0) mediaInfoString += " #" + QString::number( s->id() ) + ":";
-
-            if ( s->language()->name() != "") mediaInfoString += "\nVideo language: " + s->language()->prettyName();
-            mediaInfoString += "\nVideo codec: ";
-            FFCodec *vc = s->codec();
-            if (vc->name() == "" ) vc = defaultVideoCodec();
-            mediaInfoString += vc->prettyName();
-
-            if ( vc->name() == "copy" ) continue;
-
-            if (s->width() !=0 || s->height() != 0 ) mediaInfoString += "\nResolution: " + QString::number( s->width() ) + "x" + QString::number( s->height() );
-            if (s->aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( s->aspect()*100+0.5 ) / 100.0) + ":1";
-            if (s->framerate() != 0 ) mediaInfoString += "\nFramerate: " + QString::number(s->framerate()) + " fps";
-            if (s->profile()->name() != "") mediaInfoString += "\nProfile: " + s->profile()->prettyName();
-            if (s->level() != "") mediaInfoString += "\nLevel: " + s->level();
-            qint64 bitrate = s->bitrate();
-            if (bitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(bitrate);
-            if (s->quality() >= 0) mediaInfoString += "\nQuality: " + QString::number(s->quality()) + "%";
-            mediaInfoString += "\nPixel Aspect: " + QString::number( int(s->pixAspect()*100+0.5)/ 100.0) + ":1";
-            if (s->canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
-            else if (canHaveAlpha()) mediaInfoString += "\nCan have alpha: yes";
-            else mediaInfoString += "\nCan have alpha: no";
-            FFPixFormat *pf = s->pixFormat();
-            if ( pf->name() == "" ) pf = defaultPixFormat();
-            if (pf->hasAlpha())
-            {
-                mediaInfoString += "\nAlpha: yes";
-                if (!s->premultipliedAlpha()) mediaInfoString += " (Unmultiply)";
-            }
-            else mediaInfoString += "\nAlpha: no";
-            mediaInfoString += "\nPixel Format: " + pf->prettyName();
-            if ( s->colorTRC()->name() == "iec61966_2_1" && s->colorPrimaries()->name() == "bt709" && s->colorSpace()->name() == "rgb")
-            {
-                mediaInfoString += "\nColor profile: sRGB";
-            }
-            else if ( s->colorTRC()->name() == "bt709" && s->colorPrimaries()->name() == "bt709" && s->colorSpace()->name() == "bt709")
-            {
-                mediaInfoString += "\nColor profile: HD video, BT.709";
-            }
-            else if ( s->colorTRC()->name() == "bt2020_10" && s->colorPrimaries()->name() == "bt2020" && s->colorSpace()->name() == "bt2020_cl")
-            {
-                mediaInfoString += "\nColor profile: UHD video, BT.2020 10 bits";
-            }
-            else if ( s->colorTRC()->name() == "bt2020_12" && s->colorPrimaries()->name() == "bt2020" && s->colorSpace()->name() == "bt2020_cl")
-            {
-                mediaInfoString += "\nColor profile: UHD HDR video, BT.2020 12 bits";
-            }
-            else
-            {
-                if ( s->colorSpace()->name() != "") mediaInfoString += "\nColor space: " + s->colorSpace()->prettyName();
-                if ( s->colorPrimaries()->name() != "") mediaInfoString += "\nColor primaries: " + s->colorPrimaries()->prettyName();
-                if ( s->colorTRC()->name() != "") mediaInfoString += "\nColor transfer function: " + s->colorTRC()->prettyName();
-            }
-            if ( s->colorRange()->name() != "" ) mediaInfoString += "\nColor range: " + s->colorRange()->prettyName();
+            mediaInfoString += "\n\n";
+            mediaInfoString += s->getDescription();
         }
 
         for ( int i = 0; i < _audioStreams.count(); i++)
@@ -706,6 +652,16 @@ void MediaInfo::setVideoQuality(int value, int id, bool silent)
             stream->setQuality(value, silent);
     else if (id >= 0 && id < _videoStreams.count())
         _videoStreams[id]->setQuality(value, silent);
+}
+
+void MediaInfo::setVideoEncodingSpeed(int value, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setEncodingSpeed(value, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setEncodingSpeed(value, silent);
 }
 
 void MediaInfo::setVideoProfile(QString value, int id, bool silent)
