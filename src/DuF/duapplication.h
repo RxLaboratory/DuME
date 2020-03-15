@@ -23,7 +23,8 @@ public:
 class DuApplication : public QApplication
 {
 public:
-    DuApplication(int argc, char *argv[], QString version = "");
+    DuApplication(int &argc, char *argv[]);
+    DuApplication(int &argc, char *argv[], QString version);
     DuSplashScreen *splashScreen() const;
     void showSplashScreen();
 

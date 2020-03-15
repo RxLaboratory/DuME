@@ -35,10 +35,28 @@ InitApplication::InitApplication(QString version)
     QCoreApplication::setApplicationVersion(version);
 }
 
-DuApplication::DuApplication(int argc, char *argv[], QString version) : QApplication(argc, argv)
+DuApplication::DuApplication(int &argc, char *argv[]) : QApplication(argc, argv)
 {
     // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
     qInstallMessageHandler(MessageHandler::messageOutput);
+
+    //set style
+    DuUI::updateCSS(":/styles/default", QString(STR_INTERNALNAME).toLower());
+
+    //create splash screen
+    QString v = QString(STR_INTERNALNAME);
+    QPixmap pixmap(":/images/splash");
+    _splashScreen = new DuSplashScreen(pixmap);
+
+    //set app icon
+    qApp->setWindowIcon(QIcon(":/icons/app"));
+}
+
+DuApplication::DuApplication(int &argc, char *argv[], QString version) : QApplication(argc, argv)
+{
+    // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
+    qInstallMessageHandler(MessageHandler::messageOutput);
+    qDebug() << "Initializing application";
 
     //set style
     DuUI::updateCSS(":/styles/default", QString(STR_INTERNALNAME).toLower());
@@ -59,5 +77,6 @@ DuSplashScreen *DuApplication::splashScreen() const
 
 void DuApplication::showSplashScreen()
 {
+    qDebug() << "Displaying splash screen";
     _splashScreen->show();
 }

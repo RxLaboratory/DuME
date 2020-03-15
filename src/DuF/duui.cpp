@@ -81,8 +81,8 @@ QString DuUI::loadCSS(QStringList cssFileNames)
     }
 
 #ifdef QT_DEBUG
-    qDebug() << "Rainbox UI: Loading CSS";
-    //qDebug() << css;
+    qDebug() << "DuUI: CSS Ready";
+    qDebug() << css;
 #endif
 
     return css;

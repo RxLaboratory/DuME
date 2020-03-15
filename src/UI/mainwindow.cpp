@@ -487,6 +487,9 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
 
 void MainWindow::log(QString log, LogUtils::LogType type)
 {
+#ifdef QT_DEBUG
+    qDebug() << log;
+#endif
     //type
     QString typeString = "";
     if ( type == LogUtils::Debug )

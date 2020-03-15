@@ -159,22 +159,14 @@ int main(int argc, char *argv[])
     presetManager->load();
     //process CLI arguments
     if ( processArgs(argc, argv) ) return 0;
-
     //show splashscreen
     a.showSplashScreen();
-
+    // init settings
     initSettings(a.splashScreen());
-
-    // UNCOMMENT ONLY TO FORCE FFMPEG RELOAD.
-    // COMMENT THIS LINE OUT BEFORE COMMITTING CHANGES!
-    // settings.setValue("ffmpeg/version","");
-
     //load FFmpeg
     initFFmpeg(a.splashScreen());
-
     //build UI and show
     buildUI(argc, argv, a.splashScreen());
-
     //end appli
     return a.exec();
 }
