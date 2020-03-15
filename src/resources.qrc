@@ -56,6 +56,8 @@
         <file alias="WAV 32-bit">resources/presets/WAV 32-bit.meprst</file>
         <file alias="MP4 - LQ - High Compat">resources/presets/MP4 - LQ - High Compat.meprst</file>
         <file alias="MP4 - Standard - High Compat">resources/presets/MP4 - Standard - High Compat.meprst</file>
+        <file alias="MP4 - Proxy">resources/presets/MP4 - Proxy.meprst</file>
+        <file alias="MP4 - Streaming">resources/presets/MP4 - Streaming.meprst</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>
