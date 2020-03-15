@@ -704,6 +704,16 @@ void MediaInfo::setVideoTuning(QString value, int id, bool silent)
         _videoStreams[id]->setTuning(value, silent);
 }
 
+void MediaInfo::setVideoBitrateType(QString type, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setBitrateType(type, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setBitrateType(type, silent);
+}
+
 void MediaInfo::setPixAspect(float value, int id, bool silent)
 {
     if (!hasVideo()) return;

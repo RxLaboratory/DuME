@@ -210,6 +210,14 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 int bitrate = int( stream->bitrate() );
                 if (bitrate != 0) arguments << "-b:v" << QString::number(bitrate);
 
+                //bitrate type
+                if (vc->name() == "h264" && stream->bitrateType() == MediaUtils::BitrateType::CBR)
+                {
+                    arguments << "-minrate" << QString::number(bitrate);
+                    arguments << "-maxrate" << QString::number(bitrate);
+                    arguments << "-bufsize" << QString::number(bitrate*2);
+                }
+
                 //size
                 int width = stream->width();
                 int height = stream->height();

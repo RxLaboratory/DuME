@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>127</height>
+    <width>469</width>
+    <height>141</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QFormLayout" name="formLayout">
    <property name="horizontalSpacing">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="verticalSpacing">
     <number>3</number>
@@ -49,35 +49,43 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="videoBitRateEdit">
-     <property name="frame">
-      <bool>false</bool>
-     </property>
-     <property name="suffix">
-      <string> Auto</string>
-     </property>
-     <property name="maximum">
-      <double>300.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>0.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="videoQualityButton">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Automatically adjust the bitrate of the video according to a target quality.</string>
-     </property>
-     <property name="text">
-      <string>Quality</string>
-     </property>
+    <widget class="QWidget" name="bitrateWidget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QDoubleSpinBox" name="videoBitRateEdit">
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string> Auto</string>
+        </property>
+        <property name="maximum">
+         <double>300.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="DataComboBox" name="bitrateTypeBox"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="1" column="1">
@@ -142,8 +150,8 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="speedButton">
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="videoQualityButton">
      <property name="minimumSize">
       <size>
        <width>100</width>
@@ -151,10 +159,10 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Speed vs Quality. A higher value means a faster encoding but a lower video quality.</string>
+      <string>Automatically adjust the bitrate of the video according to a target quality.</string>
      </property>
      <property name="text">
-      <string>Speed</string>
+      <string>Quality</string>
      </property>
     </widget>
    </item>
@@ -218,6 +226,22 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="speedButton">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Speed vs Quality. A higher value means a faster encoding but a lower video quality.</string>
+     </property>
+     <property name="text">
+      <string>Speed</string>
+     </property>
     </widget>
    </item>
    <item row="3" column="1">

@@ -14,6 +14,9 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     }
     tuneBox->setCurrentIndex(0);
 
+    bitrateTypeBox->addItem("VBR");
+    bitrateTypeBox->addItem("CBR");
+
     _presets->addAction( actionPerfect_95 );
     _presets->addAction( actionAuto );
     _presets->addAction( actionGood_60 );
@@ -29,16 +32,19 @@ void BlockVideoBitrate::activate(bool activate)
     _freezeUI = true;
 
     if (activate && videoBitrateButton->isChecked()) _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( videoBitRateEdit->value(), MediaUtils::Mbps ) );
-    else if (activate && videoQualityButton->isChecked()) _mediaInfo->setVideoQuality( videoQualitySlider->value() );
-    else if (activate && speedButton->isChecked()) _mediaInfo->setVideoEncodingSpeed( speedSlider->value());
-    else if (activate) _mediaInfo->setVideoTuning( tuneBox->currentData().toString() );
-    else
-    {
-        _mediaInfo->setVideoBitrate( 0 );
-        _mediaInfo->setVideoQuality( -1 );
-        _mediaInfo->setVideoEncodingSpeed( -1 );
-        _mediaInfo->setVideoTuning( "" );
-    }
+    else _mediaInfo->setVideoBitrate( 0 );
+
+    if (activate) _mediaInfo->setVideoBitrateType( bitrateTypeBox->currentText() );
+    else _mediaInfo->setVideoBitrateType( "VBR" );
+
+    if (activate && videoQualityButton->isChecked()) _mediaInfo->setVideoQuality( videoQualitySlider->value() );
+    else _mediaInfo->setVideoQuality( -1 );
+
+    if (activate && speedButton->isChecked()) _mediaInfo->setVideoEncodingSpeed( speedSlider->value());
+    else _mediaInfo->setVideoEncodingSpeed( -1 );
+
+    if (activate) _mediaInfo->setVideoTuning( tuneBox->currentData().toString() );
+    else _mediaInfo->setVideoTuning( "" );
 
     _freezeUI = false;
 }
@@ -80,6 +86,7 @@ void BlockVideoBitrate::update()
     bool useBitrate = !m->isSequence();
     bool useSpeed = c->name() == "h264";
     bool useTuning = c->name() == "h264";
+    bool useType = c->name() == "h264";
 
     actionPerfect_95->setVisible( useQuality );
     actionAuto->setVisible( useQuality );
@@ -90,47 +97,11 @@ void BlockVideoBitrate::update()
     actionStreaming_12_Mbps->setVisible( useBitrate );
     actionDVD->setVisible( useBitrate );
 
-    //Display
-    if ( useBitrate && useQuality )
-    {
-        videoBitRateEdit->show();
-        videoBitrateButton->show();
-        videoBitrateButton->setEnabled( true );
-
-        videoQualityButton->show();
-        videoQualityWidget->show();
-        videoQualityButton->setEnabled( true );
-    }
-    else if (useQuality)
-    {
-        videoBitRateEdit->hide();
-        videoBitrateButton->hide();
-
-        videoQualityButton->show();
-        videoQualityWidget->show();
-        videoQualityButton->setEnabled( false );
-    }
-    else if (useBitrate)
-    {
-        videoBitRateEdit->show();
-        videoBitrateButton->show();
-        videoBitrateButton->setEnabled( false );
-
-        videoQualityButton->hide();
-        videoQualityWidget->hide();
-    }
-    else
-    {
-        videoBitRateEdit->hide();
-        videoBitrateButton->hide();
-        videoQualityButton->hide();
-        videoQualityWidget->hide();
-        return;
-    }
-
     // bitrate
     if ( useBitrate )
     {
+        bitrateWidget->show();
+        videoBitrateButton->show();
         int b = stream->bitrate( );
         videoBitRateEdit->setEnabled( true );
         if ( b == 0 )
@@ -139,7 +110,7 @@ void BlockVideoBitrate::update()
             videoBitRateEdit->setSuffix( " Auto" );
             if (useQuality)
             {
-                videoBitRateEdit->setEnabled( false );
+                bitrateWidget->setEnabled( false );
                 videoBitrateButton->setChecked( false );
             }
         }
@@ -148,12 +119,31 @@ void BlockVideoBitrate::update()
             videoBitRateEdit->setValue( MediaUtils::convertFromBps( b, MediaUtils::Mbps ) );
             videoBitRateEdit->setSuffix( " Mbps" );
             videoBitrateButton->setChecked( true );
+            bitrateWidget->setEnabled( true );
         }
+
+        if (useType)
+        {
+            bitrateTypeBox->show();
+            if (stream->bitrateType() == MediaUtils::BitrateType::VBR ) bitrateTypeBox->setCurrentText("VBR");
+            else bitrateTypeBox->setCurrentText("CBR");
+        }
+        else
+        {
+            bitrateTypeBox->hide();
+        }
+    }
+    else
+    {
+        bitrateWidget->hide();
+        videoBitrateButton->hide();
     }
 
     // quality
     if ( useQuality )
     {
+        videoQualityButton->show();
+        videoQualityWidget->show();
         // quality
         int q = stream->quality();
         if (q == -1)
@@ -176,6 +166,11 @@ void BlockVideoBitrate::update()
             else if (q >= 25) qualityLabel->setText("Bad | " + QString::number(q) + "%");
             else qualityLabel->setText("Very bad | " + QString::number(q) + "%");
         }
+    }
+    else
+    {
+        videoQualityButton->hide();
+        videoQualityWidget->hide();
     }
 
     // speed
@@ -294,6 +289,12 @@ void BlockVideoBitrate::on_tuneBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoTuning( tuneBox->itemData(index).toString());
+}
+
+void BlockVideoBitrate::on_bitrateTypeBox_currentIndexChanged(const QString &arg1)
+{
+    if (_freezeUI) return;
+    _mediaInfo->setVideoBitrateType(arg1);
 }
 
 void BlockVideoBitrate::on_actionPerfect_95_triggered()

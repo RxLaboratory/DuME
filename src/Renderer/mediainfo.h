@@ -140,6 +140,7 @@ public:
     void setVideoProfile(FFProfile *value, int id = -1, bool silent = false);
     void setVideoLevel(QString value, int id = -1, bool silent = false);
     void setVideoTuning(QString value, int id = -1, bool silent = false);
+    void setVideoBitrateType(QString type, int id = -1, bool silent = false);
     void setPixAspect(float value, int id = -1, bool silent = false);
     void setPixFormat(QString value, int id = -1, bool silent = false);
     void setPixFormat(FFPixFormat *value, int id = -1, bool silent = false);

@@ -34,6 +34,12 @@ namespace MediaUtils
     Q_ENUM_NS(SizeUnit)
 
     /**
+     * @brief The BitrateType enum, either Variable Bit Rate or Constant Bit Rate
+     */
+    enum BitrateType { VBR, CBR };
+    Q_ENUM_NS(BitrateType)
+
+    /**
      * @brief The Status enum Used to describe the current status of the renderer
      */
     enum RenderStatus { Initializing, Waiting, Launching, Encoding, FramesConversion, FFmpegEncoding, AERendering, BlenderRendering, Cleaning, Finished, Stopped, Error, Other };

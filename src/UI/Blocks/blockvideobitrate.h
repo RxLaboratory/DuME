@@ -29,6 +29,7 @@ private slots:
     void on_speedButton_clicked(bool checked);
     void on_speedSlider_sliderMoved(int value);
     void on_tuneBox_currentIndexChanged(int index);
+    void on_bitrateTypeBox_currentIndexChanged(const QString &arg1);
 };
 
 #endif // BLOCKVIDEOBITRATE_H

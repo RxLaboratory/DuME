@@ -100,6 +100,10 @@ public:
     void setTuning( QString tuning, bool silent = false);
     void setTuning( QJsonObject tuning, bool silent = false);
 
+    MediaUtils::BitrateType bitrateType() const;
+    void setBitrateType(const MediaUtils::BitrateType &bitrateType, bool silent = false);
+    void setBitrateType(QString bitrateType, bool silent = false);
+
 signals:
     void changed();
 
@@ -133,6 +137,10 @@ private:
      * Supported codecs: h264
      */
     FFBaseObject *_tuning;
+    /**
+     * @brief _bitrateType VBR or CBR
+     */
+    MediaUtils::BitrateType _bitrateType;
     float _pixAspect;
     FFPixFormat *_pixFormat;
     qint64 _bitrate;

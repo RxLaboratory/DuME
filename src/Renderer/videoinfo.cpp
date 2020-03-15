@@ -8,6 +8,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _profile = ffmpeg->profile("");
     _level = "";
     _tuning = ffmpeg->tuning("");
+    _bitrateType = MediaUtils::BitrateType::VBR;
     _pixAspect = 1;
     _pixFormat = ffmpeg->pixFormat("");
     _bitrate = 0;
@@ -33,6 +34,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setProfile( obj.value("profile").toObject(), true);
     setLevel( obj.value("level").toString(), true);
     setTuning( obj.value("tuning").toObject(), true);
+    setBitrateType( obj.value("bitrateType").toString("VBR"), true);
     setPixAspect( obj.value("pixAspect").toDouble(1), true);
     setPixFormat( obj.value("pixFormat").toObject(), true);
     setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(true), true);
@@ -55,6 +57,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _profile = other->profile();
     _level = other->level();
     _tuning = other->tuning();
+    _bitrateType = other->bitrateType();
     _pixAspect = other->pixAspect();
     _pixFormat = other->pixFormat();
     _bitrate = other->bitrate();
@@ -86,6 +89,8 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("profile", _profile->toJson() );
     vStream.insert("level", _level);
     vStream.insert("tuning", _tuning->toJson());
+    if (_bitrateType == MediaUtils::BitrateType::CBR ) vStream.insert("bitrateType", "CBR");
+    else vStream.insert("bitrateType", "VBR");
     vStream.insert("pixAspect", _pixAspect);
     vStream.insert("pixFormat", _pixFormat->toJson() );
     vStream.insert("premultipliedAlpha", _premultipliedAlpha);
@@ -122,7 +127,10 @@ QString VideoInfo::getDescription()
     if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
     if ( _level != "") mediaInfoString += "\nLevel: " + _level;
     if ( _tuning->name() != "") mediaInfoString += "\nFine tune: " + _tuning->prettyName();
-    if ( _bitrate != 0 ) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(_bitrate);
+    if ( _bitrate != 0 ) {
+        mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(_bitrate);
+        if ( _bitrateType == MediaUtils::BitrateType::CBR) mediaInfoString += " (CBR)";
+    }
     if ( _quality >= 0) mediaInfoString += "\nQuality: " + QString::number( _quality ) + "%";
      if ( _encodingSpeed >= 0) mediaInfoString += "\nEncoding speed: " + QString::number( _encodingSpeed ) + "%";
     mediaInfoString += "\nPixel Aspect: " + QString::number( int(_pixAspect*100+0.5)/ 100.0) + ":1";
@@ -445,6 +453,23 @@ void VideoInfo::setTuning(QJsonObject tuning, bool silent)
     setTuning(tuning.value("name").toString(), silent);
 }
 
+MediaUtils::BitrateType VideoInfo::bitrateType() const
+{
+    return _bitrateType;
+}
+
+void VideoInfo::setBitrateType(const MediaUtils::BitrateType &bitrateType, bool silent)
+{
+    _bitrateType = bitrateType;
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setBitrateType(QString bitrateType, bool silent)
+{
+    if (bitrateType.toLower() == "cbr") setBitrateType(MediaUtils::BitrateType::CBR, silent);
+    else setBitrateType(MediaUtils::BitrateType::VBR, silent);
+}
+
 int VideoInfo::encodingSpeed() const
 {
     return _encodingSpeed;
@@ -480,7 +505,11 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
 {
     qDebug() << "Codec changed to " + codec->name();
     _codec = codec;
-    if (codec->name() != "h264") _tuning = ffmpeg->tuning("");
+    if (codec->name() != "h264")
+    {
+        _tuning = ffmpeg->tuning("");
+        _bitrateType = MediaUtils::BitrateType::VBR;
+    }
     if(!silent) emit changed();
 }
 
