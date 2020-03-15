@@ -262,7 +262,14 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (vc->name() == "h264" && speed >= 0) arguments << vc->speedParam() << vc->speedValue(speed);
 
                 //fine tuning
-                if (vc->name() == "h264" && stream->tuning()->name() != "") arguments << "-tune" << stream->tuning()->name();
+                if (vc->name() == "h264" && stream->tuning()->name() != "")
+                {
+                    arguments << "-tune" << stream->tuning()->name();
+                    if (stream->tuning()->name() == "zerolatency")
+                    {
+                        arguments << "-movflags" << "+faststart";
+                    }
+                }
 
                 //start number (sequences)
                 if (muxer == "image2")

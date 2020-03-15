@@ -301,46 +301,62 @@ void BlockVideoBitrate::on_actionPerfect_95_triggered()
 {
     _mediaInfo->setVideoBitrate( 0 );
     _mediaInfo->setVideoQuality( 95 );
+    _mediaInfo->setVideoEncodingSpeed( 25 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionAuto_triggered()
 {
     _mediaInfo->setVideoBitrate( 0 );
     _mediaInfo->setVideoQuality( -1 );
+    _mediaInfo->setVideoEncodingSpeed( -1 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionGood_60_triggered()
 {
     _mediaInfo->setVideoBitrate( 0 );
     _mediaInfo->setVideoQuality( 60 );
+    _mediaInfo->setVideoEncodingSpeed( -1 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionProxy_30_triggered()
 {
     _mediaInfo->setVideoBitrate( 0 );
     _mediaInfo->setVideoQuality( 30 );
+    _mediaInfo->setVideoTuning("fastdecode");
+    _mediaInfo->setVideoEncodingSpeed( -1 );
 }
 
 void BlockVideoBitrate::on_actionBad_20_triggered()
 {
     _mediaInfo->setVideoBitrate( 0 );
     _mediaInfo->setVideoQuality( 20 );
+    _mediaInfo->setVideoEncodingSpeed( 95 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionBlu_Ray_triggered()
 {
     _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 25, MediaUtils::Mbps ) );
     _mediaInfo->setVideoQuality( -1 );
+    _mediaInfo->setVideoEncodingSpeed( -1 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionDVD_triggered()
 {
     _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 7, MediaUtils::Mbps ) );
     _mediaInfo->setVideoQuality( -1 );
+    _mediaInfo->setVideoEncodingSpeed( -1 );
+    _mediaInfo->setVideoTuning("");
 }
 
 void BlockVideoBitrate::on_actionStreaming_12_Mbps_triggered()
 {
     _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( 12, MediaUtils::Mbps ) );
     _mediaInfo->setVideoQuality( -1 );
+    _mediaInfo->setVideoTuning("zerolatency");
+    _mediaInfo->setVideoEncodingSpeed( -1 );
 }
