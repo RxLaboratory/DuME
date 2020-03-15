@@ -130,7 +130,11 @@
         var duMEFile = File.openDialog( prompt, "DuME:DuME.exe" );
         if (duMEFile == null) return;
 
-        setDuMEPath( duMEFile.fsName );
+        var path = duMEFile.fsName;
+        // on mac, the actual bin is buried in the app folder
+        if (DuAEF.mac) path = path + "/Contents/MacOS/DuME";
+
+        setDuMEPath( path );
     }
 
     function setDuMEPath( path )
@@ -182,7 +186,7 @@
     function checkDuMEPath( path )
     {
         if (typeof path === 'undefined') path = settings.data.dumePath;
-
+        
         var DuMEFile = new File( path );
         return DuMEFile.exists;
     }
