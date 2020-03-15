@@ -251,10 +251,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //encoding speed
                 int speed = stream->encodingSpeed();
-                if (vc->name() == "h264" && speed >= 0)
-                {
-                    arguments << vc->speedParam() << vc->speedValue(speed);
-                }
+                if (vc->name() == "h264" && speed >= 0) arguments << vc->speedParam() << vc->speedValue(speed);
+
+                //fine tuning
+                if (vc->name() == "h264" && stream->tuning()->name() != "") arguments << "-tune" << stream->tuning()->name();
 
                 //start number (sequences)
                 if (muxer == "image2")
