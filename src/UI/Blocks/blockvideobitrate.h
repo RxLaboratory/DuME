@@ -28,7 +28,6 @@ private slots:
     void on_actionStreaming_12_Mbps_triggered();
     void on_speedButton_clicked(bool checked);
     void on_speedSlider_sliderMoved(int value);
-    void on_tuneButton_clicked(bool checked);
     void on_tuneBox_currentIndexChanged(int index);
 };
 

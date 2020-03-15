@@ -8,6 +8,12 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 #endif
     setupUi(this);
 
+    foreach (FFBaseObject *t, ffmpeg->tunings())
+    {
+        tuneBox->addItem(t->prettyName(), t->name());
+    }
+    tuneBox->setCurrentIndex(0);
+
     _presets->addAction( actionPerfect_95 );
     _presets->addAction( actionAuto );
     _presets->addAction( actionGood_60 );
@@ -25,7 +31,7 @@ void BlockVideoBitrate::activate(bool activate)
     if (activate && videoBitrateButton->isChecked()) _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( videoBitRateEdit->value(), MediaUtils::Mbps ) );
     else if (activate && videoQualityButton->isChecked()) _mediaInfo->setVideoQuality( videoQualitySlider->value() );
     else if (activate && speedButton->isChecked()) _mediaInfo->setVideoEncodingSpeed( speedSlider->value());
-    else if (activate && tuneButton->isChecked()) _mediaInfo->setVideoTuning( tuneBox->currentData().toString() );
+    else if (activate) _mediaInfo->setVideoTuning( tuneBox->currentData().toString() );
     else
     {
         _mediaInfo->setVideoBitrate( 0 );
@@ -73,7 +79,7 @@ void BlockVideoBitrate::update()
     bool useQuality = c->qualityParam() != "";
     bool useBitrate = !m->isSequence();
     bool useSpeed = c->name() == "h264";
-    bool useTuning = c->getTunings().count() > 0;
+    bool useTuning = c->name() == "h264";
 
     actionPerfect_95->setVisible( useQuality );
     actionAuto->setVisible( useQuality );
@@ -210,34 +216,15 @@ void BlockVideoBitrate::update()
     // tuning
     if (useTuning)
     {
-        QString prevSelection = tuneBox->currentData().toString();
-        tuneBox->clear();
-
-        foreach( FFBaseObject *t, c->getTunings())
-        {
-            tuneBox->addItem(t->prettyName(), t->name());
-        }
-        qDebug() << stream->tuning()->name();
         tuneBox->setCurrentData(stream->tuning()->name());
-
-        if (stream->tuning()->name() == "")
-        {
-            tuneButton->setChecked( false );
-            tuneBox->setEnabled( false );
-        }
-        else
-        {
-            tuneButton->setChecked( true );
-            tuneBox->setEnabled( true );
-        }
-
-        tuneButton->setVisible(true);
         tuneBox->setVisible(true);
+        tuneLabel->setVisible(true);
     }
     else
     {
-        tuneButton->setVisible(false);
         tuneBox->setVisible(false);
+        tuneLabel->setVisible(false);
+        tuneBox->setCurrentData("");
     }
 
     _freezeUI = false;
@@ -301,21 +288,6 @@ void BlockVideoBitrate::on_speedSlider_sliderMoved(int value)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoEncodingSpeed( value );
-}
-
-void BlockVideoBitrate::on_tuneButton_clicked(bool checked)
-{
-    if (_freezeUI) return;
-    if (tuneBox->count() == 0) return;
-    if (checked)
-    {
-        _mediaInfo->setVideoTuning( tuneBox->itemData(0).toString() );
-        qDebug() << tuneBox->itemData(0).toString();
-    }
-    else
-    {
-        _mediaInfo->setVideoTuning( "" );
-    }
 }
 
 void BlockVideoBitrate::on_tuneBox_currentIndexChanged(int index)

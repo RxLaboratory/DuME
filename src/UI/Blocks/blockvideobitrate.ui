@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>115</height>
+    <height>127</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -220,24 +220,15 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="tuneButton">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Fine tune the video settings according to specific types of video.</string>
-     </property>
-     <property name="text">
-      <string>Fine Tune</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <widget class="DataComboBox" name="tuneBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="tuneLabel">
+     <property name="text">
+      <string>Fine tune</string>
+     </property>
+    </widget>
    </item>
   </layout>
   <action name="actionPerfect_95">

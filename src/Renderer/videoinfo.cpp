@@ -7,7 +7,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _encodingSpeed = -1;
     _profile = ffmpeg->profile("");
     _level = "";
-    _tuning = ffmpeg->defaultObject();
+    _tuning = ffmpeg->tuning("");
     _pixAspect = 1;
     _pixFormat = ffmpeg->pixFormat("");
     _bitrate = 0;
@@ -437,7 +437,7 @@ void VideoInfo::setTuning(FFBaseObject *tuning, bool silent)
 
 void VideoInfo::setTuning(QString tuning, bool silent)
 {
-    setTuning(_codec->getTuning(tuning), silent);
+    setTuning(ffmpeg->tuning(tuning), silent);
 }
 
 void VideoInfo::setTuning(QJsonObject tuning, bool silent)
@@ -480,6 +480,7 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
 {
     qDebug() << "Codec changed to " + codec->name();
     _codec = codec;
+    if (codec->name() != "h264") _tuning = ffmpeg->tuning("");
     if(!silent) emit changed();
 }
 

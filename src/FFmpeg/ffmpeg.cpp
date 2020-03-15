@@ -4,7 +4,6 @@
 #include <QDebug>
 #endif
 
-
 FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 {
     _status = MediaUtils::Initializing;
@@ -88,6 +87,15 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
+
+    // The fine tunings
+    _tunings << new FFBaseObject("", "Default", this);
+    _tunings << new FFBaseObject("film", "Film", this);
+    _tunings << new FFBaseObject("animation", "Animation", this);
+    _tunings << new FFBaseObject("grain", "Video with grain", this);
+    _tunings << new FFBaseObject("stillimage", "Slideshow", this);
+    _tunings << new FFBaseObject("fastdecode", "Fast decode", this);
+    _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
 
     if (path != "") setBinary(path, false);
 }
@@ -199,6 +207,27 @@ void FFmpeg::init()
 QList<FFColorProfile *> FFmpeg::colorProfiles() const
 {
     return _colorProfiles;
+}
+
+FFBaseObject *FFmpeg::tuning(QString name)
+{
+    foreach( FFBaseObject *t, _tunings)
+    {
+        qDebug() << t->name().toLower();
+        if (t->name().toLower() == name.toLower()) return t;
+    }
+
+    foreach( FFBaseObject *t, _tunings)
+    {
+        if (t->prettyName().toLower() == name.toLower()) return t;
+    }
+
+    return _tunings[0];
+}
+
+QList<FFBaseObject *> FFmpeg::tunings() const
+{
+    return _tunings;
 }
 
 QList<FFBaseObject *> FFmpeg::colorRanges() const

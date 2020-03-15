@@ -129,6 +129,9 @@ public:
     QList<FFBaseObject *> colorSpaces() const;
     QList<FFBaseObject *> colorRanges() const;
     QList<FFColorProfile *> colorProfiles() const;
+    // Tunings
+    FFBaseObject *tuning(QString name);
+    QList<FFBaseObject *> tunings() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -208,6 +211,8 @@ private:
     QList<FFBaseObject *> _colorRanges;
     // The list of color profiles
     QList<FFColorProfile *> _colorProfiles;
+    // The list of fine tunings
+    QList<FFBaseObject *> _tunings;
     // A default object
     FFBaseObject *_defaultObject;
     // The help
