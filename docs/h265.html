@@ -8,12 +8,19 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>DuME Documentation</title>
+  <title>MP4 / h.265 / HEVC - DuME Documentation</title>
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   <link href="style.css" rel="stylesheet">
   <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "MP4 / h.265 / HEVC";
+    var mkdocs_page_input_path = "h265.md";
+    var mkdocs_page_url = "/h265.html";
+  </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
@@ -31,7 +38,7 @@
       <div class="wy-side-nav-search">
         <a href="index.html" class="icon icon-home"> DuME Documentation</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="/search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -77,9 +84,15 @@
                     
     <a class="" href="h264.html">MP4 / h.264</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="h265.html">MP4 / h.265 / HEVC</a>
+    <a class="current" href="h265.html">MP4 / h.265 / HEVC</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#transcoding-to-mp4-h265-hevc">Transcoding to MP4 / h.265 / HEVC</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -180,8 +193,16 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
     
+      
+        
+          <li>Transcoding &raquo;</li>
+        
+      
     
+    <li>MP4 / h.265 / HEVC</li>
     <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/h265.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -190,15 +211,22 @@
           <div role="main">
             <div class="section">
               
-
-  <h1 id="404-page-not-found">404</h1>
-
-  <p><strong>Page not found</strong></p>
-
-
+                <h1 id="transcoding-to-mp4-h265-hevc">Transcoding to MP4 / h.265 / HEVC<a class="headerlink" href="#transcoding-to-mp4-h265-hevc" title="Permanent link">&para;</a></h1>
+<p>There is no official support for <em>h265 / HEVC</em> in <em>DuME</em> yet, but it is in development and will be available soon.</p>
+<p>That being said, as <em>DuME</em> relies on <em>FFmpeg</em> for the encoding, you can already adjust <em>h265</em> encoding using custom parameters. Read the <a href="https://trac.ffmpeg.org/wiki/Encode/H.265"><em>FFmpeg</em> wiki about <em>h265</em></a> for more details about these parameters.</p>
+              
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sequences.html" class="btn btn-neutral float-right" title="Image sequences">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="h264.html" class="btn btn-neutral" title="MP4 / h.264"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -224,10 +252,14 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="h264.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="sequences.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '';</script>
+    <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
       <script src="search/main.js" defer></script>

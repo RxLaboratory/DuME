@@ -36,6 +36,7 @@ nav:
     - Transcoding:
         - Manage presets: presets.md
         - MP4 / h.264: h264.md
+        - MP4 / h.265 / HEVC: h265.md
         - Image sequences: sequences.md
         - Adding / Changing streams: mapping.md
     - After Effects Rendering:
@@ -45,11 +46,6 @@ nav:
         - Introduction: api.md
         - Command line options: cli-options.md
         - Server API: server-api.md
-    - Comprehensive Reference:
-        - Input options:
-            - Convert Colors: options/colors.md
-        - Output options:
-            - Video Quality: options/video-quality.md
     - License:
         - GNU GPLv3: gnu-gpl.md
         - Documentation license: doc-license.md

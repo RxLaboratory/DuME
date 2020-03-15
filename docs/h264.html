@@ -9,8 +9,6 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
   <title>MP4 / h.264 - DuME Documentation</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -89,8 +87,24 @@
             
     <li class="toctree-l3"><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l4" href="#quality-settings">Quality settings</a></li>
+        
+            <li><a class="toctree-l4" href="#compatibility">Compatibility</a></li>
+        
+            <li><a class="toctree-l4" href="#constrained-encoding-vbv-maximum-bit-rate">Constrained encoding (VBV / maximum bit rate)</a></li>
+        
+            <li><a class="toctree-l4" href="#faq">FAQ</a></li>
+        
+        </ul>
+    
 
     </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="h265.html">MP4 / h.265 / HEVC</a>
                 </li>
                 <li class="">
                     
@@ -210,7 +224,71 @@
             <div class="section">
               
                 <h1 id="transcoding-to-mp4-h264">Transcoding to MP4 / h.264<a class="headerlink" href="#transcoding-to-mp4-h264" title="Permanent link">&para;</a></h1>
-<p><em>This section still has to be written</em></p>
+<p>Transcoding to mp4 using h.264 has been made very easy and efficient with <em>DuME</em>, and most of the time you should not need to use advanced parameters. But it some cases, you may want to adjust these settings. These are some advices to have the best quality with the smallest possible files, and fix compatibility issues with specific players.</p>
+<p>You can read more details in the <a href="https://trac.ffmpeg.org/wiki/Encode/H.264">FFmpeg wiki</a>.</p>
+<div class="toc">
+<ul>
+<li><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a><ul>
+<li><a href="#quality-settings">Quality settings</a></li>
+<li><a href="#compatibility">Compatibility</a></li>
+<li><a href="#constrained-encoding-vbv-maximum-bit-rate">Constrained encoding (VBV / maximum bit rate)</a></li>
+<li><a href="#faq">FAQ</a><ul>
+<li><a href="#does-dume-support-multi-pass-encoding">Does DuME support multi-pass encoding?</a></li>
+<li><a href="#would-two-pass-provide-a-better-quality">Would two-pass provide a better quality?</a></li>
+<li><a href="#why-doesnt-my-lossless-output-look-lossless">Why doesn&rsquo;t my lossless output look lossless?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="quality-settings">Quality settings<a class="headerlink" href="#quality-settings" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="img/captures/blocks/video_quality.png" /></p>
+<p>Most of the time, you <strong>should not need to set the <em>bit rate</em> by yourself</strong>. It is easier and better to use the quality slider to set a target quality, unless for technical reasons you need a specific average bitrate or a constant bit rate.</p>
+<p>The <strong><em>quality slider</em></strong> is the most important parameter, which will adjust the quality vs the output file size. Setting the slider to more than 50% should output a good quality video, but if you need a perfect encoding, you can go higher than 75%.<br />
+Setting the quality to 100% will be lossless, but be careful as this is not standard with h.264 and the file may not be played correctly with the majority of players.</p>
+<p>The <strong><em>speed</em></strong> setting will provide a certain encoding speed to compression ratio. A slower encoding will provide better compression (compression is quality per filesize). This means that, for example, if you target a certain bit rate, you will achieve better quality with a slower preset. Similarly, when using the quality setting, you will simply save bit rate by choosing a slower encoding.<br />
+Just use the slowest setting that you have patience for.</p>
+<p>You can optionally use the <strong><em>fine tuning</em></strong> to adjust the encoding settings based upon the specifics of your input. Current tunings include:</p>
+<ul>
+<li>Film – use for high quality movie content; lowers deblocking</li>
+<li>Animation – good for cartoons; uses higher deblocking and more reference frames</li>
+<li>Grain – preserves the grain structure in old, grainy film material</li>
+<li>Slide show – good for slideshow-like content</li>
+<li>Fast Decode – allows faster decoding by disabling certain filters</li>
+<li>Streaming (low latency) – good for fast encoding and low-latency streaming</li>
+</ul>
+<p>For example, if your input is animation then use the animation tuning, or if you want to preserve grain in a film then use the grain tuning. If you are unsure of what to use or your input does not match any of tunings then omit the <em>Fine tune</em> option.</p>
+<h2 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="img/captures/blocks/video_profile_h264.png" /></p>
+<p>To fix compatibiliy issues with some players, you may need to change the profile and level. Please refer to the documentation of the players you need to be compatible.</p>
+<ul>
+<li><strong>Baseline</strong>: Primarily for lower-cost applications with limited computing resources, this profile is used widely in videoconferencing and mobile applications.</li>
+<li><strong>Main</strong>: Originally intended as the mainstream consumer profile for broadcast and storage applications, the importance of this profile faded when the High profile was developed for those applications.</li>
+<li><strong>High</strong>: The primary profile for broadcast and disc storage applications, particularly for high-definition television applications (this is the profile adopted into HD DVD and Blu-ray Disc, for example).</li>
+<li><strong>High 10</strong>: Going beyond today’s mainstream consumer product capabilities, this profile builds on top of the High Profile, adding support for up to 10 bits per sample of decoded picture precision.</li>
+<li><strong>High 4:2:2</strong>: Primarily targeting professional applications that use interlaced video, this profile builds on top of the High 10 Profile, adding support for the 4:2:2 chroma subsampling format while using up to 10 bits per sample of decoded picture precision.</li>
+<li><strong>High 4:4:4</strong>: This profile builds on top of the High 4:2:2 Profile, supporting up to 4:4:4 chroma sampling, up to 14 bits per sample, and additionally supporting efficient lossless region coding and the coding of each picture as three separate color planes.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To improve compatibility, <em>DuME</em> sets the pixel format to YUV 4:2:0 (12 bits / 8 bpc) for h264, as most of the players won&rsquo;t play 4:2:2 or 4:4:4 (even at 8 bpc). When using high profiles, you will also need to change the pixel format accordingly.</p>
+</div>
+<h2 id="constrained-encoding-vbv-maximum-bit-rate">Constrained encoding (VBV / maximum bit rate)<a class="headerlink" href="#constrained-encoding-vbv-maximum-bit-rate" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="img/captures/blocks/constrained_bitrate.png" /></p>
+<p>Use this mode if you want to <strong>constrain the maximum bitrate used</strong>, or keep the stream&rsquo;s bitrate within certain bounds. This is particularly useful for online streaming, where the client expects a certain average bitrate, but you still want the encoder to adjust the bitrate per-frame.</p>
+<p>Add two custom parameters:</p>
+<ul>
+<li><code>-maxrate</code> sets the maximum bitrate. Add <code>M</code> to the value to specify it in Mbps.</li>
+<li><code>-bufsize</code> is the &ldquo;rate control buffer&rdquo;, so it will enforce your requested &ldquo;average&rdquo; bitrate across each 20 MBit (it this example) worth of video. Here it is assumed that the receiver / player will buffer that much data, meaning that a fluctuation within that range is acceptable. </li>
+</ul>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<h3 id="does-dume-support-multi-pass-encoding">Does <em>DuME</em> support multi-pass encoding?<a class="headerlink" href="#does-dume-support-multi-pass-encoding" title="Permanent link">&para;</a></h3>
+<p>No. Read the next question for more details.</p>
+<h3 id="would-two-pass-provide-a-better-quality">Would two-pass provide a better quality?<a class="headerlink" href="#would-two-pass-provide-a-better-quality" title="Permanent link">&para;</a></h3>
+<p>​No, though it does allow you to target a file size more accurately. Nowadays, most users don&rsquo;t need this, but if you need it for technical reasons, just get in touch and it may be implemented.</p>
+<h3 id="why-doesnt-my-lossless-output-look-lossless">Why doesn&rsquo;t my lossless output look lossless?<a class="headerlink" href="#why-doesnt-my-lossless-output-look-lossless" title="Permanent link">&para;</a></h3>
+<p>When setting the quality to 100%, the output should be lossless. But if your input files are RGB, it&rsquo;s the RGB to YUV color space conversion. You may output RGB h264 but be careful as this is not standard at all.</p>
               
             </div>
           </div>
@@ -218,7 +296,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sequences.html" class="btn btn-neutral float-right" title="Image sequences">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="h265.html" class="btn btn-neutral float-right" title="MP4 / h.265 / HEVC">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="presets.html" class="btn btn-neutral" title="Manage presets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -252,7 +330,7 @@
         <span><a href="presets.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="sequences.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="h265.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
