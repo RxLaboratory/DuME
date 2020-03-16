@@ -140,7 +140,7 @@
         path = def(path, settings.data.dumePath);
         var binPath = path;
         // on mac, the actual bin is buried in the app folder
-        if (DuAEF.mac) binPath = path + "/Contents/MacOS/DuME";
+        if (DuAEF.mac) binPath += "/Contents/MacOS/DuME";
         if (!checkDuMEPath( binPath )) return;
         // load DuME version and presets
         
