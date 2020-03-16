@@ -187,9 +187,8 @@
 
     function checkDuMEPath( pathToBin )
     {
-        if (typeof path === 'undefined') path = settings.data.dumePath;
-        
-        var DuMEFile = new File( path );
+        pathToBin = def(pathToBin, settings.data.dumePath);
+        var DuMEFile = new File( pathToBin );
         return DuMEFile.exists;
     }
 
