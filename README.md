@@ -1,5 +1,5 @@
 # DuME - The Duduf Media Encoder
-Rendering and transcoding medias.
+Rendering and transcoding medias on Windows, Mac OS, Linux.
 
 📖 A **comprehensive user documentation** is [available here](https://dume-docs.rainboxlab.org).
 
