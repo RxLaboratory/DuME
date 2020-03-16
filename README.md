@@ -15,7 +15,7 @@ Rendering and transcoding medias.
 
 ## Dependencies
 
-- Qt >= 5.14.0
+- Qt >= 5.9.0
 - ( OpenImageIO >= 2.0 ) (not implemented yet)
 - FFmpeg executable binary >= 4.0
 
