@@ -131,18 +131,20 @@
         if (duMEFile == null) return;
 
         var path = duMEFile.fsName;
-        // on mac, the actual bin is buried in the app folder
-        if (DuAEF.mac) path = path + "/Contents/MacOS/DuME";
 
         setDuMEPath( path );
     }
 
     function setDuMEPath( path )
     {
-        if (typeof path === 'undefined') path = settings.data.dumePath;
-        if (!checkDuMEPath( path )) return;
+        path = def(path, settings.data.dumePath);
+        var binPath = path;
+        // on mac, the actual bin is buried in the app folder
+        if (DuAEF.mac) binPath = path + "/Contents/MacOS/DuME";
+        if (!checkDuMEPath( binPath )) return;
         // load DuME version and presets
-        var output = DuAEF.DuProcess.run(path, ["-h:presets"]);
+        
+        var output = DuAEF.DuProcess.run(binPath, ["-h:presets"]);
 
         // process output
         output = output.split("\n");
@@ -183,7 +185,7 @@
         settings.save();
     }
 
-    function checkDuMEPath( path )
+    function checkDuMEPath( pathToBin )
     {
         if (typeof path === 'undefined') path = settings.data.dumePath;
         
