@@ -5,6 +5,7 @@
 #include "DuF/duversion.h"
 #include "Renderer/presetmanager.h"
 #include "FFmpeg/ffmpeg.h"
+#include "Renderer/cachemanager.h"
 
 // App version
 extern DuVersion DuMEVersion;
@@ -14,5 +15,7 @@ extern InitApplication *initApplication;
 extern PresetManager *presetManager;
 // FFmpeg Infos
 extern FFmpeg *ffmpeg;
+// Cache Manager
+extern CacheManager *cacheManager;
 
 #endif // GLOBAL_H

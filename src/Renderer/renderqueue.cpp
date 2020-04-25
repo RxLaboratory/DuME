@@ -670,8 +670,9 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     //if not using the existing render queue
     if (!input->aeUseRQueue())
     {
-        //get the cache dir
-        QTemporaryDir *aeTempDir = new QTemporaryDir( settings.value("aerender/cache","" ).toString() + "/DuME_Cache" );
+        //set the cache dir
+        QTemporaryDir *aeTempDir = cacheManager->getAeTempDir();
+        emit newLog( "After Effects temporary dir set to: " + QDir::toNativeSeparators(aeTempDir->path()) );
         input->setCacheDir(aeTempDir);
 
         //if a comp name is specified, render this comp

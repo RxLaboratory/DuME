@@ -100,6 +100,9 @@ void QueueItem::postRenderCleanUp()
     MediaInfo *input = _inputMedias[0];
     if (input->cacheDir() == nullptr) return;
     QTemporaryDir *aeTempDir = input->cacheDir();
+    qDebug() << "============================================";
+    qDebug() << aeTempDir->path();
+    qDebug() << "============================================";
     aeTempDir->remove();
     input->setCacheDir(nullptr);
     delete aeTempDir;

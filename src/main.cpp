@@ -165,6 +165,8 @@ int main(int argc, char *argv[])
     initSettings(a.splashScreen());
     //load FFmpeg
     initFFmpeg(a.splashScreen());
+    //prep cache
+    cacheManager->init();
     //build UI and show
     buildUI(argc, argv, a.splashScreen());
     //end appli

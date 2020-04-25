@@ -624,6 +624,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings->endGroup();
     settings->sync();
 
+    //remove temp folders
+    cacheManager->purgeCache();
+
     event->accept();
 }
 
@@ -765,6 +768,5 @@ void MainWindow::on_actionGoQuit_triggered()
 
 void MainWindow::quit(bool force)
 {
-    if (force) close();
-    else if (!MediaUtils::isBusy( _renderQueue->status() )) close();
+    if (force || !MediaUtils::isBusy( _renderQueue->status() )) close();
 }

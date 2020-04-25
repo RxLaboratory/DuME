@@ -38,7 +38,9 @@ InitApplication::InitApplication(QString version)
 DuApplication::DuApplication(int &argc, char *argv[]) : QApplication(argc, argv)
 {
     // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
+#ifndef QT_DEBUG
     qInstallMessageHandler(MessageHandler::messageOutput);
+#endif
 
     //set style
     DuUI::updateCSS(":/styles/default", QString(STR_INTERNALNAME).toLower());

@@ -24,11 +24,8 @@ SettingsWidget::SettingsWidget(AfterEffects *ae, QWidget *parent) :
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
     //Temp path
-    QString defaultTemp = QDir::tempPath() + "/" + qApp->applicationName() + "/";
-    defaultTemp = QDir::toNativeSeparators(defaultTemp);
-    QString settingsTemp = settings.value("aerender/cache",defaultTemp).toString();
-    if (QDir(settingsTemp).exists() && settingsTemp != "") aeCacheEdit->setText(settingsTemp);
-    else aeCacheEdit->setText(defaultTemp);
+    QString cachePath = QDir::toNativeSeparators( cacheManager->getRootCacheDir().absolutePath() );
+    aeCacheEdit->setText(cachePath);
 
     //aerender path
     QString aerenderPath = _ae->binary();
@@ -135,7 +132,7 @@ void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 
     if (QDir(arg1).exists())
     {
-        settings.setValue("aerender/cache", path );
+        cacheManager->setRootCacheDir(path);
         aeCacheEdit->setText(path);
     }
     _freezeUI = false;
@@ -143,9 +140,8 @@ void SettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 
 void SettingsWidget::on_aeCacheBrowseButton_clicked()
 {
-    QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",settings.value("aerender/cache",aeCacheEdit->text()).toString());
+    QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",cacheManager->getRootCacheDir().absolutePath());
     if (path == "") return;
-    if (settings.value("aerender/cache").toString() == path) return;
     aeCacheEdit->setText(path);
 }
 

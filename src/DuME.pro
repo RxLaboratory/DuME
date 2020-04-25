@@ -39,6 +39,7 @@ SOURCES += \
     AfterEffects/aerenderer.cpp \
     Renderer/abstractrendererinfo.cpp \
     Renderer/audioinfo.cpp \
+    Renderer/cachemanager.cpp \
     Renderer/medialist.cpp \
     Renderer/preset.cpp \
     Renderer/presetmanager.cpp \
@@ -104,6 +105,7 @@ HEADERS += \
     AfterEffects/aerenderer.h \
     Renderer/abstractrendererinfo.h \
     Renderer/audioinfo.h \
+    Renderer/cachemanager.h \
     Renderer/medialist.h \
     Renderer/preset.h \
     Renderer/presetmanager.h \

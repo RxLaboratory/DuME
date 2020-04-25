@@ -9,3 +9,4 @@ DuVersion DuMEVersion(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD,VERSION_SUFFIX);
 InitApplication *initAppication = new InitApplication(DuMEVersion.getString());
 PresetManager *presetManager = new PresetManager();
 FFmpeg *ffmpeg = new FFmpeg();
+CacheManager *cacheManager = new CacheManager();
