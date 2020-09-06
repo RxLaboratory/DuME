@@ -84,6 +84,7 @@ public:
     void setFrames(const QStringList &frames, bool silent = false);
     QStringList frames() const;
     QString ffmpegSequenceName() const;
+    bool isIncorrectSequence() const;
 
     //alpha
     bool hasAlpha();
@@ -219,6 +220,10 @@ private:
      * @brief _startNumber The number of the first frame
      */
     int _startNumber;
+    /**
+     * @brief If the files in the sequence are incorrectly named, this will be true.
+     */
+    bool _incorrectSequence;
 
     QList<VideoInfo *> _videoStreams;
     QList<AudioInfo *> _audioStreams;
