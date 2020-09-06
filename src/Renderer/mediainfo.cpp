@@ -315,7 +315,7 @@ QString MediaInfo::getDescription()
                                MediaUtils::durationToTimecode( _frames.count() / fr );
         }
         mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
-        mediaInfoString += "\End Frame Number: " + QString::number( _endNumber );
+        mediaInfoString += "\nEnd Frame Number: " + QString::number( _endNumber );
     }
 
     qint64 size = _size;
@@ -975,6 +975,16 @@ void MediaInfo::streamChanged()
     emit changed();
 }
 
+QStringList MediaInfo::emptyFrames() const
+{
+    return _emptyFrames;
+}
+
+QList<int> MediaInfo::missingFrames() const
+{
+    return _missingFrames;
+}
+
 QString MediaInfo::info() const
 {
     return _info;
@@ -1286,7 +1296,6 @@ void MediaInfo::loadSequence()
                     incorrect = true;
                     qDebug() << "Wrong naming, missing leading zeroes";
                     if (error == "") error = "Incorrect sequence file names.\nNumbers must have leading zeroes (\"8, 9, 10, 11\" has to be \"08, 09, 10, 11\").\n";
-                    break;
                 }
                 numDigits = testNumDigits;
                 //get start frame
