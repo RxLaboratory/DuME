@@ -85,6 +85,8 @@ public:
     void setFrames(const QStringList &frames, bool silent = false);
     QStringList frames() const;
     QString ffmpegSequenceName() const;
+    QList<int> missingFrames() const;
+    QStringList emptyFrames() const;
 
     //alpha
     bool hasAlpha();
@@ -213,13 +215,25 @@ private:
      */
     QStringList _frames;
     /**
-     * @brief _loop The number of loops to be encoded (-1 for inifite, available only with some specific formats like GIF)
+     * @brief For a frame sequence, the list of the frames which are missing on disk
+     */
+    QList<int> _missingFrames;
+    /**
+     * @brief For a frame sequence, the list of the frames which sizes are less than 10 Bytes.
+     */
+    QStringList _emptyFrames;
+    /**
+     * @brief The number of loops to be encoded (-1 for inifite, available only with some specific formats like GIF)
      */
     int _loop;
     /**
-     * @brief _startNumber The number of the first frame
+     * @brief The number of the first frame
      */
     int _startNumber;
+    /**
+     * @brief The number of the last frame
+     */
+    int _endNumber;
     /**
      * @brief If the files in the sequence are incorrectly named, this will be true.
      */

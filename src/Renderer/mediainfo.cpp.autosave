@@ -975,6 +975,16 @@ void MediaInfo::streamChanged()
     emit changed();
 }
 
+QStringList MediaInfo::emptyFrames() const
+{
+    return _emptyFrames;
+}
+
+QList<int> MediaInfo::missingFrames() const
+{
+    return _missingFrames;
+}
+
 QString MediaInfo::info() const
 {
     return _info;
