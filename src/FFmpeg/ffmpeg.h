@@ -19,6 +19,7 @@
 #include "ffpixformat.h"
 #include "ffprofile.h"
 #include "ffcolorprofile.h"
+#include "ffsampleformat.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -83,6 +84,11 @@ public:
      */
     QList<FFPixFormat *> pixFormats();
     /**
+     * @brief Gets the list of available audio sample formats
+     * @return The sample formats list
+     */
+    QList<FFSampleFormat *> sampleFormats() const;
+    /**
      * @brief getCodec Gets a video encoder using its name
      * @param name The name of the codec
      * @return A pointer to the codec
@@ -107,11 +113,17 @@ public:
      */
     FFCodec *audioDecoder(QString name);
     /**
-     * @brief getPixFormat Gets a pixel format using its name
+     * @brief Gets a pixel format using its name
      * @param name The name of the pixel format
      * @return A pointer to the pixel format
      */
     FFPixFormat *pixFormat(QString name);
+    /**
+     * @brief Gets an audio sample format using its name
+     * @param name The name of the sample format
+     * @return A pointer to the sample format
+     */
+    FFSampleFormat *sampleFormat(QString name);
     /**
      * @brief profile Gets a profile unsing its name
      * @param name The name of the profile
@@ -159,8 +171,6 @@ public:
      */
     MediaUtils::RenderStatus status() const;
 
-
-
 signals:
     void progress(int);
     void progressMax(int);
@@ -200,8 +210,12 @@ private:
     FFMuxer *_defaultMuxer;
     // The list of pixel formats
     QList<FFPixFormat *> _pixFormats;
+    // The list of audio sample formats
+    QList<FFSampleFormat *> _sampleFormats;
     // The default pixel formats
     FFPixFormat *_defaultPixFormat;
+    // The default audio sample format
+    FFSampleFormat *_defaultSampleFormat;
     // The list of profiles
     QList<FFProfile *> _profiles;
     // The list of color profiles
@@ -246,9 +260,15 @@ private:
     /**
      * @brief ffmpeg_gotPixFormats Parses the pix formats list
      * @param output The output of the FFmpeg process with the codecs list
-     * @param newVersion The version of ffmpeg from which tt output comes from
+     * @param newVersion The version of ffmpeg from which the output comes from
      */
     void gotPixFormats(QString output, QString newVersion);
+    /**
+     * @brief Parses the sample formats list
+     * @param output The output of the FFmpeg process with the sample formats list
+     * @param newVersion The version of ffmpeg from which the output comes from
+     */
+    void gotSampleFormats(QString output, QString newVersion);
 
     // Is the process available and working
     bool _valid;

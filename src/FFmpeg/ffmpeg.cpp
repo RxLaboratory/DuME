@@ -10,6 +10,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // Defaults
     _defaultPixFormat = FFPixFormat::getDefault( this );
+    _defaultSampleFormat = FFSampleFormat::getDefault(this);
     _defaultCodec = FFCodec::getDefault( this );
     _defaultMuxer = FFMuxer::getDefault( this );
     _defaultObject = new FFBaseObject("", "Default", this);
@@ -164,6 +165,12 @@ void FFmpeg::init()
         gotPixFormats( _output, newVersion );
     }
 
+    emit newLog("Loading Audio Formats");
+    if (runCommand("-hide_banner -sample_fmts", 10000))
+    {
+        gotSampleFormats( _output, newVersion );
+    }
+
     //get codecs
     emit newLog( "Loading Codecs" );
     if (runCommand( "-hide_banner -codecs" , 10000))
@@ -202,6 +209,11 @@ void FFmpeg::init()
 
     _status = MediaUtils::Waiting;
     emit statusChanged(_status);
+}
+
+QList<FFSampleFormat *> FFmpeg::sampleFormats() const
+{
+    return _sampleFormats;
 }
 
 QList<FFColorProfile *> FFmpeg::colorProfiles() const
@@ -377,13 +389,27 @@ FFPixFormat *FFmpeg::pixFormat(QString name)
     name = name.trimmed();
     foreach(FFPixFormat *pf,_pixFormats)
     {
-        if (pf->name().toLower() == name.trimmed().toLower()) return pf;
+        if (pf->name().toLower() == name.toLower()) return pf;
     }
     foreach(FFPixFormat *pf,_pixFormats)
     {
         if (pf->prettyName() == name) return pf;
     }
     return _defaultPixFormat;
+}
+
+FFSampleFormat *FFmpeg::sampleFormat(QString name)
+{
+    name = name.trimmed();
+    foreach(FFSampleFormat *sf, _sampleFormats)
+    {
+        if (sf->name().toLower() == name.toLower()) return sf;
+    }
+    foreach(FFSampleFormat *sf, _sampleFormats)
+    {
+        if (sf->prettyName() == name) return sf;
+    }
+    return _defaultSampleFormat;
 }
 
 FFProfile *FFmpeg::profile(QString name)
@@ -1236,5 +1262,82 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
     emit newLog("Sorting pixel formats...");
     std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
 
+}
+
+void FFmpeg::gotSampleFormats(QString output, QString newVersion)
+{
+    //delete all
+    qDeleteAll(_sampleFormats);
+    _sampleFormats.clear();
+
+    //if the version is the same as previously, just read data from settings
+    if (newVersion == _version)
+    {
+        //open array
+        int arraySize = settings.beginReadArray("ffmpeg/sampleFmts");
+
+        for (int i = 0; i < arraySize; ++i)
+        {
+            settings.setArrayIndex(i);
+
+            QString name = settings.value("name").toString();
+            int depth = settings.value("depth").toInt();
+
+            FFSampleFormat *sf = new FFSampleFormat(name, depth);
+
+            //emit newLog("Loading sample format: " + name);
+
+            _sampleFormats << sf;
+        }
+
+        //close the array
+        settings.endArray();
+    }
+
+    //if the version has changed, or if we did not get the list from settings
+    if (newVersion != _version || _sampleFormats.count() == 0)
+    {
+        emit newLog("Updating sample formats list...");
+        QStringList sampleFmts = output.split("\n");
+
+        QRegularExpression re("(\\w+)\\s+(\\d+)");
+
+        //remove the previous formats
+        settings.remove("ffmpeg/sampleFmts");
+        //create the new array
+        settings.beginWriteArray("ffmpeg/sampleFmts");
+
+        int n = -1;
+
+        for (int i = 0 ; i < sampleFmts.count() ; i++)
+        {
+            QString sampleFmt = sampleFmts[i];
+
+            QRegularExpressionMatch match = re.match(sampleFmt);
+            if (match.hasMatch())
+            {
+                QString name = match.captured(1);
+                int depth = match.captured(2).toInt();
+
+                FFSampleFormat *sf = new FFSampleFormat(name, depth);
+#ifdef FFMPEG_VERBOSE_DEBUG
+                emit newLog("Loading pixel format: " + name);
+#endif
+                _sampleFormats << sf;
+
+                //save it to settings
+                n++;
+                settings.setArrayIndex(n);
+                settings.setValue("name", name);
+                settings.setValue("depth", depth);
+            }
+        }
+
+        //close the array
+        settings.endArray();
+    }
+
+    emit newLog("Sorting sample formats...");
+    std::sort(_sampleFormats.begin(),_sampleFormats.end(),ffSorter);
 }
 

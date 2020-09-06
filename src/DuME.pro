@@ -35,6 +35,7 @@ SOURCES += \
     DuF/duversion.cpp \
     FFmpeg/fflanguage.cpp \
     FFmpeg/ffprofile.cpp \
+    FFmpeg/ffsampleformat.cpp \
     Renderer/abstractrenderer.cpp \
     AfterEffects/aerenderer.cpp \
     Renderer/abstractrendererinfo.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     DuF/version.h \
     FFmpeg/fflanguage.h \
     FFmpeg/ffprofile.h \
+    FFmpeg/ffsampleformat.h \
     Renderer/abstractrenderer.h \
     AfterEffects/aerenderer.h \
     Renderer/abstractrendererinfo.h \
