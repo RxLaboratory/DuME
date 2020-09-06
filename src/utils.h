@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QTime>
 
 #include "languagelist.h"
 
@@ -67,6 +68,13 @@ namespace MediaUtils
     QString sizeString(qint64 size);
 
     QString bitrateString(qint64 bitrate);
+
+    /**
+     * @brief Converts a duration in seconds to a human-readable time code HH:MM:SS
+     * @param duration The duration, in seconds
+     * @return The Timecode HH:MM:SS
+     */
+    QString durationToTimecode(double duration);
 
     /**
      * @brief convertBitrate Converts a bitrate from bps to another unit.

@@ -55,6 +55,7 @@ public:
     void loadPreset(QFileInfo presetFilePath, bool silent = false);
 
     //general
+    QString info() const;
     void setId(int value);
     int id() const;
     void setMuxer(FFMuxer *muxer, bool silent = false);
@@ -84,7 +85,6 @@ public:
     void setFrames(const QStringList &frames, bool silent = false);
     QStringList frames() const;
     QString ffmpegSequenceName() const;
-    bool isIncorrectSequence() const;
 
     //alpha
     bool hasAlpha();
@@ -223,7 +223,7 @@ private:
     /**
      * @brief If the files in the sequence are incorrectly named, this will be true.
      */
-    bool _incorrectSequence;
+    QString _info;
 
     QList<VideoInfo *> _videoStreams;
     QList<AudioInfo *> _audioStreams;

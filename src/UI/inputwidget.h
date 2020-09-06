@@ -45,6 +45,7 @@ private slots:
     void on_actionAddCustom_triggered();
     void customParamActivated(bool activated);
     void updateOptions();
+    void updateInfo();
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);

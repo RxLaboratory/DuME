@@ -69,11 +69,6 @@ void InputWidget::openFile(QString file)
     //keep in settings
     settings.setValue("input/path", fileInfo.path() );
 
-    QString mediaInfoString = "Media information\n\n";
-    mediaInfoString += _mediaInfo->getDescription();
-
-    mediaInfosText->setText(mediaInfoString);
-
     inputEdit->setText( _mediaInfo->fileName() );
 
     updateOptions();
@@ -202,6 +197,15 @@ void InputWidget::updateOptions()
         }
     }
 
+    updateInfo();
+}
+
+void InputWidget::updateInfo()
+{
+    QString mediaInfoString = "Media information\n\n";
+    mediaInfoString += _mediaInfo->getDescription();
+
+    mediaInfosText->setText(mediaInfoString);
 }
 
 void InputWidget::updateCustomParams()

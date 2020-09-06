@@ -25,7 +25,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _frames.clear();
     _loop = -1;
     _startNumber = 0;
-    _incorrectSequence = true;
+    _info = "";
     // STREAMS
     qDeleteAll(_videoStreams);
     _videoStreams.clear();
@@ -251,14 +251,15 @@ QString MediaInfo::getDescription()
 {
     //Text
     QString mediaInfoString = "";
+    if (_info != "") mediaInfoString += _info + "\n";
 
     QFileInfo fileInfo(_fileName);
 
     if ( _isAep )
     {
-        if (fileInfo.suffix() == "aep") mediaInfoString += "After Effects project.";
-        if (fileInfo.suffix() == "aet") mediaInfoString += "After Effects template.";
-        if (fileInfo.suffix() == "aepx") mediaInfoString += "After Effects XML project.";
+        if (fileInfo.suffix() == "aep") mediaInfoString += "After Effects project.\n";
+        if (fileInfo.suffix() == "aet") mediaInfoString += "After Effects template.\n";
+        if (fileInfo.suffix() == "aepx") mediaInfoString += "After Effects XML project.\n";
     }
 
     if ( _muxer->name() != "" )
@@ -271,15 +272,22 @@ QString MediaInfo::getDescription()
     }
 
 
-    if (_duration != 0.0)
+    if (_duration != 0.0 && !_muxer->isSequence())
     {
-        QTime duration(0,0,0);
-        duration = duration.addSecs( int( _duration ) );
-        mediaInfoString += "\nDuration: " + duration.toString("hh:mm:ss.zzz");
+        mediaInfoString += "\nDuration: " + MediaUtils::durationToTimecode(_duration);
     }
     else if ( _muxer->isSequence() )
     {
         mediaInfoString += "\nDuration: " + QString::number(  _frames.count() ) + " frames";
+        if (_videoStreams.count() > 0)
+        {
+            double fr = _videoStreams[0]->framerate();
+            if (fr == 0) fr = 24.0;
+            mediaInfoString += "\nDuration @" +
+                               QString::number(fr) +
+                               "fps: " +
+                               MediaUtils::durationToTimecode( _frames.count() / fr );
+        }
         mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
     }
 
@@ -940,9 +948,9 @@ void MediaInfo::streamChanged()
     emit changed();
 }
 
-bool MediaInfo::isIncorrectSequence() const
+QString MediaInfo::info() const
 {
-    return _incorrectSequence;
+    return _info;
 }
 
 void MediaInfo::setCacheDir(QTemporaryDir *aepTempDir, bool silent )
@@ -1005,6 +1013,13 @@ void MediaInfo::setLoop(int loop, bool silent )
 
 double MediaInfo::duration()
 {
+    if (isSequence() && _videoStreams.count() >= 1)
+    {
+        int numFrames = _frames.count();
+        double frameRate = _videoStreams[0]->framerate();
+        if (frameRate == 0) frameRate = 24.0;
+        return numFrames / frameRate;
+    }
     return _duration;
 }
 
@@ -1207,12 +1222,13 @@ void MediaInfo::loadSequence()
     QDir containingDir(dirPath);
     QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
 
-    //If not a sequence (file not found)
-    _incorrectSequence = false;
     //check for each block of digits if we find a sequence
-
+    QString error = "";
+    bool incorrect = false;
     while(reDigitsMatch.hasNext())
     {
+        incorrect = false;
+
         QStringList tempFrames;
         QRegularExpressionMatch match = reDigitsMatch.next();
         QString digits = match.captured(0);
@@ -1231,13 +1247,13 @@ void MediaInfo::loadSequence()
             QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
             if (reMatch.hasMatch())
             {
-                qDebug() << "Frame found: " + f.completeBaseName();
                 //check num digits
                 int testNumDigits = reMatch.captured(1).count();
                 if (numDigits != 0 && numDigits != testNumDigits)
                 {
-                    _incorrectSequence = true;
+                    incorrect = true;
                     qDebug() << "Wrong naming, missing leading zeroes";
+                    if (error == "") error = "Incorrect sequence file names.\nNumbers must have leading zeroes (\"8, 9, 10, 11\" has to be \"08, 09, 10, 11\").\n";
                     break;
                 }
                 numDigits = testNumDigits;
@@ -1250,24 +1266,25 @@ void MediaInfo::loadSequence()
         }
 
         //Check if numbering is ok
-        tempFrames.sort(Qt::CaseInsensitive);
         int num = -1;
         foreach(QFileInfo f, tempFrames)
         {
             QRegularExpressionMatch test = reDigits.match(f.completeBaseName());
             int testNum = test.captured(0).toInt();
-            if (testNum != num + 1 && num >= 0)
+            if (testNum != num + 1)
             {
-                _incorrectSequence = true;
+                incorrect = true;
                 qDebug() << "Some frames are missing.";
+                error = "Some frames are missing or incorrectly named in this sequence.\nNumbers must have leading zeroes (\"8, 9, 10, 11\" has to be \"08, 09, 10, 11\").\n";
                 break;
             }
             num = testNum;
         }
 
-        //if next and previous file are ok, we found the digits block
-        if (!_incorrectSequence)
+        //if next and previous file are ok, we've found the digits block
+        if (!incorrect)
         {
+            error = "";
             //list all files in the sequence matching the pattern, and compute size
             _frames = tempFrames;
             _bitrate = ( _size * 8 ) / ( _frames.count()/24 );
@@ -1283,7 +1300,11 @@ void MediaInfo::loadSequence()
         }
     }
 
-    if (_incorrectSequence) return;
+    if (incorrect)
+    {
+        _info += error;
+        return;
+    }
 
     //generates the sequence name used by ffmpeg
     //detects all {###}

@@ -167,3 +167,13 @@ double Interpolations::linear(double val, double fromMin, double fromMax, double
 
     return (dVal * dTo)/dFrom + toMin;
 }
+
+QString MediaUtils::durationToTimecode(double duration)
+{
+    QTime d(0,0,0);
+    int secs = int( duration );
+    int msecs = int( (duration - secs) * 1000 );
+    d = d.addSecs( secs );
+    d = d.addMSecs( msecs );
+    return d.toString("hh:mm:ss.zzz");
+}
