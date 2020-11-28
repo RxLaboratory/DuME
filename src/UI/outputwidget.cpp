@@ -40,22 +40,22 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
-    blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize );
-    blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate );
-    blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec );
-    blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate );
-    blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile );
-    blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops );
-    blockStartNumber = addBlock( new BlockStartNumber( _mediaInfo ), actionStartNumber );
-    blockAlpha = addBlock( new BlockAlpha( _mediaInfo ), actionAlpha );
-    blockColor = addBlock( new BlockColor( _mediaInfo ), actionColor );
-    blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat );
+    blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize, ":/icons/video-size" );
+    blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate, ":/icons/framerate" );
+    blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec, ":/icons/video-codec" );
+    blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate, ":/icons/video-quality" );
+    blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile, ":/icons/codec" );
+    blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops, ":/icons/loop" );
+    blockStartNumber = addBlock( new BlockStartNumber( _mediaInfo ), actionStartNumber, ":/icons/frame-number" );
+    blockAlpha = addBlock( new BlockAlpha( _mediaInfo ), actionAlpha, ":/icons/alpha" );
+    blockColor = addBlock( new BlockColor( _mediaInfo ), actionColor, ":/icons/color" );
+    blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat, ":/icons/pix_fmt" );
     blocksMenu->addAction(actionAudio);
-    blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling );
-    blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec );
-    blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate );
+    blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling, ":/icons/audio-sampling" );
+    blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec, ":/icons/audio-codec" );
+    blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate, ":/icons/audio-quality" );
     blocksMenu->addAction( actionOther );
-    blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap );
+    blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap, ":/icons/connection" );
     blocksMenu->addAction( actionAddCustom );
 
     // PRESETS MENU
@@ -437,12 +437,12 @@ void OutputWidget::setOutputPreset(QString preset)
     if (presetsBox->currentIndex() < 0) presetsBox->setCurrentText(preset);
 }
 
-void OutputWidget::addNewParam(QString name, QString value)
+void OutputWidget::addNewParam(QString name, QString value, QString icon)
 {
     //add a param and a value
     qDebug() << "New Custom param: " + name + " " + value;
     BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
+    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, icon, blocksWidget );
     blocksLayout->addWidget( bw );
     bw->show();
 
@@ -503,10 +503,10 @@ void OutputWidget::selectDefaultPreset()
     }
 }
 
-BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *action )
+BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *action, QString icon )
 {
     // create block
-    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, blocksWidget);
+    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, icon, blocksWidget);
     blocksLayout->addWidget( b );
     //add and connect action
     blocksMenu->addAction( action );

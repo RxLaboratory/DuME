@@ -48,7 +48,7 @@ private slots:
     void updateInfo();
 private:
     // BLOCKS
-    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
+    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon = "");
     BlockBaseWidget *blockFrameRate;
     BlockFrameRate *blockFrameRateContent;
     BlockBaseWidget *blockEXR;
@@ -63,7 +63,7 @@ private:
     // MENUS
     QMenu *blocksMenu;
 
-    void addNewParam(QString name = "",QString value = "");
+    void addNewParam(QString name = "", QString value = "", QString icon = "");
 
     MediaInfo *_mediaInfo;
     QList<BlockBaseWidget *> _customParams;

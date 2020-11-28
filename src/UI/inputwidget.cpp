@@ -107,10 +107,10 @@ void InputWidget::on_inputEdit_editingFinished()
     openFile(inputEdit->text());
 }
 
-BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *action)
+BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *action, QString icon)
 {
     // create block
-    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, blocksWidget);
+    BlockBaseWidget *b = new BlockBaseWidget( action->text(), content, icon, blocksWidget);
     blocksLayout->addWidget( b );
     //add and connect action
     blocksMenu->addAction( action );
@@ -120,11 +120,11 @@ BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *act
     return b;
 }
 
-void InputWidget::addNewParam(QString name, QString value)
+void InputWidget::addNewParam(QString name, QString value, QString icon)
 {
     //add a param and a value
     BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, blocksWidget );
+    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, icon, blocksWidget );
     blocksLayout->addWidget( bw );
     bw->show();
     connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));

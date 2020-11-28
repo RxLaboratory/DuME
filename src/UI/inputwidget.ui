@@ -21,13 +21,13 @@
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -54,7 +54,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="inputBrowseButton">
+      <widget class="QToolButton" name="inputBrowseButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -64,8 +64,18 @@
        <property name="text">
         <string>Browse...</string>
        </property>
-       <property name="flat">
-        <bool>true</bool>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/import</normaloff>:/icons/import</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonFollowStyle</enum>
        </property>
       </widget>
      </item>
@@ -100,7 +110,7 @@
          <x>0</x>
          <y>0</y>
          <width>536</width>
-         <height>231</height>
+         <height>149</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">

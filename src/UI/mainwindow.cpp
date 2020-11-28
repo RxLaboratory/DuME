@@ -97,7 +97,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     maximizeButton->setObjectName("windowButton");
     mainToolBar->addWidget(maximizeButton);
     quitButton = new QToolButton(this);
-    quitButton->setIcon(QIcon(":/icons/close"));
+    quitButton->setIcon(QIcon(":/icons/quit"));
     quitButton->setObjectName("windowButton");
     mainToolBar->addWidget(quitButton);
 #ifndef Q_OS_MAC
