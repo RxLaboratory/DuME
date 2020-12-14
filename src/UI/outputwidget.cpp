@@ -10,6 +10,8 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     _loadingPreset = false;
 
     setupUi(this);
+    audioWidget->setObjectName("duqf_block");
+    videoWidget->setObjectName("duqf_block");
 
     // FFmpeg
     connect( ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
@@ -33,10 +35,6 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
 
     presetsMenu = new QMenu(this);
     presetsButton->setMenu( presetsMenu ); 
-
-    // SHADOWS
-    videoWidget->setGraphicsEffect( new DropShadow() );
-    audioWidget->setGraphicsEffect( new DropShadow() );
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);

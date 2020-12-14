@@ -27,17 +27,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
+    duqf-utils/language-utils.cpp \
+    duqf-utils/utils.cpp \
+    duqf-widgets/appearancesettingswidget.cpp \
+    duqf-widgets/progressslider.cpp \
+    duqf-widgets/settingswidget.cpp \
+    duqf-widgets/sliderspinbox.cpp \
+    duqf-widgets/toolbarspacer.cpp \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
-    DuF/duapplication.cpp \
-    DuF/dusplashscreen.cpp \
-    DuF/duui.cpp \
-    DuF/duversion.cpp \
+    AfterEffects/aerenderer.cpp \
     FFmpeg/fflanguage.cpp \
     FFmpeg/ffprofile.cpp \
     FFmpeg/ffsampleformat.cpp \
+    FFmpeg/ffmpeg.cpp \
+    FFmpeg/ffcodec.cpp \
+    FFmpeg/ffmuxer.cpp \
+    FFmpeg/ffpixformat.cpp \
+    FFmpeg/ffbaseobject.cpp \
+    FFmpeg/ffcolorprofile.cpp \
+    FFmpeg/ffmpegrenderer.cpp \
     Renderer/abstractrenderer.cpp \
-    AfterEffects/aerenderer.cpp \
     Renderer/abstractrendererinfo.cpp \
     Renderer/audioinfo.cpp \
     Renderer/cachemanager.cpp \
@@ -46,9 +56,9 @@ SOURCES += \
     Renderer/presetmanager.cpp \
     Renderer/queueitem.cpp \
     Renderer/renderqueue.cpp \
-    FFmpeg/ffmpegrenderer.cpp \
     Renderer/streamreference.cpp \
     Renderer/videoinfo.cpp \
+    Renderer/mediainfo.cpp \
     UI/Blocks/blockaecomp.cpp \
     UI/Blocks/blockaethreads.cpp \
     UI/Blocks/blockalpha.cpp \
@@ -77,34 +87,36 @@ SOURCES += \
     UI/mainwindow.cpp \
     UI/outputwidget.cpp \
     UI/queuewidget.cpp \
-    UI/settingswidget.cpp \
     UI/streamreferencewidget.cpp \
-    UI/toolbarspacer.cpp \
-    FFmpeg/ffcolorprofile.cpp \
+    UI/dumesettingswidget.cpp \
     global.cpp \
-    languagelist.cpp \
-    main.cpp \
-    Renderer/mediainfo.cpp \
-    FFmpeg/ffmpeg.cpp \
-    FFmpeg/ffcodec.cpp \
-    FFmpeg/ffmuxer.cpp \
-    FFmpeg/ffpixformat.cpp \
-    FFmpeg/ffbaseobject.cpp \
-    utils.cpp
+    main.cpp
 
 HEADERS += \
+    duqf-app/app-style.h \
+    duqf-app/app-utils.h \
+    duqf-app/app-version.h \
+    duqf-utils/language-utils.h \
+    duqf-utils/utils.h \
+    duqf-widgets/appearancesettingswidget.h \
+    duqf-widgets/progressslider.h \
+    duqf-widgets/settingswidget.h \
+    duqf-widgets/sliderspinbox.h \
+    duqf-widgets/toolbarspacer.h \
     AfterEffects/aftereffects.h \
     AfterEffects/aftereffectsversion.h \
-    DuF/duapplication.h \
-    DuF/dusplashscreen.h \
-    DuF/duui.h \
-    DuF/duversion.h \
-    DuF/version.h \
+    AfterEffects/aerenderer.h \
     FFmpeg/fflanguage.h \
     FFmpeg/ffprofile.h \
     FFmpeg/ffsampleformat.h \
+    FFmpeg/ffmpeg.h \
+    FFmpeg/ffcodec.h \
+    FFmpeg/ffmuxer.h \
+    FFmpeg/ffpixformat.h \
+    FFmpeg/ffbaseobject.h \
+    FFmpeg/ffmpegrenderer.h \
+    FFmpeg/ffcolorprofile.h \
     Renderer/abstractrenderer.h \
-    AfterEffects/aerenderer.h \
     Renderer/abstractrendererinfo.h \
     Renderer/audioinfo.h \
     Renderer/cachemanager.h \
@@ -112,14 +124,8 @@ HEADERS += \
     Renderer/preset.h \
     Renderer/presetmanager.h \
     Renderer/queueitem.h \
-    Renderer/renderqueue.h \
-    FFmpeg/ffmpegrenderer.h \
+    Renderer/renderqueue.h \ 
     Renderer/mediainfo.h \
-    FFmpeg/ffmpeg.h \
-    FFmpeg/ffcodec.h \
-    FFmpeg/ffmuxer.h \
-    FFmpeg/ffpixformat.h \
-    FFmpeg/ffbaseobject.h \
     Renderer/streamreference.h \
     Renderer/videoinfo.h \
     UI/Blocks/blockaecomp.h \
@@ -150,15 +156,16 @@ HEADERS += \
     UI/mainwindow.h \
     UI/outputwidget.h \
     UI/queuewidget.h \
-    UI/settingswidget.h \
     UI/streamreferencewidget.h \
-    UI/toolbarspacer.h \
-    FFmpeg/ffcolorprofile.h \
-    global.h \
-    languagelist.h \
-    utils.h
+    UI/dumesettingswidget.h \
+    global.h
 
 FORMS += \
+    UI/dumesettingswidget.ui \
+    duqf-widgets/appearancesettingswidget.ui \
+    duqf-widgets/settingswidget.ui \
+    duqf-widgets/sliderspinbox.ui \
+    duqf-widgets/toolbarspacer.ui \
     UI/Blocks/blockaecomp.ui \
     UI/Blocks/blockaethreads.ui \
     UI/Blocks/blockalpha.ui \
@@ -180,13 +187,11 @@ FORMS += \
     UI/Blocks/uiblockwidget.ui \
     UI/mainwindow.ui \
     UI/outputwidget.ui \
-    UI/settingswidget.ui \
     UI/queuewidget.ui \
     UI/inputwidget.ui \
-    UI/streamreferencewidget.ui \
-    UI/toolbarspacer.ui
+    UI/streamreferencewidget.ui
 
-RESOURCES += resources.qrc
+RESOURCES += resources.qrc duqf_resources.qrc
 
 ICON = resources/icons/appIcon.icns
 
@@ -216,3 +221,5 @@ win* {
 
 #INCLUDEPATH += /usr/include/OpenImageIO
 #DEPENDPATH += /usr/include/OpenImageIO
+
+DISTFILES +=

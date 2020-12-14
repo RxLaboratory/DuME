@@ -25,6 +25,9 @@ signals:
 protected:
     void hideEvent(QHideEvent *event);
 
+private slots:
+    void on_foldButton_clicked(bool checked);
+
 private:
     BlockContentWidget *_content;
 };

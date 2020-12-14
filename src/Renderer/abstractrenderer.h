@@ -11,7 +11,7 @@
 #include <QFileInfoList>
 #include <QDir>
 
-#include "utils.h"
+#include "duqf-utils/utils.h"
 
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...

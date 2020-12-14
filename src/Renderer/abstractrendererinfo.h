@@ -5,7 +5,7 @@
 #include <QProcess>
 #include <QRegularExpression>
 
-#include "utils.h"
+#include "duqf-utils/utils.h"
 
 class AbstractRendererInfo : public QObject
 {

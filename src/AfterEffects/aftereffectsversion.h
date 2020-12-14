@@ -10,7 +10,7 @@
 #include <QStandardPaths>
 #include <QVersionNumber>
 
-#include "utils.h"
+#include "duqf-utils/utils.h"
 
 class AfterEffectsVersion : public QObject
 {

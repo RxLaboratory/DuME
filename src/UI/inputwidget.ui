@@ -15,10 +15,10 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
    <property name="spacing">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="topMargin">
     <number>3</number>
@@ -27,11 +27,17 @@
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
+      <number>3</number>
+     </property>
+     <property name="rightMargin">
+      <number>3</number>
+     </property>
+     <property name="bottomMargin">
       <number>3</number>
      </property>
      <item>
@@ -86,13 +92,31 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QTextBrowser" name="mediaInfosText">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="openLinks">
-       <bool>false</bool>
-      </property>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QTextBrowser" name="mediaInfosText">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="openLinks">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QScrollArea" name="scrollArea">
       <property name="frameShape">
@@ -109,8 +133,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>536</width>
-         <height>149</height>
+         <width>533</width>
+         <height>148</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -121,10 +145,10 @@
          <number>0</number>
         </property>
         <property name="topMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
          <number>0</number>

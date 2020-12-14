@@ -3,8 +3,6 @@
         <file alias="play">resources/icons/play_circle.png</file>
         <file alias="hsplitter">resources/icons/doublearrows-dark.png</file>
         <file alias="hsplitter_light">resources/icons/doublearrows-light.png</file>
-        <file alias="microkeyboard">resources/icons/microkeyboard-dark.png</file>
-        <file alias="microkeyboard_light">resources/icons/microkeyboard-light.png</file>
         <file alias="close-thin">resources/icons/icones-57.svg</file>
         <file alias="cog">resources/icons/cog.svg</file>
         <file alias="list">resources/icons/list.svg</file>
@@ -59,11 +57,11 @@
         <file alias="unmaximize">resources/icons/unmaximize_sl.svg</file>
         <file alias="export">resources/icons/export-file_bl.svg</file>
         <file alias="import">resources/icons/import-file_bl.svg</file>
+        <file alias="bash_l">resources/icons/bash-terminal_l.svg</file>
+        <file alias="bash">resources/icons/bash-terminal_d.svg</file>
     </qresource>
     <qresource prefix="/styles">
-        <file alias="default">resources/styles/style.css</file>
         <file alias="default-dume">resources/styles/style-dume.css</file>
-        <file alias="default-values">resources/styles/style-values.rui</file>
     </qresource>
     <qresource prefix="/presets">
         <file alias="MOV - ProRes - HQ">resources/presets/MOV - ProRes - HQ.meprst</file>

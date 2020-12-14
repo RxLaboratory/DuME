@@ -16,14 +16,15 @@
 #include <QDesktopServices>
 
 #include "global.h"
+#include "duqf-app/app-version.h"
+#include "duqf-app/app-style.h"
 
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
 #include "Renderer/presetmanager.h"
-#include "utils.h"
 
-#include "toolbarspacer.h"
-#include "settingswidget.h"
+#include "duqf-widgets/toolbarspacer.h"
+#include "dumesettingswidget.h"
 #include "queuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
@@ -103,7 +104,7 @@ private:
     /**
      * @brief settingsWidget The settings page
      */
-    SettingsWidget *settingsWidget;
+    DuMESettingsWidget *settingsWidget;
     /**
      * @brief Is the tool bar currently clicked or not
      */
@@ -129,7 +130,7 @@ private:
 
 protected:
     void closeEvent(QCloseEvent *event);
-    bool duqf_eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event);
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);

@@ -1,0 +1,49 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="app">duqf_resources/icons/icon.svg</file>
+        <file alias="maximize">duqf_resources/icons/maximize.svg</file>
+        <file alias="minimize">duqf_resources/icons/minimize.svg</file>
+        <file alias="quit">duqf_resources/icons/quit.svg</file>
+        <file alias="unmaximize">duqf_resources/icons/unmaximize.svg</file>
+        <file alias="settings">duqf_resources/icons/go-to-settings.svg</file>
+        <file alias="help">duqf_resources/icons/help.svg</file>
+        <file alias="bug-report">duqf_resources/icons/bug-report.svg</file>
+        <file alias="chat">duqf_resources/icons/chat.svg</file>
+        <file alias="documentation">duqf_resources/icons/documentation.svg</file>
+        <file alias="forum">duqf_resources/icons/forum.svg</file>
+        <file alias="qt">duqf_resources/icons/qt.svg</file>
+        <file alias="close">duqf_resources/icons/close.svg</file>
+        <file alias="color">duqf_resources/icons/color.svg</file>
+        <file alias="select">duqf_resources/icons/select.svg</file>
+        <file alias="load-file">duqf_resources/icons/load-file.svg</file>
+        <file alias="property">duqf_resources/icons/property.svg</file>
+        <file alias="save-file">duqf_resources/icons/save-file.svg</file>
+        <file alias="check">duqf_resources/icons/check.svg</file>
+        <file alias="move-down">duqf_resources/icons/move-down.svg</file>
+        <file alias="move-up">duqf_resources/icons/move-up.svg</file>
+        <file alias="remove">duqf_resources/icons/remove.svg</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="splash">duqf_resources/images/splash.png</file>
+    </qresource>
+    <qresource prefix="/styles">
+        <file alias="default">duqf_resources/styles/style.css</file>
+        <file alias="default-values">duqf_resources/styles/style-values.rui</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file alias="Ubuntu-B">duqf_resources/fonts/Ubuntu-B.ttf</file>
+        <file alias="Ubuntu-BI">duqf_resources/fonts/Ubuntu-BI.ttf</file>
+        <file alias="Ubuntu-C">duqf_resources/fonts/Ubuntu-C.ttf</file>
+        <file alias="Ubuntu-L">duqf_resources/fonts/Ubuntu-L.ttf</file>
+        <file alias="Ubuntu-LI">duqf_resources/fonts/Ubuntu-LI.ttf</file>
+        <file alias="Ubuntu-M">duqf_resources/fonts/Ubuntu-M.ttf</file>
+        <file alias="Ubuntu-MI">duqf_resources/fonts/Ubuntu-MI.ttf</file>
+        <file alias="UbuntuMono-B">duqf_resources/fonts/UbuntuMono-B.ttf</file>
+        <file alias="UbuntuMono-BI">duqf_resources/fonts/UbuntuMono-BI.ttf</file>
+        <file alias="UbuntuMono-R">duqf_resources/fonts/UbuntuMono-R.ttf</file>
+        <file alias="UbuntuMono-RI">duqf_resources/fonts/UbuntuMono-RI.ttf</file>
+        <file alias="Ubuntu-R">duqf_resources/fonts/Ubuntu-R.ttf</file>
+        <file alias="Ubuntu-RI">duqf_resources/fonts/Ubuntu-RI.ttf</file>
+        <file alias="Ubuntu-Th">duqf_resources/fonts/Ubuntu-Th.ttf</file>
+    </qresource>
+</RCC>

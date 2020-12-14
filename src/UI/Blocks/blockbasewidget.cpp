@@ -4,7 +4,6 @@ BlockBaseWidget::BlockBaseWidget(QString title, BlockContentWidget *content, QSt
     QWidget(parent)
 {
     setupUi(this);
-    shadowFrame->setGraphicsEffect(new DropShadow);
 
     titleLabel->setText(title);
     if (ico != "") icon->setPixmap(QPixmap(ico));
@@ -36,8 +35,11 @@ void BlockBaseWidget::setStatus(QString status)
 void BlockBaseWidget::activate(bool act)
 {
     _content->activate(act);
-    if (!act) this->hide();
-    else this->show();
+    if (!act)
+        this->hide();
+    else
+        this->show();
+
     emit activated(act);
 }
 
@@ -59,4 +61,13 @@ void BlockBaseWidget::hideEvent(QHideEvent *event)
 {
     emit hidden();
     event->accept();
+}
+
+void BlockBaseWidget::on_foldButton_clicked(bool checked)
+{
+    _content->setVisible(checked);
+    if (checked)
+        foldButton->setIcon(QIcon(":/icons/maximize"));
+    else
+        foldButton->setIcon(QIcon(":/icons/minimize"));
 }

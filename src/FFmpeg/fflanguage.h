@@ -2,7 +2,7 @@
 #define FFLANGUAGE_H
 
 #include "FFmpeg/ffbaseobject.h"
-#include "utils.h"
+#include "duqf-utils/language-utils.h"
 
 class FFLanguage : public FFBaseObject
 {

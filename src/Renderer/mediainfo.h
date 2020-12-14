@@ -16,7 +16,7 @@
 #include "Renderer/audioinfo.h"
 #include "Renderer/videoinfo.h"
 #include "Renderer/streamreference.h"
-#include "utils.h"
+#include "duqf-utils/utils.h"
 
 class MediaInfo : public QObject
 {

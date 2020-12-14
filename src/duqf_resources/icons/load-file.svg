@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666666 8.4666666"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="load-file_bl.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.999999"
+     inkscape:cx="-5.7040609"
+     inkscape:cy="10.033123"
+     inkscape:document-units="mm"
+     inkscape:current-layer="svg8"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="120"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       position="8.4666666,0"
+       orientation="-32,0"
+       id="guide854"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="8.4666666,8.4666666"
+       orientation="0,-32"
+       id="guide856"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="0,8.4666814"
+       orientation="1,6.123234e-17"
+       id="guide858"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     style="fill:#e3e3e3;fill-opacity:1;stroke-width:0.06281408"
+     d="M 1.4941406 0 C 0.65871431 0 -0.013671875 0.67238575 -0.013671875 1.5078125 L -0.013671875 30.652344 C -0.013671875 31.487771 0.65871431 32.160156 1.4941406 32.160156 L 22.599609 32.160156 C 23.176006 32.160156 23.670018 31.838012 23.923828 31.365234 C 21.529477 31.286654 19.1752 30.276762 17.480469 28.582031 C 15.715584 26.817147 14.681877 24.339674 14.681641 21.84375 C 14.681877 19.347826 15.715584 16.8684 17.480469 15.103516 C 19.218585 13.365399 21.650021 12.341553 24.107422 12.310547 L 24.107422 10.050781 L 15.564453 10.050781 C 14.735308 10.050781 14.056641 9.3721213 14.056641 8.5429688 L 14.056641 0 L 1.4941406 0 z M 16.068359 0 L 16.068359 8.0410156 L 24.107422 8.0410156 L 24.107422 7.65625 C 24.107422 7.2605335 23.950632 6.8784118 23.667969 6.5957031 L 17.519531 0.43945312 C 17.236868 0.1565933 16.853182 -7.4014868e-17 16.451172 0 L 16.068359 0 z "
+     transform="scale(0.26458333)"
+     id="path821" />
+  <path
+     style="fill:#8ad891;fill-opacity:1;stroke-width:0.06281408"
+     d="M 24.21875 14.0625 A 7.7812489 7.7812489 0 0 0 16.4375 21.84375 A 7.7812489 7.7812489 0 0 0 24.21875 29.625 A 7.7812489 7.7812489 0 0 0 32 21.84375 A 7.7812489 7.7812489 0 0 0 24.21875 14.0625 z M 25.277344 16.623047 C 25.405628 16.608047 25.542818 16.648287 25.650391 16.755859 L 27.449219 18.552734 C 27.627027 18.730478 27.626999 19.019485 27.449219 19.197266 L 25.650391 20.996094 C 25.363568 21.28291 24.873072 21.077414 24.873047 20.671875 L 24.873047 19.552734 C 24.061027 19.579384 23.301434 19.908451 22.724609 20.486328 C 21.686357 21.526136 21.501614 23.137151 22.242188 24.373047 C 22.296057 24.463117 22.283164 24.576259 22.208984 24.650391 L 21.439453 25.419922 C 21.338849 25.520466 21.172068 25.504169 21.091797 25.386719 C 19.840733 23.555172 20.028668 21.037754 21.654297 19.412109 C 22.545646 18.520746 23.705032 18.061643 24.873047 18.035156 L 24.873047 17.076172 C 24.873048 16.822653 25.063539 16.648046 25.277344 16.623047 z "
+     transform="scale(0.26458333)"
+     id="path817" />
+</svg>

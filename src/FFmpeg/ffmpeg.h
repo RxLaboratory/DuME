@@ -10,9 +10,9 @@
 #include <QtDebug>
 #include <QCoreApplication>
 
-#include "Renderer/abstractrendererinfo.h"
+#include "duqf-utils/utils.h"
 
-#include "utils.h"
+#include "Renderer/abstractrendererinfo.h"
 
 #include "ffcodec.h"
 #include "ffmuxer.h"

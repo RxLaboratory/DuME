@@ -111,7 +111,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     log("Init - Adding settings widget");
 
     //settings widget
-    settingsWidget = new SettingsWidget(_ae, this);
+    settingsWidget = new DuMESettingsWidget(_ae, this);
     settingsPage->layout()->addWidget(settingsWidget);
 
     log("Init - Adding queue widget");
@@ -192,7 +192,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     log("Init - Setting stylesheet");
     //Re-set StyleSheet
-    DuUI::updateCSS(":/styles/default", "dume");
+    DuUI::updateCSS(":/styles/default");
     //and font
     DuUI::setFont();
 
@@ -633,7 +633,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-bool MainWindow::duqf_eventFilter(QObject *obj, QEvent *event)
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
   if (event->type() == QEvent::MouseButtonPress)
   {
