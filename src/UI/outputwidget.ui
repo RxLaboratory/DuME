@@ -21,14 +21,66 @@
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="outputBrowseButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/export</normaloff>:/icons/export</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonFollowStyle</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="outputEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="frame">
+        <bool>false</bool>
+       </property>
+       <property name="placeholderText">
+        <string>Output file...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QWidget" name="topWidget" native="true">
      <property name="sizePolicy">
@@ -37,7 +89,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,1">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0" columnstretch="0,1">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -53,39 +105,38 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="3" column="1">
-       <widget class="BigComboBox" name="formatsBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
-        </property>
-        <property name="minimumContentsLength">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="outputBrowseButton">
+      <item row="2" column="0">
+       <widget class="QComboBox" name="presetsFilterBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text">
-         <string>Browse...</string>
+        <property name="currentIndex">
+         <number>0</number>
         </property>
-        <property name="flat">
-         <bool>true</bool>
+        <property name="frame">
+         <bool>false</bool>
         </property>
+        <item>
+         <property name="text">
+          <string>All Presets</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Internal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>User</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QComboBox" name="formatsFilterBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -131,57 +182,7 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="outputEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <property name="placeholderText">
-         <string>Output file...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QComboBox" name="presetsFilterBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>All Presets</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Internal</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>User</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <property name="spacing">
          <number>0</number>
@@ -226,6 +227,22 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="4" column="1">
+       <widget class="BigComboBox" name="formatsBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>1</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -459,7 +476,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>97</height>
+            <height>91</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -525,6 +542,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/resize-video</normaloff>:/icons/resize-video</iconset>
+   </property>
    <property name="text">
     <string>Resize</string>
    </property>
@@ -539,8 +560,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/change-framerate</normaloff>:/icons/change-framerate</iconset>
+   </property>
    <property name="text">
-    <string>Change frame rate</string>
+    <string>Frame rate</string>
    </property>
    <property name="toolTip">
     <string>Change the frame rate of the video</string>
@@ -553,8 +578,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-video-codec</normaloff>:/icons/set-video-codec</iconset>
+   </property>
    <property name="text">
-    <string>Set video codec</string>
+    <string>Video codec</string>
    </property>
    <property name="toolTip">
     <string>Select the video codec</string>
@@ -567,8 +596,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-video-quality</normaloff>:/icons/set-video-quality</iconset>
+   </property>
    <property name="text">
-    <string>Set video quality</string>
+    <string>Video quality</string>
    </property>
    <property name="toolTip">
     <string>Options for the quality of the video (bitrate...)</string>
@@ -581,8 +614,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-codec-settings</normaloff>:/icons/set-codec-settings</iconset>
+   </property>
    <property name="text">
-    <string>Set codec profile and level</string>
+    <string>Codec profile and level</string>
    </property>
    <property name="toolTip">
     <string>Set the profile of the video codec</string>
@@ -594,6 +631,10 @@
   <action name="actionLoops">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-loops</normaloff>:/icons/set-loops</iconset>
    </property>
    <property name="text">
     <string>Add loops</string>
@@ -609,8 +650,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/change-start-number</normaloff>:/icons/change-start-number</iconset>
+   </property>
    <property name="text">
-    <string>Set first frame number</string>
+    <string>First frame number</string>
    </property>
    <property name="toolTip">
     <string>Set the number of the first frame of the sequence</string>
@@ -622,6 +667,10 @@
   <action name="actionAlpha">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/edit-alpha</normaloff>:/icons/edit-alpha</iconset>
    </property>
    <property name="text">
     <string>Adjust transparency / Alpha</string>
@@ -637,8 +686,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-pix_fmt</normaloff>:/icons/set-pix_fmt</iconset>
+   </property>
    <property name="text">
-    <string>Set pixel format</string>
+    <string>Pixel format</string>
    </property>
    <property name="toolTip">
     <string>Set the format of the pixels of the video</string>
@@ -651,8 +704,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/change-sampling</normaloff>:/icons/change-sampling</iconset>
+   </property>
    <property name="text">
-    <string>Change audio sampling</string>
+    <string>Audio sampling</string>
    </property>
    <property name="toolTip">
     <string>Change audio sampling</string>
@@ -665,8 +722,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-audio-codec</normaloff>:/icons/set-audio-codec</iconset>
+   </property>
    <property name="text">
-    <string>Set audio codec</string>
+    <string>Audio codec</string>
    </property>
    <property name="toolTip">
     <string>Select the audio codec</string>
@@ -679,8 +740,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-audio-quality</normaloff>:/icons/set-audio-quality</iconset>
+   </property>
    <property name="text">
-    <string>Set audio bitrate</string>
+    <string>Audio bitrate</string>
    </property>
    <property name="toolTip">
     <string>Set the audio compression (bitrate)</string>
@@ -714,6 +779,10 @@
    </property>
   </action>
   <action name="actionAddCustom">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/add-custom</normaloff>:/icons/add-custom</iconset>
+   </property>
    <property name="text">
     <string>Add FFmpeg parameter</string>
    </property>
@@ -728,6 +797,10 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/other</normaloff>:/icons/other</iconset>
+   </property>
    <property name="text">
     <string>Other</string>
    </property>
@@ -736,8 +809,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-color</normaloff>:/icons/set-color</iconset>
+   </property>
    <property name="text">
-    <string>Set color management</string>
+    <string>Color management</string>
    </property>
    <property name="toolTip">
     <string>Manage the colors of the video</string>
@@ -783,8 +860,12 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/map</normaloff>:/icons/map</iconset>
+   </property>
    <property name="text">
-    <string>Select and map input streams</string>
+    <string>Select and map streams</string>
    </property>
    <property name="toolTip">
     <string>Map the input streams to specific output streams</string>

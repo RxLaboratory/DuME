@@ -37,7 +37,7 @@ QColorDialog QPushButton {
 /*  LABEL */
 
 QLabel {
-        color: @color-light;
+        color: @color-less-light;
 }
 
 QLabel:disabled {
@@ -46,28 +46,37 @@ QLabel:disabled {
 
 /* (PLAIN) TEXT EDIT */
 
-QPlainTextEdit, QTextBrowser, QTextEdit, QLineEdit {
-        background-color: @color-medium;
-        color: @color-light;
+QPlainTextEdit, QTextBrowser, QTextEdit, QLineEdit  {
+        background-color: @color-very-dark;
+        color: @color-less-light;
 	padding: @edit-padding;
 	padding-bottom: 5px;
-	border: @border-size solid @color-medium;
+        border: none;
 	border-radius: @border-radius;
 }
 
-QPlainTextEdit, QTextBrowser, QTextEdit {
-    color: @color-less-light;
+QLineEdit  {
+    background-color: @color-dark;
+    color: @color-light;
+    padding: @edit-padding;
+    padding-bottom: 5px;
+    border: none;
+    border-radius: @border-radius;
 }
 
-QPlainTextEdit:hover, QTextBrowser:hover, QTextEdit:hover, QLineEdit:hover  {
-        background-color: @color-dark;
-	border-color:  @color-light;
+QLineEdit:hover {
+    background-color: @color-medium;
+    color: @color-very-dark;
 }
 
-QPlainTextEdit:disabled, QTextEdit:disabled,QTextBrowser:disabled, QLineEdit:disabled  {
-        background-color: @color-dark;
-	border-color: @color-dark;
-	color: @color-medium;
+QPlainTextEdit:hover, QTextBrowser:hover, QTextEdit:hover {
+    color: @color-light;
+}
+
+QPlainTextEdit:disabled, QTextEdit:disabled, QTextBrowser:disabled, QLineEdit:disabled {
+    background-color: @color-dark;
+    border-color: @color-dark;
+    color: @color-medium;
 }
 
 /* BUTTON */
@@ -87,7 +96,7 @@ QPushButton:disabled {
 }
 
 QPushButton:hover {
-        background-color: @color-light;
+        background-color: @color-medium;
 	color: @color-dark;
 	border-color:  @color-light;
 }
@@ -116,6 +125,13 @@ QPushButton:pressed:hover {
         color: @color-light;
 }
 
+/* TOOL BUTTON */
+
+QToolButton:hover {
+    background: @color-medium;
+    color: @color-very-dark;
+}
+
 /* CHECKBOX AND RADIOBUTTON */
 
 QCheckBox, QRadioButton {
@@ -126,7 +142,7 @@ QCheckBox, QRadioButton {
 
 QCheckBox:hover, QRadioButton:hover {
         color: @color-dark;
-	background-color: @color-light;
+        background-color: @color-medium;
 }
 
 QCheckBox:disabled, QRadioButton:disabled {
@@ -197,16 +213,16 @@ QCheckBox::indicator:checked:hover, QRadioButton::indicator:checked:hover, QMenu
 
 QSpinBox, QDoubleSpinBox {
         border:none;
-	background-color: @color-medium;
-	border: @border-size solid @color-medium;
+        background-color: @color-dark;
+        border: none;
 	color: @color-light;
 	padding: @edit-padding;
 	border-radius: @border-radius;
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {
-	border-color:  @color-light;
-        background-color: @color-dark;
+        background-color: @color-medium;
+        color: @color-very-dark;
 }
 
 QSpinBox::up-button, QDoubleSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::down-button {
@@ -271,22 +287,22 @@ QSlider::handle:hover:disabled {
 QComboBox {
         color: @color-light;
 	border: @border-size solid;
-	border-color:  @color-medium;
-	background-color:@color-medium;
+        border-color: @color-dark;
+        background-color:@color-dark;
 	padding: @edit-padding;
 	border-radius: @border-radius;
 }
 
 QComboBox:disabled {
         color: @color-medium;
-	border-color:  @color-dark;
+        border:  @color-dark;
 	background-color:@color-dark;
 }
 
 QComboBox:hover {
-        background-color: @color-light;
-	color: @color-dark;
-	border-color:  @color-light;
+        background-color: @color-medium;
+        color: @color-very-dark;
+        border-color:  @color-medium;
 }
 
 QComboBox::drop-down {
@@ -322,8 +338,8 @@ QMenu::item:disabled {
 }
 
 QMenu::item:selected {
-  background: @color-light;
-  color: @color-dark;
+  background: @color-medium;
+  color: @color-very-dark;
 }
 
 QMenu::separator {
@@ -394,7 +410,7 @@ QToolBar QCheckBox:checked {
 }
 
 QToolBar QCheckBox::indicator:hover {
-        background-color: @color-light;
+        background-color: @color-medium;
 }
 
 QToolBar QCheckBox::indicator:hover:pressed {
@@ -439,9 +455,9 @@ QToolButton:pressed:hover,  QToolBar QPushButton:pressed:hover {
         color: @color-medium;
 }
 
-QToolButton:hover,  QToolBar QPushButton:hover {
-        background-color: @color-light;
-	color: @color-dark;
+QToolBar QToolButton:hover,  QToolBar QPushButton:hover {
+        background-color: @color-dark;
+        color: @color-very-dark;
 }
 
 QToolButton:checked:hover, QToolBar QPushButton:checked:hover {
@@ -649,12 +665,12 @@ QTreeWidget {
 /* TABS */
 
 QTabWidget {
-        background-color:@color-dark;
+        background-color:@color-very-dark;
 }
 
 QTabWidget::pane { /* The tab widget frame */
         border:none;
-	background-color:@color-dark;
+        background-color:@color-very-dark;
 }
 
 QTabBar {

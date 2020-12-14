@@ -10,7 +10,7 @@ class BlockBaseWidget : public QWidget, private Ui::UIBlockWidget
     Q_OBJECT
 
 public:
-    explicit BlockBaseWidget(QString title, BlockContentWidget *content, QWidget *parent = nullptr);
+    explicit BlockBaseWidget(QString title, BlockContentWidget *content, QString ico="", QWidget *parent = nullptr);
     BlockContentWidget *content();
 public slots:
     void setStatus(QString status);

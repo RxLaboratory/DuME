@@ -83,7 +83,7 @@ private slots:
 
 private:
     // BLOCKS
-    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action);
+    BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon="");
     BlockBaseWidget *blockResize;
     BlockBaseWidget *blockFrameRate;
     BlockBaseWidget *blockVideoCodec;
@@ -103,7 +103,7 @@ private:
     QMenu *blocksMenu;
     QMenu *presetsMenu;
 
-    void addNewParam(QString name = "",QString value = "");
+    void addNewParam(QString name = "", QString value = "", QString icon = "");
 
     void selectDefaultPreset();
 

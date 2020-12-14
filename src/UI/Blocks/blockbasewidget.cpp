@@ -1,12 +1,13 @@
 #include "blockbasewidget.h"
 
-BlockBaseWidget::BlockBaseWidget(QString title, BlockContentWidget *content,QWidget *parent) :
+BlockBaseWidget::BlockBaseWidget(QString title, BlockContentWidget *content, QString ico, QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
     shadowFrame->setGraphicsEffect(new DropShadow);
 
     titleLabel->setText(title);
+    if (ico != "") icon->setPixmap(QPixmap(ico));
 
     _content = content;
     _content->setParent(this);
