@@ -27,6 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
+    UI/aesettingswidget.cpp \
+    UI/ffmpegsettingswidget.cpp \
     duqf-utils/language-utils.cpp \
     duqf-utils/utils.cpp \
     duqf-widgets/appearancesettingswidget.cpp \
@@ -88,11 +90,12 @@ SOURCES += \
     UI/outputwidget.cpp \
     UI/queuewidget.cpp \
     UI/streamreferencewidget.cpp \
-    UI/dumesettingswidget.cpp \
     global.cpp \
     main.cpp
 
 HEADERS += \
+    UI/aesettingswidget.h \
+    UI/ffmpegsettingswidget.h \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
     duqf-app/app-version.h \
@@ -157,11 +160,11 @@ HEADERS += \
     UI/outputwidget.h \
     UI/queuewidget.h \
     UI/streamreferencewidget.h \
-    UI/dumesettingswidget.h \
     global.h
 
 FORMS += \
-    UI/dumesettingswidget.ui \
+    UI/aesettingswidget.ui \
+    UI/ffmpegsettingswidget.ui \
     duqf-widgets/appearancesettingswidget.ui \
     duqf-widgets/settingswidget.ui \
     duqf-widgets/sliderspinbox.ui \

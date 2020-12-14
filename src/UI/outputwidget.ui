@@ -312,7 +312,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Settings</string>
+            <string>Add Setting...</string>
            </property>
            <property name="icon">
             <iconset resource="../resources.qrc">
@@ -500,7 +500,7 @@
             <x>0</x>
             <y>0</y>
             <width>391</width>
-            <height>96</height>
+            <height>92</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">

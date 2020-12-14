@@ -8,41 +8,9 @@
 MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     QMainWindow(parent)
 {
-#ifdef QT_DEBUG
     qDebug() << "Create Main Window";
-#endif
+    // Build the form
     setupUi(this);
-    log("Initialization");
-
-    // === SETTINGS ===
-    log("Init - Loading settings");
-    settings = new QSettings(this);
-    //create user presets folder if it does not exist yet
-    QDir home = QDir::home();
-    home.mkdir("DuME Presets");
-
-    // Load Renderers info (to be passed to other widgets)
-    log("Init - Connecting to FFmpeg");
-    //FFmpeg
-    connect( ffmpeg,SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
-    connect( ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
-    connect( ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
-    connect( ffmpeg,SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
-    //After Effects
-    log("Init - Initializing the After Effects renderer");
-    _ae = new AfterEffects( this );
-    log("Init - Connecting to After Effects");
-    connect(_ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
-    connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
-
-    // === UI SETUP ===
-
-    log("Init - Completing User Interface");
-    //remove right click on toolbar
-    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
-
-    // version in statusbar
-    mainStatusBar->addPermanentWidget(new QLabel("v" + QString(STR_VERSION)));
 
     //populate toolbar
     QMenu *goMenu = new QMenu();
@@ -63,56 +31,42 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     mainToolBar->addAction(actionDevBuild);
 #endif
 
-    ToolBarSpacer *tbs = new ToolBarSpacer();
-    mainToolBar->addWidget(tbs);
+    // Add default stuff
+    duqf_initUi();
 
-    //settings and other buttons to the right
-    mainToolBar->addAction(actionSettings);
-    mainToolBar->widgetForAction( actionSettings )->setObjectName("windowButton");
+    log("Initialization");
 
-    QToolButton *helpButton = new QToolButton(this);
-    helpButton->setIcon(QIcon(":/icons/help"));
-    helpButton->setObjectName("windowButton");
-    helpButton->setPopupMode( QToolButton::InstantPopup );
-    helpMenu = new QMenu(this);
-    helpMenu->addAction(actionBug_report);
-    helpMenu->addAction(actionChat);
-    helpMenu->addAction(actionForum);
-    helpMenu->addAction(actionHelp);
+    // === SETTINGS ===
+    log("Init - Loading settings");
 
-    helpButton->setMenu(helpMenu);
+    //create user presets folder if it does not exist yet
+    QDir home = QDir::home();
+    home.mkdir("DuME Presets");
 
-    mainToolBar->addWidget( helpButton );
+    // Load Renderers info (to be passed to other widgets)
+    log("Init - Connecting to FFmpeg");
+    //FFmpeg
+    connect( ffmpeg, SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect( ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
+    connect( ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
+    connect( ffmpeg, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
+    //After Effects
+    log("Init - Initializing the After Effects renderer");
+    _ae = new AfterEffects( this );
+    log("Init - Connecting to After Effects");
+    connect( _ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
+    connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
-    //window buttons for frameless win
-
-    minimizeButton = new QToolButton();
-    minimizeButton->setIcon(QIcon(":/icons/minimize"));
-    minimizeButton->setObjectName("windowButton");
-#ifndef Q_OS_MAC
-    mainToolBar->addWidget(minimizeButton);
-#endif
-    maximizeButton = new QToolButton(this);
-    maximizeButton->setIcon(QIcon(":/icons/maximize"));
-    maximizeButton->setObjectName("windowButton");
-    mainToolBar->addWidget(maximizeButton);
-    quitButton = new QToolButton(this);
-    quitButton->setIcon(QIcon(":/icons/quit"));
-    quitButton->setObjectName("windowButton");
-    mainToolBar->addWidget(quitButton);
-#ifndef Q_OS_MAC
-    this->setWindowFlags(Qt::FramelessWindowHint);
-#endif
-
-    //drag window
-    toolBarClicked = false;
-    mainToolBar->installEventFilter(this);
+    // === UI SETUP ===
 
     log("Init - Adding settings widget");
 
     //settings widget
-    settingsWidget = new DuMESettingsWidget(_ae, this);
-    settingsPage->layout()->addWidget(settingsWidget);
+    ffmpegSettingsWidget = new FFmpegSettingsWidget();
+    settingsWidget->addPage(ffmpegSettingsWidget, "FFmpeg", QIcon(":/icons/ffmpeg"));
+    aeSettingsWidget = new AESettingsWidget(_ae);
+    settingsWidget->addPage(aeSettingsWidget, "After Effects", QIcon(":/icons/ae"));
+
 
     log("Init - Adding queue widget");
 
@@ -120,22 +74,11 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
 
-    log("Init - Adding shadows");
-
-    //add nice shadows
-    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
-    effect->setBlurRadius(20);
-    effect->setXOffset(0);
-    effect->setYOffset(5);
-    effect->setColor(QColor(0, 0, 0, 70));
-
-    progressWidget->setGraphicsEffect(effect);
-
     log("Init - Setting default UI items");
 
     //init UI
     consoleTabs->setCurrentIndex(0);
-    mainStackWidget->setCurrentIndex(0);
+    mainStack->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
     versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
@@ -143,23 +86,23 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     log("Init - Setting window geometry");
 
     //restore geometry
-    settings->beginGroup("mainwindow");
+    settings.beginGroup("mainwindow");
     //size
-    resize(settings->value("size", QSize(850, 850)).toSize());
+    resize(settings.value("size", QSize(850, 850)).toSize());
     //position
-    //move(settings->value("pos", QPoint(200, 200)).toPoint());
+    //move(settings.value("pos", QPoint(200, 200)).toPoint());
     //maximized
 #ifndef Q_OS_MAC
-    maximize( settings->value("maximized",false).toBool() );
+    duqf_maximize( settings.value("maximized",false).toBool() );
 #endif
-    settings->endGroup();
+    settings.endGroup();
     //console splitter sizes
-    settings->beginGroup("consolesplitter");
+    settings.beginGroup("consolesplitter");
     QList<int>sizes;
-    sizes << settings->value("consolesize",0).toInt();
-    sizes << settings->value("queuesize",100).toInt();
+    sizes << settings.value("consolesize",0).toInt();
+    sizes << settings.value("queuesize",100).toInt();
     consoleSplitter->setSizes(sizes);
-    settings->endGroup();
+    settings.endGroup();
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
@@ -178,23 +121,15 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     // final connections
 
-    //connect maximize and minimize buttons
-    connect(maximizeButton,SIGNAL(clicked()),this,SLOT(maximize()));
-    connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
-    //connect close button
-    connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
-
     //settings
-    connect(settingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
+    connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
     //QueueWidget
     connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
     log("Init - Setting stylesheet");
-    //Re-set StyleSheet
-    DuUI::updateCSS(":/styles/default");
-    //and font
-    DuUI::setFont();
+    // Set style
+    duqf_setStyle();
 
     //parse arguments if ffmpeg is valid
     autoQuit = false;
@@ -296,6 +231,202 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
         }
     }
     log("Ready!");
+}
+
+void MainWindow::duqf_initUi()
+{
+    // ===== TOOLBAR ======
+
+    // remove right click on toolbar
+    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    // set frameless
+#ifndef Q_OS_MAC
+    this->setWindowFlags(Qt::FramelessWindowHint);
+#endif
+    //drag window
+    duqf_toolBarClicked = false;
+    mainToolBar->installEventFilter(this);
+
+    // ==== TOOLBAR BUTTONS
+    mainToolBar->addWidget(new ToolBarSpacer());
+    title = new QLabel(STR_FILEDESCRIPTION);
+    mainToolBar->addWidget(title);
+    //minimize
+#ifndef Q_OS_MAC
+    QToolButton *minimizeButton = new QToolButton();
+    minimizeButton->setIcon(QIcon(":/icons/minimize"));
+    minimizeButton->setObjectName("windowButton");
+    mainToolBar->addWidget(minimizeButton);
+#endif
+    //maximize
+    duqf_maximizeButton = new QToolButton(this);
+    duqf_maximizeButton->setIcon(QIcon(":/icons/maximize"));
+    duqf_maximizeButton->setObjectName("windowButton");
+    mainToolBar->addWidget(duqf_maximizeButton);
+    //quit
+    QToolButton *quitButton = new QToolButton(this);
+    quitButton->setIcon(QIcon(":/icons/quit"));
+    quitButton->setObjectName("windowButton");
+    mainToolBar->addWidget(quitButton);
+
+    // ===== STATUSBAR ======
+
+    // version in statusbar
+    mainStatusBar->addPermanentWidget(new QLabel("v" + QString(STR_VERSION)));
+    duqf_settingsButton = new QToolButton();
+    duqf_settingsButton->setIcon(QIcon(":/icons/settings"));
+    duqf_settingsButton->setToolTip("Go to Settings");
+    duqf_settingsButton->setCheckable(true);
+    mainStatusBar->addPermanentWidget(duqf_settingsButton);
+    QToolButton *helpButton = new QToolButton();
+    helpButton->setIcon(QIcon(":/icons/help"));
+    helpButton->setToolTip("Get Help");
+    helpButton->setPopupMode( QToolButton::InstantPopup );
+    QMenu *helpMenu = new QMenu(this);
+    if (QString(URL_DOC) != "")
+    {
+        QAction *docAction = new QAction(QIcon(":/icons/documentation"), "Help");
+        docAction->setToolTip("Read the documentation");
+        docAction->setShortcut(QKeySequence("F1"));
+        helpMenu->addAction(docAction);
+        helpMenu->addSeparator();
+        connect(docAction, SIGNAL(triggered()), this, SLOT(duqf_doc()));
+    }
+    bool chat = QString(URL_CHAT) != "";
+    bool bugReport = QString(URL_BUGREPORT) != "";
+    bool forum = QString(URL_FORUM) != "";
+    if (bugReport)
+    {
+        QAction *bugReportAction = new QAction(QIcon(":/icons/bug-report"), "Bug Report");
+        bugReportAction->setToolTip("Report a bug");
+        helpMenu->addAction(bugReportAction);
+        if (!chat && !forum) helpMenu->addSeparator();
+        connect(bugReportAction, SIGNAL(triggered()), this, SLOT(duqf_bugReport()));
+    }
+    if (chat)
+    {
+        QAction *chatAction = new QAction(QIcon(":/icons/chat"), "Chat");
+        chatAction->setToolTip("Come and have a chat");
+        helpMenu->addAction(chatAction);
+        if (!forum) helpMenu->addSeparator();
+        connect(chatAction, SIGNAL(triggered()), this, SLOT(duqf_chat()));
+    }
+    if (forum)
+    {
+        QAction *forumAction = new QAction(QIcon(":/icons/forum"), "Forum");
+        forumAction->setToolTip("Join us on our forum");
+        helpMenu->addAction(forumAction);
+        helpMenu->addSeparator();
+        connect(forumAction, SIGNAL(triggered()), this, SLOT(duqf_forum()));
+    }
+    QAction *aboutQtAction = new QAction(QIcon(":/icons/qt"), "About Qt");
+    helpMenu->addAction(aboutQtAction);
+
+    helpButton->setMenu(helpMenu);
+    mainStatusBar->addPermanentWidget(helpButton);
+
+    // ========= SETTINGS ========
+
+    settingsWidget = new SettingsWidget();
+    duqf_settingsLayout->addWidget(settingsWidget);
+    duqf_closeSettingsButton->setObjectName("windowButton");
+
+    AppearanceSettingsWidget *asw = new AppearanceSettingsWidget();
+    settingsWidget->addPage(asw, "Appearance", QIcon(":/icons/color"));
+
+    // ====== CONNECTIONS ======
+    connect(duqf_maximizeButton,SIGNAL(clicked()),this,SLOT(duqf_maximize()));
+    connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
+    connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
+
+    connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    connect(duqf_settingsButton, SIGNAL(clicked(bool)), this, SLOT(duqf_settings(bool)));
+    connect(duqf_closeSettingsButton, SIGNAL(clicked()), this, SLOT(duqf_closeSettings()));
+}
+
+void MainWindow::duqf_setStyle()
+{
+    // ======== STYLE ========
+
+    //Re-set StyleSheet
+    QString cssFile = settings.value("appearance/cssFile", ":/styles/default").toString();
+    QString style = settings.value("appearance/style","Default").toString();
+    if (cssFile != "")
+    {
+        DuUI::updateCSS(cssFile);
+    }
+    else
+    {
+        DuUI::updateCSS("");
+        qApp->setStyle(QStyleFactory::create(style));
+    }
+    //and font
+    DuUI::setFont(settings.value("appearance/font", "Ubuntu").toString());
+    //and tool buttons
+    int styleIndex = settings.value("appearance/toolButtonStyle", 2).toInt();
+    Qt::ToolButtonStyle toolStyle = Qt::ToolButtonTextUnderIcon;
+    if (styleIndex == 0) toolStyle = Qt::ToolButtonIconOnly;
+    else if (styleIndex == 1) toolStyle = Qt::ToolButtonTextOnly;
+    else if (styleIndex == 2) toolStyle = Qt::ToolButtonTextUnderIcon;
+    else if (styleIndex == 3) toolStyle = Qt::ToolButtonTextBesideIcon;
+    DuUI::setToolButtonStyle(toolStyle);
+}
+
+void MainWindow::duqf_maximize(bool max)
+{
+    if (!max)
+    {
+        duqf_maximizeButton->setIcon(QIcon(":/icons/maximize"));
+        this->showNormal();
+    }
+    else
+    {
+        duqf_maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
+        this->showMaximized();
+    }
+}
+
+void MainWindow::duqf_maximize()
+{
+    duqf_maximize(!this->isMaximized());
+}
+
+void MainWindow::duqf_bugReport()
+{
+    QDesktopServices::openUrl ( QUrl( URL_BUGREPORT ) );
+}
+
+void MainWindow::duqf_forum()
+{
+    QDesktopServices::openUrl ( QUrl( URL_FORUM ) );
+}
+
+void MainWindow::duqf_chat()
+{
+    QDesktopServices::openUrl ( QUrl( URL_CHAT ) );
+}
+
+void MainWindow::duqf_doc()
+{
+    QDesktopServices::openUrl ( QUrl( URL_DOC ) );
+}
+
+void MainWindow::duqf_settings(bool checked)
+{
+    duqf_settingsButton->setChecked(checked);
+    if (checked)
+    {
+        mainStack->setCurrentIndex(1);
+    }
+    else
+    {
+        mainStack->setCurrentIndex(0);
+    }
+}
+
+void MainWindow::duqf_closeSettings()
+{
+    duqf_settings(false);
 }
 
 void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
@@ -560,25 +691,17 @@ void MainWindow::on_actionGo_triggered()
     go();
 }
 
+void MainWindow::on_actionGoQuit_triggered()
+{
+    go();
+    autoQuit = true;
+}
+
 void MainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
     _renderQueue->stop(6000);
-}
-
-void MainWindow::on_actionSettings_triggered(bool checked)
-{
-    if (checked)
-    {
-        actionSettings->setIcon(QIcon(":/icons/close-thin"));
-        mainStackWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        actionSettings->setIcon(QIcon(":/icons/settings"));
-        mainStackWidget->setCurrentIndex(0);
-    }
 }
 
 void MainWindow::reInitCurrentProgress()
@@ -593,39 +716,20 @@ void MainWindow::reInitCurrentProgress()
     timeLabel->setText("00:00:00");
 }
 
-void MainWindow::maximize(bool max)
-{
-    if (!max)
-    {
-        maximizeButton->setIcon(QIcon(":/icons/maximize"));
-        this->showNormal();
-    }
-    else
-    {
-        maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
-        this->showMaximized();
-    }
-}
-
-void MainWindow::maximize()
-{
-    maximize(!this->isMaximized());
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     _renderQueue->stop(6000);
     //save ui geometry
-    settings->beginGroup("mainwindow");
-    settings->setValue("size", size());
-    settings->setValue("pos", pos());
-    settings->setValue("maximized",this->isMaximized());
-    settings->endGroup();
-    settings->beginGroup("consolesplitter");
-    settings->setValue("consolesize",consoleSplitter->sizes()[0]);
-    settings->setValue("queuesize",consoleSplitter->sizes()[1]);
-    settings->endGroup();
-    settings->sync();
+    settings.beginGroup("mainwindow");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.setValue("maximized",this->isMaximized());
+    settings.endGroup();
+    settings.beginGroup("consolesplitter");
+    settings.setValue("consolesize",consoleSplitter->sizes()[0]);
+    settings.setValue("queuesize",consoleSplitter->sizes()[1]);
+    settings.endGroup();
+    settings.sync();
 
     //remove temp folders
     cacheManager->purgeCache();
@@ -635,46 +739,46 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-  if (event->type() == QEvent::MouseButtonPress)
-  {
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent *mouseEvent = (QMouseEvent*)event;
+        if (mouseEvent->button() == Qt::LeftButton)
+        {
+          duqf_toolBarClicked = true;
+          duqf_dragPosition = mouseEvent->globalPos() - this->frameGeometry().topLeft();
+          event->accept();
+        }
+        return true;
+    }
+    else if (event->type() == QEvent::MouseMove)
+    {
+        if (this->isMaximized()) return false;
       QMouseEvent *mouseEvent = (QMouseEvent*)event;
-      if (mouseEvent->button() == Qt::LeftButton)
+      if (mouseEvent->buttons() & Qt::LeftButton && duqf_toolBarClicked)
       {
-        toolBarClicked = true;
-        dragPosition = mouseEvent->globalPos() - this->frameGeometry().topLeft();
-        event->accept();
+          this->move(mouseEvent->globalPos() - duqf_dragPosition);
+          event->accept();
       }
       return true;
-  }
-  else if (event->type() == QEvent::MouseMove)
-  {
-      if (this->isMaximized()) return false;
-    QMouseEvent *mouseEvent = (QMouseEvent*)event;
-    if (mouseEvent->buttons() & Qt::LeftButton && toolBarClicked)
-    {
-        this->move(mouseEvent->globalPos() - dragPosition);
-        event->accept();
     }
-    return true;
-  }
-  else if (event->type() == QEvent::MouseButtonRelease)
-  {
-      toolBarClicked = false;
-      return true;
-  }
-#ifndef Q_OS_MAC
-  else if (event->type() == QEvent::MouseButtonDblClick)
-  {
-      maximize();
-      event->accept();
-      return true;
-  }
-#endif
-  else
-  {
-      // standard event processing
-      return QObject::eventFilter(obj, event);
-  }
+    else if (event->type() == QEvent::MouseButtonRelease)
+    {
+        duqf_toolBarClicked = false;
+        return true;
+    }
+  #ifndef Q_OS_MAC
+    else if (event->type() == QEvent::MouseButtonDblClick)
+    {
+        duqf_maximize();
+        event->accept();
+        return true;
+    }
+  #endif
+    else
+    {
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
 }
 
 void MainWindow::dropEvent(QDropEvent *event)
@@ -741,32 +845,6 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *event)
 void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 {
     event->accept();
-}
-
-void MainWindow::on_actionBug_report_triggered()
-{
-    QDesktopServices::openUrl ( QUrl( URL_BUGREPORT ) );
-}
-
-void MainWindow::on_actionChat_triggered()
-{
-    QDesktopServices::openUrl ( QUrl( URL_CHAT ) );
-}
-
-void MainWindow::on_actionForum_triggered()
-{
-    QDesktopServices::openUrl ( QUrl( URL_FORUM ) );
-}
-
-void MainWindow::on_actionHelp_triggered()
-{
-    QDesktopServices::openUrl ( QUrl( URL_DOC ) );
-}
-
-void MainWindow::on_actionGoQuit_triggered()
-{
-    go();
-    autoQuit = true;
 }
 
 void MainWindow::quit(bool force)

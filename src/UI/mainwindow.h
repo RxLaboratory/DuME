@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include "ui_mainwindow.h"
+#include "duqf-app/app-version.h"
+#include "duqf-app/app-style.h"
+#include "duqf-widgets/toolbarspacer.h"
+#include "duqf-widgets/settingswidget.h"
 
 #include <QProcess>
 #include <QFileDialog>
@@ -16,16 +20,14 @@
 #include <QDesktopServices>
 
 #include "global.h"
-#include "duqf-app/app-version.h"
-#include "duqf-app/app-style.h"
 
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
 #include "Renderer/presetmanager.h"
 
-#include "duqf-widgets/toolbarspacer.h"
-#include "dumesettingswidget.h"
-#include "queuewidget.h"
+#include "UI/ffmpegsettingswidget.h"
+#include "UI/aesettingswidget.h"
+#include "UI/queuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -33,14 +35,18 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     explicit MainWindow(int argc, char *argv[], QWidget *parent = nullptr);
-
     void onffmpegCommandsButton_clicked();
-public slots:
-
-    void maximize(bool max);
-    void maximize();
 
 private slots:
+    void duqf_maximize(bool max);
+    void duqf_maximize();
+    void duqf_bugReport();
+    void duqf_forum();
+    void duqf_chat();
+    void duqf_doc();
+    void duqf_settings(bool checked = true);
+    void duqf_closeSettings();
+
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
     void ffmpegConsole( QString c);
@@ -65,25 +71,40 @@ private slots:
     // ACTIONS
     void on_actionGo_triggered();
     void on_actionStop_triggered();
-    void on_actionSettings_triggered(bool checked);
-    void on_actionBug_report_triggered();
-    void on_actionChat_triggered();
-    void on_actionForum_triggered();
-    void on_actionHelp_triggered();
     void on_actionGoQuit_triggered();
 
     // GENERAL
     void quit(bool force = false);
 
 private:
+    // ========= RxOT UI ==============
+    /**
+     * @brief initUi Called once to build the default RxOT UI
+     */
+    void duqf_initUi();
+    /**
+     * @brief duqf_setStyle Called once to set the UI Style after all ui have been created
+     */
+    void duqf_setStyle();
+    /**
+     * @brief Is the tool bar currently clicked or not
+     */
+    bool duqf_toolBarClicked;
+    /**
+     * @brief Drag position
+     * Used for drag n drop feature
+     */
+    QPoint duqf_dragPosition;
+    QToolButton *duqf_maximizeButton;
+    QToolButton *duqf_settingsButton;
+    QSettings settings;
+    SettingsWidget *settingsWidget;
+    QLabel *title;
+
     /**
      * @brief go Launches the transcoding process
      */
     void go();
-    /**
-     * @brief settings The application settings
-     */
-    QSettings *settings;
 
     // ====== UI ========
 
@@ -96,24 +117,9 @@ private:
      * @brief statusLabel The status shown in the status bar
      */
     QLabel *statusLabel;
-    // Window Buttons
-    QToolButton *quitButton;
-    QToolButton *maximizeButton;
-    QToolButton *minimizeButton;
-    QMenu *helpMenu;
-    /**
-     * @brief settingsWidget The settings page
-     */
-    DuMESettingsWidget *settingsWidget;
-    /**
-     * @brief Is the tool bar currently clicked or not
-     */
-    bool toolBarClicked;
-    /**
-     * @brief Drag position
-     * Used for drag n drop feature
-     */
-    QPoint dragPosition;
+
+    FFmpegSettingsWidget *ffmpegSettingsWidget;
+    AESettingsWidget *aeSettingsWidget;
 
     // ===== AE =====
     /**

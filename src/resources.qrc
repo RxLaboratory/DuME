@@ -59,6 +59,8 @@
         <file alias="import">resources/icons/import-file_bl.svg</file>
         <file alias="bash_l">resources/icons/bash-terminal_l.svg</file>
         <file alias="bash">resources/icons/bash-terminal_d.svg</file>
+        <file alias="ae">resources/icons/ae.svg</file>
+        <file alias="ffmpeg">resources/icons/ffmpeg.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

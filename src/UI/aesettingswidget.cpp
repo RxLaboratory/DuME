@@ -1,27 +1,12 @@
-#include "dumesettingswidget.h"
-#include "dropshadow.h"
+#include "aesettingswidget.h"
 
-#ifdef QT_DEBUG
-#include <QtDebug>
-#endif
-
-DuMESettingsWidget::DuMESettingsWidget(AfterEffects *ae, QWidget *parent) :
+AESettingsWidget::AESettingsWidget(AfterEffects *ae, QWidget *parent) :
     QWidget(parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Settings Widget";
-#endif
     setupUi(this);
 
     _ae = ae;
     _freezeUI = true;
-
-    //Add nice shadows
-    generalWidget->setGraphicsEffect(new DropShadow);
-    aeWidget->setGraphicsEffect(new DropShadow);
-
-    ffmpegPathEdit->setText( QDir::toNativeSeparators( ffmpeg->binary() ) );
-    userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
     //Temp path
     QString cachePath = QDir::toNativeSeparators( cacheManager->getRootCacheDir().absolutePath() );
@@ -45,37 +30,8 @@ DuMESettingsWidget::DuMESettingsWidget(AfterEffects *ae, QWidget *parent) :
     _freezeUI = false;
 }
 
-void DuMESettingsWidget::on_ffmpegBrowseButton_clicked()
-{
-    QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
-    if (path == "") return;
-    ffmpegPathEdit->setText(path);
-    ffmpeg->setBinary( path, true );
-}
 
-void DuMESettingsWidget::on_ffmpegPathEdit_editingFinished()
-{
-    ffmpeg->setBinary( ffmpegPathEdit->text(), true );
-}
-
-void DuMESettingsWidget::on_userPresetsBrowseButton_clicked()
-{
-    QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings.value("presets/path").toString());
-    if (path == "") return;
-    userPresetsPathEdit->setText(path);
-    settings.setValue("presets/path",path);
-    settings.sync();
-    emit presetsPathChanged();
-}
-
-void DuMESettingsWidget::on_userPresetsPathEdit_editingFinished()
-{
-    settings.setValue("presets/path",userPresetsPathEdit->text());
-    settings.sync();
-    emit presetsPathChanged();
-}
-
-void DuMESettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
+void AESettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -90,7 +46,7 @@ void DuMESettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
     _freezeUI = false;
 }
 
-void DuMESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
+void AESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -115,14 +71,14 @@ void DuMESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
     aeVersionBox->setCurrentText( "Custom" );
 }
 
-void DuMESettingsWidget::on_aerenderBrowseButton_clicked()
+void AESettingsWidget::on_aerenderBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
     aerenderPathEdit->setText(path);
 }
 
-void DuMESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
+void AESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 {
     if (_freezeUI) return;
     _freezeUI = true;
@@ -138,14 +94,14 @@ void DuMESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
     _freezeUI = false;
 }
 
-void DuMESettingsWidget::on_aeCacheBrowseButton_clicked()
+void AESettingsWidget::on_aeCacheBrowseButton_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",cacheManager->getRootCacheDir().absolutePath());
     if (path == "") return;
     aeCacheEdit->setText(path);
 }
 
-void DuMESettingsWidget::refreshAeVersionBox()
+void AESettingsWidget::refreshAeVersionBox()
 {
     _freezeUI = true;
 
@@ -157,9 +113,4 @@ void DuMESettingsWidget::refreshAeVersionBox()
     aeVersionBox->addItem("Custom", _ae->binary() );
 
     _freezeUI = false;
-}
-
-void DuMESettingsWidget::on_resetDefaultsButton_clicked()
-{
-    settings.clear();
 }

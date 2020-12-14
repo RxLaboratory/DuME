@@ -81,7 +81,7 @@
         </size>
        </property>
        <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonFollowStyle</enum>
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
        </property>
       </widget>
      </item>
@@ -134,7 +134,7 @@
          <x>0</x>
          <y>0</y>
          <width>533</width>
-         <height>148</height>
+         <height>147</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -162,7 +162,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Settings</string>
+           <string>Add setting...</string>
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
@@ -172,7 +172,7 @@
            <enum>QToolButton::InstantPopup</enum>
           </property>
           <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonFollowStyle</enum>
+           <enum>Qt::ToolButtonTextUnderIcon</enum>
           </property>
          </widget>
         </item>
