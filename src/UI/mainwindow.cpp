@@ -633,7 +633,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+bool MainWindow::duqf_eventFilter(QObject *obj, QEvent *event)
 {
   if (event->type() == QEvent::MouseButtonPress)
   {
