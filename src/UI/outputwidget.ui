@@ -267,7 +267,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPlainTextEdit" name="mediaInfoEdit">
+        <widget class="QTextBrowser" name="mediaInfoEdit">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>

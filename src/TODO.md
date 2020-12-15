@@ -1,3 +1,0 @@
-- [ ] set output edit text non editable
-- [ ] remove close button on add input tab
-- [ ] use sliders on video quality block (and other blocks ?)

@@ -28,6 +28,12 @@ public:
     int value() const;
     void setValue(int value);
 
+    bool valueVisible() const;
+    void showValue(bool showValue);
+
+signals:
+    void sliderMoved(int value);
+
 private slots:
     void on_spinBox_editingFinished();
     void on_spinBox_valueChanged(int arg1);
@@ -38,6 +44,7 @@ private:
     QPoint _originalMousePos;
     QString _suffix;
     QString _prefix;
+    bool _showValue;
 protected:
     void mouseReleaseEvent ( QMouseEvent * event );
     void mousePressEvent ( QMouseEvent * event );

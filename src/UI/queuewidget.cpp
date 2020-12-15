@@ -23,7 +23,7 @@ QueueWidget::QueueWidget(QWidget *parent) :
     if (closeButton != nullptr) closeButton->hide();
 
     QTabBar *inputTabBar = inputTab->tabBar();
-    closeButton = inputTabBar->tabButton(1, QTabBar::RightSide);
+    closeButton = inputTabBar->tabButton(0, QTabBar::RightSide);
     if (closeButton == nullptr) closeButton = inputTabBar->tabButton(1, QTabBar::LeftSide);
     if (closeButton != nullptr) closeButton->hide();
 
@@ -170,6 +170,10 @@ void QueueWidget::addInput()
 
     //set tab index
     inputTab->setCurrentIndex(inputTab->count()-2);
+
+    //re-set toolbutton style
+    int styleIndex = QSettings().value("appearance/toolButtonStyle", 2).toInt();
+    DuUI::setToolButtonStyle(styleIndex);
 }
 
 void QueueWidget::addOutput()
@@ -190,6 +194,10 @@ void QueueWidget::addOutput()
     //set tab index
     outputTab->setCurrentIndex(outputTab->count()-2);
     qDebug() << "Output widget added";
+
+    //re-set toolbutton style
+    int styleIndex = QSettings().value("appearance/toolButtonStyle", 2).toInt();
+    DuUI::setToolButtonStyle(styleIndex);
 }
 
 void QueueWidget::on_splitter_splitterMoved()

@@ -225,5 +225,4 @@ win* {
 #INCLUDEPATH += /usr/include/OpenImageIO
 #DEPENDPATH += /usr/include/OpenImageIO
 
-DISTFILES += \
-    TODO.md
+DISTFILES +=

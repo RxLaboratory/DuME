@@ -5,6 +5,10 @@ SliderSpinBox::SliderSpinBox(QWidget *parent) :
 {
     setupUi(this);
 
+    _showValue = true;
+    _prefix = "";
+    _suffix = "";
+
     slider = new ProgressSlider();
     sliderLayout->addWidget(slider);
 
@@ -27,6 +31,7 @@ void SliderSpinBox::on_spinBox_editingFinished()
 void SliderSpinBox::on_spinBox_valueChanged(int arg1)
 {
     slider->setValue(arg1);
+    emit sliderMoved(arg1);
 }
 
 void SliderSpinBox::slider_valueChanged(int arg1)
@@ -36,7 +41,21 @@ void SliderSpinBox::slider_valueChanged(int arg1)
 
 void SliderSpinBox::updateSliderFormat()
 {
-    slider->setFormat(_prefix + "%v" + _suffix);
+    QString format;
+    if (_showValue) format = _prefix + "%v" + _suffix;
+    else format = _prefix;
+    slider->setFormat(format);
+}
+
+bool SliderSpinBox::valueVisible() const
+{
+    return _showValue;
+}
+
+void SliderSpinBox::showValue(bool showValue)
+{
+    _showValue = showValue;
+    updateSliderFormat();
 }
 
 int SliderSpinBox::value() const
@@ -47,7 +66,7 @@ int SliderSpinBox::value() const
 void SliderSpinBox::setValue(int value)
 {
     spinBox->setValue(value);
-    slider->setValue(0);
+    slider->setValue(value);
 }
 
 int SliderSpinBox::maximum() const

@@ -364,12 +364,7 @@ void MainWindow::duqf_setStyle()
     DuUI::setFont(settings.value("appearance/font", "Ubuntu").toString());
     //and tool buttons
     int styleIndex = settings.value("appearance/toolButtonStyle", 2).toInt();
-    Qt::ToolButtonStyle toolStyle = Qt::ToolButtonTextUnderIcon;
-    if (styleIndex == 0) toolStyle = Qt::ToolButtonIconOnly;
-    else if (styleIndex == 1) toolStyle = Qt::ToolButtonTextOnly;
-    else if (styleIndex == 2) toolStyle = Qt::ToolButtonTextUnderIcon;
-    else if (styleIndex == 3) toolStyle = Qt::ToolButtonTextBesideIcon;
-    DuUI::setToolButtonStyle(toolStyle);
+    DuUI::setToolButtonStyle(styleIndex);
 }
 
 void MainWindow::duqf_maximize(bool max)

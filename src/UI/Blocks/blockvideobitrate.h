@@ -3,6 +3,7 @@
 
 #include "ui_blockvideobitrate.h"
 #include "UI/Blocks/blockcontentwidget.h"
+#include "duqf-widgets/sliderspinbox.h"
 
 class BlockVideoBitrate : public BlockContentWidget, private Ui::BlockVideoBitrate
 {
@@ -18,6 +19,7 @@ private slots:
     void on_videoBitRateEdit_editingFinished();
     void on_videoQualityButton_clicked(bool checked);
     void on_videoQualitySlider_sliderMoved(int value);
+
     void on_actionPerfect_95_triggered();
     void on_actionAuto_triggered();
     void on_actionGood_60_triggered();
@@ -26,10 +28,14 @@ private slots:
     void on_actionBlu_Ray_triggered();
     void on_actionDVD_triggered();
     void on_actionStreaming_12_Mbps_triggered();
+
     void on_speedButton_clicked(bool checked);
     void on_speedSlider_sliderMoved(int value);
     void on_tuneBox_currentIndexChanged(int index);
     void on_bitrateTypeBox_currentIndexChanged(const QString &arg1);
+private:
+    SliderSpinBox *qualitySlider;
+    SliderSpinBox *speedSlider;
 };
 
 #endif // BLOCKVIDEOBITRATE_H

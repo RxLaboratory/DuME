@@ -25,6 +25,16 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( actionBlu_Ray );
     _presets->addAction( actionStreaming_12_Mbps );
     _presets->addAction( actionDVD );
+
+    qualitySlider = new SliderSpinBox();
+    qualitySlider->setSuffix("%");
+    qualityLayout->addWidget(qualitySlider);
+    speedSlider = new SliderSpinBox();
+    speedSlider->showValue(false);
+    speedLayout->addWidget(speedSlider);
+
+    connect(qualitySlider, &SliderSpinBox::sliderMoved, this, &BlockVideoBitrate::on_videoQualitySlider_sliderMoved);
+    connect(speedSlider, &SliderSpinBox::sliderMoved, this, &BlockVideoBitrate::on_speedSlider_sliderMoved);
 }
 
 void BlockVideoBitrate::activate(bool activate)
@@ -37,7 +47,7 @@ void BlockVideoBitrate::activate(bool activate)
     if (activate) _mediaInfo->setVideoBitrateType( bitrateTypeBox->currentText() );
     else _mediaInfo->setVideoBitrateType( "VBR" );
 
-    if (activate && videoQualityButton->isChecked()) _mediaInfo->setVideoQuality( videoQualitySlider->value() );
+    if (activate && videoQualityButton->isChecked()) _mediaInfo->setVideoQuality( qualitySlider->value() );
     else _mediaInfo->setVideoQuality( -1 );
 
     if (activate && speedButton->isChecked()) _mediaInfo->setVideoEncodingSpeed( speedSlider->value());
@@ -148,23 +158,25 @@ void BlockVideoBitrate::update()
         int q = stream->quality();
         if (q == -1)
         {
-            videoQualitySlider->setValue( 90 );
-            qualityLabel->setText("Excellent");
+            qualitySlider->setValue( 90 );
+            qualitySlider->setPrefix("Excellent");
+            qualitySlider->showValue(false);
             videoQualityButton->setChecked( false );
             videoQualityWidget->setEnabled( false );
         }
         else
         {
             videoQualityButton->setChecked( true );
-            videoQualitySlider->setValue( q );
+            qualitySlider->setValue( q );
+            qualitySlider->showValue(true);
             videoQualityWidget->setEnabled( true );
 
-            if (q == 100) qualityLabel->setText("Lossless (if possible) | 100%");
-            else if (q >= 90) qualityLabel->setText("Perfect | " + QString::number(q) + "%");
-            else if (q >= 75) qualityLabel->setText("Very good | " + QString::number(q) + "%");
-            else if (q >= 50) qualityLabel->setText("Good | " + QString::number(q) + "%");
-            else if (q >= 25) qualityLabel->setText("Bad | " + QString::number(q) + "%");
-            else qualityLabel->setText("Very bad | " + QString::number(q) + "%");
+            if (q == 100) qualitySlider->setPrefix("Lossless (if possible) | ");
+            else if (q >= 90) qualitySlider->setPrefix("Perfect | ");
+            else if (q >= 75) qualitySlider->setPrefix("Very good | ");
+            else if (q >= 50) qualitySlider->setPrefix("Good | ");
+            else if (q >= 25) qualitySlider->setPrefix("Bad | ");
+            else qualitySlider->setPrefix("Very bad | ");
         }
     }
     else
@@ -182,7 +194,7 @@ void BlockVideoBitrate::update()
         if (s == -1 )
         {
             speedWidget->setEnabled( false );
-            speedLabel->setText("Default - Medium");
+            speedSlider->setPrefix("Default - Medium");
             speedButton->setChecked( false );
             speedSlider->setValue( 35 );
         }
@@ -190,15 +202,15 @@ void BlockVideoBitrate::update()
         {
             speedWidget->setEnabled( true );
             speedButton->setChecked( true );
-            if (s >= 90) speedLabel->setText("Ultra fast");
-            else if ( s >= 80 ) speedLabel->setText("Super fast");
-            else if ( s >= 70 ) speedLabel->setText("Very fast");
-            else if ( s >= 60 ) speedLabel->setText("Faster");
-            else if ( s >= 50 ) speedLabel->setText("Fast");
-            else if ( s >= 40 ) speedLabel->setText("Medium");
-            else if ( s >= 30 ) speedLabel->setText("Slow");
-            else if ( s >= 20 ) speedLabel->setText("Slower");
-            else speedLabel->setText("Very Slow");
+            if (s >= 90) speedSlider->setPrefix("Ultra fast");
+            else if ( s >= 80 ) speedSlider->setPrefix("Super fast");
+            else if ( s >= 70 ) speedSlider->setPrefix("Very fast");
+            else if ( s >= 60 ) speedSlider->setPrefix("Faster");
+            else if ( s >= 50 ) speedSlider->setPrefix("Fast");
+            else if ( s >= 40 ) speedSlider->setPrefix("Medium");
+            else if ( s >= 30 ) speedSlider->setPrefix("Slow");
+            else if ( s >= 20 ) speedSlider->setPrefix("Slower");
+            else speedSlider->setPrefix("Very Slow");
             speedSlider->setValue( s );
         }
     }

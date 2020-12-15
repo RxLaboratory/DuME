@@ -139,6 +139,16 @@ public:
         qApp->setFont(QFont(family,10,500),"QWidget");
     }
 
+    static void setToolButtonStyle(int styleIndex)
+    {
+        Qt::ToolButtonStyle toolStyle = Qt::ToolButtonTextUnderIcon;
+        if (styleIndex == 0) toolStyle = Qt::ToolButtonIconOnly;
+        else if (styleIndex == 1) toolStyle = Qt::ToolButtonTextOnly;
+        else if (styleIndex == 2) toolStyle = Qt::ToolButtonTextUnderIcon;
+        else if (styleIndex == 3) toolStyle = Qt::ToolButtonTextBesideIcon;
+        DuUI::setToolButtonStyle(toolStyle);
+    }
+
     static void setToolButtonStyle(Qt::ToolButtonStyle style)
     {
         foreach( QWidget *w, qApp->allWidgets())
