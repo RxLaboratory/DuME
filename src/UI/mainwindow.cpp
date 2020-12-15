@@ -156,46 +156,46 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
                 if (arg.startsWith("-"))
                 {
                     arg = arg.toLower();
-                    if ( arg == "-usequeue" ) useQueue = true;
-                    else if ( arg == "-comp" && i < argc-1 )
+                    if ( arg == "--use-queue" ) useQueue = true;
+                    else if ( (arg == "--comp" || arg == "-c") && i < argc-1 )
                     {
                         i++;
                         compName = argv[i];
                     }
-                    else if (arg == "-rqitem" && i < argc-1 )
+                    else if (arg == "--rq-item" && i < argc-1 )
                     {
                         i++;
                         rqItem = QString(argv[i]).toInt();
                     }
-                    else if ( (arg == "-framerate" || arg == "-fps" ) && i < argc-1 )
+                    else if ( (arg == "--framerate" || arg == "-f" ) && i < argc-1 )
                     {
                         i++;
                         framerate = QString(argv[i]).toDouble();
                     }
-                    else if (arg == "-colorprofile" && i < argc-1 )
+                    else if (arg == "--color-profile" && i < argc-1 )
                     {
                         i++;
                         colorProfile = argv[i];
                     }
-                    else if ( (arg == "-output" || arg == "-o") && i < argc-1 )
+                    else if ( (arg == "--output" || arg == "-o") && i < argc-1 )
                     {
                         i++;
                         queueWidget->setOutputPath( argv[i] );
                     }
-                    else if ( arg == "-autostart" )
+                    else if ( arg == "--autostart" )
                     {
                         autoStart = true;
                     }
-                    else if ( arg == "-autoquit" )
+                    else if ( arg == "--autoquit" )
                     {
                         autoQuit = true;
                     }
-                    else if ( arg == "-preset" && i < argc-1 )
+                    else if ( (arg == "--preset" || arg == "-p") && i < argc-1 )
                     {
                         i++;
                         queueWidget->setOutputPreset( argv[i] );
                     }
-                    else if (arg != "-nobanner" && arg != "-hideconsole")
+                    else if (arg != "--no-banner" && arg != "--hide-console")
                     {
                         log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);
                         break;

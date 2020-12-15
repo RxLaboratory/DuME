@@ -100,10 +100,10 @@ int main(int argc, char *argv[])
     helpStrings << "    --color-profile profile     The input color profile. One of: srgb, bt709, bt2020_10, bt2020_12";
     helpStrings << "";
     helpStrings << "Image Sequence and After Effects Input Options";
-    helpStrings << "    -framerate fps / -f fps     The input framerate";
+    helpStrings << "    --framerate fps / -f fps     The input framerate";
     helpStrings << "";
     helpStrings << "After Effects Input Options";
-    helpStrings << "    -c composition / -c composition     The name of the composition to render";
+    helpStrings << "    --comp composition / -c composition     The name of the composition to render";
     helpStrings << "    --rq-item item                      The index of the After EFfects render queue item to render";
     helpStrings << "    --use-queue                         Just launch the After Effects render queue";
     helpStrings << "";
