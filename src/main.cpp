@@ -65,10 +65,10 @@ void initFFmpeg(DuSplashScreen *s)
     ffmpeg->init();
 }
 
-void buildUI(int argc, char *argv[], DuSplashScreen *s)
+void buildUI(QStringList args, DuSplashScreen *s)
 {
     s->newMessage("Building UI");
-    MainWindow *w = new MainWindow( argc, argv );
+    MainWindow *w = new MainWindow( args );
 #ifndef Q_OS_LINUX
     FrameLessWindow f(w);
 #endif
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     //prep cache
     cacheManager->init();
     //build UI and show
-    buildUI(argc, argv, a.splashScreen());
+    buildUI(a.arguments(), a.splashScreen());
     //end appli
     return a.exec();
 }

@@ -34,7 +34,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(int argc, char *argv[], QWidget *parent = nullptr);
+    explicit MainWindow(QStringList args, QWidget *parent = nullptr);
     void onffmpegCommandsButton_clicked();
 
 private slots:

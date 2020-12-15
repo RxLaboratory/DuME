@@ -5,7 +5,7 @@
 #include <QGraphicsBlurEffect>
 #include "duexr.h"
 
-MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
+MainWindow::MainWindow(QStringList args, QWidget *parent) :
     QMainWindow(parent)
 {
     qDebug() << "Create Main Window";
@@ -136,6 +136,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
     if (ffmpeg->isValid())
     {
+        int argc = args.count();
         if (argc == 1) queueWidget->addInputFile("");
         else
         {
@@ -152,7 +153,8 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
 
             while (i < argc)
             {
-                QString arg = argv[i];
+                QString arg = args[i];
+
                 if (arg.startsWith("-"))
                 {
                     arg = arg.toLower();
@@ -160,27 +162,27 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
                     else if ( (arg == "--comp" || arg == "-c") && i < argc-1 )
                     {
                         i++;
-                        compName = argv[i];
+                        compName = args[i];
                     }
                     else if (arg == "--rq-item" && i < argc-1 )
                     {
                         i++;
-                        rqItem = QString(argv[i]).toInt();
+                        rqItem = QString(args[i]).toInt();
                     }
                     else if ( (arg == "--framerate" || arg == "-f" ) && i < argc-1 )
                     {
                         i++;
-                        framerate = QString(argv[i]).toDouble();
+                        framerate = QString(args[i]).toDouble();
                     }
                     else if (arg == "--color-profile" && i < argc-1 )
                     {
                         i++;
-                        colorProfile = argv[i];
+                        colorProfile = args[i];
                     }
                     else if ( (arg == "--output" || arg == "-o") && i < argc-1 )
                     {
                         i++;
-                        queueWidget->setOutputPath( argv[i] );
+                        queueWidget->setOutputPath( args[i] );
                     }
                     else if ( arg == "--autostart" )
                     {
@@ -193,13 +195,13 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
                     else if ( (arg == "--preset" || arg == "-p") && i < argc-1 )
                     {
                         i++;
-                        queueWidget->setOutputPreset( argv[i] );
+                        queueWidget->setOutputPreset( args[i] );
                     }
 #ifndef Q_OS_LINUX
                     else if ( arg == "--aerender" && i < argc-1 )
                     {
                         i++;
-                        settings.setValue("aerender/path", argv[i]);
+                        settings.setValue("aerender/path", args[i]);
                         settings.sync();
                         _ae->setBinary("Custom");
                     }

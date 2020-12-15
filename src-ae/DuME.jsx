@@ -7,6 +7,8 @@
 
     DuAEF.init("DuME", "0.1.5");
 
+    DuAEF.debug = false;
+
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
     DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
     DuAEF.forumURL = 'https://forum.rainboxlab.org';
@@ -20,6 +22,7 @@
     DuAEF.newsArgs = 'wp/?call_custom_simple_rss=1&csrp_show_meta=0&csrp_cat=20';
 
     var settings = new DuSettings();
+    var aerender = null;
 
     // ================ FUNCTIONS =============
 
@@ -37,6 +40,8 @@
         autoStartButton.setChecked( settings.data.autoStart );
         autoQuitButton.enabled = autoStartButton.checked;
         autoQuitButton.setChecked( settings.data.autoQuit );
+
+        aerender = DuAEF.DuAE.App.getAeRender();
     }
 
     function setupTemplates()
@@ -107,15 +112,20 @@
 
         //launch process
         DuMEProcess = new DuProcess( settings.data.dumePath );
-        var args = ["-comp", compName, "-framerate", framerate,  dumeProjectFile.fsName, "-output", outputFile.fsName, "-preset", presetsButton.text, "-hideconsole"  ];
+        var args = ["--comp", compName, "--framerate", framerate,  dumeProjectFile.fsName, "--output", outputFile.fsName, "--preset", presetsButton.text ];
+        if (!DuAEF.debug) args.push("--hide-console");
         if (settings.data.autoStart)
         {
-            args.push("-autostart");
-            if (settings.data.autoQuit) args.push("-autoquit");
+            args.push("--autostart");
+            if (settings.data.autoQuit) args.push("--autoquit");
         }
-        //TODO maybe add a preset selector
-        DuMEProcess.start( args );
+        if (aerender)
+        {
+            args.push("--aerender");
+            args.push(aerender.fsName);
+        }
 
+        DuMEProcess.start( args );
 
         app.project.close( CloseOptions.DO_NOT_SAVE_CHANGES );
         app.open( projectFile );
@@ -281,4 +291,5 @@
     //Show UI
     DuAEF.DuScriptUI.showUI(ui);
     DuAEF.enterRunTime();
+
 })(this);
