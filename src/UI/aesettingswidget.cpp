@@ -91,7 +91,8 @@ void AESettingsWidget::on_aeCacheBrowseButton_clicked()
 
 void AESettingsWidget::updateAe()
 {
-    _freezeUI = true;
+    bool frozen = _freezeUI;
+    _freezeUI = true;;
 
     //aerender path
     QString aerenderPath = _ae->binary();
@@ -108,12 +109,15 @@ void AESettingsWidget::updateAe()
     aerenderPathEdit->setEnabled( _ae->currentName() == "Custom" );
     aerenderBrowseButton->setEnabled( _ae->currentName() == "Custom" );
 
-    _freezeUI = false;
+    _freezeUI = frozen;
 }
 
 void AESettingsWidget::refreshAeVersionBox()
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
+
+    aeVersionBox->clear();
 
     foreach(AfterEffectsVersion *ae, _ae->versions())
     {
@@ -122,5 +126,5 @@ void AESettingsWidget::refreshAeVersionBox()
     aeVersionBox->addItem("Latest", "Latest" );
     aeVersionBox->addItem("Custom", _ae->binary() );
 
-    _freezeUI = false;
+    _freezeUI = frozen;
 }

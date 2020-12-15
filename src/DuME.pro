@@ -211,7 +211,7 @@ win* {
     CONFIG += console
 } else:unix {
     # Fix issue with c++ version used to compile Qt in some distros (Ubuntu) with Qt <= 5.12.
-    # Need to check the version of c++ used with distros providing Qt > 12
+    # Need to check the version of c++ used with distros providing Qt > 5.12
     equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 13):QMAKE_CXXFLAGS += "-fno-sized-deallocation"
 } else:macx {
     # Just in case...

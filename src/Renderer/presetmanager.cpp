@@ -4,6 +4,7 @@
 
 PresetManager::PresetManager(QObject *parent) : QObject(parent)
 {
+    QSettings settings;
     load();
     _resetDefaultPreset = ":/presets/MP4 - Standard";
     _defaultPreset = QFileInfo( settings.value("presets/default", _resetDefaultPreset).toString() );
@@ -11,6 +12,7 @@ PresetManager::PresetManager(QObject *parent) : QObject(parent)
 
 void PresetManager::load()
 {
+    QSettings settings;
     //list internal
     _internalPresets.clear();
     foreach(QFileInfo preset, QDir(":/presets/").entryInfoList(QDir::Files))
@@ -53,6 +55,7 @@ Preset PresetManager::defaultPreset() const
 
 void PresetManager::setDefaultPreset(const Preset &defaultPreset)
 {
+    QSettings settings;
     _defaultPreset = defaultPreset;
     settings.setValue("presets/default", _defaultPreset.file().absoluteFilePath() );
 }

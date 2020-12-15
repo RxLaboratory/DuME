@@ -187,8 +187,6 @@ public slots:
 private:
 
     // === ATTRIBUTES ===
-
-    QSettings settings;
     // The ffmpeg version
     QString _version;
 

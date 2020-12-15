@@ -113,6 +113,7 @@ FFBaseObject *FFmpeg::defaultObject()
 
 bool FFmpeg::setBinary(QString path, bool initialize)
 {
+    QSettings settings;
     if ( path == binary() ) return false;
     if ( AbstractRendererInfo::setBinary(path) )
     {
@@ -130,6 +131,7 @@ void FFmpeg::init()
 {   
     //TODO auto find ffmpeg if no settings or path invalid
     QSettings settings;
+
     _version = settings.value("ffmpeg/version","").toString();
 
 #ifdef Q_OS_LINUX
@@ -209,6 +211,8 @@ void FFmpeg::init()
 
     _status = MediaUtils::Waiting;
     emit statusChanged(_status);
+
+    settings.sync();
 }
 
 QList<FFSampleFormat *> FFmpeg::sampleFormats() const
@@ -542,6 +546,7 @@ bool muxerSorter(FFMuxer *m1,FFMuxer *m2)
 
 void FFmpeg::gotMuxers(QString output, QString newVersion)
 {
+    QSettings settings;
     //delete all
     qDeleteAll(_muxers);
     _muxers.clear();
@@ -684,7 +689,6 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
         }
 
         settings.endArray();
-
         _prevMax = _prevMax + max;
     }
 
@@ -859,6 +863,7 @@ bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)
 
 QString FFmpeg::gotVersion(QString output)
 {
+    QSettings settings;
     QString v = "";
 
     //ffmpeg version (\S+)
@@ -879,6 +884,8 @@ QString FFmpeg::gotVersion(QString output)
 
 void FFmpeg::gotCodecs(QString output, QString newVersion )
 {
+    QSettings settings;
+
     //delete all
     qDeleteAll(_videoEncoders);
     qDeleteAll(_audioEncoders);
@@ -1132,7 +1139,6 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
         //close array
         settings.endArray();
-
         _prevMax = _prevMax + max;
     }
 
@@ -1145,6 +1151,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
 void FFmpeg::gotPixFormats(QString output, QString newVersion)
 {
+    QSettings settings;
     //delete all
     qDeleteAll(_pixFormats);
     _pixFormats.clear();
@@ -1266,6 +1273,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
 void FFmpeg::gotSampleFormats(QString output, QString newVersion)
 {
+    QSettings settings;
     //delete all
     qDeleteAll(_sampleFormats);
     _sampleFormats.clear();

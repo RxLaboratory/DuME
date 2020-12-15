@@ -31,7 +31,6 @@ private:
     QList<Preset> _userPresets;
     Preset _defaultPreset;
     QString _resetDefaultPreset;
-    QSettings settings;
 };
 
 #endif // PRESETMANAGER_H
