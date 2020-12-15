@@ -284,6 +284,8 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (pixFmt == "" && vc->name() == "h264") pixFmt = "yuv420p";
                 if (pixFmt == "" && muxer == "mp4") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
+                // video codecs with alpha need to set -auto-alt-ref to 0
+                if (stream->pixFormat()->hasAlpha() && muxer != "image2") arguments << "-auto-alt-ref" << "0";
 
                 //color
                 //add color management

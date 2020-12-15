@@ -1,0 +1,83 @@
+{
+    "dume": {
+        "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "codec": {
+                    "name": "",
+                    "prettyName": "Default"
+                },
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "sampleFormat": {
+                    "name": "",
+                    "prettyName": "Default"
+                },
+                "samplingRate": 0
+            }
+        ],
+        "muxer": {
+            "audio": true,
+            "name": "webm",
+            "prettyName": "WebM",
+            "sequence": false,
+            "video": true
+        },
+        "options": [
+        ],
+        "version": "0.1.5_development build",
+        "videoStreams": [
+            {
+                "bitrate": 0,
+                "bitrateType": "VBR",
+                "codec": {
+                    "name": "vp8",
+                    "prettyName": "On2 VP8 "
+                },
+                "colorPrimaries": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorRange": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorSpace": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "colorTRC": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "encodingSpeed": -1,
+                "framerate": 0,
+                "height": 0,
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "level": "",
+                "pixAspect": 1,
+                "pixFormat": {
+                    "name": "yuva420p",
+                    "prettyName": "yuva420p (20 bits - 4 channels)"
+                },
+                "premultipliedAlpha": true,
+                "profile": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
+                "quality": -1,
+                "tuning": {
+                    "name": "",
+                    "prettyName": "Default"
+                },
+                "width": 0
+            }
+        ]
+    }
+}

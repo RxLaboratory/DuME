@@ -94,6 +94,8 @@
         <file alias="MP4 - Standard - High Compat">resources/presets/MP4 - Standard - High Compat.meprst</file>
         <file alias="MP4 - Proxy">resources/presets/MP4 - Proxy.meprst</file>
         <file alias="MP4 - Streaming">resources/presets/MP4 - Streaming.meprst</file>
+        <file alias="WEBM">resources/presets/WEBM.meprst</file>
+        <file alias="WEBM - Alpha">resources/presets/WEBM - Alpha.meprst</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="splash">resources/images/splash.png</file>

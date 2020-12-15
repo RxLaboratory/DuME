@@ -173,12 +173,14 @@ void OutputWidget::mediaInfoChanged()
         formatsBox->setCurrentData( m->name() );
     }
     if (formatsBox->currentIndex() == -1)
-        {
-            //try without filter
-            formatsFilterBox->setCurrentIndex(0);
-            ffmpeg_loadMuxers();
-            formatsBox->setCurrentData( m->name() );
-        }
+    {
+        //try without filter
+        formatsFilterBox->setCurrentIndex(0);
+        ffmpeg_loadMuxers();
+        formatsBox->setCurrentData( m->name() );
+    }
+    // update output path (to set the extension)
+    setOutputPath(outputEdit->text());
 
     if (m->name() == "")
     {
@@ -377,7 +379,6 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
 
     //load
     _loadingPreset = true;
-    //load
 
     _mediaInfo->loadPreset( QFileInfo(presetsBox->itemData(index).toString()) );
 

@@ -9,10 +9,15 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 ### New Features
 
 - Ability to set the audio sample format
+- Webm support (with alpha too), with two new presets
 
-## Improvements
+### Improvements
 
 - Complete UI Refactor
+
+### Fixes
+
+- Fixed the extension of the output not changed when changing a preset.
 
 ## 0.1.4
 
