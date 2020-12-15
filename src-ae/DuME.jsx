@@ -5,7 +5,7 @@
     #include DuAEF.jsxinc
     #include "dume_required/icons.jsxinc"
 
-    DuAEF.init("DuME", "0.1.3-RC");
+    DuAEF.init("DuME", "0.1.5");
 
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
     DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
@@ -27,8 +27,6 @@
 
     function loadSettings()
     {
-        setupTemplates();
-
         //defaults
         settings.data.dumePath = def(settings.data.dumePath, "");
         settings.data.autoStart = def(settings.data.autoStart, true);
@@ -78,6 +76,7 @@
 
     function addCompToDuME()
     {
+        setupTemplates();
         //TODO Use sockets in DuME.
         //In the meantime, use command line arguments
 
