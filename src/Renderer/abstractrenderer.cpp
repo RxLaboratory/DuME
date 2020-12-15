@@ -321,7 +321,7 @@ void AbstractRenderer::setCurrentFrame(int currentFrame, double size, double bit
 
     QTime currentTime = QTime::currentTime();
     int elapsedSeconds = _startTime.secsTo( currentTime );
-    int remainingSeconds = elapsedSeconds * _numFrames / _currentFrame;
+    int remainingSeconds = (elapsedSeconds * _numFrames / _currentFrame)-elapsedSeconds;
 
     _elapsedTime = QTime( 0, 0 ).addSecs( elapsedSeconds );
     _timeRemaining = QTime( 0, 0 ).addSecs( remainingSeconds );
