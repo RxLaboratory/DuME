@@ -538,7 +538,11 @@ void MainWindow::progress()
 
     double outputSize = _renderQueue->outputSize();
     QString outputSizeText = "";
-    if ( outputSize < 10*1024*1024*1024.0 )
+    if (outputSize < 10)
+    {
+        outputSizeText = "N/A";
+    }
+    else if ( outputSize < 10*1024*1024*1024.0 )
     {
         outputSize = outputSize / 1024/1024;
         outputSizeText = QString::number(int(outputSize*100)/100) + " MB";
@@ -552,7 +556,11 @@ void MainWindow::progress()
 
     double outputBitrate = _renderQueue->outputBitrate();
     QString outputBitrateText = "";
-    if ( outputBitrate < 10000000 )
+    if (outputBitrate < 10)
+    {
+        outputBitrateText = "N/A";
+    }
+    else if ( outputBitrate < 10000000)
     {
         outputBitrate = outputBitrate / 1000;
         outputBitrateText = QString::number(int(outputBitrate*100)/100) + " kbps";
@@ -566,7 +574,11 @@ void MainWindow::progress()
 
     double expectedSize = _renderQueue->expectedSize();
     QString expectedSizeText = "";
-    if ( expectedSize < 10*1024*1024*1024.0 )
+    if (expectedSize < 10)
+    {
+        expectedSizeText = "N/A";
+    }
+    else if ( expectedSize < 10*1024*1024*1024.0)
     {
         expectedSize = expectedSize /1024/1024;
         expectedSizeText = QString::number(int(expectedSize*100)/100) + " MB";
@@ -578,7 +590,17 @@ void MainWindow::progress()
     }
     expectedSizeLabel->setText ( expectedSizeText );
 
-    speedLabel->setText( QString::number(int(_renderQueue->encodingSpeed()*100)/100.0) + "x");
+    float speed = int(_renderQueue->encodingSpeed()*100)/100.0;
+    if (speed > 0.1)
+    {
+        speedTitleLabel->setText("Speed: ");
+        speedLabel->setText( QString::number(speed) + "x");
+    }
+    else
+    {
+        speedTitleLabel->setText("Frame: ");
+        speedLabel->setText(QString::number(_renderQueue->currentFrame()) + " / " + QString::number(numFrames));
+    }
 
     timeRemainingLabel->setText( _renderQueue->remainingTime().toString("hh:mm:ss"));
 

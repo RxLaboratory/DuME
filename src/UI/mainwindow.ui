@@ -185,7 +185,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_17">
+          <widget class="QLabel" name="speedTitleLabel">
            <property name="text">
             <string>Speed: </string>
            </property>
