@@ -17,7 +17,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
     goMenu->addAction( actionGo );
     goMenu->addAction( actionGoQuit );
 
-    QToolButton *goButton = new QToolButton(this);
+    goButton = new QToolButton(this);
     goButton->setIcon(actionGo->icon());
     goButton->setText(actionGo->text());
     goButton->setToolTip(actionGo->toolTip());
@@ -598,6 +598,8 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
     {
         queuePage->setEnabled( false );
         actionGo->setEnabled(false);
+        actionGoQuit->setEnabled(false);
+        goButton->setEnabled(false);
         actionStop->setEnabled(true);
         mainStatusBar->clearMessage();
         setCursor(Qt::BusyCursor);
@@ -609,6 +611,8 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
         reInitCurrentProgress();
         currentEncodingNameLabel->setText("");
         actionGo->setEnabled(true);
+        actionGoQuit->setEnabled(true);
+        goButton->setEnabled(true);
         actionStop->setEnabled(false);
         mainStatusBar->clearMessage();
         setCursor(Qt::ArrowCursor);

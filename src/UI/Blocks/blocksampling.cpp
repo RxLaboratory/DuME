@@ -20,7 +20,7 @@ BlockSampling::BlockSampling(MediaInfo *mediaInfo, QWidget *parent) :
     samplingBox->addItem("48,000 Hz", 48000);
     samplingBox->addItem("88,200 Hz", 88200);
     samplingBox->addItem("96,000 Hz", 96000);
-    samplingBox->setCurrentIndex(6);
+    samplingBox->setCurrentData(48000);
 
     _freezeUI = false;
 }
@@ -43,6 +43,7 @@ void BlockSampling::setSampling(int s)
 
 void BlockSampling::activate(bool activate)
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     if (activate)
@@ -54,7 +55,7 @@ void BlockSampling::activate(bool activate)
         _mediaInfo->setSamplingRate( 0 );
     }
 
-    _freezeUI = false;
+    _freezeUI = frozen;
 }
 
 void BlockSampling::update()

@@ -121,6 +121,10 @@ private:
      * @brief statusLabel The status shown in the status bar
      */
     QLabel *statusLabel;
+    /**
+     * @brief goButton The button in the toolbar to launch the queue
+     */
+    QToolButton *goButton;
 
     FFmpegSettingsWidget *ffmpegSettingsWidget;
     AESettingsWidget *aeSettingsWidget;

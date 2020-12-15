@@ -60,11 +60,19 @@ QList<MediaInfo *> QueueWidget::getOutputMedia()
 
 void QueueWidget::openInputFile(QString file)
 {
+    if (inputWidgets.count() == 0)
+    {
+        addInput();
+    }
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 
 void QueueWidget::openInputFile(QUrl file)
 {
+    if (inputWidgets.count() == 0)
+    {
+        addInput();
+    }
     inputWidgets[ inputTab->currentIndex() ]->openFile(file);
 }
 

@@ -19,6 +19,7 @@ BlockAudioSampleFormat::BlockAudioSampleFormat(MediaInfo *mediaInfo, QWidget *pa
 
 void BlockAudioSampleFormat::activate(bool blockEnabled)
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     if (blockEnabled)
@@ -30,13 +31,14 @@ void BlockAudioSampleFormat::activate(bool blockEnabled)
         _mediaInfo->setAudioSampleFormat( "" );
     }
 
-    _freezeUI = false;
+    _freezeUI = frozen;
 }
 
 void BlockAudioSampleFormat::update()
 {
     qDebug() << "Update Audio Sample Format Block";
     if (_freezeUI) return;
+    _freezeUI = true;
 
     if (!_mediaInfo->hasAudio())
     {

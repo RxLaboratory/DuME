@@ -641,13 +641,21 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
             }
 
             //set file and launch
+            //frames
             double frameRate = input->videoStreams()[0]->framerate();
             input->update( QFileInfo(aeTempPath + "/" + files[0]));
             if (int( frameRate ) != 0) input->videoStreams()[0]->setFramerate(frameRate);
+            //add audio
+            QFileInfo audioFile(aeTempPath + "/DuME.wav");
+            if (audioFile.exists())
+            {
+                MediaInfo *audio = new MediaInfo(audioFile, this);
+                _currentItem->addInputMedia(audio);
+            }
 
             //reInsert at first place in renderqueue
             _encodingQueue.insert(0,_currentItem);
-
+            //and go
             encodeNextItem();
         }
         else
