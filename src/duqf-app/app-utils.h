@@ -15,6 +15,10 @@
 #include "app-style.h"
 #include "../duqf-utils/utils.h"
 
+#ifdef Q_OS_WIN
+#include "windows.h"
+#endif
+
 class MessageHandler
 {
 public:
