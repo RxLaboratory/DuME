@@ -12,24 +12,12 @@ AESettingsWidget::AESettingsWidget(AfterEffects *ae, QWidget *parent) :
     QString cachePath = QDir::toNativeSeparators( cacheManager->getRootCacheDir().absolutePath() );
     aeCacheEdit->setText(cachePath);
 
-    //aerender path
-    QString aerenderPath = _ae->binary();
-    if (aerenderPath == "") aerenderPath = "Not Found! You may need to install Adobe After Effects.";
-    aerenderPath = QDir::toNativeSeparators(aerenderPath);
-    aerenderPathEdit->setText(aerenderPath);
-    //ae versions
-    refreshAeVersionBox();
+    updateAe();
 
-    //select the right item
-    if ( _ae->useLatest() ) aeVersionBox->setCurrentText( "Latest" );
-    else aeVersionBox->setCurrentText( _ae->currentName() );
-
-    aerenderPathEdit->setEnabled( _ae->currentName() == "Custom" );
-    aerenderBrowseButton->setEnabled( _ae->currentName() == "Custom" );
+    connect(_ae, &AbstractRendererInfo::binaryChanged, this, &AESettingsWidget::updateAe);
 
     _freezeUI = false;
 }
-
 
 void AESettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
 {
@@ -99,6 +87,28 @@ void AESettingsWidget::on_aeCacheBrowseButton_clicked()
     QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",cacheManager->getRootCacheDir().absolutePath());
     if (path == "") return;
     aeCacheEdit->setText(path);
+}
+
+void AESettingsWidget::updateAe()
+{
+    _freezeUI = true;
+
+    //aerender path
+    QString aerenderPath = _ae->binary();
+    if (aerenderPath == "") aerenderPath = "Not Found! You may need to install Adobe After Effects.";
+    aerenderPath = QDir::toNativeSeparators(aerenderPath);
+    aerenderPathEdit->setText(aerenderPath);
+    //ae versions
+    refreshAeVersionBox();
+
+    //select the right item
+    if ( _ae->useLatest() ) aeVersionBox->setCurrentText( "Latest" );
+    else aeVersionBox->setCurrentText( _ae->currentName() );
+
+    aerenderPathEdit->setEnabled( _ae->currentName() == "Custom" );
+    aerenderBrowseButton->setEnabled( _ae->currentName() == "Custom" );
+
+    _freezeUI = false;
 }
 
 void AESettingsWidget::refreshAeVersionBox()

@@ -25,6 +25,7 @@ private slots:
     void on_aerenderBrowseButton_clicked();
     void on_aeCacheEdit_textChanged(const QString &arg1);
     void on_aeCacheBrowseButton_clicked();
+    void updateAe();
 
 private:
     QSettings settings;

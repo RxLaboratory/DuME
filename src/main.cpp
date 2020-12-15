@@ -104,8 +104,9 @@ int main(int argc, char *argv[])
     helpStrings << "";
     helpStrings << "After Effects Input Options";
     helpStrings << "    --comp composition / -c composition     The name of the composition to render";
-    helpStrings << "    --rq-item item                      The index of the After EFfects render queue item to render";
-    helpStrings << "    --use-queue                         Just launch the After Effects render queue";
+    helpStrings << "    --rq-item item                          The index of the After EFfects render queue item to render";
+    helpStrings << "    --use-queue                             Just launch the After Effects render queue";
+    helpStrings << "    --aerender aerenderpath                 Explicitly set the After Effects renderer to use";
     helpStrings << "";
     helpStrings << "Global Output Options";
     helpStrings << "    --output file / -o file     The name of the output file";

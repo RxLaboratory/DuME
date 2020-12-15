@@ -195,6 +195,15 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent) :
                         i++;
                         queueWidget->setOutputPreset( argv[i] );
                     }
+#ifndef Q_OS_LINUX
+                    else if ( arg == "--aerender" && i < argc-1 )
+                    {
+                        i++;
+                        settings.setValue("aerender/path", argv[i]);
+                        settings.sync();
+                        _ae->setBinary("Custom");
+                    }
+#endif
                     else if (arg != "--no-banner" && arg != "--hide-console")
                     {
                         log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);
