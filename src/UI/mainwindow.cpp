@@ -569,7 +569,7 @@ void MainWindow::progress()
     }
     expectedSizeLabel->setText ( expectedSizeText );
 
-    speedLabel->setText( QString::number(int(_renderQueue->encodingSpeed()*100)/100) + "x");
+    speedLabel->setText( QString::number(int(_renderQueue->encodingSpeed()*100)/100.0) + "x");
 
     timeRemainingLabel->setText( _renderQueue->remainingTime().toString("hh:mm:ss"));
 
