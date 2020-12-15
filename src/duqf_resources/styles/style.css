@@ -595,6 +595,10 @@ QStatusBar {
     padding: @margin;
 }
 
+QStatusBar::item {
+    border: none;
+}
+
 QStatusBar QWidget {
     background: none;
     color: @color-less-light-grey;

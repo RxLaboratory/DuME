@@ -1,4 +1,4 @@
-#include "framelesswindow.h"
+#include "duqf-app/app-style.h"
 
 FrameLessWindow::FrameLessWindow(QMainWindow *target) :
     _target(target),

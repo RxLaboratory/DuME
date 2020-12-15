@@ -29,6 +29,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 SOURCES += \
     UI/aesettingswidget.cpp \
     UI/ffmpegsettingswidget.cpp \
+    duqf-app/app-style.cpp \
     duqf-utils/language-utils.cpp \
     duqf-utils/utils.cpp \
     duqf-widgets/appearancesettingswidget.cpp \
@@ -85,7 +86,6 @@ SOURCES += \
     UI/bigcombobox.cpp \
     UI/datacombobox.cpp \
     UI/dropshadow.cpp \
-    UI/framelesswindow.cpp \
     UI/inputwidget.cpp \
     UI/mainwindow.cpp \
     UI/outputwidget.cpp \
@@ -156,7 +156,6 @@ HEADERS += \
     UI/bigcombobox.h \
     UI/datacombobox.h \
     UI/dropshadow.h \
-    UI/framelesswindow.h \
     UI/inputwidget.h \
     UI/mainwindow.h \
     UI/outputwidget.h \
