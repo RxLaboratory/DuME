@@ -67,6 +67,8 @@ private slots:
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
     void on_ffmpegCommandsButton_clicked();
+    void on_aeCommandsEdit_returnPressed();
+    void on_aeCommandsButton_clicked();
 
     // ACTIONS
     void on_actionGo_triggered();
@@ -75,6 +77,8 @@ private slots:
 
     // GENERAL
     void quit(bool force = false);
+
+
 
 private:
     // ========= RxOT UI ==============

@@ -679,6 +679,18 @@ void MainWindow::on_ffmpegCommandsButton_clicked()
     ffmpeg->runCommand(commands);
 }
 
+void MainWindow::on_aeCommandsEdit_returnPressed()
+{
+    on_aeCommandsButton_clicked();
+}
+
+void MainWindow::on_aeCommandsButton_clicked()
+{
+    QString commands = aeCommandsEdit->text();
+    if (commands == "") commands = "-h";
+    _ae->runCommand(commands);
+}
+
 void MainWindow::go()
 {
     //generate input and output
@@ -855,3 +867,4 @@ void MainWindow::quit(bool force)
 {
     if (force || !MediaUtils::isBusy( _renderQueue->status() )) close();
 }
+
