@@ -339,6 +339,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 {
                     arguments << "-ar" << QString::number(sampling);
                 }
+
+                //sample format
+                QString sampleFormat = stream->sampleFormat()->name();
+                if (sampleFormat != "")
+                {
+                    arguments << "-sample_fmt" << sampleFormat;
+                }
             }
         }
         else

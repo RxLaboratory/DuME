@@ -81,6 +81,7 @@ SOURCES += \
     UI/Blocks/blockvideobitrate.cpp \
     UI/Blocks/blockvideocodec.cpp \
     UI/Blocks/blockvideoprofile.cpp \
+    UI/Blocks/blockaudiosampleformat.cpp \
     UI/bigcombobox.cpp \
     UI/datacombobox.cpp \
     UI/dropshadow.cpp \
@@ -151,6 +152,7 @@ HEADERS += \
     UI/Blocks/blockvideocodec.h \
     UI/Blocks/blockvideoprofile.h \
     UI/Blocks/blockcustom.h \
+    UI/Blocks/blockaudiosampleformat.h \
     UI/bigcombobox.h \
     UI/datacombobox.h \
     UI/dropshadow.h \
@@ -188,6 +190,7 @@ FORMS += \
     UI/Blocks/blockvideoprofile.ui \
     UI/Blocks/blockcustom.ui \
     UI/Blocks/uiblockwidget.ui \
+    UI/Blocks/blockaudiosampleformat.ui \
     UI/mainwindow.ui \
     UI/outputwidget.ui \
     UI/queuewidget.ui \

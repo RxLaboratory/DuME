@@ -898,17 +898,35 @@
     <string>M</string>
    </property>
   </action>
+  <action name="actionAudioSampleFormat">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-audio-bit-depth</normaloff>:/icons/set-audio-bit-depth</iconset>
+   </property>
+   <property name="text">
+    <string>Sample Format (Bit Depth)</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the audio sample format and depth</string>
+   </property>
+   <property name="shortcut">
+    <string>D</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>BigComboBox</class>
-   <extends>QComboBox</extends>
-   <header>UI/bigcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>DataComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/datacombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/bigcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

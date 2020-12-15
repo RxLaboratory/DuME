@@ -4,6 +4,20 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 [TOC]
 
+## 0.1.5
+
+### New Features
+
+- Ability to set the audio sample format
+
+## Improvements
+
+- Complete UI Refactor
+
+## 0.1.4
+
+Private testing release
+
 ## 0.1.3
 
 ### New Features

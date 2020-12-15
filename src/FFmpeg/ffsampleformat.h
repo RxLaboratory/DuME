@@ -4,6 +4,9 @@
 #include <QObject>
 
 #include "FFmpeg/ffbaseobject.h"
+#include "duqf-utils/utils.h"
+
+#include <QRegularExpression>
 
 class FFSampleFormat : public FFBaseObject
 {

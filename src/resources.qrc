@@ -61,6 +61,8 @@
         <file alias="bash">resources/icons/bash-terminal_d.svg</file>
         <file alias="ae">resources/icons/ae.svg</file>
         <file alias="ffmpeg">resources/icons/ffmpeg.svg</file>
+        <file alias="audio-bit-depth">resources/icons/audio-bit-depth_sl.svg</file>
+        <file alias="set-audio-bit-depth">resources/icons/set-audio-bit-depth_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
@@ -106,14 +108,6 @@
         <file alias="render16">resources/after-effects/-indep-render-16</file>
         <file alias="render17">resources/after-effects/-indep-render-17</file>
     </qresource>
-    <qresource prefix="/fonts">
-        <file alias="calibri">resources/fonts/calibri.ttf</file>
-        <file alias="calibri_bold">resources/fonts/calibrib.ttf</file>
-        <file alias="calibri_italic">resources/fonts/calibrii.ttf</file>
-        <file alias="calibri_light">resources/fonts/calibril.ttf</file>
-        <file alias="calibri_light_italic">resources/fonts/calibrili.ttf</file>
-        <file alias="calibri_bold_italic">resources/fonts/calibriz.ttf</file>
-    </qresource>
     <qresource prefix="/regex">
         <file alias="ffmpeg video stream">resources/regex/ffmpegVideoStream.txt</file>
         <file alias="ffmpeg audio stream">resources/regex/ffmpegAudioStream.txt</file>
@@ -124,5 +118,6 @@
         <file alias="ffmpeg fps">resources/regex/ffmpegFPS.txt</file>
         <file alias="ffmpeg resolution">resources/regex/ffmpegResolution.txt</file>
         <file alias="ffmpeg sampling">resources/regex/ffmpegSampling.txt</file>
+        <file alias="ffmpeg sample format">resources/regex/ffmpegSampleFormat.txt</file>
     </qresource>
 </RCC>

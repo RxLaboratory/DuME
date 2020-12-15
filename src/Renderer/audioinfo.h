@@ -5,6 +5,7 @@
 
 #include "global.h"
 #include "FFmpeg/fflanguage.h"
+#include "FFmpeg/ffsampleformat.h"
 
 class AudioInfo : public QObject
 {
@@ -36,6 +37,11 @@ public:
     int id() const;
     void setId(int id, bool silent = false);
 
+    FFSampleFormat *sampleFormat() const;
+    void setSampleFormat(FFSampleFormat *sampleFormat, bool silent = false);
+    void setSampleFormat(QString name, bool silent = false);
+    void setSampleFormat(QJsonObject obj, bool silent = false);
+
 signals:
     void changed();
 private:
@@ -45,6 +51,7 @@ private:
     qint64 _bitrate;
     FFCodec *_codec;
     FFLanguage *_language;
+    FFSampleFormat *_sampleFormat;
 };
 
 #endif // AUDIOINFO_H

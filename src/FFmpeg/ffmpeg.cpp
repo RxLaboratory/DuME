@@ -10,7 +10,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // Defaults
     _defaultPixFormat = FFPixFormat::getDefault( this );
-    _defaultSampleFormat = FFSampleFormat::getDefault(this);
+    _defaultSampleFormat = FFSampleFormat::getDefault( this );
     _defaultCodec = FFCodec::getDefault( this );
     _defaultMuxer = FFMuxer::getDefault( this );
     _defaultObject = new FFBaseObject("", "Default", this);

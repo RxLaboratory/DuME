@@ -185,6 +185,8 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
 
             stream->setChannels( match.captured(5) );
 
+            stream->setSampleFormat(match.captured(6));
+
             QRegularExpressionMatch matchBitrate = reBitrate.match( info );
             if (matchBitrate.hasMatch())
             {
@@ -359,6 +361,7 @@ QString MediaInfo::getDescription()
             if ( ac->name() == "copy" ) continue;
 
             if (s->samplingRate() != 0) mediaInfoString += "\nSampling rate: " + QString::number( s->samplingRate() ) + " Hz";
+            if (s->sampleFormat()->name() != "") mediaInfoString += "\nSample Format (bit depth): " + s->sampleFormat()->prettyName();
             if (s->channels() != "")
             {
                 mediaInfoString += "\nChannels: " + s->channels();
@@ -916,7 +919,7 @@ void MediaInfo::setSamplingRate(int value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setSamplingRate(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setSamplingRate(value, silent);
 }
 
@@ -926,7 +929,7 @@ void MediaInfo::setChannels(QString value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setChannels(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setChannels(value, silent);
 }
 
@@ -936,7 +939,7 @@ void MediaInfo::setAudioBitrate(qint64 value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setBitrate(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setBitrate(value, silent);
 }
 
@@ -946,7 +949,7 @@ void MediaInfo::setAudioCodec(QString value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setCodec(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setCodec(value, silent);
 }
 
@@ -956,7 +959,7 @@ void MediaInfo::setAudioCodec(FFCodec *value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setCodec(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setCodec(value, silent);
 }
 
@@ -966,8 +969,28 @@ void MediaInfo::setAudioLanguage(QString value, int id, bool silent)
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setLanguage(value, silent);
-    else if (id >= 0 && id < _videoStreams.count())
+    else if (id >= 0 && id < _audioStreams.count())
         _audioStreams[id]->setLanguage(value, silent);
+}
+
+void MediaInfo::setAudioSampleFormat(QString value, int id, bool silent)
+{
+    if (!hasAudio()) return;
+    if (id < 0)
+        foreach( AudioInfo *stream, _audioStreams)
+            stream->setSampleFormat(value, silent);
+    else if (id >= 0 && id < _audioStreams.count())
+        _audioStreams[id]->setSampleFormat(value, silent);
+}
+
+void MediaInfo::setAudioSampleFormat(FFSampleFormat *value, int id, bool silent)
+{
+    if (!hasAudio()) return;
+    if (id < 0)
+        foreach( AudioInfo *stream, _audioStreams)
+            stream->setSampleFormat(value, silent);
+    else if (id >= 0 && id < _audioStreams.count())
+        _audioStreams[id]->setSampleFormat(value, silent);
 }
 
 void MediaInfo::streamChanged()

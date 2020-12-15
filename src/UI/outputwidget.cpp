@@ -50,6 +50,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat, ":/icons/pix_fmt" );
     blocksMenu->addAction(actionAudio);
     blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling, ":/icons/audio-sampling" );
+    blockAudioSampleFormat = addBlock(new BlockAudioSampleFormat(_mediaInfo), actionAudioSampleFormat, ":/icons/audio-bit-depth");
     blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec, ":/icons/audio-codec" );
     blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate, ":/icons/audio-quality" );
     blocksMenu->addAction( actionOther );

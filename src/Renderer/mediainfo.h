@@ -167,6 +167,8 @@ public:
     void setAudioCodec(QString value, int id = -1, bool silent = false);
     void setAudioCodec(FFCodec *value, int id = -1, bool silent = false);
     void setAudioLanguage(QString value, int id = -1, bool silent = false);
+    void setAudioSampleFormat(FFSampleFormat *value, int id = -1, bool silent = false);
+    void setAudioSampleFormat(QString value, int id = -1, bool silent = false);
 
 signals:
     /**

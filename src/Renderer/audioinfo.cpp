@@ -8,6 +8,7 @@ AudioInfo::AudioInfo(QObject *parent) : QObject(parent)
     _bitrate = 0;
     _codec = ffmpeg->audioEncoder("");
     _language = new FFLanguage("");
+    _sampleFormat = ffmpeg->sampleFormat("");
 }
 
 AudioInfo::AudioInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -19,6 +20,7 @@ AudioInfo::AudioInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setBitrate(obj.value("bitrate").toInt(), true);
     setCodec(obj.value("codec").toObject(), true);
     setLanguage(obj.value("language").toObject().value("name").toString(), true);
+    setSampleFormat(obj.value("sampleFormat").toObject(), true);
 }
 
 void AudioInfo::copyFrom(AudioInfo *other, bool silent)
@@ -30,6 +32,7 @@ void AudioInfo::copyFrom(AudioInfo *other, bool silent)
     _codec = other->codec();
     delete _language;
     _language = other->language();
+    _sampleFormat = other->sampleFormat();
 
     if(!silent) emit changed();
 }
@@ -47,6 +50,7 @@ QJsonObject AudioInfo::toJson()
     obj.insert("bitrate", _bitrate);
     obj.insert( "codec", _codec->toJson());
     obj.insert("language", _language->toJson());
+    obj.insert("sampleFormat", _sampleFormat->toJson());
 
     return obj;
 }
@@ -126,4 +130,25 @@ void AudioInfo::setId(int id, bool silent)
 {
     _id = id;
     if(!silent) emit changed();
+}
+
+FFSampleFormat *AudioInfo::sampleFormat() const
+{
+    return _sampleFormat;
+}
+
+void AudioInfo::setSampleFormat(FFSampleFormat *sampleFormat, bool silent)
+{
+    _sampleFormat = sampleFormat;
+    if(!silent) emit changed();
+}
+
+void AudioInfo::setSampleFormat(QString name, bool silent)
+{
+    setSampleFormat(ffmpeg->sampleFormat(name), silent);
+}
+
+void AudioInfo::setSampleFormat(QJsonObject obj, bool silent)
+{
+    setSampleFormat( obj.value("name").toString(), silent);
 }

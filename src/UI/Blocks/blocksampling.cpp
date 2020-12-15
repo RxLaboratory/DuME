@@ -77,14 +77,16 @@ void BlockSampling::update()
     }
     emit blockEnabled(true);
 
-    for (int i = 0; i < samplingBox->count(); i++)
+    if (stream->samplingRate() > 0)
     {
-        if (samplingBox->itemData(i, Qt::UserRole).toInt() == stream->samplingRate())
-        {
-            samplingBox->setCurrentIndex(i);
-            return;
-        }
+        samplingBox->setCurrentData(stream->samplingRate());
     }
+    else
+    {
+        samplingBox->setCurrentData(48000);
+    }
+
+
     _freezeUI = false;
 }
 
