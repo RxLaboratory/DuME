@@ -1287,6 +1287,9 @@ void MediaInfo::loadSequence()
     QStringList missingFrames;
     QStringList emptyFrames;
     bool incorrect = false;
+
+    qDebug() << "Scanning file name.";
+
     while(reDigitsMatch.hasNext())
     {
         incorrect = false;
@@ -1333,6 +1336,13 @@ void MediaInfo::loadSequence()
 
         //Check if numbering is ok
         int numFrames = _endNumber - _startNumber + 1;
+        if (_endNumber == _startNumber)
+        {
+            qDebug() << "Wrong digits block.";
+            error = "This does not look like a sequence, we did not find the frame number.";
+            incorrect = true;
+        }
+
         if (numFrames != tempFrames.count() && !incorrect)
         {
             incorrect = true;
@@ -1357,27 +1367,34 @@ void MediaInfo::loadSequence()
         //we've found the digits block
         if (!incorrect)
         {
+            qDebug() << "Found " + QString::number(tempFrames.count()) + " frames.";
             error = "";
             //list all files in the sequence matching the pattern, and compute size
             _frames = tempFrames;
-            _bitrate = ( _size * 8 ) / ( _frames.count()/24 );
+            _bitrate = ( _size * 8 ) / ( _frames.count()/24.0 );
             if (_startNumber == 999999999) _startNumber = 0;
-            //update filename with ffmpeg convention
+            //update filename with dume convention
             QString digitsBlock = "";
             while(digitsBlock.count() < digits.count())
             {
                 digitsBlock += "#";
             }
             _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
+            qDebug() << "Naming scheme: " + _fileName;
             break;
         }
     }
 
+    qDebug() << "Finished scanning file name.";
+
     if (incorrect)
     {
         _info += error;
+        qDebug() << "Not a sequence/digits not found.";
         return;
     }
+
+    qDebug() << "Found digits, generating ffmpeg name.";
 
     //generates the sequence name used by ffmpeg
     //detects all {###}
@@ -1394,6 +1411,8 @@ void MediaInfo::loadSequence()
          //replace
          _ffmpegSequenceName.replace(match.capturedStart(),match.capturedLength(),"%" + QString::number(numDigits) + "d");
     }
+
+    qDebug() << "Sequence found!";
 }
 
 int MediaInfo::startNumber() const
