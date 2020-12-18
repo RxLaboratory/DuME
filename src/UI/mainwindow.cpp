@@ -347,7 +347,9 @@ void MainWindow::duqf_initUi()
 
     // ====== CONNECTIONS ======
     connect(duqf_maximizeButton,SIGNAL(clicked()),this,SLOT(duqf_maximize()));
+#ifndef Q_OS_MAC
     connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
+#endif
     connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
 
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
