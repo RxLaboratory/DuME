@@ -67,6 +67,7 @@ bool AbstractRendererInfo::runCommand(QStringList commands, int timeout, QIODevi
     _process->setArguments(commands);
     _ignoreErrors = ignoreErrors;
     _process->start(of);
+    QCoreApplication::processEvents();
     return _process->waitForFinished(timeout);
 }
 

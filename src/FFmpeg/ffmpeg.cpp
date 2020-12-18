@@ -185,6 +185,7 @@ void FFmpeg::init()
     if (runCommand( "-hide_banner -formats" , 10000))
     {
         gotMuxers( _output, newVersion );
+        qDebug() << "test";
     }
 
     //get long help
@@ -550,6 +551,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
     //delete all
     qDeleteAll(_muxers);
     _muxers.clear();
+    _decodeMuxers.clear();
+    _encodeMuxers.clear();
 
     //if the version is the same as previously, just read data from settings
     if (newVersion == _version)
@@ -616,6 +619,7 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
         for (int i = 0 ; i < muxers.count() ; i++)
         {
+            if (i%10 == 0) QCoreApplication::processEvents();
             QString muxer = muxers[i];
             emit progress(_prevMax + i);
 
@@ -852,8 +856,11 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
     emit newLog("Sorting muxers...");
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
+    qDebug() << "test";
     std::sort(_decodeMuxers.begin(),_decodeMuxers.end(),muxerSorter);
+    qDebug() << "test";
     std::sort(_encodeMuxers.begin(),_encodeMuxers.end(),muxerSorter);
+    qDebug() << "test";
 }
 
 bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)
@@ -1017,6 +1024,7 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
         for (int i = 0 ; i < codecs.count() ; i++)
         {
+            if (i%10 == 0) QCoreApplication::processEvents();
             QString codec = codecs[i];
             emit progress( _prevMax + i );
 
@@ -1218,6 +1226,7 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
         for (int i = 0 ; i < pixFmts.count() ; i++)
         {
+            if (i%10 == 0) QCoreApplication::processEvents();
             QString pixFmt = pixFmts[i];
 
             emit progress(i);
@@ -1319,6 +1328,7 @@ void FFmpeg::gotSampleFormats(QString output, QString newVersion)
 
         for (int i = 0 ; i < sampleFmts.count() ; i++)
         {
+            if (i%10 == 0) QCoreApplication::processEvents();
             QString sampleFmt = sampleFmts[i];
 
             QRegularExpressionMatch match = re.match(sampleFmt);

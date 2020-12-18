@@ -10,6 +10,8 @@ FFmpegSettingsWidget::FFmpegSettingsWidget(QWidget *parent) :
     ffmpegPathEdit->setText( QDir::toNativeSeparators( ffmpeg->binary() ) );
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
+    connect( ffmpeg, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
+
     _freezeUI = false;
 }
 
@@ -41,5 +43,19 @@ void FFmpegSettingsWidget::on_userPresetsPathEdit_editingFinished()
     settings.setValue("presets/path",userPresetsPathEdit->text());
     settings.sync();
     emit presetsPathChanged();
+}
+
+void FFmpegSettingsWidget::ffmpegStatus(MediaUtils::RenderStatus status)
+{
+    if ( MediaUtils::isBusy(status) )
+    {
+        pathWidget->setEnabled(false);
+        ffmpegBrowseButton->setText("Busy");
+    }
+    else
+    {
+        pathWidget->setEnabled(true);
+        ffmpegBrowseButton->setText("Browse...");
+    }
 }
 

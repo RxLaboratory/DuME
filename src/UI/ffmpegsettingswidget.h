@@ -23,7 +23,7 @@ private slots:
     void on_ffmpegPathEdit_editingFinished();
     void on_userPresetsBrowseButton_clicked();
     void on_userPresetsPathEdit_editingFinished();
-
+    void ffmpegStatus(MediaUtils::RenderStatus status);
 private:
     QSettings settings;
     bool _freezeUI;

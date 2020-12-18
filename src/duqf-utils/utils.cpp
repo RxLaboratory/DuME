@@ -44,7 +44,7 @@ bool MediaUtils::isBusy(MediaUtils::RenderStatus status)
     else if ( status == AERendering ) return true;
     else if ( status == BlenderRendering ) return true;
     else if ( status == Cleaning ) return true;
-
+    else if ( status == Initializing ) return true;
     return false;
 }
 

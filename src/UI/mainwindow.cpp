@@ -460,6 +460,8 @@ void MainWindow::ffmpegValid(bool valid)
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
         actionGo->setEnabled( true );
+        actionGoQuit->setEnabled(true);
+        goButton->setEnabled(true);
     }
     else
     {
@@ -470,6 +472,8 @@ void MainWindow::ffmpegValid(bool valid)
         setAcceptDrops( false );
         actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
         actionGo->setEnabled( false );
+        actionGoQuit->setEnabled(false);
+        goButton->setEnabled(false);
     }
 }
 

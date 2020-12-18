@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QRegularExpression>
+#include <QCoreApplication>
 
 #include "duqf-utils/utils.h"
 
