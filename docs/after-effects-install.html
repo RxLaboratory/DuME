@@ -8,7 +8,9 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Installation - DuME Documentation</title>
+  <title>Installation - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -36,7 +38,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -191,7 +193,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation</a>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
       </nav>
 
       
@@ -228,19 +230,23 @@
 </li>
 </ul>
 </div>
-<h1 id="after-effects-installation"><em>After Effects</em>: Installation<a class="headerlink" href="#after-effects-installation" title="Permanent link">&para;</a></h1>
+<h1 id="after-effects-installation"><img alt="" src="img/icons/after-effects_sd.svg" /> <em>After Effects</em>: Installation<a class="headerlink" href="#after-effects-installation" title="Permanent link">&para;</a></h1>
 <p>If <em>Adobe After Effects</em> is installed on the system, <em>DuME</em> is able to render and encode <em>After Effects</em> Compositions.</p>
 <p>Before these compositions can be rendered, some presets need to be created inside <em>After Effects</em>. This operation has to be done only once for each version of <em>After Effects</em> you want to use.  </p>
 <h2 id="using-the-dume-script">Using the DuME script<a class="headerlink" href="#using-the-dume-script" title="Permanent link">&para;</a></h2>
 <p>1- Install the DuME Script panel (instructions for <a href="windows.html">Windows</a> and <a href="mac.html">Mac</a>) for the version of After Effects you want to use with <em>DuME</em>.</p>
 <p>2- Launch After Effects.</p>
-<p>3- Open the script at least once (it is in the <em>Windows</em> menu). Opening it is enough, you don&rsquo;t necessarily need to launch the rendering with the script from inside <em>After Effects</em>.</p>
+<p>3- Open the script at least once (it is in the <em>Windows</em> menu).</p>
 <p><img alt="" src="img/captures/aePanel.png" /></p>
 <p>4- If you want to be able to send compositions to DuME from <em>After Effects</em>, you first need to go to the <img alt="icon" src="img/icons/settings_r.svg" /> settings panel of the script and set the path to the DuME application.</p>
 <p><img alt="" src="img/captures/aeOptionsPanel.png" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can also just run the script just once without actually installing it, via the <code>File/Scripts/Run script file...</code> menu entry.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You need to send at least one composition to DuME from the After Effects script to be able to use DuME later without having to launch After Effects first. The first composition you&rsquo;ll send this way will install the needed render presets.</p>
 </div>
 <h2 id="manually">Manually<a class="headerlink" href="#manually" title="Permanent link">&para;</a></h2>
 <p>If for some reason this script does not work or you cannot use it, follow these steps in the rendere queue:</p>

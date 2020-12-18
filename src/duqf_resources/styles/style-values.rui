@@ -29,3 +29,5 @@
 @big-button-size = 30px
 @small-button-size = 12px
 @very-small-button-size = 8px
+
+@font-family = "Ubuntu"

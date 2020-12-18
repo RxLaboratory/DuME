@@ -21,6 +21,7 @@
         <file alias="move-down">duqf_resources/icons/move-down.svg</file>
         <file alias="move-up">duqf_resources/icons/move-up.svg</file>
         <file alias="remove">duqf_resources/icons/remove.svg</file>
+        <file alias="reinit">duqf_resources/icons/reinit.svg</file>
     </qresource>
     <qresource prefix="/images"/>
     <qresource prefix="/styles">

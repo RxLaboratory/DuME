@@ -8,7 +8,9 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Rendering - DuME Documentation</title>
+  <title>Rendering - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -36,7 +38,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -120,6 +122,8 @@
         
             <li><a class="toctree-l4" href="#add-a-composition-to-dume">Add a composition to DuME</a></li>
         
+            <li><a class="toctree-l4" href="#add-sound-to-an-after-effects-composition">Add sound to an After Effects composition</a></li>
+        
         </ul>
     
 
@@ -191,7 +195,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation</a>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
       </nav>
 
       
@@ -219,19 +223,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="after-effects-rendering"><em>After Effects</em> Rendering<a class="headerlink" href="#after-effects-rendering" title="Permanent link">&para;</a></h1>
+                <h1 id="after-effects-rendering"><img alt="" src="img/icons/after-effects_sd.svg" /> <em>After Effects</em> Rendering<a class="headerlink" href="#after-effects-rendering" title="Permanent link">&para;</a></h1>
 <div class="toc">
 <ul>
 <li><a href="#after-effects-rendering">After Effects Rendering</a><ul>
 <li><a href="#from-after-effects-using-the-script">From After Effects, using the script</a></li>
 <li><a href="#add-a-composition-to-dume">Add a composition to DuME</a></li>
+<li><a href="#add-sound-to-an-after-effects-composition">Add sound to an After Effects composition</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <p>DuME for After Effects has to be correctly installed and configured first, <a href="after-effects-install.html">read the installation section</a> of this documentation.</p>
 <h2 id="from-after-effects-using-the-script">From After Effects, using the script<a class="headerlink" href="#from-after-effects-using-the-script" title="Permanent link">&para;</a></h2>
-<p>You can also use the <em>DuME script for After Effects</em> to easily.</p>
 <p><img alt="" src="img/captures/aePanel.png" /></p>
 <p>The <em>Send Comp. to DuME</em> button will launch DuME and add the active composition to it.</p>
 <p>Click on the <img alt="icon" src="img/icons/options_r.svg" /> options button to adjust a few settings.</p>
@@ -249,8 +253,14 @@
 <p class="admonition-title">Tip</p>
 <p>A quick way to do this is to make sure the render queue in <em>After Effects</em> is empty, then add the composition you want to render. <em>DuME</em> automatically renders the first (and only in this case) item in the queue.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When rendering an item from the render queue, it has to be enabled in the queue in After Effects, otherwise the After Effects render engine will just ignore it.</p>
+</div>
 <p>You can also use <em>DuME</em> to render the whole queue, but in this case <em>DuME</em> cannot automatically transcode the result to other formats.</p>
 <p>You have the option to use several threads at once when rendering <em>After Effects</em> projects, but be careful as this may not work correctly if the number of threads is too high, especially with projects needing a lot of memory.</p>
+<h2 id="add-sound-to-an-after-effects-composition">Add sound to an After Effects composition<a class="headerlink" href="#add-sound-to-an-after-effects-composition" title="Permanent link">&para;</a></h2>
+<p>You can add another input to add sound to an After Effects composition. See <a href="mapping.html"><em>Adding / Changing streams</em></a></p>
               
             </div>
           </div>

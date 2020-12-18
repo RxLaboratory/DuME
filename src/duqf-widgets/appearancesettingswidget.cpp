@@ -42,7 +42,6 @@ void AppearanceSettingsWidget::on_toolsComboBox_currentIndexChanged(int index)
     DuUI::setToolButtonStyle(style);
 }
 
-
 void AppearanceSettingsWidget::on_styleComboBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;

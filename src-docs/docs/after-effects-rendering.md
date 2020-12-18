@@ -1,12 +1,10 @@
-# *After Effects* Rendering
+# ![](img/icons/after-effects_sd.svg) *After Effects* Rendering
 
 [TOC]
 
 DuME for After Effects has to be correctly installed and configured first, [read the installation section](after-effects-install.md) of this documentation.
 
 ## From After Effects, using the script
-
-You can also use the *DuME script for After Effects* to easily.
 
 ![](img/captures/aePanel.png)
 
@@ -32,6 +30,13 @@ There are two ways to choose which composition will be rendered: either set the 
 !!! Tip
     A quick way to do this is to make sure the render queue in *After Effects* is empty, then add the composition you want to render. *DuME* automatically renders the first (and only in this case) item in the queue.
 
+!!! Warning
+    When rendering an item from the render queue, it has to be enabled in the queue in After Effects, otherwise the After Effects render engine will just ignore it.
+
 You can also use *DuME* to render the whole queue, but in this case *DuME* cannot automatically transcode the result to other formats.
 
 You have the option to use several threads at once when rendering *After Effects* projects, but be careful as this may not work correctly if the number of threads is too high, especially with projects needing a lot of memory.
+
+## Add sound to an After Effects composition
+
+You can add another input to add sound to an After Effects composition. See [*Adding / Changing streams*](mapping.md)

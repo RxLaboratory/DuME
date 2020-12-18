@@ -12,32 +12,30 @@ DuME can be launched with several options, which is an easy way to add medias in
 ## Examples
 
 Add a PNG sequence and set its framerate:  
-`DuME -framerate 29.97 "image sequence_0001.png"`
+`DuME --framerate 29.97 "image sequence_0001.png"`
 
 Add a PNG sequence and set its framerate along with a WAV sound file, select a preset, and autostart the transcoding process:  
-`DuME -framerate 24 "image sequence_0001.png" "an awesome sound.wav" -preset "MP4 - Standard" -autostart`
+`DuME --framerate 24 "image sequence_0001.png" "an awesome sound.wav" --preset "MP4 - Standard" --autostart`
 
 ## Getting help
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-h` | | print options but does not launch DuME. |
-| `-help` | | print options but does not launch DuME. |
-| `-help:presets` | | prints the list of available presets. |
-| `-h:presets` | | prints the list of available presets. |
+| `-h` / `--help`| | print options but does not launch DuME. |
+| `--help:presets` / `-h:p` | | prints the list of available presets. |
 
 ## General options
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-nobanner` | | Does not output the first descriptive paragraphs (name, version, license and copyright notice). |
-| `-hideconsole` | | On *Windows*, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications. |
+| `--no-banner` | | Does not output the first descriptive paragraphs (name, version, license and copyright notice). |
+| `--hide-console` | | On *Windows*, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications. |
 
 ## Input options
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-colorProfile profile` | string | Sets the input color profile. One of:<br>`srgb` sRGB<br>`bt709` HD Video BT.709<br>`bt2020_10` UHD (4K/8K) Video BT.2020-10bits<br>`bt2020_12` UHD (4K/8K) HDR Video BT.2020-12bits |
+| `--color-profile profile` | string | Sets the input color profile. One of:<br>`srgb` sRGB<br>`bt709` HD Video BT.709<br>`bt2020_10` UHD (4K/8K) Video BT.2020-10bits<br>`bt2020_12` UHD (4K/8K) HDR Video BT.2020-12bits |
 
 ### Image Sequence and After Effects options
 
@@ -45,24 +43,22 @@ Read the [After Effects Rendering](after-effects-rendering.md) section for more 
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-framerate fps` | float | Sets the input framerate. |
-| `-fps fps` | float | Sets the input framerate. |
+| `--framerate fps` / `-f fps` | float | Sets the input framerate. |
 
 #### After Effects options
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-comp composition` | string | The name of the composition to render. |
-| `-rqItem item` | integer | The index of the After EFfects render queue item to render. |
-| `-useQueue` | | Just launches the After Effects render queue. |
+| `--comp composition` / `-c composition` | string | The name of the composition to render. |
+| `--rq-item item` | integer | The index of the After EFfects render queue item to render. |
+| `--use-queue` | | Just launches the After Effects render queue. |
+| `--aerender aerenderpath` | string | Explicitly set the After Effects renderer to use. |
 
 ## Output options
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `-output file` | string | The name of the output file. |
-| `-o file` | string | The name of the output file. |
-| `-preset name` | string | The name of the preset to use. Use `-help:presets` to get the list of available presets |
-| `-p name` | string | The name of the preset to use. Use `-h:presets` to get the list of available presets |
-| `-autostart` | | Autostart the transcoding process. |
-| `-autoquit` | | If `autostart` is set, automatically closes DuME once the transcoding process is finished. |
+| `--output file` / `-o file` | string | The name of the output file. |
+| `--preset name` / `-p name` | string | The name of the preset to use. Use `--help:presets` to get the list of available presets |
+| `--autostart` | | Autostart the transcoding process. |
+| `--autoquit` | | If `autostart` is set, automatically closes DuME once the transcoding process is finished. |

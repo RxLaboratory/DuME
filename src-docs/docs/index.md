@@ -7,6 +7,26 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
 
 [TOC]
 
+## Table of contents
+
+- Installation
+    - [Windows](windows.md)
+    - [Mac OS X](mac.md)
+    - [Linux](linux.md)
+- Transcoding
+    - [Manage Presets](presets.md)
+    - [MP4 / h.264](h264.md)
+    - [MP4 / h.265](h265.md)
+    - [Image Sequences](sequences.md)
+    - [Adding / Changing streams](mapping.md)
+- After Effects rendering
+    - [Installation](after-effects-install.md)
+    - [Rendering](after-effects-rendering.md)
+- Control and automation
+    - [Introduction](api.md)
+    - [Command line options](cli-options.md)
+    - [Server API](server-api.md)
+
 ## Description
 
 ![](img/captures/DuME_Screenshot.png)
@@ -27,18 +47,17 @@ To achieve this goal, the development of the application follows these guideline
 - Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF... - *evolving list*.
 - Transcode to and from [Image Sequences](sequences.md) (PNG, EXR...).
 - [Mix Media files](mapping.md) (e.g. add sound to an image sequence).
-- Easily render *After Effects* projects and transcode to any format supported by *FFmpeg* - *work in progress*.
+- Easily render *After Effects* projects and transcode to any format supported by *FFmpeg*.
+- Render/Transcode queue, *work in progress, possible with command/batch files thanks to [the command line interface](cli-options.md)*.
 
 ### Planned Features
 
-- Render/Transcode queue.
 - Simple media player (using ffplay).  
     - Preview of the input.
     - Preview of the output.
 - Render *Blender* scenes.
 - Append several inputs.
 - Add subtitles tracks.
-- Per-stream options for the output.
 - Burn subtitles in picture.
 - Burn Metadata in picture (Timecode...).
 

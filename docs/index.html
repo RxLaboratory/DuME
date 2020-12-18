@@ -8,7 +8,9 @@
   <meta name="description" content="The DuME comprehensive documentation">
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Home - DuME Documentation</title>
+  <title>Home - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -36,7 +38,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -56,6 +58,8 @@
     <li class="toctree-l2"><a href="#dume-introduction">DuME Introduction</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l3" href="#table-of-contents">Table of contents</a></li>
         
             <li><a class="toctree-l3" href="#description">Description</a></li>
         
@@ -193,7 +197,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation</a>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
       </nav>
 
       
@@ -225,6 +229,7 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <div class="toc">
 <ul>
 <li><a href="#dume-introduction">DuME Introduction</a><ul>
+<li><a href="#table-of-contents">Table of contents</a></li>
 <li><a href="#description">Description</a><ul>
 <li><a href="#available-features">Available Features</a></li>
 <li><a href="#planned-features">Planned Features</a></li>
@@ -240,6 +245,34 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 </li>
 </ul>
 </div>
+<h2 id="table-of-contents">Table of contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Installation<ul>
+<li><a href="windows.html">Windows</a></li>
+<li><a href="mac.html">Mac OS X</a></li>
+<li><a href="linux.html">Linux</a></li>
+</ul>
+</li>
+<li>Transcoding<ul>
+<li><a href="presets.html">Manage Presets</a></li>
+<li><a href="h264.html">MP4 / h.264</a></li>
+<li><a href="h265.html">MP4 / h.265</a></li>
+<li><a href="sequences.html">Image Sequences</a></li>
+<li><a href="mapping.html">Adding / Changing streams</a></li>
+</ul>
+</li>
+<li>After Effects rendering<ul>
+<li><a href="after-effects-install.html">Installation</a></li>
+<li><a href="after-effects-rendering.html">Rendering</a></li>
+</ul>
+</li>
+<li>Control and automation<ul>
+<li><a href="api.html">Introduction</a></li>
+<li><a href="cli-options.html">Command line options</a></li>
+<li><a href="server-api.html">Server API</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/DuME_Screenshot.png" /></p>
 <p>The goal of DuME is to be as <strong>easy to use</strong> as possible even for beginners, without any compromise on <strong>functionnality for advanced users</strong>.</p>
@@ -257,11 +290,11 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <li>Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF&hellip; - <em>evolving list</em>.</li>
 <li>Transcode to and from <a href="sequences.html">Image Sequences</a> (PNG, EXR&hellip;).</li>
 <li><a href="mapping.html">Mix Media files</a> (e.g. add sound to an image sequence).</li>
-<li>Easily render <em>After Effects</em> projects and transcode to any format supported by <em>FFmpeg</em> - <em>work in progress</em>.</li>
+<li>Easily render <em>After Effects</em> projects and transcode to any format supported by <em>FFmpeg</em>.</li>
+<li>Render/Transcode queue, <em>work in progress, possible with command/batch files thanks to <a href="cli-options.html">the command line interface</a></em>.</li>
 </ul>
 <h3 id="planned-features">Planned Features<a class="headerlink" href="#planned-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Render/Transcode queue.</li>
 <li>Simple media player (using ffplay).  <ul>
 <li>Preview of the input.</li>
 <li>Preview of the output.</li>
@@ -270,7 +303,6 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <li>Render <em>Blender</em> scenes.</li>
 <li>Append several inputs.</li>
 <li>Add subtitles tracks.</li>
-<li>Per-stream options for the output.</li>
 <li>Burn subtitles in picture.</li>
 <li>Burn Metadata in picture (Timecode&hellip;).</li>
 </ul>
@@ -344,5 +376,5 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-03-15 17:01:30
+Build Date UTC : 2020-12-18 14:44:50
 -->

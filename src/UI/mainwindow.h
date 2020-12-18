@@ -46,6 +46,7 @@ private slots:
     void duqf_doc();
     void duqf_settings(bool checked = true);
     void duqf_closeSettings();
+    void duqf_reinitSettings();
 
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
@@ -77,8 +78,6 @@ private slots:
 
     // GENERAL
     void quit(bool force = false);
-
-
 
 private:
     // ========= RxOT UI ==============

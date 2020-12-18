@@ -8,7 +8,9 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Command line options - DuME Documentation</title>
+  <title>Command line options - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -36,7 +38,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -197,7 +199,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation</a>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
       </nav>
 
       
@@ -252,9 +254,9 @@
 </div>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <p>Add a PNG sequence and set its framerate:<br />
-<code>DuME -framerate 29.97 "image sequence_0001.png"</code></p>
+<code>DuME --framerate 29.97 "image sequence_0001.png"</code></p>
 <p>Add a PNG sequence and set its framerate along with a WAV sound file, select a preset, and autostart the transcoding process:<br />
-<code>DuME -framerate 24 "image sequence_0001.png" "an awesome sound.wav" -preset "MP4 - Standard" -autostart</code></p>
+<code>DuME --framerate 24 "image sequence_0001.png" "an awesome sound.wav" --preset "MP4 - Standard" --autostart</code></p>
 <h2 id="getting-help">Getting help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -266,22 +268,12 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-h</code></td>
+<td><code>-h</code> / <code>--help</code></td>
 <td></td>
 <td>print options but does not launch DuME.</td>
 </tr>
 <tr>
-<td><code>-help</code></td>
-<td></td>
-<td>print options but does not launch DuME.</td>
-</tr>
-<tr>
-<td><code>-help:presets</code></td>
-<td></td>
-<td>prints the list of available presets.</td>
-</tr>
-<tr>
-<td><code>-h:presets</code></td>
+<td><code>--help:presets</code> / <code>-h:p</code></td>
 <td></td>
 <td>prints the list of available presets.</td>
 </tr>
@@ -298,12 +290,12 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-nobanner</code></td>
+<td><code>--no-banner</code></td>
 <td></td>
 <td>Does not output the first descriptive paragraphs (name, version, license and copyright notice).</td>
 </tr>
 <tr>
-<td><code>-hideconsole</code></td>
+<td><code>--hide-console</code></td>
 <td></td>
 <td>On <em>Windows</em>, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications.</td>
 </tr>
@@ -320,7 +312,7 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-colorProfile profile</code></td>
+<td><code>--color-profile profile</code></td>
 <td>string</td>
 <td>Sets the input color profile. One of:<br><code>srgb</code> sRGB<br><code>bt709</code> HD Video BT.709<br><code>bt2020_10</code> UHD (4K/8K) Video BT.2020-10bits<br><code>bt2020_12</code> UHD (4K/8K) HDR Video BT.2020-12bits</td>
 </tr>
@@ -338,12 +330,7 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-framerate fps</code></td>
-<td>float</td>
-<td>Sets the input framerate.</td>
-</tr>
-<tr>
-<td><code>-fps fps</code></td>
+<td><code>--framerate fps</code> / <code>-f fps</code></td>
 <td>float</td>
 <td>Sets the input framerate.</td>
 </tr>
@@ -360,19 +347,24 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-comp composition</code></td>
+<td><code>--comp composition</code> / <code>-c composition</code></td>
 <td>string</td>
 <td>The name of the composition to render.</td>
 </tr>
 <tr>
-<td><code>-rqItem item</code></td>
+<td><code>--rq-item item</code></td>
 <td>integer</td>
 <td>The index of the After EFfects render queue item to render.</td>
 </tr>
 <tr>
-<td><code>-useQueue</code></td>
+<td><code>--use-queue</code></td>
 <td></td>
 <td>Just launches the After Effects render queue.</td>
+</tr>
+<tr>
+<td><code>--aerender aerenderpath</code></td>
+<td>string</td>
+<td>Explicitly set the After Effects renderer to use.</td>
 </tr>
 </tbody>
 </table>
@@ -387,32 +379,22 @@
 </thead>
 <tbody>
 <tr>
-<td><code>-output file</code></td>
+<td><code>--output file</code> / <code>-o file</code></td>
 <td>string</td>
 <td>The name of the output file.</td>
 </tr>
 <tr>
-<td><code>-o file</code></td>
+<td><code>--preset name</code> / <code>-p name</code></td>
 <td>string</td>
-<td>The name of the output file.</td>
+<td>The name of the preset to use. Use <code>--help:presets</code> to get the list of available presets</td>
 </tr>
 <tr>
-<td><code>-preset name</code></td>
-<td>string</td>
-<td>The name of the preset to use. Use <code>-help:presets</code> to get the list of available presets</td>
-</tr>
-<tr>
-<td><code>-p name</code></td>
-<td>string</td>
-<td>The name of the preset to use. Use <code>-h:presets</code> to get the list of available presets</td>
-</tr>
-<tr>
-<td><code>-autostart</code></td>
+<td><code>--autostart</code></td>
 <td></td>
 <td>Autostart the transcoding process.</td>
 </tr>
 <tr>
-<td><code>-autoquit</code></td>
+<td><code>--autoquit</code></td>
 <td></td>
 <td>If <code>autostart</code> is set, automatically closes DuME once the transcoding process is finished.</td>
 </tr>

@@ -1,6 +1,6 @@
 [TOC]
 
-# *After Effects*: Installation
+# ![](img/icons/after-effects_sd.svg) *After Effects*: Installation
 
 If *Adobe After Effects* is installed on the system, *DuME* is able to render and encode *After Effects* Compositions.
 
@@ -12,7 +12,7 @@ Before these compositions can be rendered, some presets need to be created insid
 
 2- Launch After Effects.
 
-3- Open the script at least once (it is in the *Windows* menu). Opening it is enough, you don't necessarily need to launch the rendering with the script from inside *After Effects*.
+3- Open the script at least once (it is in the *Windows* menu).
 
 ![](img/captures/aePanel.png)
 
@@ -22,6 +22,9 @@ Before these compositions can be rendered, some presets need to be created insid
 
 !!! note
     You can also just run the script just once without actually installing it, via the `File/Scripts/Run script file...` menu entry.
+
+!!! important
+    You need to send at least one composition to DuME from the After Effects script to be able to use DuME later without having to launch After Effects first. The first composition you'll send this way will install the needed render presets.
 
 ## Manually
 

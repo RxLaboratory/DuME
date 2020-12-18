@@ -8,7 +8,9 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>MP4 / h.264 - DuME Documentation</title>
+  <title>MP4 / h.264 - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -36,7 +38,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -195,7 +197,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation</a>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
       </nav>
 
       
@@ -242,7 +244,7 @@
 </li>
 </ul>
 </div>
-<h2 id="quality-settings">Quality settings<a class="headerlink" href="#quality-settings" title="Permanent link">&para;</a></h2>
+<h2 id="quality-settings"><img alt="" src="img/icons/set-video-quality_bd.svg" /> Quality settings<a class="headerlink" href="#quality-settings" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/blocks/video_quality.png" /></p>
 <p>Most of the time, you <strong>should not need to set the <em>bit rate</em> by yourself</strong>. It is easier and better to use the quality slider to set a target quality, unless for technical reasons you need a specific average bitrate or a constant bit rate.</p>
 <p>The <strong><em>quality slider</em></strong> is the most important parameter, which will adjust the quality vs the output file size. Setting the slider to more than 50% should output a good quality video, but if you need a perfect encoding, you can go higher than 75%.<br />
@@ -259,9 +261,9 @@ Just use the slowest setting that you have patience for.</p>
 <li>Streaming (low latency) – good for fast encoding and low-latency streaming</li>
 </ul>
 <p>For example, if your input is animation then use the animation tuning, or if you want to preserve grain in a film then use the grain tuning. If you are unsure of what to use or your input does not match any of tunings then omit the <em>Fine tune</em> option.</p>
-<h2 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
+<h2 id="compatibility"><img alt="" src="img/icons/set-codec-settings_bd.svg" /> Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/blocks/video_profile_h264.png" /></p>
-<p>To fix compatibiliy issues with some players, you may need to change the profile and level. Please refer to the documentation of the players you need to be compatible.</p>
+<p>To fix compatibiliy issues with some players, you may need to change the profile and level. Please refer to the documentation of the players you need to be compatible with.</p>
 <ul>
 <li><strong>Baseline</strong>: Primarily for lower-cost applications with limited computing resources, this profile is used widely in videoconferencing and mobile applications.</li>
 <li><strong>Main</strong>: Originally intended as the mainstream consumer profile for broadcast and storage applications, the importance of this profile faded when the High profile was developed for those applications.</li>
@@ -274,7 +276,7 @@ Just use the slowest setting that you have patience for.</p>
 <p class="admonition-title">Note</p>
 <p>To improve compatibility, <em>DuME</em> sets the pixel format to YUV 4:2:0 (12 bits / 8 bpc) for h264, as most of the players won&rsquo;t play 4:2:2 or 4:4:4 (even at 8 bpc). When using high profiles, you will also need to change the pixel format accordingly.</p>
 </div>
-<h2 id="constrained-encoding-vbv-maximum-bit-rate">Constrained encoding (VBV / maximum bit rate)<a class="headerlink" href="#constrained-encoding-vbv-maximum-bit-rate" title="Permanent link">&para;</a></h2>
+<h2 id="constrained-encoding-vbv-maximum-bit-rate"><img alt="" src="img/icons/add-property_bd.svg" /> Constrained encoding (VBV / maximum bit rate)<a class="headerlink" href="#constrained-encoding-vbv-maximum-bit-rate" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/blocks/constrained_bitrate.png" /></p>
 <p>Use this mode if you want to <strong>constrain the maximum bitrate used</strong>, or keep the stream&rsquo;s bitrate within certain bounds. This is particularly useful for online streaming, where the client expects a certain average bitrate, but you still want the encoder to adjust the bitrate per-frame.</p>
 <p>Add two custom parameters:</p>
@@ -286,7 +288,7 @@ Just use the slowest setting that you have patience for.</p>
 <h3 id="does-dume-support-multi-pass-encoding">Does <em>DuME</em> support multi-pass encoding?<a class="headerlink" href="#does-dume-support-multi-pass-encoding" title="Permanent link">&para;</a></h3>
 <p>No. Read the next question for more details.</p>
 <h3 id="would-two-pass-provide-a-better-quality">Would two-pass provide a better quality?<a class="headerlink" href="#would-two-pass-provide-a-better-quality" title="Permanent link">&para;</a></h3>
-<p>​No, though it does allow you to target a file size more accurately. Nowadays, most users don&rsquo;t need this, but if you need it for technical reasons, just get in touch and it may be implemented.</p>
+<p>​No, although it does allow you to target a file size more accurately. Nowadays, most users don&rsquo;t need this, but if you need it for technical reasons, just get in touch and it may be implemented.</p>
 <h3 id="why-doesnt-my-lossless-output-look-lossless">Why doesn&rsquo;t my lossless output look lossless?<a class="headerlink" href="#why-doesnt-my-lossless-output-look-lossless" title="Permanent link">&para;</a></h3>
 <p>When setting the quality to 100%, the output should be lossless. But if your input files are RGB, it&rsquo;s the RGB to YUV color space conversion. You may output RGB h264 but be careful as this is not standard at all.</p>
               

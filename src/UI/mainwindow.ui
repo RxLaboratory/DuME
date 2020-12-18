@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>851</width>
-    <height>726</height>
+    <width>959</width>
+    <height>1184</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -590,7 +590,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="titleWidget" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <property name="spacing">
-             <number>0</number>
+             <number>3</number>
             </property>
             <property name="leftMargin">
              <number>13</number>
@@ -631,7 +631,24 @@ p, li { white-space: pre-wrap; }
              </spacer>
             </item>
             <item>
+             <widget class="QToolButton" name="duqf_reinitSettingsButton">
+              <property name="toolTip">
+               <string>Reset all settings to default values</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../duqf_resources.qrc">
+                <normaloff>:/icons/reinit</normaloff>:/icons/reinit</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QToolButton" name="duqf_closeSettingsButton">
+              <property name="toolTip">
+               <string>Close settings</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -674,7 +691,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/settings</normaloff>:/icons/settings</iconset>
    </property>
    <property name="text">
@@ -730,7 +747,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionChat">
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/chat</normaloff>:/icons/chat</iconset>
    </property>
    <property name="text">
@@ -742,7 +759,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionForum">
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/forum</normaloff>:/icons/forum</iconset>
    </property>
    <property name="text">
@@ -787,8 +804,8 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../duqf_resources.qrc"/>
   <include location="../resources.qrc"/>
+  <include location="../duqf_resources.qrc"/>
  </resources>
  <connections/>
 </ui>

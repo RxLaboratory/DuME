@@ -125,6 +125,6 @@ int main(int argc, char *argv[])
     cacheManager->init();
     //build UI and show
     buildUI(a.arguments(), a.splashScreen());
-    //end appli
+
     return a.exec();
 }

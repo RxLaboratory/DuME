@@ -1,6 +1,6 @@
 [TOC]
 
-# Adding / Changing streams
+# ![](img/icons/select-connection_bd.svg) Adding / Changing streams
 
 ![](img/captures/sound-mapping.png)
 
@@ -12,7 +12,7 @@ To add new streams to the output file from multiple input medias, you can just *
 
 If the output file can contain only a limited number of streams (e.g. one video and one audio stream, like mp4), and there are more available streams in the input medias, *DuME* will automatically select the best-quality streams it can find from all the input medias. If you want to manually select specific streams, read the section below entitled *Changing / Mapping streams*.
 
-## Changing / Mapping streams
+## ![](img/icons/select-connection_bd.svg) Changing / Mapping streams
 
 If you need to select specific streams from the input medias to be used in the output file, you can do so using the ***Select and map input streams* options** on the output panel of *DuME*.
 
