@@ -3,8 +3,8 @@
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 1
-#define VERSION_BUILD 5
-#define VERSION_SUFFIX ""
+#define VERSION_BUILD 6
+#define VERSION_SUFFIX "-dev"
 
 #define STRINGIFY_VERSION(A, B, C) CONCAT(A, B, C )
 #define CONCAT(A, B, C ) STRINGIFY( A##.##B##.##C )

@@ -94,7 +94,7 @@ QToolButton:disabled {
 QCheckBox, QRadioButton {
     border-radius: @padding-small;
     padding: @padding-small;
-    border:none;
+    border: none;
     color: @color-light-grey;
     background: none;
 }
@@ -109,10 +109,16 @@ QCheckBox:pressed, QRadioButton:pressed {
 
 QCheckBox::indicator, QRadioButton::indicator {
     background-color: @color-very-dark-grey;
-    border: @margin solid @color-light-blue;
+    border: @margin solid @color-very-dark-grey;
     image:none;
     width: @very-small-button-size;
     height: @very-small-button-size;
+}
+
+#duqf_block QCheckBox::indicator, #duqf_block QRadioButton::indicator {
+    background-color: @color-dark-grey;
+    border: @margin solid @color-dark-grey;
+
 }
 
 QCheckBox::indicator {
@@ -123,12 +129,12 @@ QRadioButton::indicator {
     border-radius: @padding-medium;
 }
 
-QCheckBox::indicator:pressed, QRadioButton::indicator:pressed {
+QCheckBox::indicator:pressed, QRadioButton::indicator:pressed, #duqf_block QCheckBox::indicator:pressed, #duqf_block QRadioButton::indicator:pressed {
     background-color: @color-light-green;
-    border-color: @color-dark-green;
+    border-color: @color-light-green;
 }
 
-QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+QCheckBox::indicator:checked, QRadioButton::indicator:checked, #duqf_block QCheckBox::indicator:checked, #duqf_block QRadioButton::indicator:checked {
     background-color: @color-light-green;
     border-color: @color-light-green;
 }
@@ -137,10 +143,10 @@ QCheckBox::indicator:checked {
     image:url(:/icons/check);
 }
 
-QCheckBox::indicator:checked:pressed, QRadioButton::indicator:checked:pressed {
+QCheckBox::indicator:checked:pressed, QRadioButton::indicator:checked:pressed, #duqf_block QCheckBox::indicator:checked:pressed, #duqf_block QRadioButton::indicator:checked:pressed {
     image:none;
     background-color: @color-light-red;
-    border-color: @color-dark-blue;
+    border-color: @color-light-red;
 }
 
 QCheckBox:disabled, QRadioButton:disabled {
@@ -149,8 +155,15 @@ QCheckBox:disabled, QRadioButton:disabled {
 }
 
 QCheckBox::indicator:disabled, QRadioButton::indicator:disabled {
-    border-color: @color-medium-grey;
-    background-color: @color-medium-grey;
+    border-color: @color-dark-grey;
+    background-color: @color-dark-grey;
+}
+
+
+#duqf_block QCheckBox::indicator:disabled,#duqf_block QRadioButton::indicator:disabled {
+    background-color: @color-very-dark-grey;
+    border: @margin solid @color-very-dark-grey;
+
 }
 
 /* COMBO BOX */

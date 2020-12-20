@@ -2,10 +2,10 @@
 @color-black = #000000
 @color-obsidian = #151515
 @color-abyss-grey = #1c1c1c
-@color-very-dark-grey = #333333
-@color-darker-grey = #393939
-@color-dark-grey = #434343
-@color-less-dark-grey = #535353
+@color-very-dark-grey = #222222
+@color-darker-grey = #252525
+@color-dark-grey = #333333
+@color-less-dark-grey = #434343
 @color-medium-grey = #6d6d6d
 @color-less-light-grey = #9d9d9d
 @color-light-grey = #e3e3e3
