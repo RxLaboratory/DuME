@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     helpStrings << "";
     helpStrings << "Global Output Options";
     helpStrings << "    --output file / -o file     The name of the output file";
-    helpStrings << "    --preset name / -p name     The name of the preset to use. Use `-help:presets` to get the list of available presets";
+    helpStrings << "    --preset name / -p name     The name of the preset to use. Use `-help:presets` to get the list of available presets. You can also provide any preset filename to use a custom preset not available in DuME.";
     helpStrings << "    --autostart                 Autostart the transcoding process";
     helpStrings << "    --autoquit                  If `autostart` is set, automatically closes DuME once the transcoding process is finished";
     if ( duqf_processArgs(argc, argv, examples, helpStrings) ) return 0;

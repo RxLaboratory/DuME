@@ -5,16 +5,17 @@ DataComboBox::DataComboBox(QWidget *parent) : QComboBox(parent)
 
 }
 
-void DataComboBox::setCurrentData(QVariant data)
+int DataComboBox::setCurrentData(QVariant data)
 {
     for (int i = 0; i < count(); i++)
     {
         if (itemData(i) == data)
         {
             setCurrentIndex(i);
-            return;
+            return i;
         }
     }
 
     setCurrentIndex( -1 );
+    return -1;
 }

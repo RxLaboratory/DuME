@@ -57,6 +57,7 @@ public slots:
     void loadPresets();
     void setOutputPath(QString outputPath);
     void setOutputPreset(QString preset);
+    void openPresetFile(QString filename);
 
 private slots:
     void mediaInfoChanged();

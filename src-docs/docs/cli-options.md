@@ -60,6 +60,6 @@ Read the [After Effects Rendering](after-effects-rendering.md) section for more 
 | Option | Type | Description |
 | --- | --- | --- |
 | `--output file` / `-o file` | string | The name of the output file. |
-| `--preset name` / `-p name` | string | The name of the preset to use. Use `--help:presets` to get the list of available presets |
+| `--preset name` / `-p name` | string | The name of the preset to use. Use `--help:presets` to get the list of available presets. You can also provide any preset filename to use a custom preset not available in DuME. |
 | `--autostart` | | Autostart the transcoding process. |
 | `--autoquit` | | If `autostart` is set, automatically closes DuME once the transcoding process is finished. |

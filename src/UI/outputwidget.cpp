@@ -435,6 +435,19 @@ void OutputWidget::setOutputPreset(QString preset)
 {
     presetsBox->setCurrentData(preset);
     if (presetsBox->currentIndex() < 0) presetsBox->setCurrentText(preset);
+    //try to load the file
+    if (presetsBox->currentIndex() < 0)
+    {
+        QFileInfo p(preset);
+        if (p.exists())
+        {
+            openPresetFile(preset);
+        }
+        else
+        {
+            qWarning() << "The preset file \"" + preset + "\" cannot be found.";
+        }
+    }
 }
 
 void OutputWidget::addNewParam(QString name, QString value, QString icon)
@@ -560,10 +573,15 @@ void OutputWidget::on_actionOpenPreset_triggered()
         _freezeUI = false;
         return;
     }
-    _loadingPreset = true;
     _freezeUI = false;
+    openPresetFile(openFileName);
+}
+
+void OutputWidget::openPresetFile(QString filename)
+{
+    _loadingPreset = true;
     //load
-    _mediaInfo->loadPreset(openFileName);
+    _mediaInfo->loadPreset(filename);
     _loadingPreset = false;
 }
 

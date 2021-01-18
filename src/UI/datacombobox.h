@@ -9,7 +9,7 @@ class DataComboBox : public QComboBox
     Q_OBJECT
 public:
     explicit DataComboBox(QWidget *parent = nullptr);
-    void setCurrentData(QVariant data);
+    int setCurrentData(QVariant data);
 
 signals:
 
