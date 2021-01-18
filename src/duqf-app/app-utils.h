@@ -182,7 +182,7 @@ bool duqf_processArgs(int argc, char *argv[], QStringList examples = QStringList
         qInfo().noquote() << STR_PRODUCTDESCRIPTION;
         foreach(QString example, examples)
         {
-            qInfo() << example;
+            qInfo().noquote() << example;
         }
         qInfo() << "General";
         qInfo() << "    -h / --help       Print basic options without launching the application";
@@ -190,7 +190,7 @@ bool duqf_processArgs(int argc, char *argv[], QStringList examples = QStringList
         qInfo() << "    --no-banner       Hides the banner with product information and legal notice";
         foreach(QString h, helpStrings)
         {
-            qInfo() << h;
+            qInfo().noquote() << h;
         }
 #ifdef Q_OS_WIN
         qInfo() << "    --hide-console    Hides the console when starting the application using command line arguments";
