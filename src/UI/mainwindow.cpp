@@ -659,7 +659,7 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
         if ( autoQuit )
         {
             // Quit after a few seconds to be sure we're finished
-            QTimer::singleShot(2000, this, SLOT(quit()));
+            QTimer::singleShot(2000, this, SLOT(close()));
             // Display a warning
             actionStatus->setText("About to quit. See you soon!");
         }
@@ -778,6 +778,9 @@ void MainWindow::reInitCurrentProgress()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     _renderQueue->stop(6000);
+
+    qDebug() << "Saving geometry and settings...";
+
     //save ui geometry
     settings.beginGroup("mainwindow");
     settings.setValue("size", size());
@@ -788,10 +791,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("consolesize",consoleSplitter->sizes()[0]);
     settings.setValue("queuesize",consoleSplitter->sizes()[1]);
     settings.endGroup();
-    settings.sync();
+    //settings.sync();
+
+    qDebug() << "Purging disk cache...";
 
     //remove temp folders
     cacheManager->purgeCache();
+
+    //remove app fonts
+    QFontDatabase::removeAllApplicationFonts();
 
     event->accept();
 }
