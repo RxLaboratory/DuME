@@ -197,6 +197,10 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
                         i++;
                         queueWidget->setOutputPreset( args[i] );
                     }
+                    else if ( arg == "--minimize" || arg == "-m" )
+                    {
+                        showMinimized();
+                    }
 #ifndef Q_OS_LINUX
                     else if ( arg == "--aerender" && i < argc-1 )
                     {
