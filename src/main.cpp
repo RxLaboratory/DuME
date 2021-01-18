@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
     examples << "Example: add a PNG sequence and set its framerate along with a WAV sound file, select a preset, and autostart the transcoding process::";
     examples << "    DuME -framerate 24 \"image sequence_0001.png\" \"an awesome sound.wav\" -preset \"MP4 - Standard\" -autostart";
     QStringList helpStrings;
+    helpStrings << "    --minimize / -m         Minimizes the window as soon as it is ready.";
     helpStrings << "    --help:presets / -h:p   Prints the list of available presets";
     helpStrings << "";
     helpStrings << "Global Input Options";

@@ -4,7 +4,7 @@
 
 DuME can be launched with several options, which is an easy way to add medias in DuME from other applications and scripts.
 
-`DuME [inputOptions] inputFile1 [[inputOptions] inputFile2 ... [inputOptions] inputFileN] [outputOptions]`
+`DuME [general options] [input options] inputFile1 [[input options] inputFile2 ... [input options] inputFileN] [output options]`
 
 !!! Note
     On Windows, don't forget to add the extension `.exe` to the DuME command if it's not in your *PATH* variable.
@@ -30,6 +30,7 @@ Add a PNG sequence and set its framerate along with a WAV sound file, select a p
 | --- | --- | --- |
 | `--no-banner` | | Does not output the first descriptive paragraphs (name, version, license and copyright notice). |
 | `--hide-console` | | On *Windows*, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications. |
+| `--minimize` / `-m` | | Minimizes the window as soon as it is ready. |
 
 ## Input options
 
