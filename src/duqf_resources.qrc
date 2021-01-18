@@ -22,6 +22,9 @@
         <file alias="move-up">duqf_resources/icons/move-up.svg</file>
         <file alias="remove">duqf_resources/icons/remove.svg</file>
         <file alias="reinit">duqf_resources/icons/reinit.svg</file>
+        <file alias="load-preset">resources/icons/load-list-file-preset_sl.svg</file>
+        <file alias="set-preset">resources/icons/set-list-file-preset_sl.svg</file>
+        <file alias="save-preset">resources/icons/saveas-list-file-preset_sl.svg</file>
     </qresource>
     <qresource prefix="/images"/>
     <qresource prefix="/styles">

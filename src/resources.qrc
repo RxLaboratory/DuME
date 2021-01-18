@@ -63,6 +63,13 @@
         <file alias="ffmpeg">resources/icons/ffmpeg.svg</file>
         <file alias="audio-bit-depth">resources/icons/audio-bit-depth_sl.svg</file>
         <file alias="set-audio-bit-depth">resources/icons/set-audio-bit-depth_sl.svg</file>
+        <file alias="raw-options">resources/icons/raw-image-file-settings_sl.svg</file>
+        <file alias="set-ae-comp">resources/icons/set-after-effects-composition_sl.svg</file>
+        <file alias="set-ae-threads">resources/icons/set-after-effects-thread-process_sl.svg</file>
+        <file alias="set-framerate">resources/icons/set-video-framerate_sl.svg</file>
+        <file alias="ae-comp">resources/icons/after-effects-composition_sl.svg</file>
+        <file alias="ae-threads">resources/icons/after-effects-thread-process_sl.svg</file>
+        <file alias="raw-file">resources/icons/raw-image-file_sd.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

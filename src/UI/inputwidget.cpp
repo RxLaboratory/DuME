@@ -23,15 +23,15 @@ InputWidget::InputWidget(int id, QWidget *parent) :
 
     // CREATE BLOCKS
     blockFrameRateContent = new BlockFrameRate( _mediaInfo );
-    blockFrameRate = addBlock( blockFrameRateContent, actionFramerate );
+    blockFrameRate = addBlock( blockFrameRateContent, actionFramerate, ":/icons/framerate" );
     blockColorContent = new BlockColor( _mediaInfo );
-    blockColor = addBlock( blockColorContent, actionColor );
+    blockColor = addBlock( blockColorContent, actionColor, ":/icons/color" );
     blockEXRContent = new BlockEXR( _mediaInfo );
-    blockEXR = addBlock( blockEXRContent, actionEXR );
+    blockEXR = addBlock( blockEXRContent, actionEXR, ":/icons/raw-file" );
     blockAECompContent = new BlockAEComp( _mediaInfo );
-    blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition);
+    blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition, ":/icons/ae-comp");
     blockAEThreadsContent = new BlockAEThreads( _mediaInfo );
-    blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads);
+    blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads, ":/icons/ae-threads");
     blocksMenu->addAction( actionAddCustom );
 
     //splitter sizes
@@ -116,6 +116,8 @@ BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *act
     blocksMenu->addAction( action );
     connect( action, SIGNAL( triggered(bool) ), b, SLOT( setVisible(bool) ) );
     connect( b, SIGNAL( activated(bool) ), action, SLOT( setChecked( bool ) ) );
+    connect( b, SIGNAL( blockEnabled(bool) ), action, SLOT(setVisible(bool)));
+    connect(b,  &BlockBaseWidget::hidden, action, [action]{ action->setChecked(false); });
 
     return b;
 }
