@@ -81,7 +81,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     mainStack->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
-    versionLabel->setText(qApp->applicationName() + " | version: " + qApp->applicationVersion());
 
     log("Init - Setting window geometry");
 
@@ -250,6 +249,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
 void MainWindow::duqf_initUi()
 {
+    // ===== ABOUT ========
+    duqf_aboutDialog = new AboutDialog();
+
     // ===== TOOLBAR ======
 
     // remove right click on toolbar
@@ -304,9 +306,12 @@ void MainWindow::duqf_initUi()
         docAction->setToolTip("Read the documentation");
         docAction->setShortcut(QKeySequence("F1"));
         helpMenu->addAction(docAction);
-        helpMenu->addSeparator();
         connect(docAction, SIGNAL(triggered()), this, SLOT(duqf_doc()));
     }
+    QAction *aboutAction = new QAction(QIcon(":/icons/about"), "About");
+    helpMenu->addAction(aboutAction);
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(duqf_about()));
+    helpMenu->addSeparator();
     bool chat = QString(URL_CHAT) != "";
     bool bugReport = QString(URL_BUGREPORT) != "";
     bool forum = QString(URL_FORUM) != "";
@@ -448,6 +453,11 @@ void MainWindow::duqf_reinitSettings()
     settings.sync();
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+}
+
+void MainWindow::duqf_about()
+{
+    duqf_aboutDialog->show();
 }
 
 void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)

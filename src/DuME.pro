@@ -31,6 +31,7 @@ SOURCES += \
     duqf-app/app-style.cpp \
     duqf-utils/language-utils.cpp \
     duqf-utils/utils.cpp \
+    duqf-widgets/aboutdialog.cpp \
     duqf-widgets/appearancesettingswidget.cpp \
     duqf-widgets/progressslider.cpp \
     duqf-widgets/settingswidget.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     duqf-app/app-version.h \
     duqf-utils/language-utils.h \
     duqf-utils/utils.h \
+    duqf-widgets/aboutdialog.h \
     duqf-widgets/appearancesettingswidget.h \
     duqf-widgets/progressslider.h \
     duqf-widgets/settingswidget.h \
@@ -165,6 +167,7 @@ HEADERS += \
 FORMS += \
     UI/aesettingswidget.ui \
     UI/ffmpegsettingswidget.ui \
+    duqf-widgets/aboutdialog.ui \
     duqf-widgets/appearancesettingswidget.ui \
     duqf-widgets/settingswidget.ui \
     duqf-widgets/sliderspinbox.ui \

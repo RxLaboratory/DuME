@@ -6,6 +6,8 @@
 #include "duqf-app/app-style.h"
 #include "duqf-widgets/toolbarspacer.h"
 #include "duqf-widgets/settingswidget.h"
+#include "duqf-widgets/aboutdialog.h"
+
 
 #include <QProcess>
 #include <QFileDialog>
@@ -47,6 +49,7 @@ private slots:
     void duqf_settings(bool checked = true);
     void duqf_closeSettings();
     void duqf_reinitSettings();
+    void duqf_about();
 
     // FFMPEG
     void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
@@ -100,6 +103,7 @@ private:
     QPoint duqf_dragPosition;
     QToolButton *duqf_maximizeButton;
     QToolButton *duqf_settingsButton;
+    AboutDialog *duqf_aboutDialog;
     QSettings settings;
     SettingsWidget *settingsWidget;
     QLabel *title;
