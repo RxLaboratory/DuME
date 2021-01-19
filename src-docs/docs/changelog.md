@@ -4,6 +4,19 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 [TOC]
 
+## 0.2.0
+
+### New Features
+
+- [Command Line](cli-options.md) improvements:
+    - Ability to load a custom preset file.
+    - Added the `--minimize` option.
+- Several UI adjustments.
+
+### Fixes
+
+- Fixed crash on quit.
+
 ## 0.1.5
 
 ### New Features
