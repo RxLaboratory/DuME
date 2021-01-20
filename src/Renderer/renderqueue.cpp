@@ -323,8 +323,12 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
                 else if (stream->cropUseSize() && ( stream->cropHeight() != 0 || stream->cropWidth() != 0) )
                 {
-                    QString w = QString::number( stream->cropWidth() );
-                    QString h = QString::number( stream->cropHeight() );
+                    int wi = stream->cropWidth();
+                    int wh = stream->cropHeight();
+                    QString w = QString::number( wi );
+                    if (wi == 0) w = "in_w";
+                    QString h = QString::number( wh );
+                    if (wh == 0) h = "in_h";
                     filterChain << "crop=" + w + ":" + h;
                 }
 
