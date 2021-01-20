@@ -24,9 +24,14 @@ class BlockContentWidget : public QWidget
 {
     Q_OBJECT
 public:
+    enum Type { All, Audio, Video };
+    Q_ENUM(Type)
     explicit BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent = nullptr);
     BlockContentWidget(MediaInfo *mediaInfo, QWidget *parent = nullptr);
     QMenu* getPresets() const;
+
+    Type type() const;
+    void setType(const Type &type);
 
 public slots:
     // reimplement this in the blocks to update the MediaInfo when (de)activated
@@ -50,6 +55,7 @@ private slots:
 
 private:
     bool _activated;
+    Type _type;
 
 };
 
