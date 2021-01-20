@@ -312,6 +312,22 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 bool unpremultiply = !stream->premultipliedAlpha();
                 if (unpremultiply) filterChain << "unpremultiply=inplace=1";
 
+                //crop
+                if (!stream->cropUseSize() && ( stream->topCrop() != 0 || stream->bottomCrop() != 0 || stream->leftCrop() != 0 || stream->rightCrop() != 0))
+                {
+                    QString left = QString::number(stream->leftCrop());
+                    QString right = QString::number(stream->rightCrop());
+                    QString top = QString::number(stream->topCrop());
+                    QString bottom = QString::number(stream->bottomCrop());
+                    filterChain << "crop=in_w-" + left + "-" + right + ":in_h-" + top + "-" + bottom + ":" + left + ":" + top;
+                }
+                else if (stream->cropUseSize() && ( stream->cropHeight() != 0 || stream->cropWidth() != 0) )
+                {
+                    QString w = QString::number( stream->cropWidth() );
+                    QString h = QString::number( stream->cropHeight() );
+                    filterChain << "crop=" + w + ":" + h;
+                }
+
                 //Collect custom
                 foreach(QStringList option, output->ffmpegOptions())
                 {

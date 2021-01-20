@@ -104,6 +104,19 @@ public:
     void setBitrateType(const MediaUtils::BitrateType &bitrateType, bool silent = false);
     void setBitrateType(QString bitrateType, bool silent = false);
 
+    void setCrop(int top, int bottom, int left, int right, bool silent = false);
+    void setCrop(int width, int height, bool silent = false);
+
+    int topCrop() const;
+    int bottomCrop() const;
+    int leftCrop() const;
+    int rightCrop() const;
+    int cropHeight() const;
+    int cropWidth() const;
+
+    bool cropUseSize() const;
+    void setCropUseSize(bool cropUseSize, bool silent = false);
+
 signals:
     void changed();
 
@@ -154,6 +167,13 @@ private:
     FFBaseObject *_colorSpace;
     FFBaseObject *_colorRange;
     bool _premultipliedAlpha;
+    int _topCrop;
+    int _bottomCrop;
+    int _leftCrop;
+    int _rightCrop;
+    int _cropHeight;
+    int _cropWidth;
+    bool _cropUseSize;
 };
 
 #endif // VIDEOINFO_H

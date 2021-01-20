@@ -48,6 +48,7 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _aeUseRQueue = false;
 
     if(!silent) emit changed();
+
 }
 
 void MediaInfo::update(QFileInfo mediaFile, bool silent)
@@ -911,6 +912,37 @@ void MediaInfo::setPremultipliedAlpha(bool value, int id, bool silent)
             stream->setPremultipliedAlpha(value, silent);
     else if (id >= 0 && id < _videoStreams.count())
         _videoStreams[id]->setPremultipliedAlpha(value, silent);
+}
+
+void MediaInfo::setCrop(int top, int bottom, int left, int right, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setCrop(top, bottom, left, right, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setCrop(top, bottom, left, right, silent);
+
+}
+
+void MediaInfo::setCrop(int width, int height, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setCrop(width, height, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setCrop(width, height, silent);
+}
+
+void MediaInfo::setCropUseSize(bool useSize, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setCropUseSize(useSize, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setCropUseSize(useSize, silent);
 }
 
 void MediaInfo::setSamplingRate(int value, int id, bool silent)

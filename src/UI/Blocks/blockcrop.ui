@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BlockCrop</class>
+ <widget class="QWidget" name="BlockCrop">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1978</width>
+    <height>560</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item>
+    <widget class="QRadioButton" name="setMarginsButton">
+     <property name="text">
+      <string>Set Margins</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QSpinBox" name="top">
+       <property name="suffix">
+        <string>px</string>
+       </property>
+       <property name="prefix">
+        <string>Top: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="bottom">
+       <property name="suffix">
+        <string>px</string>
+       </property>
+       <property name="prefix">
+        <string>Bottom: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QSpinBox" name="left">
+       <property name="suffix">
+        <string>px</string>
+       </property>
+       <property name="prefix">
+        <string>Left: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="right">
+       <property name="suffix">
+        <string>px</string>
+       </property>
+       <property name="prefix">
+        <string>Right: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="setCropSizeButton">
+     <property name="text">
+      <string>Set Size (centered crop)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QSpinBox" name="widthSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="suffix">
+        <string> Same as source</string>
+       </property>
+       <property name="prefix">
+        <string>Width: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="heightSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="suffix">
+        <string> Same as source</string>
+       </property>
+       <property name="prefix">
+        <string>Height: </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="actionHDSquare">
+   <property name="text">
+    <string>HD Square (1080x1080 - 1:1)</string>
+   </property>
+  </action>
+  <action name="actionSmallSquare">
+   <property name="text">
+    <string>Small Square (720x720 - 1:1)</string>
+   </property>
+  </action>
+  <action name="actionHD1080">
+   <property name="text">
+    <string>HD ( 1920x1080 - 1.78:1 )</string>
+   </property>
+  </action>
+  <action name="actionHD720">
+   <property name="text">
+    <string>HD ( 1280x720 - 1.78:1 )</string>
+   </property>
+  </action>
+  <action name="action2KFlat">
+   <property name="text">
+    <string>DCP 2K Flat ( 1998x1080 - 1.85:1 )</string>
+   </property>
+  </action>
+  <action name="action2KScope">
+   <property name="text">
+    <string>DCP 2K Scope ( 2048x858 - 2.39:1 ) </string>
+   </property>
+  </action>
+  <action name="action4KFlat">
+   <property name="text">
+    <string>DCP 4K Flat ( 3996x2160 - 1.85:1 )</string>
+   </property>
+  </action>
+  <action name="action4KScope">
+   <property name="text">
+    <string>DCP 4K Scope ( 4096x1716 - 2.39:1 )</string>
+   </property>
+  </action>
+  <action name="actionDSM4K">
+   <property name="text">
+    <string>DSM/DCP Full 4K ( 4096x2160 - 1.9:1 )</string>
+   </property>
+  </action>
+  <action name="actionDSM2K">
+   <property name="text">
+    <string>DSM/DCP Full 2K ( 2048x1080 - 1.9:1 )</string>
+   </property>
+  </action>
+  <action name="action8KUHD">
+   <property name="text">
+    <string>8K UHD ( 7680x4320 - 1.78:1 )</string>
+   </property>
+  </action>
+  <action name="action4KUHD">
+   <property name="text">
+    <string>4K UHD ( 3840x2160 - 1.78:1 )</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

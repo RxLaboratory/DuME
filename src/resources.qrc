@@ -70,6 +70,8 @@
         <file alias="ae-comp">resources/icons/after-effects-composition_sl.svg</file>
         <file alias="ae-threads">resources/icons/after-effects-thread-process_sl.svg</file>
         <file alias="raw-file">resources/icons/raw-image-file_sd.svg</file>
+        <file alias="crop">resources/icons/crop_bl.svg</file>
+        <file alias="crop-image">resources/icons/crop_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

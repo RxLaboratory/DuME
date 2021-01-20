@@ -22,6 +22,13 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _colorSpace = ffmpeg->colorSpace("");
     _colorRange = ffmpeg->colorRange("");
     _premultipliedAlpha = true;
+    _topCrop = 0;
+    _bottomCrop = 0;
+    _leftCrop = 0;
+    _rightCrop = 0;
+    _cropWidth = 0;
+    _cropHeight = 0;
+    _cropUseSize = false;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -47,6 +54,15 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setColorTRC( obj.value("colorTRC").toString(), true);
     setColorSpace( obj.value("colorSpace").toString(), true);
     setColorRange( obj.value("colorRange").toString(), true);
+    int t = obj.value("topCrop").toInt(0);
+    int b = obj.value("bottomCrop").toInt(0);
+    int l = obj.value("leftCrop").toInt(0);
+    int r = obj.value("rightCrop").toInt(0);
+    int w = obj.value("cropWidth").toInt(0);
+    int h = obj.value("cropHeight").toInt(0);
+    setCrop(w,h, true);
+    setCrop(t, b, l, r, true);
+    setCropUseSize( obj.value("cropUseSize").toBool(false), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -72,6 +88,13 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _colorSpace = other->colorSpace();
     _colorRange = other->colorRange();
     _premultipliedAlpha = other->premultipliedAlpha();
+    _topCrop = other->topCrop();
+    _bottomCrop = other->bottomCrop();
+    _leftCrop = other->leftCrop();
+    _rightCrop = other->rightCrop();
+    _cropHeight = other->cropHeight();
+    _cropWidth = other->cropWidth();
+    _cropUseSize = other->cropUseSize();
 
     if(!silent) emit changed();
 }
@@ -104,6 +127,13 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("colorTRC", _colorTRC->toJson());
     vStream.insert("colorSpace", _colorSpace->toJson());
     vStream.insert("colorRange", _colorRange->toJson());
+    vStream.insert("topCrop", _topCrop);
+    vStream.insert("bottomCrop", _bottomCrop);
+    vStream.insert("leftCrop", _leftCrop);
+    vStream.insert("rightCrop", _rightCrop);
+    vStream.insert("cropHeight", _cropHeight);
+    vStream.insert("cropHWidth", _cropWidth);
+    vStream.insert("cropUseSize", _cropUseSize);
 
     return vStream;
 }
@@ -121,7 +151,26 @@ QString VideoInfo::getDescription()
 
     if ( vc->name() == "copy" ) return mediaInfoString;
 
-    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "x" + QString::number( _height );
+    if (!cropUseSize())
+    {
+        if ( _topCrop != 0 || _bottomCrop != 0 || _leftCrop != 0 || _rightCrop != 0 )
+        {
+            mediaInfoString += "\nCrop margins:\n- Top: " + QString::number(_topCrop) + "px";
+            mediaInfoString += "\n- Bottom: " + QString::number(_bottomCrop) + "px";
+            mediaInfoString += "\n- Left: " + QString::number(_leftCrop) + "px";
+            mediaInfoString += "\n- Right: " + QString::number(_rightCrop) + "px";
+        }
+    }
+    else
+    {
+        if ( _cropWidth != 0 || _cropHeight != 0 )
+        {
+            mediaInfoString += "\nCentered crop:";
+            mediaInfoString += "\n- Width: " + QString::number(_cropWidth) + "px";
+            mediaInfoString += "\n- Height: " + QString::number(_cropHeight) + "px";
+        }
+    }
+    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "px X" + QString::number( _height ) + "px";
     if ( aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( aspect()*100+0.5 ) / 100.0) + ":1";
     if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
     if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
@@ -468,6 +517,66 @@ void VideoInfo::setBitrateType(QString bitrateType, bool silent)
 {
     if (bitrateType.toLower() == "cbr") setBitrateType(MediaUtils::BitrateType::CBR, silent);
     else setBitrateType(MediaUtils::BitrateType::VBR, silent);
+}
+
+void VideoInfo::setCrop(int top, int bottom, int left, int right, bool silent)
+{
+    _topCrop = top;
+    _bottomCrop = bottom;
+    _leftCrop = left;
+    _rightCrop = right;
+
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setCrop(int width, int height, bool silent)
+{
+    _cropWidth = width;
+    _cropHeight = height;
+
+    if(!silent) emit changed();
+}
+
+int VideoInfo::topCrop() const
+{
+    return _topCrop;
+}
+
+int VideoInfo::bottomCrop() const
+{
+    return _bottomCrop;
+}
+
+int VideoInfo::leftCrop() const
+{
+    return _leftCrop;
+}
+
+int VideoInfo::rightCrop() const
+{
+    return _rightCrop;
+}
+
+int VideoInfo::cropHeight() const
+{
+    return _cropHeight;
+}
+
+int VideoInfo::cropWidth() const
+{
+    return _cropWidth;
+}
+
+bool VideoInfo::cropUseSize() const
+{
+    return _cropUseSize;
+}
+
+void VideoInfo::setCropUseSize(bool cropUseSize, bool silent)
+{
+    _cropUseSize = cropUseSize;
+
+    if(!silent) emit changed();
 }
 
 int VideoInfo::encodingSpeed() const

@@ -160,6 +160,9 @@ public:
     void setColorRange(QString value, int id = -1, bool silent = false);
     void setColorProfile(QString profile, int id = -1, bool silent = false);
     void setPremultipliedAlpha(bool value, int id = -1, bool silent = false);
+    void setCrop(int top, int bottom, int left, int right, int id = -1, bool silent = false);
+    void setCrop(int width, int height, int id = -1, bool silent = false);
+    void setCropUseSize(bool useSize, int id = -1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);
     void setChannels(QString value, int id = -1, bool silent = false);

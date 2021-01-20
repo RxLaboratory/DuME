@@ -38,6 +38,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
+    blockCrop = addBlock( new BlockCrop( _mediaInfo ), actionCrop, ":/icons/crop" );
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize, ":/icons/video-size" );
     blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate, ":/icons/framerate" );
     blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec, ":/icons/video-codec" );
@@ -79,6 +80,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     sizes << 350;
     sizes << 600;
     splitter->setSizes(sizes);
+
 }
 
 void OutputWidget::ffmpeg_init()

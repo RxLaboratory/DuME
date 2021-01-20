@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
+    UI/Blocks/blockcrop.cpp \
     UI/aesettingswidget.cpp \
     UI/ffmpegsettingswidget.cpp \
     duqf-app/app-style.cpp \
@@ -95,6 +96,7 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
+    UI/Blocks/blockcrop.h \
     UI/aesettingswidget.h \
     UI/ffmpegsettingswidget.h \
     duqf-app/app-style.h \
@@ -165,6 +167,7 @@ HEADERS += \
     global.h
 
 FORMS += \
+    UI/Blocks/blockcrop.ui \
     UI/aesettingswidget.ui \
     UI/ffmpegsettingswidget.ui \
     duqf-widgets/aboutdialog.ui \
