@@ -11,6 +11,10 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - [Command Line](cli-options.md) improvements:
     - Ability to load a custom preset file.
     - Added the `--minimize` option.
+- Ability to **Crop** videos.
+
+### Improvements
+
 - Several UI adjustments.
 
 ### Fixes
