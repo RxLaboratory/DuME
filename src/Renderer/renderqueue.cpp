@@ -186,9 +186,12 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (muxer != "") arguments << "-f" << muxer;
 
         //add custom options
-        foreach(QStringList option,output->ffmpegOptions())
+        foreach(QStringList option, output->ffmpegOptions())
         {
-            arguments << option[0];
+            QString opt = option[0];
+            //Ignore video filters
+            if (opt == "-filter:v" || opt == "-vf") continue;
+            arguments << opt;
             if (option.count() > 1)
             {
                 if (option[1] != "") arguments << option[1];
@@ -298,16 +301,34 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
                 if (vc->name() == "h264") arguments << "-x264opts" << "b_pyramid=0";
 
-                //unpremultiply
-                bool unpremultiply = !stream->premultipliedAlpha();
-                if (unpremultiply) arguments << "-vf" << "unpremultiply=inplace=1";
-
-                //LUT for input EXR
-                if (exrInput) arguments << "-vf" << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
-
                 //Vendor
                 //set to ap10 with prores for improved compatibility
                 if (vc->name().indexOf("prores") >= 0) arguments << "-vendor" << "ap10";
+
+                //Video filters
+                QStringList filterChain;
+
+                //unpremultiply
+                bool unpremultiply = !stream->premultipliedAlpha();
+                if (unpremultiply) filterChain << "unpremultiply=inplace=1";
+
+                //Collect custom
+                foreach(QStringList option, output->ffmpegOptions())
+                {
+                    QString opt = option[0];
+                    //Get video filters
+                    if (opt != "-filter:v" && opt != "-vf") continue;
+                    if (option.count() > 1)
+                    {
+                        if (option[1] != "") filterChain << option[1];
+                    }
+                }
+
+                //LUT for input EXR
+                if (exrInput) filterChain << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
+
+                //compile filters
+                arguments << "-vf" << filterChain.join(",");
             }
         }
         else
