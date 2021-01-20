@@ -6,6 +6,7 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Color block";
 #endif
+    setType(Type::Video);
     _freezeUI = true;
     setupUi(this);
 
@@ -65,29 +66,16 @@ void BlockColor::update()
 {
     qDebug() << "Update Color Block";
     if (_freezeUI) return;
+    bool freeze = _freezeUI;
     _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
-
     trcBox->setCurrentData( stream->colorTRC()->name());
     spaceBox->setCurrentData( stream->colorSpace()->name());
     rangeBox->setCurrentData( stream->colorRange()->name());
     primariesBox->setCurrentData( stream->colorPrimaries()->name());
 
-    _freezeUI = false;
+    _freezeUI = freeze;
     qDebug() << "Color block updated";
 }
 
