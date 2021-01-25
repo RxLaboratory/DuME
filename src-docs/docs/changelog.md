@@ -16,10 +16,14 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 ### Improvements
 
 - Several UI adjustments.
+- Better display of the information for output formats.
+- Improved stability
 
 ### Fixes
 
 - Fixed crash on quit.
+- Automatically sets or reverts to default codec when needed.
+- The closest pixel format is now set when switching the output with or without alpha.
 
 ## 0.1.5
 
