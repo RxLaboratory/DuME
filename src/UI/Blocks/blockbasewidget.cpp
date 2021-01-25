@@ -34,7 +34,7 @@ void BlockBaseWidget::setStatus(QString status)
 
 void BlockBaseWidget::activate(bool act)
 {
-    _content->activate(act);
+    _content->setActivated(act);
     if (!act)
         this->hide();
     else

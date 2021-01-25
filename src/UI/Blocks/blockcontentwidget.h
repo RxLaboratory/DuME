@@ -38,6 +38,7 @@ public slots:
     virtual void activate( bool act );
     // reimplement this in the blocks to update the UI from the MediaInfo when it changes
     virtual void update();
+    void setActivated(bool act);
 
 signals:
     void status(QString);

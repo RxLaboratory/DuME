@@ -9,9 +9,9 @@ BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMed
     _inputMedias = inputMedias;
     _type = Type::All;
 
-    connect( _mediaInfo, SIGNAL( changed() ), this, SLOT( changed() ) );
-
     update();
+
+    connect( _mediaInfo, SIGNAL( changed() ), this, SLOT( changed() ) );
 
     _freezeUI = false;
 }
@@ -31,12 +31,24 @@ BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, QWidget *parent) : 
 
 void BlockContentWidget::activate(bool act)
 {
-    _activated = act;
+
 }
 
 void BlockContentWidget::update()
 {
 
+}
+
+void BlockContentWidget::setActivated(bool act)
+{
+    _activated = act;
+
+    bool freeze = _freezeUI;
+    _freezeUI = true;
+
+    activate(act);
+
+    _freezeUI = freeze;
 }
 
 void BlockContentWidget::changed()
@@ -64,8 +76,6 @@ void BlockContentWidget::changed()
 
         emit blockEnabled(true);
     }
-
-
 
     update();
 
