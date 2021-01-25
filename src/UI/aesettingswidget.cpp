@@ -9,7 +9,7 @@ AESettingsWidget::AESettingsWidget(AfterEffects *ae, QWidget *parent) :
     _freezeUI = true;
 
     //Temp path
-    QString cachePath = QDir::toNativeSeparators( cacheManager->getRootCacheDir().absolutePath() );
+    QString cachePath = QDir::toNativeSeparators( CacheManager::instance()->getRootCacheDir().absolutePath() );
     aeCacheEdit->setText(cachePath);
 
     updateAe();
@@ -76,7 +76,7 @@ void AESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 
     if (QDir(arg1).exists())
     {
-        cacheManager->setRootCacheDir(path);
+        CacheManager::instance()->setRootCacheDir(path);
         aeCacheEdit->setText(path);
     }
     _freezeUI = false;
@@ -84,7 +84,7 @@ void AESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
 
 void AESettingsWidget::on_aeCacheBrowseButton_clicked()
 {
-    QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",cacheManager->getRootCacheDir().absolutePath());
+    QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",CacheManager::instance()->getRootCacheDir().absolutePath());
     if (path == "") return;
     aeCacheEdit->setText(path);
 }

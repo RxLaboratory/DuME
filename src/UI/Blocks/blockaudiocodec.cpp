@@ -11,7 +11,7 @@ BlockAudioCodec::BlockAudioCodec(MediaInfo *mediaInfo, QWidget *parent) :
 
     setupUi(this);
 
-    connect( ffmpeg, SIGNAL(binaryChanged(QString)), this, SLOT(listCodecs()));
+    connect( FFmpeg::instance(), SIGNAL(binaryChanged(QString)), this, SLOT(listCodecs()));
 
     listCodecs();
 
@@ -101,7 +101,7 @@ void BlockAudioCodec::listCodecs()
 {
     // If FFmpeg is not available/not loaded correctly
     // Only the "copy" codec is available, we can't do anything with this block
-    if (ffmpeg->audioEncoders().count() < 2)
+    if (FFmpeg::instance()->audioEncoders().count() < 2)
     {
         activate(false);
         return;
@@ -114,7 +114,7 @@ void BlockAudioCodec::listCodecs()
 
     audioCodecsBox->clear();
 
-    foreach (FFCodec *c, ffmpeg->audioEncoders() )
+    foreach (FFCodec *c, FFmpeg::instance()->audioEncoders() )
     {
         if ( audioCodecsFilterBox->currentIndex() <= 1 || (audioCodecsFilterBox->currentIndex() == 3 && c->isLossless()) || (audioCodecsFilterBox->currentIndex() == 2 && c->isLossy()))
         {

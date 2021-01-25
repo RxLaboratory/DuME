@@ -7,8 +7,6 @@
 #include "windows.h"
 #endif
 
-#include "global.h"
-
 #include "duqf-app/app-utils.h"
 #include "UI/mainwindow.h"
 
@@ -26,10 +24,10 @@ bool processArgs(int argc, char *argv[])
     if (presets)
     {
         qInfo() << "Default Preset:";
-        qInfo().noquote() << presetManager->defaultPreset().name();
+        qInfo().noquote() << PresetManager::instance()->defaultPreset().name();
         qInfo() << "";
         qInfo() << "Available presets:";
-        foreach(Preset p, presetManager->presets())
+        foreach(Preset p, PresetManager::instance()->presets())
         {
             qInfo().noquote() << p.name();
         }
@@ -58,6 +56,7 @@ void initSettings(DuSplashScreen *s)
 void initFFmpeg(DuSplashScreen *s)
 {
     s->newMessage("Loading FFmpeg...");
+    FFmpeg *ffmpeg = FFmpeg::instance();
     QObject::connect(ffmpeg,&FFmpeg::newLog,s,&DuSplashScreen::newMessage);
     QObject::connect(ffmpeg,&FFmpeg::progressMax,s,&DuSplashScreen::progressMax);
     QObject::connect(ffmpeg,&FFmpeg::progress,s,&DuSplashScreen::progress);
@@ -83,7 +82,7 @@ int main(int argc, char *argv[])
     DuApplication a(argc, argv);
 
     //load presets
-    presetManager->load();
+    PresetManager::instance()->load();
     //process CLI arguments
     QStringList examples;
     examples << "Usage: DuME [options] inputFile1 [[options] inputFile2 ... [options] inputFileN]";
@@ -122,8 +121,9 @@ int main(int argc, char *argv[])
     initSettings(a.splashScreen());
     //load FFmpeg
     initFFmpeg(a.splashScreen());
-    //prep cache
-    cacheManager->init();
+    //Init cache manager
+    CacheManager *cm = CacheManager::instance();
+    cm->init();
     //build UI and show
     buildUI(a.arguments(), a.splashScreen());
 

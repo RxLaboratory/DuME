@@ -25,15 +25,8 @@ class FFmpeg : public AbstractRendererInfo
 {
     Q_OBJECT
 public:
-    /**
-     * @brief FFmpeg Constructs the FFmpeg manager. Note: This constructor does not initializes ffmpeg, you have to run init() before using it.
-     * @param path The path to the FFmpeg binary executable
-     * @param parent The parent QObject
-     */
-    explicit FFmpeg(QString path = "", QObject *parent = nullptr);
-    ~FFmpeg();
-
-    /**
+    static FFmpeg *instance();
+   /**
      * @brief defaultObject The default base object, empty name and "Default" base name
      * @return
      */
@@ -189,6 +182,13 @@ public slots:
 
 private:
 
+    /**
+     * @brief FFmpeg Constructs the FFmpeg manager. Note: This constructor does not initializes ffmpeg, you have to run init() before using it. The constructor is private: this is a singleton, use instance() to get the instance
+     * @param path The path to the FFmpeg binary executable
+     * @param parent The parent QObject
+     */
+    explicit FFmpeg(QString path = "", QObject *parent = nullptr);
+
     // === ATTRIBUTES ===
     // The ffmpeg version
     QString _version;
@@ -273,6 +273,9 @@ private:
 
     // Is the process available and working
     bool _valid;
+
+protected:
+    static FFmpeg *_instance;
 
 };
 

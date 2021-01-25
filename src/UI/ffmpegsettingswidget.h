@@ -3,10 +3,11 @@
 
 #include "ui_ffmpegsettingswidget.h"
 
-#include "global.h"
-
 #include <QSettings>
 #include <QFileDialog>
+
+#include "duqf-utils/utils.h"
+#include "FFmpeg/ffmpeg.h"
 
 class FFmpegSettingsWidget : public QWidget, private Ui::FFmpegSettingsWidget
 {

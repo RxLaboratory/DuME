@@ -8,6 +8,13 @@ PresetManager::PresetManager(QObject *parent) : QObject(parent)
     load();
     _resetDefaultPreset = ":/presets/MP4 - Standard";
     _defaultPreset = QFileInfo( settings.value("presets/default", _resetDefaultPreset).toString() );
+    _instance = this;
+}
+
+PresetManager *PresetManager::instance()
+{
+    if (!_instance) _instance = new PresetManager();
+    return _instance;
 }
 
 void PresetManager::load()
@@ -65,3 +72,5 @@ void PresetManager::resetDefaultPreset()
     Preset p = Preset(QFileInfo( _resetDefaultPreset ));
     setDefaultPreset(p);
 }
+
+PresetManager *PresetManager::_instance = nullptr;

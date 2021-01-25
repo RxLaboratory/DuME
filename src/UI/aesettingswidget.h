@@ -4,7 +4,7 @@
 #include "ui_aesettingswidget.h"
 
 #include "AfterEffects/aftereffects.h"
-#include "global.h"
+#include "Renderer/cachemanager.h"
 
 #include <QSettings>
 #include <QFileDialog>

@@ -46,10 +46,10 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     // Load Renderers info (to be passed to other widgets)
     log("Init - Connecting to FFmpeg");
     //FFmpeg
-    connect( ffmpeg, SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
-    connect( ffmpeg, SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
-    connect( ffmpeg, SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
-    connect( ffmpeg, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
+    connect( FFmpeg::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
+    connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
+    connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
     log("Init - Initializing the After Effects renderer");
     _ae = new AfterEffects( this );
@@ -105,7 +105,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
-    ffmpegValid( ffmpeg->isValid() );
+    ffmpegValid( FFmpeg::instance()->isValid() );
 
     // ==== Create RenderQueue ====
 
@@ -133,7 +133,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //parse arguments if ffmpeg is valid
     autoQuit = false;
 
-    if (ffmpeg->isValid())
+    if (FFmpeg::instance()->isValid())
     {
         int argc = args.count();
         if (argc == 1) queueWidget->addInputFile("");
@@ -480,7 +480,7 @@ void MainWindow::ffmpegValid(bool valid)
     if ( valid )
     {
         queuePage->setGraphicsEffect( nullptr );
-        helpEdit->setText(ffmpeg->longHelp());
+        helpEdit->setText(FFmpeg::instance()->longHelp());
         queuePage->setEnabled(true);
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
@@ -492,7 +492,7 @@ void MainWindow::ffmpegValid(bool valid)
     {
         queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
         log("FFmpeg error", LogUtils::Critical );
-        log( ffmpeg->lastErrorMessage() );
+        log( FFmpeg::instance()->lastErrorMessage() );
         queuePage->setEnabled(false);
         setAcceptDrops( false );
         actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
@@ -511,7 +511,7 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
     }
     else
     {
-       ffmpegValid( ffmpeg->isValid() );
+       ffmpegValid( FFmpeg::instance()->isValid() );
     }
 }
 
@@ -733,7 +733,7 @@ void MainWindow::on_ffmpegCommandsButton_clicked()
 {
     QString commands = ffmpegCommandsEdit->text();
     if (commands == "") commands = "-h";
-    ffmpeg->runCommand(commands);
+    FFmpeg::instance()->runCommand(commands);
 }
 
 void MainWindow::on_aeCommandsEdit_returnPressed()
@@ -810,7 +810,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug() << "Purging disk cache...";
 
     //remove temp folders
-    cacheManager->purgeCache();
+    CacheManager::instance()->purgeCache();
 
     //remove app fonts
     QFontDatabase::removeAllApplicationFonts();

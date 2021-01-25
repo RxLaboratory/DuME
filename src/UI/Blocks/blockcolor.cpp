@@ -11,6 +11,7 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 
     //pouplate boxes
+    FFmpeg *ffmpeg = FFmpeg::instance();
     foreach(FFBaseObject *c, ffmpeg->colorPrimaries())
     {
         primariesBox->addItem( c->prettyName(), c->name() );

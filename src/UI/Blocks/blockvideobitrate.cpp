@@ -9,7 +9,7 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     setType(Type::Video);
     setupUi(this);
 
-    foreach (FFBaseObject *t, ffmpeg->tunings())
+    foreach (FFBaseObject *t, FFmpeg::instance()->tunings())
     {
         tuneBox->addItem(t->prettyName(), t->name());
     }

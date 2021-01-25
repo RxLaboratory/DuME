@@ -7,10 +7,10 @@ FFmpegSettingsWidget::FFmpegSettingsWidget(QWidget *parent) :
 
     _freezeUI = true;
 
-    ffmpegPathEdit->setText( QDir::toNativeSeparators( ffmpeg->binary() ) );
+    ffmpegPathEdit->setText( QDir::toNativeSeparators( FFmpeg::instance()->binary() ) );
     userPresetsPathEdit->setText(settings.value("presets/path","").toString());
 
-    connect( ffmpeg, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
+    connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
 
     _freezeUI = false;
 }
@@ -20,12 +20,12 @@ void FFmpegSettingsWidget::on_ffmpegBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
     ffmpegPathEdit->setText(path);
-    ffmpeg->setBinary( path, true );
+    FFmpeg::instance()->setBinary( path, true );
 }
 
 void FFmpegSettingsWidget::on_ffmpegPathEdit_editingFinished()
 {
-    ffmpeg->setBinary( ffmpegPathEdit->text(), true );
+    FFmpeg::instance()->setBinary( ffmpegPathEdit->text(), true );
 }
 
 void FFmpegSettingsWidget::on_userPresetsBrowseButton_clicked()

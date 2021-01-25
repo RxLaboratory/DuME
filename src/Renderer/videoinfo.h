@@ -3,8 +3,6 @@
 
 #include <QObject>
 
-#include "global.h"
-
 #include "FFmpeg/ffmpeg.h"
 #include "FFmpeg/fflanguage.h"
 

@@ -3,9 +3,10 @@
 
 #include <QObject>
 
-#include "global.h"
 #include "FFmpeg/fflanguage.h"
 #include "FFmpeg/ffsampleformat.h"
+#include "FFmpeg/ffcodec.h"
+#include "FFmpeg/ffmpeg.h"
 
 class AudioInfo : public QObject
 {

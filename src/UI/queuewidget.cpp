@@ -166,7 +166,7 @@ void QueueWidget::log(QString log, LogUtils::LogType lt )
 
 void QueueWidget::addInput()
 {
-    if ( !ffmpeg->isValid() ) return;
+    if ( !FFmpeg::instance()->isValid() ) return;
 
     int num = inputWidgets.count();
 
@@ -187,7 +187,7 @@ void QueueWidget::addInput()
 void QueueWidget::addOutput()
 {
     qDebug() << "Add output widget";
-    if ( !ffmpeg->isValid() ) return;
+    if ( !FFmpeg::instance()->isValid() ) return;
 
     //number of the output
     int num = outputWidgets.count()+1;

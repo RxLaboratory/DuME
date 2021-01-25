@@ -21,8 +21,6 @@
 #include <QDebug>
 #include <QDesktopServices>
 
-#include "global.h"
-
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
 #include "Renderer/presetmanager.h"

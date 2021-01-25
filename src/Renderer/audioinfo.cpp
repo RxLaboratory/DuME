@@ -6,9 +6,9 @@ AudioInfo::AudioInfo(QObject *parent) : QObject(parent)
     _samplingRate = 0;
     _channels = "";
     _bitrate = 0;
-    _codec = ffmpeg->audioEncoder("");
+    _codec = FFmpeg::instance()->audioEncoder("");
     _language = new FFLanguage("");
-    _sampleFormat = ffmpeg->sampleFormat("");
+    _sampleFormat = FFmpeg::instance()->sampleFormat("");
 }
 
 AudioInfo::AudioInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -101,7 +101,7 @@ void AudioInfo::setCodec(FFCodec *codec, bool silent)
 
 void AudioInfo::setCodec(QString name, bool silent)
 {
-    setCodec( ffmpeg->audioEncoder(name), silent);
+    setCodec( FFmpeg::instance()->audioEncoder(name), silent);
 }
 
 void AudioInfo::setCodec(QJsonObject obj, bool silent)
@@ -145,7 +145,7 @@ void AudioInfo::setSampleFormat(FFSampleFormat *sampleFormat, bool silent)
 
 void AudioInfo::setSampleFormat(QString name, bool silent)
 {
-    setSampleFormat(ffmpeg->sampleFormat(name), silent);
+    setSampleFormat(FFmpeg::instance()->sampleFormat(name), silent);
 }
 
 void AudioInfo::setSampleFormat(QJsonObject obj, bool silent)

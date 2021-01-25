@@ -13,7 +13,7 @@ BlockVideoCodec::BlockVideoCodec(MediaInfo *mediaInfo, QWidget *parent) :
 
     setupUi(this);
 
-    connect( ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
+    connect( FFmpeg::instance(),SIGNAL(binaryChanged(QString)),this,SLOT(listCodecs()) );
 
     listCodecs();
 
@@ -32,7 +32,7 @@ void BlockVideoCodec::listCodecs()
 
     int videoFilter = videoCodecsFilterBox->currentIndex();
 
-    foreach(FFCodec *encoder, ffmpeg->videoEncoders())
+    foreach(FFCodec *encoder, FFmpeg::instance()->videoEncoders())
     {
         if (encoder->name() == "copy") continue;
         if (videoFilter <= 1 || (videoFilter == 2 && encoder->isLossy()) || (videoFilter == 3 && encoder->isLossless()) || (videoFilter == 4 && encoder->isIframe()))

@@ -14,7 +14,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     videoWidget->setObjectName("duqf_block");
 
     // FFmpeg
-    connect( ffmpeg,SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
+    connect( FFmpeg::instance(),SIGNAL(binaryChanged(QString)),this,SLOT(ffmpeg_init()) );
     // Keep the id
     _index = id;
     // Associated MediaInfo
@@ -22,7 +22,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(mediaInfoChanged()));
 
     // preset manager
-    connect( presetManager, SIGNAL(changed()), this, SLOT(loadPresets()));
+    connect( PresetManager::instance(), SIGNAL(changed()), this, SLOT(loadPresets()));
 
     // Input medias
     _inputMedias = inputMedias;
@@ -99,7 +99,7 @@ void OutputWidget::ffmpeg_loadMuxers()
 
     formatsBox->clear();
 
-    QList<FFMuxer *> muxers = ffmpeg->muxers();
+    QList<FFMuxer *> muxers = FFmpeg::instance()->muxers();
     if (muxers.count() == 0)
     {
         _freezeUI = false;
@@ -144,7 +144,7 @@ MediaInfo *OutputWidget::getMediaInfo()
             _mediaInfo->addFFmpegOption(option, true);
         }
     }
-    MediaInfo *mi = new MediaInfo( ffmpeg );
+    MediaInfo *mi = new MediaInfo( );
 
     mi->copyFrom( _mediaInfo, true, true);
     return mi;
@@ -328,7 +328,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _freezeUI = true;
-    bool def = presetsBox->itemData(index).toString() == presetManager->defaultPreset().file().absoluteFilePath();
+    bool def = presetsBox->itemData(index).toString() == PresetManager::instance()->defaultPreset().file().absoluteFilePath();
     if (def)
     {
         actionDefaultPreset->setChecked( true );
@@ -453,9 +453,9 @@ void OutputWidget::loadPresets()
     int index = presetsFilterBox->currentIndex();
 
     QList<Preset> presets;
-    if (index == 0) presets = presetManager->presets();
-    else if (index == 1) presets = presetManager->internalPresets();
-    else if (index == 2) presets = presetManager->userPresets();
+    if (index == 0) presets = PresetManager::instance()->presets();
+    else if (index == 1) presets = PresetManager::instance()->internalPresets();
+    else if (index == 2) presets = PresetManager::instance()->userPresets();
 
     //add custom
     presetsBox->addItem("Custom");
@@ -470,7 +470,7 @@ void OutputWidget::loadPresets()
 void OutputWidget::selectDefaultPreset()
 {
     qDebug() << "Selecting default preset";
-    QString defaultPreset = presetManager->defaultPreset().file().absoluteFilePath();
+    QString defaultPreset = PresetManager::instance()->defaultPreset().file().absoluteFilePath();
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )
     {
@@ -522,7 +522,7 @@ void OutputWidget::on_actionSavePreset_triggered()
     _mediaInfo->exportPreset(saveFileName);
     //add to box
     _freezeUI = false;
-    presetManager->load();
+    PresetManager::instance()->load();
 }
 
 void OutputWidget::on_actionOpenPreset_triggered()
@@ -555,12 +555,12 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
     if (checked)
     {
         Preset p = Preset( QFileInfo( presetsBox->currentData().toString() ) );
-        presetManager->setDefaultPreset(p);
+        PresetManager::instance()->setDefaultPreset(p);
         actionDefaultPreset->setText("Default preset");
     }
     else
     {
-        presetManager->resetDefaultPreset();
+        PresetManager::instance()->resetDefaultPreset();
         actionDefaultPreset->setText("Set as default preset");
     }
 }
@@ -593,7 +593,7 @@ void OutputWidget::addVideoStream()
             videoCopyButton->setEnabled( false );
             return;
         }
-        VideoInfo *stream = new VideoInfo(ffmpeg);
+        VideoInfo *stream = new VideoInfo( );
         stream->setCodec( _mediaInfo->muxer()->defaultVideoCodec() );
         stream->setPixFormat( _mediaInfo->muxer()->defaultVideoCodec()->defaultPixFormat() );
         _mediaInfo->addVideoStream( stream );
@@ -622,7 +622,7 @@ void OutputWidget::addAudioStream()
             audioCopyButton->setEnabled( false );
             return;
         }
-        AudioInfo *stream = new AudioInfo(ffmpeg);
+        AudioInfo *stream = new AudioInfo( );
         stream->setCodec( _mediaInfo->muxer()->defaultAudioCodec() );
         _mediaInfo->addAudioStream( stream );
     }

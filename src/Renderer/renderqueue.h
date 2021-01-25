@@ -5,12 +5,11 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "global.h"
-
 #include "FFmpeg/ffmpegrenderer.h"
 #include "AfterEffects/aerenderer.h"
 #include "FFmpeg/ffmpeg.h"
 #include "AfterEffects/aftereffects.h"
+#include "Renderer/cachemanager.h"
 
 #include "queueitem.h"
 

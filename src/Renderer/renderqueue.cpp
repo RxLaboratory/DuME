@@ -8,9 +8,9 @@ RenderQueue::RenderQueue(AfterEffects *afterEffects, QObject *parent ) : QObject
 
     // The transcoder
     // Create the renderer
-    _ffmpegRenderer = new FFmpegRenderer( ffmpeg->binary() );
+    _ffmpegRenderer = new FFmpegRenderer( FFmpeg::instance()->binary() );
     // Connections
-    connect( ffmpeg, &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
+    connect( FFmpeg::instance(), &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::console, this, &RenderQueue::ffmpegConsole ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::statusChanged, this, &RenderQueue::ffmpegStatusChanged ) ;
@@ -757,7 +757,7 @@ void RenderQueue::renderAep(MediaInfo *input, bool audio)
     if (!input->aeUseRQueue())
     {
         //set the cache dir
-        QTemporaryDir *aeTempDir = cacheManager->getAeTempDir();
+        QTemporaryDir *aeTempDir = CacheManager::instance()->getAeTempDir();
         emit newLog( "After Effects temporary dir set to: " + QDir::toNativeSeparators(aeTempDir->path()) );
         input->setCacheDir(aeTempDir);
 

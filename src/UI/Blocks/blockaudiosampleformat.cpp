@@ -11,7 +11,7 @@ BlockAudioSampleFormat::BlockAudioSampleFormat(MediaInfo *mediaInfo, QWidget *pa
 
     _freezeUI = true;
     //populate sampling box
-    foreach (FFSampleFormat *f, ffmpeg->sampleFormats() )
+    foreach (FFSampleFormat *f, FFmpeg::instance()->sampleFormats() )
     {
         samplingBox->addItem(f->prettyName(), f->name());
     }

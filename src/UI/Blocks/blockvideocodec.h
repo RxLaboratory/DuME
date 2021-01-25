@@ -1,8 +1,6 @@
 #ifndef BLOCKVIDEOCODEC_H
 #define BLOCKVIDEOCODEC_H
 
-#include "global.h"
-
 #include "ui_blockvideocodec.h"
 #include "UI/Blocks/blockcontentwidget.h"
 

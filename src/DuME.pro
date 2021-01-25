@@ -93,7 +93,6 @@ SOURCES += \
     UI/outputwidget.cpp \
     UI/queuewidget.cpp \
     UI/streamreferencewidget.cpp \
-    global.cpp \
     main.cpp
 
 HEADERS += \
@@ -165,8 +164,7 @@ HEADERS += \
     UI/mainwindow.h \
     UI/outputwidget.h \
     UI/queuewidget.h \
-    UI/streamreferencewidget.h \
-    global.h
+    UI/streamreferencewidget.h
 
 FORMS += \
     UI/Blocks/blockcrop.ui \

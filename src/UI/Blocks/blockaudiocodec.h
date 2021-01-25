@@ -1,8 +1,6 @@
 #ifndef BLOCKAUDIOCODEC_H
 #define BLOCKAUDIOCODEC_H
 
-#include "global.h"
-
 #include "ui_blockaudiocodec.h"
 #include "UI/Blocks/blockcontentwidget.h"
 

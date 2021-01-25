@@ -2,6 +2,7 @@
 
 VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
 {
+    FFmpeg * ffmpeg = FFmpeg::instance();
     _id = -1;
     _quality = -1;
     _encodingSpeed = -1;
@@ -250,7 +251,7 @@ void VideoInfo::setProfile(FFProfile *profile, bool silent)
 
 void VideoInfo::setProfile(QString name, bool silent)
 {
-    setProfile( ffmpeg->profile( name ), silent );
+    setProfile( FFmpeg::instance()->profile( name ), silent );
 }
 
 void VideoInfo::setProfile(QJsonObject obj, bool silent)
@@ -292,7 +293,7 @@ void VideoInfo::setPixFormat(FFPixFormat *pixFormat, bool silent)
 
 void VideoInfo::setPixFormat(QString name, bool silent)
 {
-    setPixFormat( ffmpeg->pixFormat( name ), silent );
+    setPixFormat( FFmpeg::instance()->pixFormat( name ), silent );
 }
 
 void VideoInfo::setPixFormat(QJsonObject obj, bool silent)
@@ -368,22 +369,22 @@ void VideoInfo::setLanguage(const QString &languageId, bool silent)
 
 void VideoInfo::setColorPrimaries(QString primaries, bool silent)
 {
-    setColorPrimaries( ffmpeg->colorPrimary(primaries), silent );
+    setColorPrimaries( FFmpeg::instance()->colorPrimary(primaries), silent );
 }
 
 void VideoInfo::setColorTRC(QString tRC, bool silent)
 {
-    setColorTRC( ffmpeg->colorTRC(tRC), silent );
+    setColorTRC( FFmpeg::instance()->colorTRC(tRC), silent );
 }
 
 void VideoInfo::setColorSpace(QString space, bool silent)
 {
-    setColorSpace( ffmpeg->colorSpace(space), silent);
+    setColorSpace( FFmpeg::instance()->colorSpace(space), silent);
 }
 
 void VideoInfo::setColorRange(QString range, bool silent)
 {
-    setColorRange( ffmpeg->colorRange(range), silent);
+    setColorRange( FFmpeg::instance()->colorRange(range), silent);
 }
 
 void VideoInfo::setColorPrimaries(FFBaseObject *primaries, bool silent)
@@ -409,7 +410,7 @@ void VideoInfo::setColorRange(FFBaseObject *range, bool silent)
     if (_pixFormat->colorSpace() == FFPixFormat::YUV)
         _colorRange = range;
     else
-        _colorRange = ffmpeg->colorRange("");
+        _colorRange = FFmpeg::instance()->colorRange("");
     if(!silent) emit changed();
 }
 
@@ -424,7 +425,7 @@ void VideoInfo::setColorProfile(FFColorProfile *colorProfile, bool silent)
 
 void VideoInfo::setColorProfile(QString profile, bool silent)
 {
-    setColorProfile( ffmpeg->colorProfile(profile), silent );
+    setColorProfile( FFmpeg::instance()->colorProfile(profile), silent );
 }
 
 bool VideoInfo::setAlpha(bool alpha, bool silent)
@@ -504,7 +505,7 @@ void VideoInfo::setTuning(FFBaseObject *tuning, bool silent)
 
 void VideoInfo::setTuning(QString tuning, bool silent)
 {
-    setTuning(ffmpeg->tuning(tuning), silent);
+    setTuning(FFmpeg::instance()->tuning(tuning), silent);
 }
 
 void VideoInfo::setTuning(QJsonObject tuning, bool silent)
@@ -638,7 +639,7 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
     _codec = codec;
     if (codec->name() != "h264")
     {
-        _tuning = ffmpeg->tuning("");
+        _tuning = FFmpeg::instance()->tuning("");
         _bitrateType = MediaUtils::BitrateType::VBR;
     }
     if(!silent) emit changed();
@@ -646,7 +647,7 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
 
 void VideoInfo::setCodec(QString name, bool silent)
 {
-    setCodec( ffmpeg->videoEncoder(name), silent);
+    setCodec( FFmpeg::instance()->videoEncoder(name), silent);
 }
 
 void VideoInfo::setCodec(QJsonObject obj, bool silent)

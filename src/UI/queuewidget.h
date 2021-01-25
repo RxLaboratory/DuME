@@ -6,7 +6,6 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
-#include "global.h"
 #include "duqf-app/app-style.h"
 
 #include "inputwidget.h"

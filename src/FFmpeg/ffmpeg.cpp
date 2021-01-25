@@ -99,11 +99,14 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
 
     if (path != "") setBinary(path, false);
+
+    _instance = this;
 }
 
-FFmpeg::~FFmpeg()
+FFmpeg *FFmpeg::instance()
 {
-
+    if (!_instance) _instance = new FFmpeg();
+    return _instance;
 }
 
 FFBaseObject *FFmpeg::defaultObject()
@@ -1359,3 +1362,4 @@ void FFmpeg::gotSampleFormats(QString output, QString newVersion)
     std::sort(_sampleFormats.begin(),_sampleFormats.end(),ffSorter);
 }
 
+FFmpeg *FFmpeg::_instance = nullptr;

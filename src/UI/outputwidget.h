@@ -1,8 +1,6 @@
 #ifndef OUTPUTWIDGET_H
 #define OUTPUTWIDGET_H
 
-#include "global.h"
-
 #include "ui_outputwidget.h"
 #include "Renderer/mediainfo.h"
 #include "Renderer/presetmanager.h"
