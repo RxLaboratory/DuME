@@ -109,6 +109,8 @@ private:
     QMenu *presetsMenu;
 
     void addNewParam(QString name = "", QString value = "", QString icon = "");
+    void addVideoStream();
+    void addAudioStream();
 
     void selectDefaultPreset();
 
@@ -123,6 +125,7 @@ private:
     bool _outputPathIsCustom;
 
     int _index;
+
 };
 
 #endif // OUTPUTWIDGET_H

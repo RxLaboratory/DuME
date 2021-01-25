@@ -228,7 +228,7 @@ void OutputWidget::mediaInfoChanged()
         actionDefaultPreset->setChecked( false );
         actionDefaultPreset->setText("Set as default preset");
     }
-    mediaInfoEdit->setPlainText( _mediaInfo->getDescription() );
+    mediaInfoEdit->setPlainText( _mediaInfo->getDescription( true ));
 
     _freezeUI = false;
 }
@@ -258,28 +258,7 @@ void OutputWidget::on_videoButton_clicked(bool checked)
 {
     if (checked)
     {
-        if (!_mediaInfo->hasVideo())
-        {
-            //only if muxer is capable of video
-            FFMuxer *m = _mediaInfo->muxer();
-            if (m->name() == "")
-            {
-                videoButton->setChecked(false);
-                videoButton->setEnabled(false);
-                videoTranscodeButton->setEnabled( false );
-                videoCopyButton->setEnabled( false );
-                return;
-            }
-            if (!m->isVideo() && !m->isSequence())
-            {
-                videoButton->setChecked(false);
-                videoButton->setEnabled(false);
-                videoTranscodeButton->setEnabled( false );
-                videoCopyButton->setEnabled( false );
-                return;
-            }
-            _mediaInfo->addVideoStream( new VideoInfo(ffmpeg) );
-        }
+        addVideoStream();
     }
     else
     {
@@ -291,28 +270,7 @@ void OutputWidget::on_audioButton_clicked(bool checked)
 {
     if (checked)
     {
-        if (!_mediaInfo->hasAudio())
-        {
-            //only if muxer is capable of video
-            FFMuxer *m = _mediaInfo->muxer();
-            if (m->name() == "")
-            {
-                videoButton->setChecked(false);
-                videoButton->setEnabled(false);
-                videoTranscodeButton->setEnabled( false );
-                videoCopyButton->setEnabled( false );
-                return;
-            }
-            if (!m->isAudio())
-            {
-                videoButton->setChecked(false);
-                videoButton->setEnabled(false);
-                videoTranscodeButton->setEnabled( false );
-                videoCopyButton->setEnabled( false );
-                return;
-            }
-            _mediaInfo->addAudioStream( new AudioInfo(ffmpeg) );
-        }
+        addAudioStream();
     }
     else
     {
@@ -324,7 +282,7 @@ void OutputWidget::on_videoTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasVideo()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( "" );
+    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( _mediaInfo->muxer()->defaultVideoCodec() );
     else _mediaInfo->videoStreams()[0]->setCodec( "copy" );
 }
 
@@ -332,7 +290,7 @@ void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasAudio()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    if ( checked ) _mediaInfo->setAudioCodec( "" );
+    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( _mediaInfo->muxer()->defaultAudioCodec() );
     else _mediaInfo->setAudioCodec( "copy" );
 }
 
@@ -350,6 +308,9 @@ void OutputWidget::on_formatsBox_currentIndexChanged(int index)
     if (_freezeUI) return;
 
     _mediaInfo->setMuxer( formatsBox->currentData().toString() );
+    FFMuxer *m = _mediaInfo->muxer();
+    if (m->isVideo() || m->isSequence()) addVideoStream();
+    if (m->isAudio()) addAudioStream();
     setOutputPath(outputEdit->text());
 }
 
@@ -607,4 +568,60 @@ void OutputWidget::on_outputEdit_textEdited(QString text)
 {
     _mediaInfo->setFileName( text, true );
     _outputPathIsCustom = true;
+}
+
+void OutputWidget::addVideoStream()
+{
+    if (!_mediaInfo->hasVideo())
+    {
+        //only if muxer is capable of video
+        FFMuxer *m = _mediaInfo->muxer();
+        if (m->name() == "")
+        {
+            videoButton->setChecked(false);
+            videoButton->setEnabled(false);
+            videoTranscodeButton->setEnabled( false );
+            videoCopyButton->setEnabled( false );
+            return;
+        }
+        if (!m->isVideo() && !m->isSequence())
+        {
+            videoButton->setChecked(false);
+            videoButton->setEnabled(false);
+            videoTranscodeButton->setEnabled( false );
+            videoCopyButton->setEnabled( false );
+            return;
+        }
+        VideoInfo *stream = new VideoInfo(ffmpeg);
+        stream->setCodec( _mediaInfo->muxer()->defaultVideoCodec() );
+        _mediaInfo->addVideoStream( stream );
+    }
+}
+
+void OutputWidget::addAudioStream()
+{
+    if (!_mediaInfo->hasAudio())
+    {
+        //only if muxer is capable of video
+        FFMuxer *m = _mediaInfo->muxer();
+        if (m->name() == "")
+        {
+            audioButton->setChecked(false);
+            audioButton->setEnabled(false);
+            audioTranscodeButton->setEnabled( false );
+            audioCopyButton->setEnabled( false );
+            return;
+        }
+        if (!m->isAudio())
+        {
+            audioButton->setChecked(false);
+            audioButton->setEnabled(false);
+            audioTranscodeButton->setEnabled( false );
+            audioCopyButton->setEnabled( false );
+            return;
+        }
+        AudioInfo *stream = new AudioInfo(ffmpeg);
+        stream->setCodec( _mediaInfo->muxer()->defaultAudioCodec() );
+        _mediaInfo->addAudioStream( stream );
+    }
 }
