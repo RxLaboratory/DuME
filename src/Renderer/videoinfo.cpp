@@ -399,7 +399,10 @@ void VideoInfo::setColorSpace(FFBaseObject *space, bool silent)
 
 void VideoInfo::setColorRange(FFBaseObject *range, bool silent)
 {
-    _colorRange = range;
+    if (_pixFormat->colorSpace() == FFPixFormat::YUV)
+        _colorRange = range;
+    else
+        _colorRange = ffmpeg->colorRange("");
     if(!silent) emit changed();
 }
 

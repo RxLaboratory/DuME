@@ -63,8 +63,20 @@ void BlockColor::update()
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
     trcBox->setCurrentData( stream->colorTRC()->name());
     spaceBox->setCurrentData( stream->colorSpace()->name());
-    rangeBox->setCurrentData( stream->colorRange()->name());
     primariesBox->setCurrentData( stream->colorPrimaries()->name());
+    if (stream->pixFormat()->colorSpace() == FFPixFormat::YUV)
+    {
+        rangeBox->show();
+        rangeLabel->show();
+        rangeBox->setCurrentData( stream->colorRange()->name());
+    }
+    else
+    {
+        rangeBox->setCurrentIndex(0);
+        rangeBox->hide();
+        rangeLabel->hide();
+    }
+
 }
 
 void BlockColor::on_spaceBox_currentIndexChanged(int index)

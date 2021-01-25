@@ -58,8 +58,6 @@ void BlockVideoBitrate::activate(bool activate)
 
 void BlockVideoBitrate::update()
 {
-    qDebug() << "Update Video Bitrate Block";
-
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
 
     FFCodec *c = stream->codec();

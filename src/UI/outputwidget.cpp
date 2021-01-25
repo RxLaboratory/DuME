@@ -594,6 +594,7 @@ void OutputWidget::addVideoStream()
         }
         VideoInfo *stream = new VideoInfo(ffmpeg);
         stream->setCodec( _mediaInfo->muxer()->defaultVideoCodec() );
+        stream->setPixFormat( _mediaInfo->muxer()->defaultVideoCodec()->defaultPixFormat() );
         _mediaInfo->addVideoStream( stream );
     }
 }

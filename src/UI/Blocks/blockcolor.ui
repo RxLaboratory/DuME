@@ -63,9 +63,9 @@
     <widget class="BigComboBox" name="trcBox"/>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="rangeLabel">
      <property name="text">
-      <string>Range</string>
+      <string>YUV Range</string>
      </property>
     </widget>
    </item>
