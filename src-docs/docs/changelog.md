@@ -12,7 +12,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
     - Ability to load a custom preset file.
     - Added the `--minimize` option.
 - Ability to **Crop** videos.
-- Ability to **Apply a 1D or 3D LUT**.
+- Ability to [**Apply a 1D or 3D LUT**](lut.md).
 
 ### Improvements
 

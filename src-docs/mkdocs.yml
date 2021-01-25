@@ -37,6 +37,8 @@ nav:
         - MP4 / h.265 / HEVC: h265.md
         - Image sequences: sequences.md
         - Adding / Changing streams: mapping.md
+        - Convert color spaces: color-space.md
+        - Applying a LUT: lut.md
     - After Effects Rendering:
         - Installation: after-effects-install.md
         - Rendering: after-effects-rendering.md
