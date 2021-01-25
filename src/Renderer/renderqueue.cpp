@@ -305,7 +305,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 //set to ap10 with prores for improved compatibility
                 if (vc->name().indexOf("prores") >= 0) arguments << "-vendor" << "ap10";
 
-                //Video filters
+                // ============ Video filters
                 QStringList filterChain;
 
                 //unpremultiply
@@ -348,7 +348,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (exrInput) filterChain << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
 
                 //compile filters
-                arguments << "-vf" << filterChain.join(",");
+                if (filterChain.count() > 0) arguments << "-vf" << filterChain.join(",");
             }
         }
         else
