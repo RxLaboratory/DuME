@@ -17,6 +17,8 @@ BlockVideoCodec::BlockVideoCodec(MediaInfo *mediaInfo, QWidget *parent) :
 
     listCodecs();
 
+    videoCodecsBox->setEnabled(videoCodecsFilterBox->currentIndex() != 0);
+
     _freezeUI = false;
 }
 
@@ -50,16 +52,11 @@ void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
     bool freeze = _freezeUI;
     _freezeUI = true;
 
-    if (videoCodecsFilterBox->currentIndex() == 0) videoCodecsFilterBox->setCurrentIndex(1);
-
-    for (int v = 0; v < videoCodecsBox->count() ; v++)
+    videoCodecsBox->setCurrentData(name);
+    if (videoCodecsBox->currentIndex() >= 0)
     {
-        if (videoCodecsBox->itemData(v, Qt::UserRole).toString() == name)
-        {
-            videoCodecsBox->setCurrentIndex(v);
-            _freezeUI = freeze;
-            return;
-        }
+        _freezeUI = freeze;
+        return;
     }
 
     //try without filter
@@ -69,7 +66,7 @@ void BlockVideoCodec::setCodec(QString name, bool tryWithoutFilter)
         listCodecs();
         setCodec( name, false );
     }
-    else // set default
+    else
     {
         videoCodecsBox->setCurrentIndex( -1 );
     }
@@ -128,6 +125,7 @@ void BlockVideoCodec::update()
 
 void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
 {
+    videoCodecsBox->setEnabled(index != 0);
     if (_freezeUI ) return;
     if (index == 0)
     {
@@ -136,13 +134,11 @@ void BlockVideoCodec::on_videoCodecsFilterBox_currentIndexChanged(int index)
     else
     {
         listCodecs();
-        videoCodecsBox->setEnabled( true );
     }
 }
 
 void BlockVideoCodec::on_videoCodecsBox_currentIndexChanged(int index)
 {
     if ( _freezeUI ) return;
-    qDebug() << "Video Codec Block changed codec to " + videoCodecsBox->currentText();
     _mediaInfo->setVideoCodec( videoCodecsBox->itemData(index, Qt::UserRole).toString() );
 }

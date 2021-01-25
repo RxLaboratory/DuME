@@ -25,7 +25,6 @@ void BlockPixFormat::activate(bool activate)
 
 void BlockPixFormat::update()
 {
-    qDebug() << "GOT MEDIA INFO CHANGED";
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
 
     listPixFormats( );
@@ -39,7 +38,6 @@ void BlockPixFormat::update()
     //filterPixFormats(false);
 
     FFPixFormat *pf = stream->pixFormat();
-    qDebug() << "GO SET " + pf->name();
     setPixFormat( pf->name() );
 }
 
