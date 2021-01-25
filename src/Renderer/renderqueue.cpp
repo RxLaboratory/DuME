@@ -347,6 +347,34 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 //LUT for input EXR
                 if (exrInput) filterChain << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
 
+                //1D / 3D LUT
+                if (stream->lut() != "")
+                {
+                    bool filterName = "lut3d";
+                    QString lutName = stream->lut();
+                    //check if it's 3D or 1D
+                    if (lutName.endsWith(".cube"))
+                    {
+                        QFile l(lutName);
+                        if (l.open(QIODevice::ReadOnly | QIODevice::Text))
+                        {
+                             QTextStream in(&l);
+                             QString line = in.readLine();
+                             while (!line.isNull())
+                             {
+                                 if (line.trimmed().toUpper().startsWith("LUT_1D"))
+                                 {
+                                     filterName = "lut1d";
+                                     break;
+                                 }
+                                 line = in.readLine();
+                             }
+                             l.close();
+                        }
+                    }
+                    filterChain << "lut1d='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
+                }
+
                 //compile filters
                 if (filterChain.count() > 0) arguments << "-vf" << filterChain.join(",");
             }

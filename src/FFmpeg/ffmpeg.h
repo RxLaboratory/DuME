@@ -171,6 +171,9 @@ public:
      */
     MediaUtils::RenderStatus status() const;
 
+    // UTILS
+    static QString escapeFilterOption(QString option);
+
 signals:
     void progress(int);
     void progressMax(int);

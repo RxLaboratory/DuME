@@ -29,6 +29,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _cropWidth = 0;
     _cropHeight = 0;
     _cropUseSize = false;
+    _lut = "";
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -63,6 +64,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setCrop(w,h, true);
     setCrop(t, b, l, r, true);
     setCropUseSize( obj.value("cropUseSize").toBool(false), true);
+    setLut(obj.value("lut").toString(""));
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -95,6 +97,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _cropHeight = other->cropHeight();
     _cropWidth = other->cropWidth();
     _cropUseSize = other->cropUseSize();
+    _lut = other->lut();
 
     if(!silent) emit changed();
 }
@@ -134,6 +137,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("cropHeight", _cropHeight);
     vStream.insert("cropHWidth", _cropWidth);
     vStream.insert("cropUseSize", _cropUseSize);
+    vStream.insert("lut", _lut);
 
     return vStream;
 }
@@ -217,6 +221,7 @@ QString VideoInfo::getDescription()
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
     }
     if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
+    if ( _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
 
     return mediaInfoString;
 }
@@ -297,7 +302,6 @@ void VideoInfo::setPixFormat(QJsonObject obj, bool silent)
 
 FFPixFormat *VideoInfo::defaultPixFormat() const
 {
-    qDebug() << _codec->defaultPixFormat()->name();
     return _codec->defaultPixFormat();
 }
 
@@ -581,6 +585,18 @@ bool VideoInfo::cropUseSize() const
 void VideoInfo::setCropUseSize(bool cropUseSize, bool silent)
 {
     _cropUseSize = cropUseSize;
+
+    if(!silent) emit changed();
+}
+
+QString VideoInfo::lut() const
+{
+    return _lut;
+}
+
+void VideoInfo::setLut(const QString &lut, bool silent)
+{
+    _lut = lut;
 
     if(!silent) emit changed();
 }

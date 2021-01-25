@@ -72,6 +72,8 @@
         <file alias="raw-file">resources/icons/raw-image-file_sd.svg</file>
         <file alias="crop">resources/icons/crop_bl.svg</file>
         <file alias="crop-image">resources/icons/crop_sl.svg</file>
+        <file alias="lut">resources/icons/lut-3d-look_sd.svg</file>
+        <file alias="set-lut">resources/icons/set-lut-3d-look_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
@@ -130,5 +132,9 @@
         <file alias="ffmpeg resolution">resources/regex/ffmpegResolution.txt</file>
         <file alias="ffmpeg sampling">resources/regex/ffmpegSampling.txt</file>
         <file alias="ffmpeg sample format">resources/regex/ffmpegSampleFormat.txt</file>
+    </qresource>
+    <qresource prefix="/luts">
+        <file alias="adobe-to-qt.cube">resources/luts/QT Gamma Compensation.cube</file>
+        <file alias="qt-to-adobe.cube">resources/luts/Undo QT Gamma Compensation.cube</file>
     </qresource>
 </RCC>

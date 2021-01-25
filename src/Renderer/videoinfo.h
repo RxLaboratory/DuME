@@ -117,6 +117,9 @@ public:
     bool cropUseSize() const;
     void setCropUseSize(bool cropUseSize, bool silent = false);
 
+    QString lut() const;
+    void setLut(const QString &lut, bool silent = false);
+
 signals:
     void changed();
 
@@ -174,6 +177,7 @@ private:
     int _cropHeight;
     int _cropWidth;
     bool _cropUseSize;
+    QString _lut;
 };
 
 #endif // VIDEOINFO_H

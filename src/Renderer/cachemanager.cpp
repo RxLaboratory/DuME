@@ -5,6 +5,12 @@ CacheManager::CacheManager(QObject *parent) : QObject(parent)
 
 }
 
+CacheManager *CacheManager::instance()
+{
+    if (!_instance) _instance = new CacheManager();
+    return _instance;
+}
+
 void CacheManager::init()
 {
     QSettings settings;
@@ -41,7 +47,7 @@ void CacheManager::setRootCacheDir(QString path, bool purge)
 
 void CacheManager::purgeCache()
 {
-    _aeCacheDir.removeRecursively();
+    _rootCacheDir.removeRecursively();
 }
 
 QDir CacheManager::getAeCacheDir() const
@@ -53,3 +59,5 @@ QTemporaryDir *CacheManager::getAeTempDir()
 {
     return new QTemporaryDir( _aeCacheDir.absolutePath() + "/DuME_Cache" );
 }
+
+CacheManager *CacheManager::_instance = nullptr;

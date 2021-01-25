@@ -10,6 +10,7 @@
 // BLOCKS
 #include "UI/Blocks/blockbasewidget.h"
 #include "UI/Blocks/blockcrop.h"
+#include "UI/Blocks/blocklut.h"
 #include "UI/Blocks/blockresize.h"
 #include "UI/Blocks/blockframerate.h"
 #include "UI/Blocks/blockvideocodec.h"
@@ -88,6 +89,7 @@ private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon="");
     BlockBaseWidget *blockCrop;
+    BlockBaseWidget *blockLut;
     BlockBaseWidget *blockResize;
     BlockBaseWidget *blockFrameRate;
     BlockBaseWidget *blockVideoCodec;

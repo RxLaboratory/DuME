@@ -27,6 +27,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
     UI/Blocks/blockcrop.cpp \
+    UI/Blocks/blocklut.cpp \
     UI/aesettingswidget.cpp \
     UI/ffmpegsettingswidget.cpp \
     duqf-app/app-style.cpp \
@@ -97,6 +98,7 @@ SOURCES += \
 
 HEADERS += \
     UI/Blocks/blockcrop.h \
+    UI/Blocks/blocklut.h \
     UI/aesettingswidget.h \
     UI/ffmpegsettingswidget.h \
     duqf-app/app-style.h \
@@ -168,6 +170,7 @@ HEADERS += \
 
 FORMS += \
     UI/Blocks/blockcrop.ui \
+    UI/Blocks/blocklut.ui \
     UI/aesettingswidget.ui \
     UI/ffmpegsettingswidget.ui \
     duqf-widgets/aboutdialog.ui \

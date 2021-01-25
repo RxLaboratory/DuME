@@ -526,6 +526,11 @@ MediaUtils::RenderStatus FFmpeg::status() const
     return _status;
 }
 
+QString FFmpeg::escapeFilterOption(QString option)
+{
+    return option.replace(":", "\\:").replace("'", "\\'");
+}
+
 QString FFmpeg::version() const
 {
     return _version;

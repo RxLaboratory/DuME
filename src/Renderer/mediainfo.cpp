@@ -953,6 +953,16 @@ void MediaInfo::setCropUseSize(bool useSize, int id, bool silent)
         _videoStreams[id]->setCropUseSize(useSize, silent);
 }
 
+void MediaInfo::setLut(QString lut, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setLut(lut, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setLut(lut, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;

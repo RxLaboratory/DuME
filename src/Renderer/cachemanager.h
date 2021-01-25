@@ -13,7 +13,7 @@ class CacheManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit CacheManager(QObject *parent = nullptr);
+    static CacheManager *instance();
     QDir getRootCacheDir()  const;
     void init();
     QDir getAeCacheDir() const;
@@ -26,8 +26,12 @@ public slots:
 signals:
 
 private:
+    //private constructor, this is a singleton
+    explicit CacheManager(QObject *parent = nullptr);
     QDir _rootCacheDir;
     QDir _aeCacheDir;
+protected:
+    static CacheManager *_instance;
 };
 
 #endif // CACHEMANAGER_H

@@ -408,7 +408,6 @@ void AbstractRenderer::launchProcess( QStringList arguments )
     renderer->setArguments( arguments );
     renderer->start(QIODevice::ReadWrite);
 
-#ifdef QT_DEBUG
     QString args = "";
     foreach(QString arg, arguments)
     {
@@ -416,7 +415,7 @@ void AbstractRenderer::launchProcess( QStringList arguments )
         else args = args + " " + arg;
     }
     qDebug().noquote() << renderer->program() + args;
-#endif
+    emit newLog("Command:\n" + renderer->program() + args);
 
     //TODO check processor affinity?
 

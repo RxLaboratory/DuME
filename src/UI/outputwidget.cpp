@@ -39,6 +39,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
     blockCrop = addBlock( new BlockCrop( _mediaInfo ), actionCrop, ":/icons/crop" );
+    blockLut = addBlock( new BlockLut( _mediaInfo ), actionApplyLUT, ":/icons/lut" );
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize, ":/icons/video-size" );
     blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate, ":/icons/framerate" );
     blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec, ":/icons/video-codec" );
