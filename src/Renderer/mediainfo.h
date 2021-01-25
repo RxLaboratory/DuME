@@ -47,7 +47,7 @@ public:
      */
     void reInit(bool removeFileName = true, bool silent = false);
 
-    QString getDescription();
+    QString getDescription(bool ignoreGeneralInfo = false);
 
     //presets
     QString exportPreset();

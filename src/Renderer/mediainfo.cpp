@@ -132,6 +132,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = ffmpeg->videoEncoder( codec );
             if (c->name() == "" ) c = ffmpeg->videoDecoder( codec );
+            if (c->name() == "" ) c = _muxer->defaultVideoCodec();
             stream->setCodec( c );
 
             QString pixFormat = match.captured(4).left( match.captured(4).indexOf("(") );
@@ -180,6 +181,7 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
             QString codec = match.captured(3).left( match.captured(3).indexOf("(") );
             FFCodec *c = ffmpeg->audioEncoder( codec );
             if (c->name() == "" ) c = ffmpeg->audioDecoder( codec );
+            if (c->name() == "" ) c = _muxer->defaultAudioCodec();
             stream->setCodec(c);
 
             stream->setSamplingRate( match.captured(4).toInt() );
@@ -252,11 +254,11 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     if(!silent) emit changed();
 }
 
-QString MediaInfo::getDescription()
+QString MediaInfo::getDescription(bool ignoreGeneralInfo)
 {
     //Text
     QString mediaInfoString = "";
-    if (_info != "") mediaInfoString += _info + "\n";
+    if (_info != "" && !ignoreGeneralInfo) mediaInfoString += _info + "\n";
 
     if (_muxer->isSequence())
     {
