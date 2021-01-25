@@ -25,6 +25,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Fixed crash on quit.
 - Automatically sets or reverts to default codec when needed.
 - The closest pixel format is now set when switching the output with or without alpha.
+- Fixed the pixel format list getting back to *Default* when changed.
 
 ## 0.1.5
 
