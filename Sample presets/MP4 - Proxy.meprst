@@ -72,6 +72,10 @@
                     "name": "fastdecode",
                     "prettyName": "Fast decode"
                 },
+                "pixFormat": {
+                    "name": "yuv420p",
+                    "prettyName": "yuv420p (12 bits - 3 channels)"
+                },
                 "width": 0
             }
         ]

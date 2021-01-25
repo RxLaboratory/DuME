@@ -51,6 +51,10 @@
                     "name": "baseline",
                     "prettyName": "Baseline"
                 },
+                "pixFormat": {
+                    "name": "yuv420p",
+                    "prettyName": "yuv420p (12 bits - 3 channels)"
+                },
                 "quality": -1,
                 "width": 0
             }
