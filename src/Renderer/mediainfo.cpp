@@ -373,6 +373,10 @@ QString MediaInfo::getDescription(bool ignoreGeneralInfo)
             if (abitrate != 0) mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(abitrate);
         }
     }
+
+    if (_loop == 0) mediaInfoString += "\n\nInfinite loops";
+    else if (_loop > 0) mediaInfoString += "\n\nLoops: " + QString::number(_loop);
+
     return mediaInfoString;
 }
 
@@ -829,6 +833,7 @@ void MediaInfo::setWidth(int value, int id, bool silent)
 void MediaInfo::setVideoCodec(QString value, int id, bool silent)
 {
     if (!hasVideo()) return;
+    if (value == "") value = defaultVideoCodec()->name();
     if (id < 0)
         foreach( VideoInfo *stream, _videoStreams)
             stream->setCodec(value, silent);
@@ -839,6 +844,7 @@ void MediaInfo::setVideoCodec(QString value, int id, bool silent)
 void MediaInfo::setVideoCodec(FFCodec *value, int id, bool silent)
 {
     if (!hasVideo()) return;
+    if (value->name() == "") value = defaultVideoCodec();
     if (id < 0)
         foreach( VideoInfo *stream, _videoStreams)
             stream->setCodec(value, silent);
@@ -980,6 +986,7 @@ void MediaInfo::setAudioBitrate(qint64 value, int id, bool silent)
 void MediaInfo::setAudioCodec(QString value, int id, bool silent)
 {
     if (!hasAudio()) return;
+    if (value == "") value = defaultAudioCodec()->name();
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setCodec(value, silent);
@@ -990,6 +997,7 @@ void MediaInfo::setAudioCodec(QString value, int id, bool silent)
 void MediaInfo::setAudioCodec(FFCodec *value, int id, bool silent)
 {
     if (!hasAudio()) return;
+    if (value->name() == "") value = defaultAudioCodec();
     if (id < 0)
         foreach( AudioInfo *stream, _audioStreams)
             stream->setCodec(value, silent);
