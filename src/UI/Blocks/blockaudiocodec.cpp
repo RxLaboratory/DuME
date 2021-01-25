@@ -6,6 +6,7 @@ BlockAudioCodec::BlockAudioCodec(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Audio Codec block";
 #endif
+    setType(Type::Audio);
     _freezeUI = true;
 
     setupUi(this);
@@ -19,8 +20,6 @@ BlockAudioCodec::BlockAudioCodec(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockAudioCodec::activate(bool activate)
 {
-    _freezeUI = true;
-
     if ( activate && audioCodecsFilterBox->currentIndex() != 0)
     {
         _mediaInfo->setAudioCodec( audioCodecsBox->currentData(Qt::UserRole).toString() );
@@ -29,41 +28,19 @@ void BlockAudioCodec::activate(bool activate)
     {
         _mediaInfo->setAudioCodec( "" );
     }
-
-    _freezeUI = false;
 }
 
 void BlockAudioCodec::update()
-{
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasAudio())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    AudioInfo *stream = _mediaInfo->audioStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
-
+{  
     listCodecs();
-    _freezeUI = true;
 
     FFCodec *c = _mediaInfo->audioStreams()[0]->codec();
     setCodec( c->name() );
-
-    _freezeUI = false;
 }
 
 void BlockAudioCodec::setDefaultCodec()
 {
+    bool freeze  =_freezeUI;
     _freezeUI = true;
 
     audioCodecsFilterBox->setCurrentIndex( 0 );
@@ -81,11 +58,12 @@ void BlockAudioCodec::setDefaultCodec()
 
     audioCodecsBox->setEnabled( false );
 
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
 {
+    bool freeze  =_freezeUI;
     _freezeUI = true;
 
     if (name == "")
@@ -99,7 +77,7 @@ void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
         if ( audioCodecsBox->itemData(i, Qt::UserRole).toString() == name)
         {
             audioCodecsBox->setCurrentIndex( i );
-            _freezeUI = false;
+            _freezeUI = freeze;
             return;
         }
     }
@@ -116,7 +94,7 @@ void BlockAudioCodec::setCodec(QString name, bool tryWithoutFilter )
         audioCodecsBox->setCurrentIndex( -1 );
     }
 
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockAudioCodec::listCodecs()
@@ -129,7 +107,9 @@ void BlockAudioCodec::listCodecs()
         return;
     }
 
+    bool freeze  =_freezeUI;
     _freezeUI = true;
+
     QString prevSelection = audioCodecsBox->currentData(Qt::UserRole).toString();
 
     audioCodecsBox->clear();
@@ -145,7 +125,7 @@ void BlockAudioCodec::listCodecs()
     //try to reselect it
     setCodec ( prevSelection, false );
 
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockAudioCodec::on_audioCodecsBox_currentIndexChanged(int index)

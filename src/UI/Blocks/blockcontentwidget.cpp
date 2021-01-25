@@ -73,9 +73,25 @@ void BlockContentWidget::changed()
             _freezeUI = freeze;
             return;
         }
-
-        emit blockEnabled(true);
     }
+    else if (_type == Type::Audio)
+    {
+        if (!_mediaInfo->hasAudio())
+        {
+            emit blockEnabled(false);
+            _freezeUI = freeze;
+            return;
+        }
+        AudioInfo *stream = _mediaInfo->audioStreams()[0];
+        if (stream->isCopy())
+        {
+            emit blockEnabled(false);
+            _freezeUI = freeze;
+            return;
+        }
+    }
+
+    emit blockEnabled(true);
 
     update();
 

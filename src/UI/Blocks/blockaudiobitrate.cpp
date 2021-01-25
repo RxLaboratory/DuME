@@ -6,6 +6,7 @@ BlockAudioBitrate::BlockAudioBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Audio Bitrate block";
 #endif
+    setType(Type::Audio);
     setupUi(this);
 
     _presets->addAction( actionAuto );
@@ -17,8 +18,6 @@ BlockAudioBitrate::BlockAudioBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockAudioBitrate::activate(bool activate)
 {
-    _freezeUI = true;
-
     if (activate)
     {
         _mediaInfo->setAudioBitrate( MediaUtils::convertToBps( audioBitRateEdit->value(), MediaUtils::kbps ));
@@ -27,29 +26,11 @@ void BlockAudioBitrate::activate(bool activate)
     {
         _mediaInfo->setAudioBitrate( 0 );
     }
-
-    _freezeUI = false;
 }
 
 void BlockAudioBitrate::update()
 {
-    if (_freezeUI) return;
-     _freezeUI = true;
-
-    if (!_mediaInfo->hasAudio() )
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     AudioInfo *stream = _mediaInfo->audioStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
 
     audioBitRateEdit->setValue( MediaUtils::convertFromBps( stream->bitrate(), MediaUtils::kbps ) );
 

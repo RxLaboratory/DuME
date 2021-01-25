@@ -6,52 +6,29 @@ BlockLoops::BlockLoops(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Loops block";
 #endif
+    setType(Type::Video);
     setupUi(this);
 }
 
 void BlockLoops::activate(bool activate)
 {
-    _freezeUI = true;
-
     if (activate) _mediaInfo->setLoop( -1 );
     else _mediaInfo->setLoop( videoLoopsEdit->value() );
-
-    _freezeUI = false;
 }
 
 void BlockLoops::update()
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasVideo())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    if (_mediaInfo->videoStreams()[0]->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-
     FFMuxer *m = _mediaInfo->muxer();
     if ( m->name() == "" )
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
     else if (m->name() != "gif")
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
-
-    emit blockEnabled(true);
 
     int l = _mediaInfo->loop();
     videoLoopsEdit->setValue( l );
@@ -60,7 +37,6 @@ void BlockLoops::update()
     else if (l == 1) videoLoopsEdit->setSuffix(" loop");
     else videoLoopsEdit->setSuffix(" loops");
 
-    _freezeUI = false;
 }
 
 

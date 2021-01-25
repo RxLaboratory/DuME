@@ -37,9 +37,6 @@ BlockCrop::BlockCrop(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockCrop::activate(bool blockEnabled)
 {
-    bool freeze = _freezeUI;
-    _freezeUI = true;
-
     if (blockEnabled)
     {
         _mediaInfo->setCrop(top->value(), bottom->value(), left->value(), right->value());
@@ -52,16 +49,10 @@ void BlockCrop::activate(bool blockEnabled)
         _mediaInfo->setCrop(0,0);
         _mediaInfo->setCropUseSize(false);
     }
-
-    _freezeUI = freeze;
 }
 
 void BlockCrop::update()
 {
-    if (_freezeUI) return;
-    bool freeze = _freezeUI;
-    _freezeUI = true;
-
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
     top->setValue(stream->topCrop());
     bottom->setValue(stream->bottomCrop());
@@ -71,8 +62,6 @@ void BlockCrop::update()
     heightSpinBox->setValue(stream->cropHeight());
     setMarginsButton->setChecked(!stream->cropUseSize());
     setCropSizeButton->setChecked(stream->cropUseSize());
-
-    _freezeUI = freeze;
 }
 
 void BlockCrop::setMaximum(int w, int h)

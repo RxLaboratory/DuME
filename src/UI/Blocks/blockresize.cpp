@@ -6,6 +6,7 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create resize block";
 #endif
+    setType(Type::Video);
     setupUi(this);
 
     _presets->addAction( actionKeepRatio );
@@ -25,7 +26,6 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockResize::activate(bool activate)
 {
-    _freezeUI = true;
     if (!activate)
     {
         _mediaInfo->setWidth( 0 );
@@ -36,30 +36,11 @@ void BlockResize::activate(bool activate)
         _mediaInfo->setWidth( videoWidthButton->value() );
         _mediaInfo->setHeight( videoHeightButton->value() );
     }
-    _freezeUI = false;
 }
 
 void BlockResize::update()
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasVideo())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-
-    emit blockEnabled(true);
-
     int w = stream->width();
     int h = stream->height();
     videoWidthButton->setValue( w );
@@ -70,24 +51,28 @@ void BlockResize::update()
     else videoHeightButton->setSuffix( " px" );
 
     checkSizes( );
-
-    _freezeUI = false;
 }
 
 void BlockResize::setWidth(int w)
 {
+    bool freeze = _freezeUI;
     _freezeUI = true;
+
     videoWidthButton->setValue( w );
     checkSizes( );
-    _freezeUI = false;
+
+    _freezeUI = freeze;
 }
 
 void BlockResize::setHeight(int h)
 {
+    bool freeze = _freezeUI;
     _freezeUI = true;
+
     videoHeightButton->setValue( h );
     checkSizes( );
-    _freezeUI = false;
+
+    _freezeUI = freeze;
 }
 
 QString BlockResize::aspectRatio()

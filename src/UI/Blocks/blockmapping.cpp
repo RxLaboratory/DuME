@@ -14,7 +14,6 @@ BlockMapping::BlockMapping(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget
 
 void BlockMapping::activate(bool activate)
 {
-    _freezeUI = true;
     if (activate)
     {
         foreach( StreamReferenceWidget *sw, _streamWidgets )
@@ -26,14 +25,10 @@ void BlockMapping::activate(bool activate)
     {
         _mediaInfo->removeAllMaps();
     }
-    _freezeUI = false;
 }
 
 void BlockMapping::update()
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
     qDeleteAll(_streamWidgets);
     _streamWidgets.clear();
 
@@ -43,28 +38,29 @@ void BlockMapping::update()
     {
         addStreamWidget(map.mediaId(), map.streamId());
     }
-
-    _freezeUI = false;
 }
 
 void BlockMapping::changeStream(int index, int streamId)
 {
     if (_freezeUI) return;
+    bool freeze  =_freezeUI;
     _freezeUI = true;
     _mediaInfo->setMapStream(index, streamId);
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockMapping::changeMedia(int index, int mediaId)
 {
     if (_freezeUI) return;
+    bool freeze  =_freezeUI;
     _freezeUI = true;
     _mediaInfo->setMapMedia(index, mediaId);
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockMapping::addStreamWidget(int mediaId, int streamId)
 {
+    bool freeze  =_freezeUI;
     _freezeUI = true;
     StreamReferenceWidget *sw = new StreamReferenceWidget( _streamWidgets.count(), _inputMedias, this );
     sw->setMediaId( mediaId );
@@ -74,23 +70,25 @@ void BlockMapping::addStreamWidget(int mediaId, int streamId)
     connect( sw, SIGNAL(streamChanged(int, int)), this, SLOT(changeStream(int, int)));
     _streamWidgets << sw;
     mainLayout->addWidget(sw);
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockMapping::removeStreamWidget(int id)
 {
+    bool freeze  =_freezeUI;
     _freezeUI = true;
     StreamReferenceWidget *sw = _streamWidgets.takeAt(id);
     mainLayout->removeWidget(sw);
     sw->deleteLater();
     _mediaInfo->removeMap(id);
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockMapping::on_actionAdd_triggered()
 {
     addStreamWidget(-1, -1);
+    bool freeze  =_freezeUI;
     _freezeUI = true;
     _mediaInfo->addMap( -1, -1 );
-    _freezeUI = false;
+    _freezeUI = freeze;
 }

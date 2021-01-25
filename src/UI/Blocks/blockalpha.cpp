@@ -6,12 +6,14 @@ BlockAlpha::BlockAlpha(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Alpha block";
 #endif
+
+    setType(Type::Video);
+
     setupUi(this);
 }
 
 void BlockAlpha::activate(bool activate)
 {
-    _freezeUI = true;
     if (activate)
     {
         _mediaInfo->setAlpha( alphaButton->isChecked() );
@@ -22,40 +24,19 @@ void BlockAlpha::activate(bool activate)
         _mediaInfo->setPixFormat( "" );
         _mediaInfo->setPremultipliedAlpha( true );
     }
-    _freezeUI = false;
 }
 
 void BlockAlpha::update()
 {
-    qDebug() << "Update Alpha block";
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasVideo())
+    if (!_mediaInfo->canHaveAlpha())
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
 
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
 
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-
-    if (!_mediaInfo->canHaveAlpha())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-
     emit blockEnabled(true);
-
     //has alpha
     if ( _mediaInfo->hasAlpha() )
     {
@@ -69,7 +50,7 @@ void BlockAlpha::update()
         unmultButton->setChecked( false );
         unmultButton->setEnabled( false );
     }
-    _freezeUI = false;
+
     qDebug() << "Alpha block updated";
 }
 

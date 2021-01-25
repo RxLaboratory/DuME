@@ -6,12 +6,12 @@ BlockVideoProfile::BlockVideoProfile(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Video Profile block";
 #endif
+    setType(Type::Video);
     setupUi(this);
 }
 
 void BlockVideoProfile::activate(bool activate)
 {
-    _freezeUI = true;
     if (activate)
     {
         _mediaInfo->setVideoProfile( videoProfileBox->currentData().toString() );
@@ -22,32 +22,15 @@ void BlockVideoProfile::activate(bool activate)
         _mediaInfo->setVideoProfile( "" );
         _mediaInfo->setVideoLevel( "" );
     }
-    _freezeUI = false;
 }
 
 void BlockVideoProfile::update()
 {
-    qDebug() << "Update Video Profile Block";
-    if(_freezeUI) return;
-    _freezeUI = true;
-
     //Update profiles list
     videoProfileBox->clear();
     videoLevelBox->clear();
 
-    if (!_mediaInfo->hasVideo())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
 
     FFCodec *c = stream->codec();
     if ( c->name() == "" ) c = _mediaInfo->defaultVideoCodec();
@@ -74,13 +57,10 @@ void BlockVideoProfile::update()
         {
             videoProfileBox->addItem( p->prettyName(), p->name() );
         }
-
-        emit blockEnabled(true);
     }
     else
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
 
@@ -88,23 +68,22 @@ void BlockVideoProfile::update()
     videoProfileBox->setCurrentData( p->name() );
 
     videoLevelBox->setCurrentData( stream->level() );
-
-    _freezeUI = false;
-    qDebug() << "Video Profile Block updated";
 }
 
 void BlockVideoProfile::on_videoProfileBox_currentIndexChanged(int index)
 {
     if(_freezeUI) return;
+    bool freeze = _freezeUI;
     _freezeUI = true;
     _mediaInfo->setVideoProfile( videoProfileBox->itemData(index).toString() );
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockVideoProfile::on_videoLevelBox_currentIndexChanged(int index)
 {
     if (_freezeUI) return;
+    bool freeze = _freezeUI;
     _freezeUI = true;
     _mediaInfo->setVideoLevel( videoLevelBox->itemData(index).toString() );
-    _freezeUI = false;
+    _freezeUI = freeze;
 }

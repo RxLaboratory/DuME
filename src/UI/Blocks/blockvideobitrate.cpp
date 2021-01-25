@@ -6,6 +6,7 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create video bitrate/quality block";
 #endif
+    setType(Type::Video);
     setupUi(this);
 
     foreach (FFBaseObject *t, ffmpeg->tunings())
@@ -39,8 +40,6 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockVideoBitrate::activate(bool activate)
 {
-    _freezeUI = true;
-
     if (activate && videoBitrateButton->isChecked()) _mediaInfo->setVideoBitrate( MediaUtils::convertToBps( videoBitRateEdit->value(), MediaUtils::Mbps ) );
     else _mediaInfo->setVideoBitrate( 0 );
 
@@ -55,29 +54,13 @@ void BlockVideoBitrate::activate(bool activate)
 
     if (activate) _mediaInfo->setVideoTuning( tuneBox->currentData().toString() );
     else _mediaInfo->setVideoTuning( "" );
-
-    _freezeUI = false;
 }
 
 void BlockVideoBitrate::update()
 {
     qDebug() << "Update Video Bitrate Block";
-    if (_freezeUI) return;
-    _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo() || _mediaInfo->isSequence())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
 
     FFCodec *c = stream->codec();
     if ( c->name() == "" ) c = _mediaInfo->defaultVideoCodec();
@@ -86,11 +69,8 @@ void BlockVideoBitrate::update()
     if (m->name() == "gif")
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
-
-    emit blockEnabled(true);
 
     bool useQuality = c->qualityParam() != "";
     bool useBitrate = !m->isSequence();
@@ -233,9 +213,6 @@ void BlockVideoBitrate::update()
         tuneLabel->setVisible(false);
         tuneBox->setCurrentData("");
     }
-
-    _freezeUI = false;
-    qDebug() << "Video Bitrate Block updated";
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)

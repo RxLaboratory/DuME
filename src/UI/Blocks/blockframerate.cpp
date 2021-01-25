@@ -6,6 +6,7 @@ BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create frame rate block";
 #endif
+    setType(Type::Video);
     setupUi(this);
 
     _presets->addAction( action8_fps );
@@ -24,8 +25,6 @@ BlockFrameRate::BlockFrameRate(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockFrameRate::activate(bool activate)
 {
-    _freezeUI = true;
-
     if (activate)
     {
         _mediaInfo->setFramerate( frameRateEdit->value() );
@@ -35,36 +34,18 @@ void BlockFrameRate::activate(bool activate)
         _mediaInfo->setFramerate( 0 );
     }
 
-    _freezeUI = false;
 }
 
 void BlockFrameRate::update()
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
 
-    if (!_mediaInfo->hasVideo())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
 
     double f = stream->framerate();
     if ( f != 0.0)
     {
         frameRateEdit->setValue( f );
     }
-
-    _freezeUI = false;
 }
 
 void BlockFrameRate::setFrameRate(double f)

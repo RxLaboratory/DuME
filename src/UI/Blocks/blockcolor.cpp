@@ -42,8 +42,6 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockColor::activate(bool activate)
 {
-    _freezeUI = true;
-
     if (activate)
     {
         _mediaInfo->setColorTRC( trcBox->currentData().toString() );
@@ -58,25 +56,15 @@ void BlockColor::activate(bool activate)
         _mediaInfo->setColorRange( "" );
         _mediaInfo->setColorPrimaries( "" );
     }
-
-    _freezeUI = false;
 }
 
 void BlockColor::update()
 {
-    qDebug() << "Update Color Block";
-    if (_freezeUI) return;
-    bool freeze = _freezeUI;
-    _freezeUI = true;
-
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
     trcBox->setCurrentData( stream->colorTRC()->name());
     spaceBox->setCurrentData( stream->colorSpace()->name());
     rangeBox->setCurrentData( stream->colorRange()->name());
     primariesBox->setCurrentData( stream->colorPrimaries()->name());
-
-    _freezeUI = freeze;
-    qDebug() << "Color block updated";
 }
 
 void BlockColor::on_spaceBox_currentIndexChanged(int index)

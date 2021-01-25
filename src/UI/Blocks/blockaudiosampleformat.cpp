@@ -6,6 +6,7 @@ BlockAudioSampleFormat::BlockAudioSampleFormat(MediaInfo *mediaInfo, QWidget *pa
 #ifdef QT_DEBUG
     qDebug() << "Create Audio Sample Format block";
 #endif
+    setType(Type::Audio);
     setupUi(this);
 
     _freezeUI = true;
@@ -19,9 +20,6 @@ BlockAudioSampleFormat::BlockAudioSampleFormat(MediaInfo *mediaInfo, QWidget *pa
 
 void BlockAudioSampleFormat::activate(bool blockEnabled)
 {
-    bool frozen = _freezeUI;
-    _freezeUI = true;
-
     if (blockEnabled)
     {
         _mediaInfo->setAudioSampleFormat( samplingBox->currentData(Qt::UserRole).toString() );
@@ -30,31 +28,11 @@ void BlockAudioSampleFormat::activate(bool blockEnabled)
     {
         _mediaInfo->setAudioSampleFormat( "" );
     }
-
-    _freezeUI = frozen;
 }
 
 void BlockAudioSampleFormat::update()
 {
-    qDebug() << "Update Audio Sample Format Block";
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasAudio())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-
     AudioInfo *stream = _mediaInfo->audioStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
 
     if (stream->sampleFormat()->name() != "")
     {
@@ -64,8 +42,6 @@ void BlockAudioSampleFormat::update()
     {
         samplingBox->setCurrentData("s16p");
     }
-
-    _freezeUI = false;
 }
 
 void BlockAudioSampleFormat::on_samplingBox_currentIndexChanged(int index)

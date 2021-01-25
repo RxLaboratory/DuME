@@ -6,6 +6,7 @@ BlockSampling::BlockSampling(MediaInfo *mediaInfo, QWidget *parent) :
 #ifdef QT_DEBUG
     qDebug() << "Create Sampling block";
 #endif
+    setType(Type::Audio);
     _freezeUI = true;
     setupUi(this);
 
@@ -27,6 +28,7 @@ BlockSampling::BlockSampling(MediaInfo *mediaInfo, QWidget *parent) :
 
 void BlockSampling::setSampling(int s)
 {
+    bool freeze  =_freezeUI;
     _freezeUI = true;
 
     for (int i = 0; i < samplingBox->count(); i++)
@@ -38,14 +40,11 @@ void BlockSampling::setSampling(int s)
         }
     }
 
-    _freezeUI = false;
+    _freezeUI = freeze;
 }
 
 void BlockSampling::activate(bool activate)
 {
-    bool frozen = _freezeUI;
-    _freezeUI = true;
-
     if (activate)
     {
         _mediaInfo->setSamplingRate( samplingBox->currentData(Qt::UserRole).toInt() );
@@ -54,29 +53,11 @@ void BlockSampling::activate(bool activate)
     {
         _mediaInfo->setSamplingRate( 0 );
     }
-
-    _freezeUI = frozen;
 }
 
 void BlockSampling::update()
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
-    if (!_mediaInfo->hasAudio())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
     AudioInfo *stream = _mediaInfo->audioStreams()[0];
-    if (stream->isCopy())
-    {
-        emit blockEnabled(false);
-        _freezeUI = false;
-        return;
-    }
-    emit blockEnabled(true);
 
     if (stream->samplingRate() > 0)
     {
@@ -86,9 +67,6 @@ void BlockSampling::update()
     {
         samplingBox->setCurrentData(48000);
     }
-
-
-    _freezeUI = false;
 }
 
 void BlockSampling::on_samplingBox_currentIndexChanged(int index)
