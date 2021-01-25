@@ -3,16 +3,24 @@
         "audioStreams": [
         ],
         "muxer": {
+            "audio": false,
             "name": "png",
             "prettyName": "PNG (Portable Network Graphics) Sequence",
-            "sequence": true
+            "sequence": true,
+            "video": true
         },
         "options": [
         ],
-        "version": "0.1.0-Beta",
+        "version": "0.1.6-dev_development build",
         "videoStreams": [
             {
                 "bitrate": 0,
+                "bitrateType": "VBR",
+                "bottomCrop": 0,
+                "codec": {
+                    "name": "png",
+                    "prettyName": "PNG "
+                },
                 "colorPrimaries": {
                     "name": "",
                     "prettyName": "Auto"
@@ -29,12 +37,17 @@
                     "name": "",
                     "prettyName": "Auto"
                 },
+                "cropHWidth": 0,
+                "cropHeight": 0,
+                "cropUseSize": false,
+                "encodingSpeed": -1,
                 "framerate": 0,
                 "height": 0,
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"
                 },
+                "leftCrop": 0,
                 "level": "",
                 "pixAspect": 1,
                 "pixFormat": {
@@ -42,7 +55,17 @@
                     "prettyName": "rgba64be (64 bits - 4 channels)"
                 },
                 "premultipliedAlpha": false,
+                "profile": {
+                    "name": "",
+                    "prettyName": "Auto"
+                },
                 "quality": -1,
+                "rightCrop": 0,
+                "topCrop": 0,
+                "tuning": {
+                    "name": "",
+                    "prettyName": "Default"
+                },
                 "width": 0
             }
         ]

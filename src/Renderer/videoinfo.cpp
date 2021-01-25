@@ -279,6 +279,7 @@ FFPixFormat *VideoInfo::pixFormat() const
 
 void VideoInfo::setPixFormat(FFPixFormat *pixFormat, bool silent)
 {
+    if (pixFormat->name() == "") pixFormat = defaultPixFormat();
     _pixFormat = pixFormat;
     if (_pixFormat->colorSpace() != FFPixFormat::YUV) setColorRange("");
     if(!silent) emit changed();
@@ -296,6 +297,7 @@ void VideoInfo::setPixFormat(QJsonObject obj, bool silent)
 
 FFPixFormat *VideoInfo::defaultPixFormat() const
 {
+    qDebug() << _codec->defaultPixFormat()->name();
     return _codec->defaultPixFormat();
 }
 

@@ -35,8 +35,8 @@
                 "bitrateType": "VBR",
                 "bottomCrop": 0,
                 "codec": {
-                    "name": "",
-                    "prettyName": "Default"
+                    "name": "vp9",
+                    "prettyName": "Google VP9 "
                 },
                 "colorPrimaries": {
                     "name": "",

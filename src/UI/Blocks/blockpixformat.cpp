@@ -25,6 +25,7 @@ void BlockPixFormat::activate(bool activate)
 
 void BlockPixFormat::update()
 {
+    qDebug() << "GOT MEDIA INFO CHANGED";
     VideoInfo *stream = _mediaInfo->videoStreams()[0];
 
     listPixFormats( );
@@ -32,13 +33,13 @@ void BlockPixFormat::update()
     if (_pixFormats.count() == 0)
     {
         emit blockEnabled(false);
-        _freezeUI = false;
         return;
     }
 
-    filterPixFormats(false);
+    //filterPixFormats(false);
 
     FFPixFormat *pf = stream->pixFormat();
+    qDebug() << "GO SET " + pf->name();
     setPixFormat( pf->name() );
 }
 
@@ -55,7 +56,7 @@ void BlockPixFormat::listPixFormats()
 
     if (!_mediaInfo->hasVideo())
     {
-        _freezeUI = false;
+        _freezeUI = freeze;
         return;
     }
 
@@ -120,9 +121,6 @@ void BlockPixFormat::setDefaultPixFormat()
     bool freeze = _freezeUI;
     _freezeUI = true;
 
-    pixFmtFilterBox->setCurrentIndex( 0 );
-    filterPixFormats(false);
-
     if (!_mediaInfo->hasVideo())
     {
         _freezeUI = freeze;
@@ -140,8 +138,6 @@ void BlockPixFormat::setDefaultPixFormat()
     {
         setPixFormat( pf->name(), false );
     }
-
-    pixFmtBox->setEnabled( false );
 
     _freezeUI = freeze;
 }
@@ -184,7 +180,6 @@ void BlockPixFormat::setFilter(QString name)
 {
     bool freeze = _freezeUI;
     _freezeUI = true;
-
     pixFmtFilterBox->setCurrentText( name );
     filterPixFormats();
 
@@ -193,6 +188,7 @@ void BlockPixFormat::setFilter(QString name)
 
 void BlockPixFormat::on_pixFmtFilterBox_currentIndexChanged(int index)
 {
+    pixFmtBox->setEnabled(index != 0);
     if (_freezeUI) return;
     if ( index == 0 )
     {
@@ -201,7 +197,6 @@ void BlockPixFormat::on_pixFmtFilterBox_currentIndexChanged(int index)
     else
     {
         filterPixFormats();
-        pixFmtBox->setEnabled(true);
     }
 
 }
