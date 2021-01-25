@@ -185,7 +185,6 @@ void FFmpeg::init()
     if (runCommand( "-hide_banner -formats" , 10000))
     {
         gotMuxers( _output, newVersion );
-        qDebug() << "test";
     }
 
     //get long help
@@ -856,11 +855,8 @@ void FFmpeg::gotMuxers(QString output, QString newVersion)
 
     emit newLog("Sorting muxers...");
     std::sort(_muxers.begin(),_muxers.end(),muxerSorter);
-    qDebug() << "test";
     std::sort(_decodeMuxers.begin(),_decodeMuxers.end(),muxerSorter);
-    qDebug() << "test";
     std::sort(_encodeMuxers.begin(),_encodeMuxers.end(),muxerSorter);
-    qDebug() << "test";
 }
 
 bool ffSorter(FFBaseObject *c1,FFBaseObject *c2)
@@ -1277,7 +1273,6 @@ void FFmpeg::gotPixFormats(QString output, QString newVersion)
 
     emit newLog("Sorting pixel formats...");
     std::sort(_pixFormats.begin(),_pixFormats.end(),ffSorter);
-
 }
 
 void FFmpeg::gotSampleFormats(QString output, QString newVersion)
