@@ -280,6 +280,7 @@ FFPixFormat *VideoInfo::pixFormat() const
 void VideoInfo::setPixFormat(FFPixFormat *pixFormat, bool silent)
 {
     _pixFormat = pixFormat;
+    if (_pixFormat->colorSpace() != FFPixFormat::YUV) setColorRange("");
     if(!silent) emit changed();
 }
 
