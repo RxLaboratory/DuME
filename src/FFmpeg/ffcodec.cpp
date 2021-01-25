@@ -128,11 +128,11 @@ FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
         foreach ( FFPixFormat *p, _pixFormats )
         {
             if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
+                if ( p->isOutput() == pf->isOutput() )
+                    if (p->isInput() == pf->isInput())
                         if (p->colorSpace() == pf->colorSpace())
                             if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
-                                if( p->bitsPerPixel() == pf->bitsPerPixel() )
+                                if( p->bitsPerPixel() / p->numComponents() == pf->bitsPerPixel() / pf->numComponents() )
                                 {
                                     return p;
                                 }
@@ -140,8 +140,8 @@ FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
         foreach ( FFPixFormat *p, _pixFormats )
         {
             if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
+                if ( p->isOutput() == pf->isOutput() )
+                    if (p->isInput() == pf->isInput())
                         if (p->colorSpace() == pf->colorSpace())
                             if ( (alpha && p->numComponents()+1 == pf->numComponents()) || (!alpha && p->numComponents() == pf->numComponents()+1) )
                             {
@@ -152,8 +152,8 @@ FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
         foreach ( FFPixFormat *p, _pixFormats )
         {
             if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
+                if ( p->isOutput() == pf->isOutput() )
+                    if (p->isInput() == pf->isInput())
                         if (p->colorSpace() == pf->colorSpace())
                         {
                             return p;
@@ -162,8 +162,8 @@ FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
         foreach ( FFPixFormat *p, _pixFormats )
         {
             if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
-                    if (p->isInput() && pf->isInput())
+                if ( p->isOutput() == pf->isOutput() )
+                    if (p->isInput() == pf->isInput())
                     {
                         return p;
                     }
@@ -171,7 +171,7 @@ FFPixFormat *FFCodec::pixFormatWithAlpha(FFPixFormat *pf, bool alpha)
         foreach ( FFPixFormat *p, _pixFormats )
         {
             if ( p->hasAlpha() == alpha )
-                if ( p->isOutput() && pf->isOutput() )
+                if ( p->isOutput() == pf->isOutput() )
                 {
                     return p;
                 }
