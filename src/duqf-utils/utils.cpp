@@ -172,3 +172,11 @@ QString MediaUtils::durationToTimecode(double duration)
     d = d.addMSecs( msecs );
     return d.toString("hh:mm:ss.zzz");
 }
+
+MediaUtils::DeinterlaceParity MediaUtils::DeinterlaceParityFromString(QString parity)
+{
+    if (parity == "TopFieldFirst") return MediaUtils::TopFieldFirst;
+    if (parity == "BottomFieldFirst") return MediaUtils::BottomFieldFirst;
+    return MediaUtils::AutoParity;
+
+}

@@ -38,6 +38,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
 
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
+    blockDeinterlace = addBlock( new BlockDeinterlace( _mediaInfo ), actionDeinterlace, ":/icons/deinterlace" );
     blockCrop = addBlock( new BlockCrop( _mediaInfo ), actionCrop, ":/icons/crop" );
     blockLut = addBlock( new BlockLut( _mediaInfo ), actionApplyLUT, ":/icons/lut" );
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize, ":/icons/video-size" );

@@ -31,6 +31,8 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _cropHeight = 0;
     _cropUseSize = false;
     _lut = "";
+    _deinterlace = false;
+    _deinterlaceParity = MediaUtils::AutoParity;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -66,6 +68,8 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setCrop(t, b, l, r, true);
     setCropUseSize( obj.value("cropUseSize").toBool(false), true);
     setLut(obj.value("lut").toString(""));
+    setDeinterlace( obj.value("deinterlace").toBool(false));
+    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto").toUtf8() ));
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -99,6 +103,8 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _cropWidth = other->cropWidth();
     _cropUseSize = other->cropUseSize();
     _lut = other->lut();
+    _deinterlace = other->deinterlace();
+    _deinterlaceParity = other->deinterlaceParity();
 
     if(!silent) emit changed();
 }
@@ -139,6 +145,8 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("cropHWidth", _cropWidth);
     vStream.insert("cropUseSize", _cropUseSize);
     vStream.insert("lut", _lut);
+    vStream.insert("deinterlace", _deinterlace);
+    vStream.insert("deinterlaceParity", QVariant::fromValue(_deinterlaceParity).toString());
 
     return vStream;
 }
@@ -223,6 +231,13 @@ QString VideoInfo::getDescription()
     }
     if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
     if ( _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
+    if ( _deinterlace )
+    {
+        mediaInfoString += "\nDeinterlace: ";
+        if (_deinterlaceParity == MediaUtils::AutoParity) mediaInfoString += "Auto";
+        else if (_deinterlaceParity == MediaUtils::TopFieldFirst) mediaInfoString += "Top field first";
+        else if (_deinterlaceParity == MediaUtils::BottomFieldFirst) mediaInfoString += "Bottom field first";
+    }
 
     return mediaInfoString;
 }
@@ -598,6 +613,30 @@ QString VideoInfo::lut() const
 void VideoInfo::setLut(const QString &lut, bool silent)
 {
     _lut = lut;
+
+    if(!silent) emit changed();
+}
+
+bool VideoInfo::deinterlace() const
+{
+    return _deinterlace;
+}
+
+void VideoInfo::setDeinterlace(bool deinterlace, bool silent)
+{
+    _deinterlace = deinterlace;
+
+    if(!silent) emit changed();
+}
+
+MediaUtils::DeinterlaceParity VideoInfo::deinterlaceParity() const
+{
+    return _deinterlaceParity;
+}
+
+void VideoInfo::setDeinterlaceParity(const MediaUtils::DeinterlaceParity &deinterlaceParity, bool silent)
+{
+    _deinterlaceParity = deinterlaceParity;
 
     if(!silent) emit changed();
 }

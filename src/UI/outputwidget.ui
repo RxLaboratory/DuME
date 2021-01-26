@@ -955,17 +955,29 @@
     <string>Apply LUT</string>
    </property>
   </action>
+  <action name="actionDeinterlace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-interlace</normaloff>:/icons/set-interlace</iconset>
+   </property>
+   <property name="text">
+    <string>Deinterlace</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>BigComboBox</class>
-   <extends>QComboBox</extends>
-   <header>UI/bigcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>DataComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/datacombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/bigcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

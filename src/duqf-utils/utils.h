@@ -45,6 +45,13 @@ namespace MediaUtils
     Q_ENUM_NS(RenderStatus)
 
     /**
+     * @brief The Deinterlace Parity
+     */
+    enum DeinterlaceParity { TopFieldFirst, BottomFieldFirst, AutoParity };
+    Q_ENUM_NS(DeinterlaceParity)
+    DeinterlaceParity DeinterlaceParityFromString(QString parity);
+
+    /**
      * @brief isEncoding Checks if the current status is a busy (encoding or pre/post steps for encoding) status.
      * @param status
      * @return

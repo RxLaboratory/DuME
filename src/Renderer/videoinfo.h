@@ -2,6 +2,7 @@
 #define VIDEOINFO_H
 
 #include <QObject>
+#include <QMetaEnum>
 
 #include "FFmpeg/ffmpeg.h"
 #include "FFmpeg/fflanguage.h"
@@ -118,6 +119,13 @@ public:
     QString lut() const;
     void setLut(const QString &lut, bool silent = false);
 
+
+    bool deinterlace() const;
+    void setDeinterlace(bool deinterlace, bool silent = false);
+
+    MediaUtils::DeinterlaceParity deinterlaceParity() const;
+    void setDeinterlaceParity(const MediaUtils::DeinterlaceParity &deinterlaceParity, bool silent = false);
+
 signals:
     void changed();
 
@@ -176,6 +184,9 @@ private:
     int _cropWidth;
     bool _cropUseSize;
     QString _lut;
+    bool _deinterlace;
+    MediaUtils::DeinterlaceParity _deinterlaceParity;
+
 };
 
 #endif // VIDEOINFO_H

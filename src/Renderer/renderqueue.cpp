@@ -308,6 +308,17 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 // ============ Video filters
                 QStringList filterChain;
 
+                //deinterlace
+                if (stream->deinterlace())
+                {
+                    QString deinterlaceOption = "yadif=parity=";
+                    if (stream->deinterlaceParity() == MediaUtils::TopFieldFirst) deinterlaceOption += "0";
+                    else if (stream->deinterlaceParity() == MediaUtils::BottomFieldFirst) deinterlaceOption += "1";
+                    else deinterlaceOption += "-1";
+                    filterChain << deinterlaceOption;
+                }
+
+
                 //unpremultiply
                 bool unpremultiply = !stream->premultipliedAlpha();
                 if (unpremultiply) filterChain << "unpremultiply=inplace=1";

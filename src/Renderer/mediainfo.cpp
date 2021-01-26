@@ -963,6 +963,26 @@ void MediaInfo::setLut(QString lut, int id, bool silent)
         _videoStreams[id]->setLut(lut, silent);
 }
 
+void MediaInfo::setDeinterlace(bool deinterlace, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setDeinterlace(deinterlace, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setDeinterlace(deinterlace, silent);
+}
+
+void MediaInfo::setDeinterlaceParity(MediaUtils::DeinterlaceParity parity, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setDeinterlaceParity(parity, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setDeinterlaceParity(parity, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;

@@ -74,6 +74,8 @@
         <file alias="crop-image">resources/icons/crop_sl.svg</file>
         <file alias="lut">resources/icons/lut-3d-look_sd.svg</file>
         <file alias="set-lut">resources/icons/set-lut-3d-look_sl.svg</file>
+        <file alias="interlace">resources/icons/interlace_bd.svg</file>
+        <file alias="set-interlace">resources/icons/modify-fields-interlace_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
