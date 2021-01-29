@@ -1,11 +1,28 @@
 {
     "dume": {
         "audioStreams": [
+            {
+                "bitrate": 0,
+                "channels": "",
+                "codec": {
+                    "name": "aac",
+                    "prettyName": "AAC "
+                },
+                "language": {
+                    "name": "",
+                    "prettyName": "Undefined"
+                },
+                "sampleFormat": {
+                    "name": "",
+                    "prettyName": "Default"
+                },
+                "samplingRate": 0
+            }
         ],
         "muxer": {
-            "audio": false,
-            "name": "gif",
-            "prettyName": "CompuServe Graphics Interchange Format (GIF)",
+            "audio": true,
+            "name": "mov",
+            "prettyName": "QuickTime / MOV",
             "sequence": false,
             "video": true
         },
@@ -18,8 +35,8 @@
                 "bitrateType": "VBR",
                 "bottomCrop": 0,
                 "codec": {
-                    "name": "gif",
-                    "prettyName": "CompuServe GIF "
+                    "name": "png",
+                    "prettyName": "PNG "
                 },
                 "colorPrimaries": {
                     "name": "",
@@ -40,33 +57,36 @@
                 "cropHWidth": 0,
                 "cropHeight": 0,
                 "cropUseSize": false,
+                "deinterlace": false,
+                "deinterlaceParity": "AutoParity",
                 "encodingSpeed": -1,
                 "framerate": 0,
-                "height": 450,
+                "height": 0,
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"
                 },
                 "leftCrop": 0,
                 "level": "",
+                "lut": "",
                 "pixAspect": 1,
                 "pixFormat": {
-                    "name": "",
-                    "prettyName": "Default (0 bits - 0 channels)"
+                    "name": "rgba",
+                    "prettyName": "rgba (32 bits - 4 channels)"
                 },
                 "premultipliedAlpha": true,
                 "profile": {
                     "name": "",
                     "prettyName": "Auto"
                 },
-                "quality": -1,
+                "quality": 90,
                 "rightCrop": 0,
                 "topCrop": 0,
                 "tuning": {
                     "name": "",
                     "prettyName": "Default"
                 },
-                "width": 800
+                "width": 0
             }
         ]
     }

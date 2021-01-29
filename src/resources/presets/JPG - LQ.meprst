@@ -4,9 +4,9 @@
         ],
         "muxer": {
             "audio": false,
-            "name": "gif",
-            "prettyName": "CompuServe Graphics Interchange Format (GIF)",
-            "sequence": false,
+            "name": "mjpeg",
+            "prettyName": "JPEG Sequence",
+            "sequence": true,
             "video": true
         },
         "options": [
@@ -18,8 +18,8 @@
                 "bitrateType": "VBR",
                 "bottomCrop": 0,
                 "codec": {
-                    "name": "gif",
-                    "prettyName": "CompuServe GIF "
+                    "name": "mjpeg",
+                    "prettyName": "Motion JPEG "
                 },
                 "colorPrimaries": {
                     "name": "",
@@ -40,33 +40,36 @@
                 "cropHWidth": 0,
                 "cropHeight": 0,
                 "cropUseSize": false,
+                "deinterlace": false,
+                "deinterlaceParity": "AutoParity",
                 "encodingSpeed": -1,
                 "framerate": 0,
-                "height": 600,
+                "height": 0,
                 "language": {
                     "name": "",
                     "prettyName": "Undefined"
                 },
                 "leftCrop": 0,
                 "level": "",
+                "lut": "",
                 "pixAspect": 1,
                 "pixFormat": {
-                    "name": "",
-                    "prettyName": "Default (0 bits - 0 channels)"
+                    "name": "yuvj420p",
+                    "prettyName": "yuvj420p (12 bits - 3 channels)"
                 },
                 "premultipliedAlpha": true,
                 "profile": {
                     "name": "",
                     "prettyName": "Auto"
                 },
-                "quality": -1,
+                "quality": 50,
                 "rightCrop": 0,
                 "topCrop": 0,
                 "tuning": {
                     "name": "",
                     "prettyName": "Default"
                 },
-                "width": 800
+                "width": 0
             }
         ]
     }
