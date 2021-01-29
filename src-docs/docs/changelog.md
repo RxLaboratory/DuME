@@ -13,10 +13,10 @@ This is the list of what has changed since the first public version of *DuFFmpeg
     - Added the `--minimize` option.
 - Ability to **Crop** videos.
 - Ability to [**Apply a 1D or 3D LUT**](lut.md).
-- Ability to Deinterlace video.
-- JPEG support.
-- [h265 / HEVC](h264-5.md) support.
-- New format presets.
+- Ability to **Deinterlace** video.
+- **JPEG** support.
+- [**h265 / HEVC**](h264-5.md) support.
+- New format **presets**.
 
 ### Improvements
 
@@ -25,6 +25,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Improved stability.
 - Restricted the ability to change the color range to YUV pixel formats only.
 - Improved settings UI (moved cache options to their own section, hide After Effects on Linux...)
+- Improved codec profile management for h.264 / AVC.
 
 ### Fixes
 

@@ -64,9 +64,6 @@ void FFCodec::init()
         _profiles << new FFBaseObject("baseline", "Constrained Baseline");
         _profiles << new FFBaseObject("main", "Main");
         _profiles << new FFBaseObject("high", "High");
-        //_profiles << new FFProfile("high10", "High 10");
-        //_profiles << new FFProfile("high422", "High 422");
-        //_profiles << new FFProfile("high444", "High 444");
     }
     else if (_name.toLower().startsWith("prores"))
     {
@@ -79,6 +76,22 @@ void FFCodec::init()
     else
     {
         setProfileCapability(false);
+    }
+
+    //LEVELS
+    _levels << new FFBaseObject("", "Auto", this);
+    if (_name == "h264" || _name == "libx264")
+    {
+        setLevelCapability(true);
+        _levels << new FFBaseObject("3.0", "3.0");
+        _levels << new FFBaseObject("3.1", "3.1");
+        _levels << new FFBaseObject("4.0", "4.0");
+        _levels << new FFBaseObject("4.1", "4.1");
+        _levels << new FFBaseObject("4.2", "4.2");
+    }
+    else
+    {
+        setLevelCapability(false);
     }
 }
 
@@ -205,6 +218,16 @@ bool FFCodec::useProfile()
 void FFCodec::setProfileCapability(bool useProfile)
 {
     _capabilities.setFlag(Profile, useProfile);
+}
+
+bool FFCodec::useLevel()
+{
+    return _capabilities.testFlag(Level);
+}
+
+void FFCodec::setLevelCapability(bool useLevel)
+{
+    _capabilities.setFlag(Level, useLevel);
 }
 
 QList<FFPixFormat *> FFCodec::pixFormats() const
@@ -464,6 +487,11 @@ void FFCodec::setSpeedParam()
     }
 
 
+}
+
+QList<FFBaseObject *> FFCodec::levels() const
+{
+    return _levels;
 }
 
 QList<FFBaseObject *> FFCodec::tunings() const

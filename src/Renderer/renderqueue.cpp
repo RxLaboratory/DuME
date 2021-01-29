@@ -282,14 +282,14 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 FFPixFormat *pixFormat = stream->pixFormat();
                 QString pixFmt = pixFormat->name();
                 //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
-                if (pixFmt == "" && vc->name() == "h264") pixFmt = "yuv420p";
+                if (pixFmt == "" && (vc->name() == "h264" || vc->name() == "libx264") ) pixFmt = "yuv420p";
                 if (pixFmt == "" && muxer == "mp4") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
                 // video codecs with alpha need to set -auto-alt-ref to 0
                 if (stream->pixFormat()->hasAlpha() && muxer != "image2") arguments << "-auto-alt-ref" << "0";
 
                 //profile
-                if (stream->profile()->name() != "")
+                if (stream->profile()->name() != "" && vc->useProfile())
                 {
                     QString profile = stream->profile()->name();
                     // Adjust h264 main profile
@@ -305,6 +305,49 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     arguments << "-profile:v" << profile;
                 }
 
+                // h265 options
+                if (vc->name() == "hevc" || vc->name() == "h265" || vc->name() == "libx265")
+                {
+                    QStringList x265options;
+                    if (stream->intra())
+                    {
+                        float ffmepgVersion = FFmpeg::instance()->version().left(3).toFloat() ;
+                        if (ffmepgVersion >= 4.3)
+                        {
+                            arguments << "-g" << "1";
+                        }
+                        else
+                        {
+                            x265options << "keyint=1";
+                        }
+                    }
+                    if (stream->lossless() && stream->quality() >= 0)
+                    {
+                        x265options << "lossless=1";
+                    }
+                    if (x265options.count() > 0)
+                    {
+                        arguments << "-x265-params" << "\"" + x265options.join(":") + "\"";
+                    }
+                }
+
+                // h264 intra
+                if (vc->name() == "h264" || vc->name() == "libx264")
+                {
+                    if (stream->intra())
+                    {
+                        float ffmepgVersion = FFmpeg::instance()->version().left(3).toFloat() ;
+                        if (ffmepgVersion >= 4.3)
+                        {
+                            arguments << "-g" << "1";
+                        }
+                        else
+                        {
+                            arguments << "-intra";
+                        }
+                    }
+
+                }
 
                 //color
                 //add color management

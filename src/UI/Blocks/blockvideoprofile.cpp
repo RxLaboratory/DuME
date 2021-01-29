@@ -36,15 +36,13 @@ void BlockVideoProfile::update()
     if ( c->name() == "" ) c = _mediaInfo->defaultVideoCodec();
 
     // add levels
-    if ( c->name() == "h264" )
+    if ( c->useLevel() )
     {
-        videoLevelBox->addItem("Default", "");
-        videoLevelBox->addItem("3.0", "3.0");
-        videoLevelBox->addItem("3.1", "3.1");
-        videoLevelBox->addItem("4.0", "4.0");
-        videoLevelBox->addItem("4.1", "4.1");
-        videoLevelBox->addItem("4.2", "4.2");
-
+        videoLevelBox->clear();
+        foreach( FFBaseObject *l, c->levels() )
+        {
+            videoLevelBox->addItem( l->prettyName(), l->name() );
+        }
         videoLevelBox->show();
     }
     else videoLevelBox->hide();
@@ -52,6 +50,7 @@ void BlockVideoProfile::update()
     // add profiles
     if ( c->useProfile() )
     {
+        videoProfileBox->clear();
         foreach( FFBaseObject *p, c->profiles() )
         {
             videoProfileBox->addItem( p->prettyName(), p->name() );

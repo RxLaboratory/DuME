@@ -126,6 +126,12 @@ public:
     MediaUtils::DeinterlaceParity deinterlaceParity() const;
     void setDeinterlaceParity(const MediaUtils::DeinterlaceParity &deinterlaceParity, bool silent = false);
 
+    bool intra() const;
+    void setIntra(bool intra, bool silent = false);
+
+    bool lossless() const;
+    void setLossless(bool lossless, bool silent = false);
+
 signals:
     void changed();
 
@@ -186,7 +192,8 @@ private:
     QString _lut;
     bool _deinterlace;
     MediaUtils::DeinterlaceParity _deinterlaceParity;
-
+    bool _intra;
+    bool _lossless;
 };
 
 #endif // VIDEOINFO_H

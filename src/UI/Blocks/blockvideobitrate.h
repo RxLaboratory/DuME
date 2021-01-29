@@ -33,6 +33,10 @@ private slots:
     void on_speedSlider_sliderMoved(int value);
     void on_tuneBox_currentIndexChanged(int index);
     void on_bitrateTypeBox_currentIndexChanged(const QString &arg1);
+    void on_losslessButton_clicked(bool checked);
+
+    void on_intraButton_clicked(bool checked);
+
 private:
     SliderSpinBox *qualitySlider;
     SliderSpinBox *speedSlider;

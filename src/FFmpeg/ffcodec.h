@@ -30,7 +30,8 @@ public:
                       Tuning = 1 << 1,
                       Quality = 1 << 2,
                       BitrateType = 1 << 3,
-                      Profile = 1 << 4
+                      Profile = 1 << 4,
+                      Level = 1 << 5
                      };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
@@ -105,6 +106,8 @@ public:
     void setBitrateTypeCapability(bool useType = true);
     bool useProfile();
     void setProfileCapability(bool useProfile = true);
+    bool useLevel();
+    void setLevelCapability(bool useLevel = true);
     void setCapabilities(const Capabilities &capabilities);
 
     QList<FFPixFormat *> pixFormats() const;
@@ -130,6 +133,7 @@ public:
     QList<FFBaseObject *> tunings() const;
     FFBaseObject *tuning(QString name);
 
+    QList<FFBaseObject *> levels() const;
 
 private:
     void init();
@@ -147,6 +151,7 @@ private:
 
     QList<FFBaseObject*> _tunings;
     QList<FFBaseObject*> _profiles;
+    QList<FFBaseObject*> _levels;
 
 protected:
 

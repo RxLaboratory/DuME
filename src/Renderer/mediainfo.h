@@ -166,6 +166,8 @@ public:
     void setLut(QString lut, int id = -1, bool silent = false);
     void setDeinterlace(bool deinterlace, int id = -1, bool silent = false);
     void setDeinterlaceParity(MediaUtils::DeinterlaceParity parity, int id = -1, bool silent = false);
+    void setIntra(bool intra, int id = -1, bool silent = false);
+    void setLossless(bool lossless, int id = -1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);
     void setChannels(QString value, int id = -1, bool silent = false);

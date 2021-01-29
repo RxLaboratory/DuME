@@ -978,6 +978,26 @@ void MediaInfo::setDeinterlaceParity(MediaUtils::DeinterlaceParity parity, int i
         _videoStreams[id]->setDeinterlaceParity(parity, silent);
 }
 
+void MediaInfo::setIntra(bool intra, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setIntra(intra, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setIntra(intra, silent);
+}
+
+void MediaInfo::setLossless(bool lossless, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setLossless(lossless, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setLossless(lossless, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;
@@ -1334,6 +1354,8 @@ void MediaInfo::loadSequence()
     if (_fileName == "") return;
 
     qDebug() << "Loading sequence from " + _fileName;
+
+    _videoStreams[0]->setIntra(true);
 
     //base file info
     QFileInfo baseFileInfo(_fileName);

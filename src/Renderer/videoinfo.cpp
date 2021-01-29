@@ -33,6 +33,8 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _lut = "";
     _deinterlace = false;
     _deinterlaceParity = MediaUtils::AutoParity;
+    _intra = false;
+    _lossless = false;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -67,9 +69,11 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setCrop(w,h, true);
     setCrop(t, b, l, r, true);
     setCropUseSize( obj.value("cropUseSize").toBool(false), true);
-    setLut(obj.value("lut").toString(""));
-    setDeinterlace( obj.value("deinterlace").toBool(false));
-    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto").toUtf8() ));
+    setLut(obj.value("lut").toString(""), true);
+    setDeinterlace( obj.value("deinterlace").toBool(false), true);
+    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto").toUtf8() ), true);
+    setIntra( obj.value("intra").toBool(false), true);
+    setLossless( obj.value("lossless").toBool(false), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -105,7 +109,8 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _lut = other->lut();
     _deinterlace = other->deinterlace();
     _deinterlaceParity = other->deinterlaceParity();
-
+    _intra = other->intra();
+    _lossless = other->lossless();
     if(!silent) emit changed();
 }
 
@@ -147,6 +152,8 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("lut", _lut);
     vStream.insert("deinterlace", _deinterlace);
     vStream.insert("deinterlaceParity", QVariant::fromValue(_deinterlaceParity).toString());
+    vStream.insert("intra", _intra);
+    vStream.insert("lossless", _lossless);
 
     return vStream;
 }
@@ -237,6 +244,14 @@ QString VideoInfo::getDescription()
         if (_deinterlaceParity == MediaUtils::AutoParity) mediaInfoString += "Auto";
         else if (_deinterlaceParity == MediaUtils::TopFieldFirst) mediaInfoString += "Top field first";
         else if (_deinterlaceParity == MediaUtils::BottomFieldFirst) mediaInfoString += "Bottom field first";
+    }
+    if (_intra)
+    {
+        mediaInfoString += "\nIntra-Frame";
+    }
+    if (_lossless)
+    {
+        mediaInfoString += "\nLossless compression";
     }
 
     return mediaInfoString;
@@ -641,6 +656,28 @@ void VideoInfo::setDeinterlaceParity(const MediaUtils::DeinterlaceParity &deinte
     if(!silent) emit changed();
 }
 
+bool VideoInfo::intra() const
+{
+    return _intra;
+}
+
+void VideoInfo::setIntra(bool intra, bool silent)
+{
+    _intra = intra;
+    if(!silent) emit changed();
+}
+
+bool VideoInfo::lossless() const
+{
+    return _lossless;
+}
+
+void VideoInfo::setLossless(bool lossless, bool silent)
+{
+    _lossless = lossless;
+    if(!silent) emit changed();
+}
+
 int VideoInfo::encodingSpeed() const
 {
     return _encodingSpeed;
@@ -681,6 +718,7 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
     {
         _bitrateType = MediaUtils::BitrateType::VBR;
     }
+    if (codec->isLossless() && !codec->isLossy()) _lossless = true;
     if(!silent) emit changed();
 }
 

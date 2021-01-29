@@ -625,7 +625,7 @@
      <normaloff>:/icons/set-video-quality</normaloff>:/icons/set-video-quality</iconset>
    </property>
    <property name="text">
-    <string>Video quality</string>
+    <string>Quality and encoding settings</string>
    </property>
    <property name="toolTip">
     <string>Options for the quality of the video (bitrate...)</string>

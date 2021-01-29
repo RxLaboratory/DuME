@@ -23,7 +23,7 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
 
     qualitySlider = new SliderSpinBox();
     qualitySlider->setSuffix("%");
-    qualityLayout->addWidget(qualitySlider);
+    qualityLayout->insertWidget(0,qualitySlider);
     speedSlider = new SliderSpinBox();
     speedSlider->showValue(false);
     speedLayout->addWidget(speedSlider);
@@ -211,6 +211,18 @@ void BlockVideoBitrate::update()
         tuneLabel->setVisible(false);
         tuneBox->setCurrentData("");
     }
+
+    // lossless && intra
+    if (c->name() == "h265" || c->name() == "libx265" || c->name() == "hevc" || c->name() == "h264" || c->name() == "libx264")
+    {
+        losslessButton->show();
+        intraButton->show();
+    }
+    else
+    {
+        losslessButton->hide();
+        intraButton->hide();
+    }
 }
 
 void BlockVideoBitrate::on_videoBitrateButton_clicked(bool checked)
@@ -346,4 +358,19 @@ void BlockVideoBitrate::on_actionStreaming_12_Mbps_triggered()
     _mediaInfo->setVideoQuality( -1 );
     _mediaInfo->setVideoTuning("zerolatency");
     _mediaInfo->setVideoEncodingSpeed( -1 );
+}
+
+void BlockVideoBitrate::on_losslessButton_clicked(bool checked)
+{
+    qualitySlider->setEnabled(!checked);
+    if (_freezeUI) return;
+    if (checked) _mediaInfo->setVideoQuality( 100 );
+    else _mediaInfo->setVideoQuality( qualitySlider->value() );
+    _mediaInfo->setLossless( checked );
+}
+
+void BlockVideoBitrate::on_intraButton_clicked(bool checked)
+{
+    if (_freezeUI) return;
+    _mediaInfo->setIntra(checked);
 }
