@@ -244,6 +244,24 @@ QString FFCodec::qualityValue(int quality)
 
         return QString::number(quality);
     }
+
+    if (_name.indexOf("jpg") >= 0 || _name.indexOf("jpeg") >= 0)
+    {
+        //1-32
+        quality = 100-quality;
+        //excellent 1-4
+        //very good 4-8
+        //good 8-12
+        //bad 12-20
+        //very bad 20-32
+        if (quality < 10) quality = Interpolations::linear( quality, 0, 10, 0, 4 );
+        else if (quality < 25) quality = Interpolations::linear( quality, 10, 25, 4, 8 );
+        else if (quality < 50) quality = Interpolations::linear( quality, 25, 50, 8, 12 );
+        else if (quality < 75) quality = Interpolations::linear( quality, 50, 75, 12, 20 );
+        else quality = Interpolations::linear( quality, 75, 100, 20, 32 );
+
+        return QString::number(quality);
+    }
     return "";
 }
 
@@ -282,7 +300,7 @@ void FFCodec::setQualityParam()
     {
         _qualityParam = "-crf";
     }
-    else if (_name.indexOf("prores") >= 0)
+    else if (_name.indexOf("prores") >= 0 || _name.indexOf("jpg") >= 0 || _name.indexOf("jpeg") >= 0)
     {
         _qualityParam = "-qscale:v";
     }

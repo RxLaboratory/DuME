@@ -255,7 +255,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //quality
                 int quality = stream->quality();
-                if ( quality >= 0 && vc->name() != "" )
+                if ( quality >= 0 && vc->name() != "" && vc->qualityParam() != "")
                 {
                     arguments << vc->qualityParam() << vc->qualityValue(quality);
                 }
