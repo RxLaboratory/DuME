@@ -214,7 +214,7 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 if (bitrate != 0) arguments << "-b:v" << QString::number(bitrate);
 
                 //bitrate type
-                if (vc->name() == "h264" && stream->bitrateType() == MediaUtils::BitrateType::CBR)
+                if (vc->useBitrateType() && stream->bitrateType() == MediaUtils::BitrateType::CBR)
                 {
                     arguments << "-minrate" << QString::number(bitrate);
                     arguments << "-maxrate" << QString::number(bitrate);
@@ -262,10 +262,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
 
                 //encoding speed
                 int speed = stream->encodingSpeed();
-                if (vc->name() == "h264" && speed >= 0) arguments << vc->speedParam() << vc->speedValue(speed);
+                if (vc->useSpeed() && speed >= 0) arguments << vc->speedParam() << vc->speedValue(speed);
 
                 //fine tuning
-                if (vc->name() == "h264" && stream->tuning()->name() != "")
+                if (vc->useTuning() && stream->tuning()->name() != "")
                 {
                     arguments << "-tune" << stream->tuning()->name();
                     if (stream->tuning()->name() == "zerolatency")

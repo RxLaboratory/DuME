@@ -9,12 +9,6 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     setType(Type::Video);
     setupUi(this);
 
-    foreach (FFBaseObject *t, FFmpeg::instance()->tunings())
-    {
-        tuneBox->addItem(t->prettyName(), t->name());
-    }
-    tuneBox->setCurrentIndex(0);
-
     bitrateTypeBox->addItem("VBR");
     bitrateTypeBox->addItem("CBR");
 
@@ -70,11 +64,11 @@ void BlockVideoBitrate::update()
         return;
     }
 
-    bool useQuality = c->qualityParam() != "";
+    bool useQuality = c->useQuality();
     bool useBitrate = !m->isSequence();
-    bool useSpeed = c->name() == "h264";
-    bool useTuning = c->name() == "h264";
-    bool useType = c->name() == "h264";
+    bool useSpeed = c->useSpeed();
+    bool useTuning = c->useTuning();
+    bool useType = c->useBitrateType();
 
     actionPerfect_95->setVisible( useQuality );
     actionAuto->setVisible( useQuality );
@@ -151,8 +145,8 @@ void BlockVideoBitrate::update()
 
             if (q == 100) qualitySlider->setPrefix("Lossless (if possible) | ");
             else if (q >= 90) qualitySlider->setPrefix("Perfect | ");
-            else if (q >= 75) qualitySlider->setPrefix("Very good | ");
-            else if (q >= 50) qualitySlider->setPrefix("Good | ");
+            else if (q >= 75) qualitySlider->setPrefix("Good | ");
+            else if (q >= 50) qualitySlider->setPrefix("Fair | ");
             else if (q >= 25) qualitySlider->setPrefix("Bad | ");
             else qualitySlider->setPrefix("Very bad | ");
         }
@@ -201,6 +195,12 @@ void BlockVideoBitrate::update()
     // tuning
     if (useTuning)
     {
+        tuneBox->clear();
+        foreach (FFBaseObject *t, c->tunings())
+        {
+            tuneBox->addItem(t->prettyName(), t->name());
+        }
+        tuneBox->setCurrentIndex(0);
         tuneBox->setCurrentData(stream->tuning()->name());
         tuneBox->setVisible(true);
         tuneLabel->setVisible(true);

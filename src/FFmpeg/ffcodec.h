@@ -27,6 +27,13 @@ public:
                  };
     Q_DECLARE_FLAGS(Abilities, Ability)
 
+    enum Capability { Speed = 1 << 0,
+                      Tuning = 1 << 1,
+                      Quality = 1 << 2,
+                      BitrateType = 1 << 3
+                     };
+    Q_DECLARE_FLAGS(Capabilities, Capability)
+
 
     /**
      * @brief FFmpegCodec Constructs a codec instance for FFmpeg
@@ -88,6 +95,16 @@ public:
     void setIframe(bool iframe = true);
     void setAbilities(const Abilities &abilities);
 
+    bool useSpeed();
+    void setSpeedCapability(bool useSpeed = true);
+    bool useTuning();
+    void setTuningCapability(bool useTuning = true);
+    bool useQuality();
+    void setQualityCapability(bool useQuality = true);
+    bool useBitrateType();
+    void setTypeCapability(bool useType = true);
+    void setCapabilities(const Capabilities &capabilities);
+
     QList<FFPixFormat *> pixFormats() const;
     void addPixFormat(FFPixFormat *pixFormat);
 
@@ -108,8 +125,14 @@ public:
 
     static FFCodec *getDefault(QObject *parent = nullptr);
 
+    QList<FFBaseObject *> tunings() const;
+    FFBaseObject *tuning(QString name);
+
 private:
+    void init();
+
     Abilities _abilities;
+    Capabilities _capabilities;
     QList<FFPixFormat *> _pixFormats;
     FFPixFormat *_defaultPixFormat;
     QList<FFProfile *> _profiles;
@@ -119,6 +142,8 @@ private:
 
     QString _speedParam;
     void setSpeedParam();
+
+    QList<FFBaseObject*> _tunings;
 
 protected:
 

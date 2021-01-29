@@ -9,18 +9,48 @@ FFCodec::FFCodec(QString name, QString prettyName, QObject *parent)  : FFBaseObj
 {
     _abilities =  Abilities(0);
 
-    setQualityParam();
-    setDefaultPixFormat( );
-    setSpeedParam();
+    init();
 }
 
 FFCodec::FFCodec(QString name, QString prettyName, Abilities abilities, QObject *parent)  : FFBaseObject(name, prettyName, parent)
 {
     _abilities = abilities;
+    init();
+}
 
+void FFCodec::init()
+{
     setQualityParam();
     setDefaultPixFormat( );
     setSpeedParam();
+    if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
+    {
+        setTuningCapability(true);
+        setTypeCapability(true);
+    }
+    else
+    {
+        setTuningCapability(false);
+        setTypeCapability(false);
+    }
+
+    _tunings << new FFBaseObject("", "Default", this);
+    if (_name == "h264" || _name == "libx264")
+    {
+
+        _tunings << new FFBaseObject("film", "Film", this);
+        _tunings << new FFBaseObject("animation", "Animation", this);
+        _tunings << new FFBaseObject("grain", "Video with grain", this);
+        _tunings << new FFBaseObject("stillimage", "Slideshow", this);
+        _tunings << new FFBaseObject("fastdecode", "Fast decode", this);
+        _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
+    }
+    else if (_name == "h265" || _name == "hevc" || _name == "libx265")
+    {
+        _tunings << new FFBaseObject("grain", "Video with grain", this);
+        _tunings << new FFBaseObject("fastdecode", "Fast decode", this);
+        _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
+    }
 }
 
 bool FFCodec::isVideo() const
@@ -96,6 +126,46 @@ void FFCodec::setIframe(bool iframe)
 void FFCodec::setAbilities(const Abilities &abilities)
 {
     _abilities = abilities;
+}
+
+bool FFCodec::useSpeed()
+{
+    return _capabilities.testFlag(Speed);
+}
+
+void FFCodec::setSpeedCapability(bool useSpeed)
+{
+    _capabilities.setFlag(Speed, useSpeed);
+}
+
+bool FFCodec::useTuning()
+{
+    return _capabilities.testFlag(Tuning);
+}
+
+void FFCodec::setTuningCapability(bool useTuning)
+{
+    _capabilities.setFlag(Tuning, useTuning);
+}
+
+bool FFCodec::useQuality()
+{
+    return _capabilities.testFlag(Quality);
+}
+
+void FFCodec::setQualityCapability(bool useQuality)
+{
+    _capabilities.setFlag(Quality, useQuality);
+}
+
+bool FFCodec::useBitrateType()
+{
+    return _capabilities.testFlag(BitrateType);
+}
+
+void FFCodec::setTypeCapability(bool useType)
+{
+    _capabilities.setFlag(BitrateType, useType);
 }
 
 QList<FFPixFormat *> FFCodec::pixFormats() const
@@ -214,7 +284,7 @@ QString FFCodec::qualityParam() const
 
 QString FFCodec::qualityValue(int quality)
 {
-    if (_name == "h264")
+    if (_name == "h264" || _name == "libx264")
     {
         quality = 100-quality;
         //adjust to CRF values
@@ -222,6 +292,19 @@ QString FFCodec::qualityValue(int quality)
         else if (quality < 25) quality = Interpolations::linear( quality, 10, 25, 15, 21 );
         else if (quality < 50) quality = Interpolations::linear( quality, 25, 50, 21, 28 );
         else if (quality < 75) quality = Interpolations::linear( quality, 50, 75, 28, 34 );
+        else quality = Interpolations::linear( quality, 75, 100, 35, 51 );
+
+        return QString::number(quality);
+    }
+
+    if (_name == "h265" || _name == "hevc" || _name == "libx265")
+    {
+        quality = 100-quality;
+        //adjust to CRF values
+        if (quality < 10) quality = Interpolations::linear( quality, 0, 10, 0, 21 );
+        else if (quality < 25) quality = Interpolations::linear( quality, 10, 25, 21, 25 );
+        else if (quality < 50) quality = Interpolations::linear( quality, 25, 50, 25, 28 );
+        else if (quality < 75) quality = Interpolations::linear( quality, 50, 75, 28, 35 );
         else quality = Interpolations::linear( quality, 75, 100, 35, 51 );
 
         return QString::number(quality);
@@ -272,7 +355,7 @@ QString FFCodec::speedParam() const
 
 QString FFCodec::speedValue(int speed)
 {
-    if (_name == "h264")
+    if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
     {
         if (speed >= 90) return "ultrafast";
         else if (speed >= 80) return "superfast";
@@ -294,30 +377,61 @@ FFCodec *FFCodec::getDefault( QObject* parent )
     return c;
 }
 
+void FFCodec::setCapabilities(const Capabilities &capabilities)
+{
+    _capabilities = capabilities;
+}
+
 void FFCodec::setQualityParam()
 {
-    if (_name == "h264")
+    if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
     {
         _qualityParam = "-crf";
+        setQualityCapability(true);
     }
     else if (_name.indexOf("prores") >= 0 || _name.indexOf("jpg") >= 0 || _name.indexOf("jpeg") >= 0)
     {
         _qualityParam = "-qscale:v";
+        setQualityCapability(true);
     }
     else
     {
         _qualityParam = "";
+        setQualityCapability(false);
     }
+
 }
 
 void FFCodec::setSpeedParam()
 {
-    if (_name == "h264")
+    if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
     {
         _speedParam = "-preset";
+        setSpeedCapability(true);
     }
     else
     {
         _speedParam = "";
+        setSpeedCapability(false);
     }
+
+
+}
+
+QList<FFBaseObject *> FFCodec::tunings() const
+{
+    return _tunings;
+}
+
+FFBaseObject *FFCodec::tuning(QString name)
+{
+    foreach(FFBaseObject *t, _tunings)
+    {
+        if (t->name().toLower() == name) return t;
+    }
+    foreach(FFBaseObject *t, _tunings)
+    {
+        if (t->prettyName().toLower() == name) return t;
+    }
+    return _tunings.at(0);
 }

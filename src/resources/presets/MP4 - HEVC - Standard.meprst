@@ -35,8 +35,8 @@
                 "bitrateType": "VBR",
                 "bottomCrop": 0,
                 "codec": {
-                    "name": "h264",
-                    "prettyName": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 "
+                    "name": "hevc",
+                    "prettyName": "H.265 / HEVC "
                 },
                 "colorPrimaries": {
                     "name": "",
@@ -57,6 +57,8 @@
                 "cropHWidth": 0,
                 "cropHeight": 0,
                 "cropUseSize": false,
+                "deinterlace": false,
+                "deinterlaceParity": "AutoParity",
                 "encodingSpeed": -1,
                 "framerate": 0,
                 "height": 0,
@@ -65,7 +67,8 @@
                     "prettyName": "Undefined"
                 },
                 "leftCrop": 0,
-                "level": "3.0",
+                "level": "",
+                "lut": "",
                 "pixAspect": 1,
                 "pixFormat": {
                     "name": "yuv420p",
@@ -73,8 +76,8 @@
                 },
                 "premultipliedAlpha": true,
                 "profile": {
-                    "name": "baseline",
-                    "prettyName": "Baseline"
+                    "name": "",
+                    "prettyName": "Auto"
                 },
                 "quality": -1,
                 "rightCrop": 0,
