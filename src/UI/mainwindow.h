@@ -20,6 +20,7 @@
 #include <QMimeData>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QMessageBox>
 
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"

@@ -452,10 +452,14 @@ void MainWindow::duqf_closeSettings()
 
 void MainWindow::duqf_reinitSettings()
 {
-    settings.clear();
-    settings.sync();
-    qApp->quit();
-    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    QMessageBox::StandardButton choice = QMessageBox::question(this, "Reset settings", "This will reset all settings to their default values and restart the application.\nAre you sure you want to continue?" );
+    if (choice == QMessageBox::Yes)
+    {
+        settings.clear();
+        settings.sync();
+        this->close();
+        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    }
 }
 
 void MainWindow::duqf_about()
