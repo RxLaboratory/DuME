@@ -8,10 +8,6 @@ AESettingsWidget::AESettingsWidget(AfterEffects *ae, QWidget *parent) :
     _ae = ae;
     _freezeUI = true;
 
-    //Temp path
-    QString cachePath = QDir::toNativeSeparators( CacheManager::instance()->getRootCacheDir().absolutePath() );
-    aeCacheEdit->setText(cachePath);
-
     updateAe();
 
     connect(_ae, &AbstractRendererInfo::binaryChanged, this, &AESettingsWidget::updateAe);
@@ -64,29 +60,6 @@ void AESettingsWidget::on_aerenderBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
     aerenderPathEdit->setText(path);
-}
-
-void AESettingsWidget::on_aeCacheEdit_textChanged(const QString &arg1)
-{
-    if (_freezeUI) return;
-    _freezeUI = true;
-    QString path = arg1;
-    if (!path.endsWith("/") || !path.endsWith("\\")) path = path + "/";
-    path = QDir::toNativeSeparators(path);
-
-    if (QDir(arg1).exists())
-    {
-        CacheManager::instance()->setRootCacheDir(path);
-        aeCacheEdit->setText(path);
-    }
-    _freezeUI = false;
-}
-
-void AESettingsWidget::on_aeCacheBrowseButton_clicked()
-{
-    QString path = QFileDialog::getExistingDirectory(this,"Select the aerender cache directory",CacheManager::instance()->getRootCacheDir().absolutePath());
-    if (path == "") return;
-    aeCacheEdit->setText(path);
 }
 
 void AESettingsWidget::updateAe()

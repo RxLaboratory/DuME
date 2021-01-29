@@ -30,6 +30,7 @@ SOURCES += \
     UI/Blocks/blockdeinterlace.cpp \
     UI/Blocks/blocklut.cpp \
     UI/aesettingswidget.cpp \
+    UI/cachesettingswidget.cpp \
     UI/ffmpegsettingswidget.cpp \
     duqf-app/app-style.cpp \
     duqf-utils/language-utils.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     UI/Blocks/blockdeinterlace.h \
     UI/Blocks/blocklut.h \
     UI/aesettingswidget.h \
+    UI/cachesettingswidget.h \
     UI/ffmpegsettingswidget.h \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
@@ -173,6 +175,7 @@ FORMS += \
     UI/Blocks/blockdeinterlace.ui \
     UI/Blocks/blocklut.ui \
     UI/aesettingswidget.ui \
+    UI/cachesettingswidget.ui \
     UI/ffmpegsettingswidget.ui \
     duqf-widgets/aboutdialog.ui \
     duqf-widgets/appearancesettingswidget.ui \

@@ -27,6 +27,7 @@
 
 #include "UI/ffmpegsettingswidget.h"
 #include "UI/aesettingswidget.h"
+#include "UI/cachesettingswidget.h"
 #include "UI/queuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
@@ -129,6 +130,7 @@ private:
 
     FFmpegSettingsWidget *ffmpegSettingsWidget;
     AESettingsWidget *aeSettingsWidget;
+    CacheSettingsWidget *cacheSettingsWidget;
 
     // ===== AE =====
     /**

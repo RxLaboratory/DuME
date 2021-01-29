@@ -64,9 +64,12 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //settings widget
     ffmpegSettingsWidget = new FFmpegSettingsWidget();
     settingsWidget->addPage(ffmpegSettingsWidget, "FFmpeg", QIcon(":/icons/ffmpeg"));
+#ifndef Q_OS_LINUX
     aeSettingsWidget = new AESettingsWidget(_ae);
     settingsWidget->addPage(aeSettingsWidget, "After Effects", QIcon(":/icons/ae"));
-
+#endif
+    cacheSettingsWidget = new CacheSettingsWidget();
+    settingsWidget->addPage(cacheSettingsWidget, "Cache and Memory", QIcon(":/icons/cache"));
 
     log("Init - Adding queue widget");
 

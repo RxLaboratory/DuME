@@ -76,6 +76,7 @@
         <file alias="set-lut">resources/icons/set-lut-3d-look_sl.svg</file>
         <file alias="interlace">resources/icons/interlace_bd.svg</file>
         <file alias="set-interlace">resources/icons/modify-fields-interlace_sl.svg</file>
+        <file alias="cache">resources/icons/set-storage-cache-data-database_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
