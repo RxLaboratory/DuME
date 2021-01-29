@@ -24,8 +24,8 @@ public:
     int encodingSpeed() const;
     void setEncodingSpeed(int encodingSpeed, bool silent = false);
 
-    FFProfile *profile() const;
-    void setProfile(FFProfile *profile, bool silent = false);
+    FFBaseObject *profile() const;
+    void setProfile(FFBaseObject *profile, bool silent = false);
     void setProfile(QString name, bool silent = false);
     void setProfile(QJsonObject obj, bool silent =  false);
 
@@ -148,7 +148,7 @@ private:
      * @brief _profile Codec/Video profile.
      * Supported codecs: h264, prores
      */
-    FFProfile *_profile;
+    FFBaseObject *_profile;
     /**
      * @brief _profile Codec level.
      * Supported codecs: h264

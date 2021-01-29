@@ -7,13 +7,21 @@ FFPixFormat::FFPixFormat(QString name, QString prettyName, int numComponents, in
     _numComponents = numComponents;
     _bitsPerPixel = bitsPerPixel;
 
+    _yuvComponentsDistribution = "";
+
     this->setPrettyName(this->prettyName() + " (" + QString::number(_bitsPerPixel) + " bits - " + QString::number(_numComponents) + " channels)" );
 
     if (this->name().indexOf("a") >= 0 && _numComponents > 1) _hasAlpha = true;
     else _hasAlpha = false;
 
     if ( ( this->name().indexOf("rgb") >= 0 || this->name().indexOf("bgr") >= 0 ) && _numComponents >= 3) _colorSpace = RGB;
-    else if (this->name().indexOf("yuv") >= 0 && _numComponents >= 3) _colorSpace = YUV;
+    else if (this->name().indexOf("yuv") >= 0 && _numComponents >= 3)
+    {
+        _colorSpace = YUV;
+        if (this->name().indexOf("444") >= 0) _yuvComponentsDistribution = "444";
+        else if (this->name().indexOf("422") >=0) _yuvComponentsDistribution = "422";
+        else if (this->name().indexOf("420") >= 0) _yuvComponentsDistribution = "420";
+    }
     else _colorSpace = OTHER;
 }
 
@@ -96,6 +104,11 @@ FFPixFormat::ColorSpace FFPixFormat::colorSpace() const
 FFPixFormat *FFPixFormat::getDefault( QObject *parent )
 {
     return new FFPixFormat( "", "Default", 0, 0, parent );
+}
+
+QString FFPixFormat::yuvComponentsDistribution() const
+{
+    return _yuvComponentsDistribution;
 }
 
 void FFPixFormat::setAlpha(bool hasAlpha)

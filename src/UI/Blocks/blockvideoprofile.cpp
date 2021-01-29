@@ -50,10 +50,9 @@ void BlockVideoProfile::update()
     else videoLevelBox->hide();
 
     // add profiles
-    if ( c->profiles().count() > 0 )
+    if ( c->useProfile() )
     {
-        videoProfileBox->addItem("Default", "");
-        foreach( FFProfile *p, c->profiles() )
+        foreach( FFBaseObject *p, c->profiles() )
         {
             videoProfileBox->addItem( p->prettyName(), p->name() );
         }
@@ -64,7 +63,7 @@ void BlockVideoProfile::update()
         return;
     }
 
-    FFProfile *p = stream->profile();
+    FFBaseObject *p = stream->profile();
     videoProfileBox->setCurrentData( p->name() );
 
     videoLevelBox->setCurrentData( stream->level() );

@@ -17,7 +17,6 @@
 #include "ffcodec.h"
 #include "ffmuxer.h"
 #include "ffpixformat.h"
-#include "ffprofile.h"
 #include "ffcolorprofile.h"
 #include "ffsampleformat.h"
 
@@ -117,12 +116,6 @@ public:
      * @return A pointer to the sample format
      */
     FFSampleFormat *sampleFormat(QString name);
-    /**
-     * @brief profile Gets a profile unsing its name
-     * @param name The name of the profile
-     * @return  A pointer to the profile
-     */
-    FFProfile *profile(QString name);
     //Colors
     FFBaseObject *colorTRC(QString name);
     FFBaseObject *colorPrimary(QString name);
@@ -214,8 +207,6 @@ private:
     FFPixFormat *_defaultPixFormat;
     // The default audio sample format
     FFSampleFormat *_defaultSampleFormat;
-    // The list of profiles
-    QList<FFProfile *> _profiles;
     // The list of color profiles
     QList<FFBaseObject *> _colorPrimaries;
     QList<FFBaseObject *> _colorTRCs;

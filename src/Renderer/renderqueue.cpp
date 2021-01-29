@@ -247,9 +247,6 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     arguments << "-loop" << QString::number(loop);
                 }
 
-                //profile
-                if (stream->profile()->name() != "") arguments << "-profile:v" << stream->profile()->name();
-
                 //level
                 if (stream->level() != "") arguments << "-level" << stream->level();
 
@@ -282,13 +279,32 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //pixel format
-                QString pixFmt = stream->pixFormat()->name();
+                FFPixFormat *pixFormat = stream->pixFormat();
+                QString pixFmt = pixFormat->name();
                 //set default for h264 to yuv420 (ffmpeg generates 444 by default which is not standard)
                 if (pixFmt == "" && vc->name() == "h264") pixFmt = "yuv420p";
                 if (pixFmt == "" && muxer == "mp4") pixFmt = "yuv420p";
                 if (pixFmt != "") arguments << "-pix_fmt" << pixFmt;
                 // video codecs with alpha need to set -auto-alt-ref to 0
                 if (stream->pixFormat()->hasAlpha() && muxer != "image2") arguments << "-auto-alt-ref" << "0";
+
+                //profile
+                if (stream->profile()->name() != "")
+                {
+                    QString profile = stream->profile()->name();
+                    // Adjust h264 main profile
+                    if ( (vc->name() == "h264" || vc->name() == "libx264") && profile == "high")
+                    {
+                        if (stream->pixFormat()->name() != "")
+                        {
+                            if (pixFormat->yuvComponentsDistribution() == "444") profile = "high444";
+                            else if (pixFormat->yuvComponentsDistribution() == "422") profile = "high422";
+                            else if (pixFormat->bitsPerPixel() > 12) profile = "high10"; // 12 bpp at 420 is 8bpc
+                        }
+                    }
+                    arguments << "-profile:v" << profile;
+                }
+
 
                 //color
                 //add color management

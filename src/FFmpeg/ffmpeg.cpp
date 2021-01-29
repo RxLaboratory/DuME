@@ -15,19 +15,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _defaultMuxer = FFMuxer::getDefault( this );
     _defaultObject = new FFBaseObject("", "Default", this);
 
-    // The list of Profiles
-    _profiles << new FFProfile("", "Auto");
-    _profiles << new FFProfile("0", "Proxy");
-    _profiles << new FFProfile("1", "LT");
-    _profiles << new FFProfile("2", "SQ");
-    _profiles << new FFProfile("3", "HQ");
-    _profiles << new FFProfile("baseline", "Baseline");
-    _profiles << new FFProfile("main", "Main");
-    _profiles << new FFProfile("high", "High");
-    _profiles << new FFProfile("high10", "High 10");
-    _profiles << new FFProfile("high422", "High 422");
-    _profiles << new FFProfile("high444", "High 444");
-
     // The color TRCs
     _colorTRCs << new FFBaseObject("", "Auto");
     _colorTRCs << new FFBaseObject("iec61966_2_1", "sRGB");
@@ -387,20 +374,6 @@ FFSampleFormat *FFmpeg::sampleFormat(QString name)
         if (sf->prettyName() == name) return sf;
     }
     return _defaultSampleFormat;
-}
-
-FFProfile *FFmpeg::profile(QString name)
-{
-    name = name.trimmed();
-    foreach(FFProfile *pf,_profiles)
-    {
-        if (pf->name().toLower() == name.trimmed().toLower()) return pf;
-    }
-    foreach(FFProfile *pf,_profiles)
-    {
-        if (pf->prettyName() == name) return pf;
-    }
-    return _profiles[0];
 }
 
 FFBaseObject *FFmpeg::colorTRC(QString name)
@@ -928,24 +901,6 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
             if (co->isVideo())
             {
-                //add profiles
-                if( co->name().startsWith("prores") )
-                {
-                    co->addProfile( profile("0") );
-                    co->addProfile( profile("1") );
-                    co->addProfile( profile("2") );
-                    co->addProfile( profile("3") );
-                }
-                else if (co->name() == "h264")
-                {
-                    co->addProfile( profile("baseline") );
-                    co->addProfile( profile("main") );
-                    co->addProfile( profile("high") );
-                    co->addProfile( profile("high10") );
-                    co->addProfile( profile("high422") );
-                    co->addProfile( profile("high444") );
-                }
-
                 //get pixel formats
                 int pArraySize = settings.beginReadArray("pixFmts");
                 for (int j = 0; j < pArraySize; j++)
@@ -1045,24 +1000,6 @@ void FFmpeg::gotCodecs(QString output, QString newVersion )
 
                 if (co->isVideo())
                 {
-                    //add profiles
-                    if( co->name().startsWith("prores") )
-                    {
-                        co->addProfile( profile("0") );
-                        co->addProfile( profile("1") );
-                        co->addProfile( profile("2") );
-                        co->addProfile( profile("3") );
-                    }
-                    else if (co->name() == "h264")
-                    {
-                        co->addProfile( profile("baseline") );
-                        co->addProfile( profile("main") );
-                        co->addProfile( profile("high") );
-                        co->addProfile( profile("high10") );
-                        co->addProfile( profile("high422") );
-                        co->addProfile( profile("high444") );
-                    }
-
                     //get pixel formats
                     QStringList args("-hide_banner");
                     args << "-h";

@@ -1,9 +1,8 @@
-#ifndef FFMPEGCODEC_H
+﻿#ifndef FFMPEGCODEC_H
 #define FFMPEGCODEC_H
 
 #include "ffbaseobject.h"
 #include "ffpixformat.h"
-#include "ffprofile.h"
 #include "duqf-utils/utils.h"
 
 #include <QString>
@@ -30,7 +29,8 @@ public:
     enum Capability { Speed = 1 << 0,
                       Tuning = 1 << 1,
                       Quality = 1 << 2,
-                      BitrateType = 1 << 3
+                      BitrateType = 1 << 3,
+                      Profile = 1 << 4
                      };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
@@ -102,7 +102,9 @@ public:
     bool useQuality();
     void setQualityCapability(bool useQuality = true);
     bool useBitrateType();
-    void setTypeCapability(bool useType = true);
+    void setBitrateTypeCapability(bool useType = true);
+    bool useProfile();
+    void setProfileCapability(bool useProfile = true);
     void setCapabilities(const Capabilities &capabilities);
 
     QList<FFPixFormat *> pixFormats() const;
@@ -114,8 +116,8 @@ public:
     void setDefaultPixFormat(FFPixFormat *defaultPixFormat);
     void setDefaultPixFormat();
 
-    QList<FFProfile *> profiles() const;
-    void addProfile(FFProfile *profile);
+    QList<FFBaseObject *> profiles() const;
+    FFBaseObject *profile(QString name);
 
     QString qualityParam() const;
     QString qualityValue( int quality );
@@ -128,6 +130,7 @@ public:
     QList<FFBaseObject *> tunings() const;
     FFBaseObject *tuning(QString name);
 
+
 private:
     void init();
 
@@ -135,7 +138,6 @@ private:
     Capabilities _capabilities;
     QList<FFPixFormat *> _pixFormats;
     FFPixFormat *_defaultPixFormat;
-    QList<FFProfile *> _profiles;
 
     QString _qualityParam;
     void setQualityParam();
@@ -144,6 +146,7 @@ private:
     void setSpeedParam();
 
     QList<FFBaseObject*> _tunings;
+    QList<FFBaseObject*> _profiles;
 
 protected:
 

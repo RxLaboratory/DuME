@@ -57,12 +57,15 @@ public:
 
     static FFPixFormat *getDefault(QObject *parent = nullptr);
 
+    QString yuvComponentsDistribution() const;
+
 private:
     Abilities _abilities;
     int _numComponents;
     int _bitsPerPixel;
     bool _hasAlpha;
     ColorSpace _colorSpace;
+    QString _yuvComponentsDistribution;
 
 };
 

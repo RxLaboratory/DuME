@@ -25,19 +25,18 @@ void FFCodec::init()
     setSpeedParam();
     if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
     {
-        setTuningCapability(true);
-        setTypeCapability(true);
+        setBitrateTypeCapability(true);
     }
     else
     {
-        setTuningCapability(false);
-        setTypeCapability(false);
+        setBitrateTypeCapability(false);
     }
 
+    //TUNINGS
     _tunings << new FFBaseObject("", "Default", this);
     if (_name == "h264" || _name == "libx264")
     {
-
+        setTuningCapability(true);
         _tunings << new FFBaseObject("film", "Film", this);
         _tunings << new FFBaseObject("animation", "Animation", this);
         _tunings << new FFBaseObject("grain", "Video with grain", this);
@@ -47,9 +46,39 @@ void FFCodec::init()
     }
     else if (_name == "h265" || _name == "hevc" || _name == "libx265")
     {
+        setTuningCapability(true);
         _tunings << new FFBaseObject("grain", "Video with grain", this);
         _tunings << new FFBaseObject("fastdecode", "Fast decode", this);
         _tunings << new FFBaseObject("zerolatency", "Streaming (low latency)", this);
+    }
+    else
+    {
+        setTuningCapability(false);
+    }
+
+    //PROFILES
+    _profiles << new FFBaseObject("", "Default", this);
+    if (_name == "h264" || _name == "libx264")
+    {
+        setProfileCapability(true);
+        _profiles << new FFBaseObject("baseline", "Constrained Baseline");
+        _profiles << new FFBaseObject("main", "Main");
+        _profiles << new FFBaseObject("high", "High");
+        //_profiles << new FFProfile("high10", "High 10");
+        //_profiles << new FFProfile("high422", "High 422");
+        //_profiles << new FFProfile("high444", "High 444");
+    }
+    else if (_name.toLower().startsWith("prores"))
+    {
+        setProfileCapability(true);
+        _profiles << new FFBaseObject("0", "Proxy");
+        _profiles << new FFBaseObject("1", "LT");
+        _profiles << new FFBaseObject("2", "SQ");
+        _profiles << new FFBaseObject("3", "HQ");
+    }
+    else
+    {
+        setProfileCapability(false);
     }
 }
 
@@ -163,9 +192,19 @@ bool FFCodec::useBitrateType()
     return _capabilities.testFlag(BitrateType);
 }
 
-void FFCodec::setTypeCapability(bool useType)
+void FFCodec::setBitrateTypeCapability(bool useType)
 {
     _capabilities.setFlag(BitrateType, useType);
+}
+
+bool FFCodec::useProfile()
+{
+    return _capabilities.testFlag(Profile);
+}
+
+void FFCodec::setProfileCapability(bool useProfile)
+{
+    _capabilities.setFlag(Profile, useProfile);
 }
 
 QList<FFPixFormat *> FFCodec::pixFormats() const
@@ -267,14 +306,23 @@ void FFCodec::setDefaultPixFormat( )
     _defaultPixFormat = FFPixFormat::getDefault(this);
 }
 
-QList<FFProfile *> FFCodec::profiles() const
+QList<FFBaseObject *> FFCodec::profiles() const
 {
     return _profiles;
 }
 
-void FFCodec::addProfile(FFProfile *profile)
+FFBaseObject *FFCodec::profile(QString name)
 {
-    _profiles << profile;
+    name = name.trimmed().toLower();
+    foreach(FFBaseObject *pf,_profiles)
+    {
+        if (pf->name().toLower() == name) return pf;
+    }
+    foreach(FFBaseObject *pf,_profiles)
+    {
+        if (pf->prettyName().toLower() == name) return pf;
+    }
+    return _profiles[0];
 }
 
 QString FFCodec::qualityParam() const
@@ -425,6 +473,7 @@ QList<FFBaseObject *> FFCodec::tunings() const
 
 FFBaseObject *FFCodec::tuning(QString name)
 {
+    name = name.trimmed().toLower();
     foreach(FFBaseObject *t, _tunings)
     {
         if (t->name().toLower() == name) return t;

@@ -15,8 +15,7 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [Linux](linux.md)
 - Transcoding
     - [Manage Presets](presets.md)
-    - [MP4 / h.264](h264.md)
-    - [MP4 / h.265](h265.md)
+    - [MP4 / h.264 / h.265](h264-5.md)
     - [Image Sequences](sequences.md)
     - [Adding / Changing streams](mapping.md)
 - After Effects rendering

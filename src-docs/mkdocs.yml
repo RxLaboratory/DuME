@@ -33,8 +33,7 @@ nav:
         - Linux: linux.md
     - Transcoding:
         - Manage presets: presets.md
-        - MP4 / h.264: h264.md
-        - MP4 / h.265 / HEVC: h265.md
+        - MP4 / h.264 AVC / h.265 HEVC: h264-5.md
         - Image sequences: sequences.md
         - Adding / Changing streams: mapping.md
         - Convert color spaces: color-space.md

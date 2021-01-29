@@ -15,7 +15,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Ability to [**Apply a 1D or 3D LUT**](lut.md).
 - Ability to Deinterlace video.
 - JPEG support.
-- h265 / HEVC support.
+- [h265 / HEVC](h264-5.md) support.
 - New format presets.
 
 ### Improvements
@@ -58,7 +58,7 @@ Private testing release
 
 - Now comes with [a script for *After Effects*](after-effects-install.md).
 - Added more [command line options](cli-options.md).
-- Added some options to tweak [h264](h264.md) encoding (including the ability to output CBR streams).
+- Added some options to tweak [h264](h264-5.md) encoding (including the ability to output CBR streams).
 
 ### Improvements
 

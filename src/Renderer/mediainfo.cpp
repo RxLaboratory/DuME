@@ -67,9 +67,6 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     _size = mediaFile.size();
 
     _muxer = FFmpeg::instance()->muxer(extension);
-    qDebug() << extension;
-    qDebug() << _muxer->isSequence();
-    qDebug() << _muxer->name();
 
     if (!mediaFile.exists())
     {
@@ -152,20 +149,18 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
                 stream->setPixAspect( matchAspect.captured(1).toFloat() / matchAspect.captured(2).toFloat() );
             }
 
-
             QRegularExpressionMatch matchBitrate = reBitrate.match( info );
             if (matchBitrate.hasMatch())
             {
                 stream->setBitrate( matchBitrate.captured(1).toInt()*1024 );
             }
-
             QRegularExpressionMatch matchFPS = reFPS.match( info );
             if (matchFPS.hasMatch())
             {
                 stream->setFramerate( matchFPS.captured(1).toDouble() );
             }
 
-            addVideoStream( stream );
+            addVideoStream( stream, silent );
             continue;
         }
 
@@ -720,7 +715,7 @@ void MediaInfo::setVideoProfile(QString value, int id, bool silent)
         _videoStreams[id]->setProfile(value, silent);
 }
 
-void MediaInfo::setVideoProfile(FFProfile *value, int id, bool silent)
+void MediaInfo::setVideoProfile(FFBaseObject *value, int id, bool silent)
 {
     if (!hasVideo()) return;
     if (id < 0)

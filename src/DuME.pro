@@ -45,7 +45,6 @@ SOURCES += \
     AfterEffects/aftereffectsversion.cpp \
     AfterEffects/aerenderer.cpp \
     FFmpeg/fflanguage.cpp \
-    FFmpeg/ffprofile.cpp \
     FFmpeg/ffsampleformat.cpp \
     FFmpeg/ffmpeg.cpp \
     FFmpeg/ffcodec.cpp \
@@ -119,7 +118,6 @@ HEADERS += \
     AfterEffects/aftereffectsversion.h \
     AfterEffects/aerenderer.h \
     FFmpeg/fflanguage.h \
-    FFmpeg/ffprofile.h \
     FFmpeg/ffsampleformat.h \
     FFmpeg/ffmpeg.h \
     FFmpeg/ffcodec.h \

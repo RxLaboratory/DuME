@@ -6,7 +6,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _id = -1;
     _quality = -1;
     _encodingSpeed = -1;
-    _profile = ffmpeg->profile("");
+    _profile = nullptr;
     _level = "";
     _tuning = nullptr;
     _bitrateType = MediaUtils::BitrateType::VBR;
@@ -186,9 +186,9 @@ QString VideoInfo::getDescription()
     if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "px X" + QString::number( _height ) + "px";
     if ( aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( aspect()*100+0.5 ) / 100.0) + ":1";
     if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
-    if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
+    if (_profile) if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
     if ( _level != "") mediaInfoString += "\nLevel: " + _level;
-    if ( _tuning->name() != "") mediaInfoString += "\nFine tune: " + _tuning->prettyName();
+    if (_tuning) if ( _tuning->name() != "") mediaInfoString += "\nFine tune: " + _tuning->prettyName();
     if ( _bitrate != 0 ) {
         mediaInfoString += "\nBitrate: " + MediaUtils::bitrateString(_bitrate);
         if ( _bitrateType == MediaUtils::BitrateType::CBR) mediaInfoString += " (CBR)";
@@ -253,12 +253,12 @@ void VideoInfo::setQuality(int quality, bool silent)
     if(!silent) emit changed();
 }
 
-FFProfile *VideoInfo::profile() const
+FFBaseObject *VideoInfo::profile() const
 {
     return _profile;
 }
 
-void VideoInfo::setProfile(FFProfile *profile, bool silent)
+void VideoInfo::setProfile(FFBaseObject *profile, bool silent)
 {
     _profile = profile;
     if(!silent) emit changed();
@@ -266,7 +266,7 @@ void VideoInfo::setProfile(FFProfile *profile, bool silent)
 
 void VideoInfo::setProfile(QString name, bool silent)
 {
-    setProfile( FFmpeg::instance()->profile( name ), silent );
+    if (_codec) setProfile( _codec->profile( name ), silent );
 }
 
 void VideoInfo::setProfile(QJsonObject obj, bool silent)
