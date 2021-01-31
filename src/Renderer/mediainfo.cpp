@@ -998,6 +998,66 @@ void MediaInfo::setLossless(bool lossless, int id, bool silent)
         _videoStreams[id]->setLossless(lossless, silent);
 }
 
+void MediaInfo::setVideoSpeed(float speed, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeed(speed, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeed(speed, silent);
+}
+
+void MediaInfo::setVideoSpeedInterpolationMode(MediaUtils::MotionInterpolationMode mode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeedInterpolationMode(mode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeedInterpolationMode(mode, silent);
+}
+
+void MediaInfo::setVideoSpeedEstimationMode(FFBaseObject *speedEstimationMode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeedEstimationMode(speedEstimationMode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeedEstimationMode(speedEstimationMode, silent);
+}
+
+void MediaInfo::setVideoSpeedEstimationMode(QString speedEstimationMode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeedEstimationMode(speedEstimationMode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeedEstimationMode(speedEstimationMode, silent);
+}
+
+void MediaInfo::setVideoSpeedAlgorithm(FFBaseObject *speedAlgorithm, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeedAlgorithm(speedAlgorithm, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeedAlgorithm(speedAlgorithm, silent);
+}
+
+void MediaInfo::setVideoSpeedAlgorithm(QString speedAlgorithm, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSpeedAlgorithm(speedAlgorithm, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSpeedAlgorithm(speedAlgorithm, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;

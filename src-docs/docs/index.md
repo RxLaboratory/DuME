@@ -18,6 +18,9 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [MP4 / h.264 / h.265](h264-5.md)
     - [Image Sequences](sequences.md)
     - [Adding / Changing streams](mapping.md)
+    - [Convert color spaces](color-space.md)
+    - [Applying a LUT](lut.md)
+    - [Filters](filter.md)
 - After Effects rendering
     - [Installation](after-effects-install.md)
     - [Rendering](after-effects-rendering.md)

@@ -127,6 +127,12 @@ public:
     QList<FFBaseObject *> colorSpaces() const;
     QList<FFBaseObject *> colorRanges() const;
     QList<FFColorProfile *> colorProfiles() const;
+    //Motion interpolation algos
+    FFBaseObject *motionInterpolationAlgorithm(QString name);
+    QList<FFBaseObject *> motionInterpolationAlgorithms() const;
+    //Motion estimation modes
+    FFBaseObject *motionEstimationMode(QString name);
+    QList<FFBaseObject *> motionEstimationModes() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -214,6 +220,10 @@ private:
     QList<FFBaseObject *> _colorRanges;
     // The list of color profiles
     QList<FFColorProfile *> _colorProfiles;
+    //The list of motion interpolation algorithms
+    QList<FFBaseObject *> _motionInterpolationAlgorithms;
+    //The list of motion estimation modes
+    QList<FFBaseObject *> _motionEstimationModes;
     // A default object
     FFBaseObject *_defaultObject;
     // The help

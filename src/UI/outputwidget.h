@@ -7,6 +7,7 @@
 
 // BLOCKS
 #include "UI/Blocks/blockbasewidget.h"
+#include "UI/Blocks/blockvideospeed.h"
 #include "UI/Blocks/blockcrop.h"
 #include "UI/Blocks/blocklut.h"
 #include "UI/Blocks/blockdeinterlace.h"
@@ -87,6 +88,7 @@ private slots:
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon="");
+    BlockBaseWidget *blockVideoSpeed;
     BlockBaseWidget *blockCrop;
     BlockBaseWidget *blockLut;
     BlockBaseWidget *blockDeinterlace;

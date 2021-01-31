@@ -77,6 +77,8 @@
         <file alias="interlace">resources/icons/interlace_bd.svg</file>
         <file alias="set-interlace">resources/icons/modify-fields-interlace_sl.svg</file>
         <file alias="cache">resources/icons/set-storage-cache-data-database_sl.svg</file>
+        <file alias="set-video-speed">resources/icons/set-video-speed-time-remap_sl.svg</file>
+        <file alias="video-speed">resources/icons/video-speed_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

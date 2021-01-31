@@ -35,6 +35,10 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _deinterlaceParity = MediaUtils::AutoParity;
     _intra = false;
     _lossless = false;
+    _speed = 1.0;
+    _speedAlgorithm = ffmpeg->motionInterpolationAlgorithm("");
+    _speedEstimationMode = ffmpeg->motionEstimationMode("");
+    _speedInterpolationMode = MediaUtils::NoMotionInterpolation;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -71,9 +75,13 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setCropUseSize( obj.value("cropUseSize").toBool(false), true);
     setLut(obj.value("lut").toString(""), true);
     setDeinterlace( obj.value("deinterlace").toBool(false), true);
-    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto").toUtf8() ), true);
+    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto") ), true);
     setIntra( obj.value("intra").toBool(false), true);
     setLossless( obj.value("lossless").toBool(false), true);
+    setSpeed( obj.value("speed").toDouble(1.0), true);
+    setSpeedAlgorithm( obj.value("speedAlgorithm").toObject(), true);
+    setSpeedEstimationMode( obj.value("speedEstimationMode").toObject(), true);
+    setSpeedInterpolationMode( MediaUtils::MotionInterpolationModeFromString( obj.value("speedInterpolationMode").toString("NoMotionInterpolation")), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -111,6 +119,10 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _deinterlaceParity = other->deinterlaceParity();
     _intra = other->intra();
     _lossless = other->lossless();
+    _speed = other->speed();
+    _speedAlgorithm = other->speedAlgorithm();
+    _speedEstimationMode = other->speedEstimationMode();
+    _speedInterpolationMode = other->speedInterpolationMode();
     if(!silent) emit changed();
 }
 
@@ -151,10 +163,13 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("cropUseSize", _cropUseSize);
     vStream.insert("lut", _lut);
     vStream.insert("deinterlace", _deinterlace);
-    vStream.insert("deinterlaceParity", QVariant::fromValue(_deinterlaceParity).toString());
+    vStream.insert("deinterlaceParity", MediaUtils::DeinterlaceParityToString(_deinterlaceParity));
     vStream.insert("intra", _intra);
     vStream.insert("lossless", _lossless);
-
+    vStream.insert("speed", _speed);
+    vStream.insert("speedAlgorithm", _speedAlgorithm->toJson());
+    vStream.insert("speedEstimationMode", _speedEstimationMode->toJson());
+    vStream.insert("speedInterpolationMode", MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode));
     return vStream;
 }
 
@@ -190,7 +205,7 @@ QString VideoInfo::getDescription()
             mediaInfoString += "\n- Height: " + QString::number(_cropHeight) + "px";
         }
     }
-    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "px X" + QString::number( _height ) + "px";
+    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "px x " + QString::number( _height ) + "px";
     if ( aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( aspect()*100+0.5 ) / 100.0) + ":1";
     if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
     if (_profile) if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
@@ -237,13 +252,20 @@ QString VideoInfo::getDescription()
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
     }
     if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
+    if ( _speed != 1.0)
+    {
+        mediaInfoString += "\nSpeed multiplicator: " + QString::number(_speed) + "x";
+        mediaInfoString += "\nMotion interpolation: " + MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode );
+        if (_speedInterpolationMode == MediaUtils::MCIAO || _speedInterpolationMode == MediaUtils::MCIO)
+        {
+            mediaInfoString += "\nMotion estimation: " + _speedEstimationMode->prettyName();
+            mediaInfoString += "\nMotion interpolation algorithm: " + _speedAlgorithm->prettyName();
+        }
+    }
     if ( _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
     if ( _deinterlace )
     {
-        mediaInfoString += "\nDeinterlace: ";
-        if (_deinterlaceParity == MediaUtils::AutoParity) mediaInfoString += "Auto";
-        else if (_deinterlaceParity == MediaUtils::TopFieldFirst) mediaInfoString += "Top field first";
-        else if (_deinterlaceParity == MediaUtils::BottomFieldFirst) mediaInfoString += "Bottom field first";
+        mediaInfoString += "\nDeinterlace: " + MediaUtils::DeinterlaceParityToString(_deinterlaceParity);
     }
     if (_intra)
     {
@@ -676,6 +698,70 @@ void VideoInfo::setLossless(bool lossless, bool silent)
 {
     _lossless = lossless;
     if(!silent) emit changed();
+}
+
+float VideoInfo::speed() const
+{
+    return _speed;
+}
+
+void VideoInfo::setSpeed(float speed, bool silent)
+{
+    _speed = speed;
+    if(!silent) emit changed();
+}
+
+MediaUtils::MotionInterpolationMode VideoInfo::speedInterpolationMode() const
+{
+    return _speedInterpolationMode;
+}
+
+void VideoInfo::setSpeedInterpolationMode(const MediaUtils::MotionInterpolationMode &speedInterpolationMode, bool silent)
+{
+    _speedInterpolationMode = speedInterpolationMode;
+    if(!silent) emit changed();
+}
+
+FFBaseObject *VideoInfo::speedEstimationMode() const
+{
+    return _speedEstimationMode;
+}
+
+void VideoInfo::setSpeedEstimationMode(FFBaseObject *speedEstimationMode, bool silent)
+{
+    _speedEstimationMode = speedEstimationMode;
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setSpeedEstimationMode(QString speedEstimationMode, bool silent)
+{
+    setSpeedEstimationMode( FFmpeg::instance()->motionEstimationMode(speedEstimationMode), silent);
+}
+
+void VideoInfo::setSpeedEstimationMode(QJsonObject speedEstimationMode, bool silent)
+{
+    setSpeedEstimationMode(speedEstimationMode.value("name").toString(), silent);
+}
+
+FFBaseObject *VideoInfo::speedAlgorithm() const
+{
+    return _speedAlgorithm;
+}
+
+void VideoInfo::setSpeedAlgorithm(FFBaseObject *speedAlgorithm, bool silent)
+{
+    _speedAlgorithm = speedAlgorithm;
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setSpeedAlgorithm(QString speedAlgorithm, bool silent)
+{
+    setSpeedAlgorithm( FFmpeg::instance()->motionInterpolationAlgorithm(speedAlgorithm), silent);
+}
+
+void VideoInfo::setSpeedAlgorithm(QJsonObject speedAlgorithm, bool silent)
+{
+    setSpeedAlgorithm(speedAlgorithm.value("name").toString(), silent);
 }
 
 int VideoInfo::encodingSpeed() const

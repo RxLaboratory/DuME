@@ -121,6 +121,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
     MediaInfo *i = item->getInputMedias()[0];
     if (i->hasVideo()) exrInput = i->videoStreams()[0]->codec()->name() == "exr";
 
+    //some values to be passed from the input to the output
+    double inputFramerate = 0.0;
+
     //add inputs
     foreach(MediaInfo *input, item->getInputMedias())
     {
@@ -137,6 +140,9 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
         if (input->hasVideo())
         {
             VideoInfo *stream = input->videoStreams()[0];
+
+            if (stream->framerate() != 0.0) inputFramerate = stream->framerate();
+
             //add sequence options
             if (input->isSequence())
             {
@@ -367,6 +373,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 // ============ Video filters
                 QStringList filterChain;
 
+                //unpremultiply
+                bool unpremultiply = !stream->premultipliedAlpha();
+                if (unpremultiply) filterChain << "unpremultiply=inplace=1";
+
                 //deinterlace
                 if (stream->deinterlace())
                 {
@@ -377,10 +387,30 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     filterChain << deinterlaceOption;
                 }
 
-
-                //unpremultiply
-                bool unpremultiply = !stream->premultipliedAlpha();
-                if (unpremultiply) filterChain << "unpremultiply=inplace=1";
+                //speed
+                if (stream->speed() != 1.0)
+                {
+                    filterChain << "setpts=" + QString::number(1/stream->speed()) + "*PTS";
+                    if (stream->speedInterpolationMode() != MediaUtils::NoMotionInterpolation)
+                    {
+                        QString speedFilter = "minterpolate='";
+                        if (stream->speedInterpolationMode() == MediaUtils::DuplicateFrames) speedFilter += "mi_mode=dup";
+                        else if (stream->speedInterpolationMode() == MediaUtils::BlendFrames) speedFilter += "mi_mode=blend";
+                        else
+                        {
+                            speedFilter += "mi_mode=mci";
+                            if (stream->speedInterpolationMode() == MediaUtils::MCIO) speedFilter += ":mc_mode=obmc:";
+                            else if (stream->speedInterpolationMode() == MediaUtils::MCIAO) speedFilter += ":mc_mode=aobmc:";
+                            if (stream->speedEstimationMode()->name() != "") speedFilter += ":me_mode=" + stream->speedEstimationMode()->name();
+                            if (stream->speedAlgorithm()->name() != "") speedFilter += ":me=" + stream->speedAlgorithm()->name();
+                        }
+                        double framerate = stream->framerate();
+                        //get framerate from input
+                        if (framerate == 0.0) framerate = inputFramerate;
+                        if (framerate > 0.0) speedFilter += ":fps=" + QString::number(framerate) + "'";
+                        filterChain << speedFilter;
+                    }
+                }
 
                 //crop
                 if (!stream->cropUseSize() && ( stream->topCrop() != 0 || stream->bottomCrop() != 0 || stream->leftCrop() != 0 || stream->rightCrop() != 0))

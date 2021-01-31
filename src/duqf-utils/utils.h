@@ -50,6 +50,15 @@ namespace MediaUtils
     enum DeinterlaceParity { TopFieldFirst, BottomFieldFirst, AutoParity };
     Q_ENUM_NS(DeinterlaceParity)
     DeinterlaceParity DeinterlaceParityFromString(QString parity);
+    QString DeinterlaceParityToString(DeinterlaceParity parity);
+
+    /**
+     * @brief The Motion Interpolation Modes
+     */
+    enum MotionInterpolationMode { NoMotionInterpolation, DuplicateFrames, BlendFrames, MCIO, MCIAO };
+    Q_ENUM_NS(MotionInterpolationMode)
+    MotionInterpolationMode MotionInterpolationModeFromString(QString mode);
+    QString MotionInterpolationModeToString(MotionInterpolationMode mode);
 
     /**
      * @brief isEncoding Checks if the current status is a busy (encoding or pre/post steps for encoding) status.

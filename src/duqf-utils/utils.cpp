@@ -180,3 +180,28 @@ MediaUtils::DeinterlaceParity MediaUtils::DeinterlaceParityFromString(QString pa
     return MediaUtils::AutoParity;
 
 }
+
+MediaUtils::MotionInterpolationMode MediaUtils::MotionInterpolationModeFromString(QString mode)
+{
+    if (mode == "DuplicateFrames") return MediaUtils::DuplicateFrames;
+    if (mode == "BlendFrames") return MediaUtils::BlendFrames;
+    if (mode == "MCIO") return MediaUtils::MCIO;
+    if (mode == "MCIAO" ) return MediaUtils::MCIAO;
+    return MediaUtils::NoMotionInterpolation;
+}
+
+QString MediaUtils::DeinterlaceParityToString(MediaUtils::DeinterlaceParity parity)
+{
+    if (parity == MediaUtils::TopFieldFirst) return "TopFieldFirst";
+    if (parity == MediaUtils::BottomFieldFirst) return "BottomFieldFirst";
+    return "Auto";
+}
+
+QString MediaUtils::MotionInterpolationModeToString(MotionInterpolationMode mode)
+{
+    if (mode == MediaUtils::DuplicateFrames) return "DuplicateFrames";
+    if (mode == MediaUtils::BlendFrames) return "BlendFrames";
+    if (mode == MediaUtils::MCIO) return "MCIO";
+    if (mode == MediaUtils::MCIAO) return "MCIAO";
+    return "NoMotionInterpolation";
+}

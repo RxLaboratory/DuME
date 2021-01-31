@@ -168,6 +168,12 @@ public:
     void setDeinterlaceParity(MediaUtils::DeinterlaceParity parity, int id = -1, bool silent = false);
     void setIntra(bool intra, int id = -1, bool silent = false);
     void setLossless(bool lossless, int id = -1, bool silent = false);
+    void setVideoSpeed(float speed, int id = -1, bool silent = false);
+    void setVideoSpeedInterpolationMode(MediaUtils::MotionInterpolationMode mode, int id=-1, bool silent = false);
+    void setVideoSpeedEstimationMode(FFBaseObject *speedEstimationMode, int id=-1, bool silent = false);
+    void setVideoSpeedEstimationMode(QString speedEstimationMode, int id=-1, bool silent = false);
+    void setVideoSpeedAlgorithm(FFBaseObject *speedAlgorithm, int id=-1, bool silent = false);
+    void setVideoSpeedAlgorithm(QString speedAlgorithm, int id=-1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);
     void setChannels(QString value, int id = -1, bool silent = false);

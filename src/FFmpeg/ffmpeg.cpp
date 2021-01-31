@@ -76,6 +76,23 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
 
+    //The motion interpolation algorithms
+    _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");
+    _motionInterpolationAlgorithms << new FFBaseObject("esa", "Exhaustive search");
+    _motionInterpolationAlgorithms << new FFBaseObject("tss", "Three step search");
+    _motionInterpolationAlgorithms << new FFBaseObject("tdls", "Two dimensional logarithmic search");
+    _motionInterpolationAlgorithms << new FFBaseObject("ntss", "New three step search");
+    _motionInterpolationAlgorithms << new FFBaseObject("fss", "Four step search");
+    _motionInterpolationAlgorithms << new FFBaseObject("ds", "Diamond search");
+    _motionInterpolationAlgorithms << new FFBaseObject("hexbs", "Hexagon-based search");
+    _motionInterpolationAlgorithms << new FFBaseObject("epzs", "Enhanced predictive zonal search");
+    _motionInterpolationAlgorithms << new FFBaseObject("umh", "Uneven multi-hexagon");
+
+    //The list of motion estimation modes
+    _motionEstimationModes << new FFBaseObject("","Default (bilateral)");
+    _motionEstimationModes << new FFBaseObject("bilat","Bilateral");
+    _motionEstimationModes << new FFBaseObject("bidir","Bidirectionnal");
+
     if (path != "") setBinary(path, false);
 
     _instance = this;
@@ -444,6 +461,44 @@ FFColorProfile *FFmpeg::colorProfile(QString name)
         if (c->prettyName() == name) return c;
     }
     return _colorProfiles[0];
+}
+
+QList<FFBaseObject *> FFmpeg::motionInterpolationAlgorithms() const
+{
+    return _motionInterpolationAlgorithms;
+}
+
+QList<FFBaseObject *> FFmpeg::motionEstimationModes() const
+{
+    return _motionEstimationModes;
+}
+
+FFBaseObject *FFmpeg::motionEstimationMode(QString name)
+{
+    name = name.toLower().trimmed();
+    foreach(FFBaseObject *me, _motionEstimationModes)
+    {
+        if (me->name().toLower() == name) return me;
+    }
+    foreach(FFBaseObject *me,_motionEstimationModes)
+    {
+        if (me->prettyName().toLower() == name) return me;
+    }
+    return _motionEstimationModes[0];
+}
+
+FFBaseObject *FFmpeg::motionInterpolationAlgorithm(QString name)
+{
+    name = name.toLower().trimmed();
+    foreach(FFBaseObject *mia, _motionInterpolationAlgorithms)
+    {
+        if (mia->name().toLower() == name) return mia;
+    }
+    foreach(FFBaseObject *mia,_motionInterpolationAlgorithms)
+    {
+        if (mia->prettyName().toLower() == name) return mia;
+    }
+    return _motionInterpolationAlgorithms[0];
 }
 
 QString FFmpeg::help()

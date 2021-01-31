@@ -967,6 +967,21 @@
     <string>Deinterlace</string>
    </property>
   </action>
+  <action name="actionVideoSpeed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-video-speed</normaloff>:/icons/set-video-speed</iconset>
+   </property>
+   <property name="text">
+    <string>Change speed</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Speed up/Slow down video&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -981,8 +996,8 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../duqf_resources.qrc"/>
   <include location="../resources.qrc"/>
+  <include location="../duqf_resources.qrc"/>
  </resources>
  <connections/>
 </ui>

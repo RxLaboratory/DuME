@@ -132,6 +132,22 @@ public:
     bool lossless() const;
     void setLossless(bool lossless, bool silent = false);
 
+    float speed() const;
+    void setSpeed(float speed, bool silent = false);
+
+    MediaUtils::MotionInterpolationMode speedInterpolationMode() const;
+    void setSpeedInterpolationMode(const MediaUtils::MotionInterpolationMode &speedInterpolationMode, bool silent = false);
+
+    FFBaseObject *speedEstimationMode() const;
+    void setSpeedEstimationMode(FFBaseObject *speedEstimationMode, bool silent = false);
+    void setSpeedEstimationMode(QString speedEstimationMode, bool silent = false);
+    void setSpeedEstimationMode(QJsonObject speedEstimationMode, bool silent = false);
+
+    FFBaseObject *speedAlgorithm() const;
+    void setSpeedAlgorithm(FFBaseObject *speedAlgorithm, bool silent = false);
+    void setSpeedAlgorithm(QString speedAlgorithm, bool silent = false);
+    void setSpeedAlgorithm(QJsonObject speedAlgorithm, bool silent = false);
+
 signals:
     void changed();
 
@@ -194,6 +210,13 @@ private:
     MediaUtils::DeinterlaceParity _deinterlaceParity;
     bool _intra;
     bool _lossless;
+    /**
+     * @brief _speed Multiplicator > 0.0: < 1.0 to slow down, > 1.0 to speed up.
+     */
+    float _speed;
+    MediaUtils::MotionInterpolationMode _speedInterpolationMode;
+    FFBaseObject *_speedEstimationMode;
+    FFBaseObject *_speedAlgorithm;
 };
 
 #endif // VIDEOINFO_H

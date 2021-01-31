@@ -39,11 +39,12 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     // CREATE BLOCKS
     blocksMenu->addAction(actionVideo);
     blockDeinterlace = addBlock( new BlockDeinterlace( _mediaInfo ), actionDeinterlace, ":/icons/deinterlace" );
+    blockVideoSpeed = addBlock( new BlockVideoSpeed( _mediaInfo ), actionVideoSpeed, ":/icons/set-video-speed" );
     blockCrop = addBlock( new BlockCrop( _mediaInfo ), actionCrop, ":/icons/crop" );
     blockLut = addBlock( new BlockLut( _mediaInfo ), actionApplyLUT, ":/icons/lut" );
     blockResize = addBlock( new BlockResize( _mediaInfo ), actionResize, ":/icons/video-size" );
-    blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate, ":/icons/framerate" );
     blockVideoCodec = addBlock( new BlockVideoCodec( _mediaInfo ), actionVideoCodec, ":/icons/video-codec" );
+    blockFrameRate = addBlock( new BlockFrameRate( _mediaInfo ), actionFrameRate, ":/icons/framerate" );
     blockVideoBitrate = addBlock( new BlockVideoBitrate( _mediaInfo ), actionVideoBitrate, ":/icons/video-quality" );
     blockVideoProfile = addBlock( new BlockVideoProfile( _mediaInfo ), actionProfile, ":/icons/codec" );
     blockLoops = addBlock( new BlockLoops( _mediaInfo ), actionLoops, ":/icons/loop" );
@@ -52,9 +53,9 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blockColor = addBlock( new BlockColor( _mediaInfo ), actionColor, ":/icons/color" );
     blockPixFormat = addBlock( new BlockPixFormat( _mediaInfo ), actionPixelFormat, ":/icons/pix_fmt" );
     blocksMenu->addAction(actionAudio);
+    blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec, ":/icons/audio-codec" );
     blockSampling = addBlock( new BlockSampling( _mediaInfo ), actionSampling, ":/icons/audio-sampling" );
     blockAudioSampleFormat = addBlock(new BlockAudioSampleFormat(_mediaInfo), actionAudioSampleFormat, ":/icons/audio-bit-depth");
-    blockAudioCodec = addBlock( new BlockAudioCodec( _mediaInfo ), actionAudioCodec, ":/icons/audio-codec" );
     blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate, ":/icons/audio-quality" );
     blocksMenu->addAction( actionOther );
     blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap, ":/icons/connection" );

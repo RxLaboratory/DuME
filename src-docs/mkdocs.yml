@@ -38,6 +38,7 @@ nav:
         - Adding / Changing streams: mapping.md
         - Convert color spaces: color-space.md
         - Applying a LUT: lut.md
+        - Filters: filter.md
     - After Effects Rendering:
         - Installation: after-effects-install.md
         - Rendering: after-effects-rendering.md
