@@ -75,14 +75,14 @@ private slots:
     void on_aeCommandsButton_clicked();
 
     // ACTIONS
-    void on_actionGo_triggered();
     void on_actionStop_triggered();
     void on_actionGoQuit_triggered();
+    void on_actionAbout_FFmpeg_triggered();
+    void on_actionShowQueue_triggered(bool checked);
+    void on_rQueueSplitter_splitterMoved(int pos, int index);
 
     // GENERAL
     void quit(bool force = false);
-
-    void on_actionAbout_FFmpeg_triggered();
 
 private:
     // ========= RxOT UI ==============

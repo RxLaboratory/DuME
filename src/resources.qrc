@@ -80,6 +80,12 @@
         <file alias="set-video-speed">resources/icons/set-video-speed-time-remap_sl.svg</file>
         <file alias="video-speed">resources/icons/video-speed_sl.svg</file>
         <file alias="ffmpegl">resources/icons/ffmpegl.svg</file>
+        <file alias="show-rqueue">resources/icons/show-render-compute-build-queue_bl.svg</file>
+        <file alias="rqueue">resources/icons/render-compute-build-queue_bl.svg</file>
+        <file alias="add-job">resources/icons/add_bl.svg</file>
+        <file alias="remove-job">resources/icons/remove_bl.svg</file>
+        <file alias="encode-job">resources/icons/encode-job_sl.svg</file>
+        <file alias="audio-video">resources/icons/audio-video_sd.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

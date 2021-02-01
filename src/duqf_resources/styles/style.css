@@ -89,6 +89,10 @@ QToolButton:disabled {
     color: @color-medium-grey;
 }
 
+QToolButton:checked {
+    background-color: @color-dark-grey;
+}
+
 /* CHECKBOXES AND RADIOBUTTONS */
 
 QCheckBox, QRadioButton {

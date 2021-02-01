@@ -16,14 +16,15 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     QMenu *goMenu = new QMenu();
     goMenu->addAction( actionGo );
     goMenu->addAction( actionGoQuit );
+    goMenu->addAction( actionLaunchJob );
 
+    mainToolBar->addAction(actionShowQueue);
     goButton = new QToolButton(this);
     goButton->setIcon(actionGo->icon());
     goButton->setText(actionGo->text());
     goButton->setToolTip(actionGo->toolTip());
     goButton->setMenu(goMenu);
     goButton->setPopupMode(QToolButton::MenuButtonPopup);
-    connect( goButton, SIGNAL( clicked()), this, SLOT ( on_actionGo_triggered()) );
     mainToolBar->addWidget(goButton);
     mainToolBar->addAction(actionStop);
     mainToolBar->addAction(actionStatus);
@@ -79,6 +80,31 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
+
+    bool showQueue = settings.value("rQueueVisible", false).toBool();
+    actionShowQueue->setChecked(showQueue);
+    on_actionShowQueue_triggered(showQueue);
+
+    // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
+#ifdef QT_DEBUG
+    QListWidgetItem *i1 = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
+    QListWidgetItem *i2 = new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
+    rQueueStack->addWidget(new QueueWidget(this));
+    QListWidgetItem *i3 = new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
+    rQueueStack->addWidget(new QueueWidget(this));
+    rQueueList->setCurrentRow(0);
+    connect(rQueueList, &QListWidget::currentRowChanged, rQueueStack, &QStackedWidget::setCurrentIndex);
+    //TODO : drag and drop on the queuewidget; drop on the list adds a new queuewidget
+#else // DISABLE QUEUE FOR NOW IN PUBLIC RELEASE
+    actionLaunchJob->setEnabled(false);
+    addJobButton->setEnabled(false);
+    removeJobButton->setEnabled(false);
+    launchJobButton->setEnabled(false);
+    new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
+    new QListWidgetItem("Render queue in development\nAvailable soon!", rQueueList);
+    rQueueList->setCurrentRow(0);
+    rQueueList->setEnabled(false);
+#endif
 
     log("Init - Setting default UI items");
 
@@ -250,6 +276,12 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
             if (autoStart) go();
         }
     }
+
+    // Connect buttons
+    connect(actionGo, &QAction::triggered, this, &MainWindow::go);
+    connect(launchQueueButton, &QToolButton::clicked, this, &MainWindow::go);
+    connect( goButton, &QToolButton::clicked, this, &MainWindow::go );
+
     log("Ready!");
 }
 
@@ -769,11 +801,6 @@ void MainWindow::go()
     _renderQueue->encode(input,output);
 }
 
-void MainWindow::on_actionGo_triggered()
-{
-    go();
-}
-
 void MainWindow::on_actionGoQuit_triggered()
 {
     go();
@@ -946,4 +973,37 @@ void MainWindow::quit(bool force)
 void MainWindow::on_actionAbout_FFmpeg_triggered()
 {
     QDesktopServices::openUrl ( QUrl( "https://ffmpeg.org/" ) );
+}
+
+void MainWindow::on_actionShowQueue_triggered(bool checked)
+{
+    if (checked)
+    {
+        QList<int>sizes;
+        sizes << settings.value("rQueueSize",15).toInt();
+        sizes << settings.value("rQueueJobSize",85).toInt();
+        rQueueSplitter->setSizes(sizes);
+    }
+    else
+    {
+        QList<int>sizes;
+        sizes << 0;
+        sizes << 100;
+        rQueueSplitter->setSizes(sizes);
+    }
+    settings.setValue("rQueueVisible", checked);
+}
+
+void MainWindow::on_rQueueSplitter_splitterMoved(int /*pos*/, int /*index*/)
+{
+    QList<int> sizes = rQueueSplitter->sizes();
+    if (sizes[0] > 100)
+    {
+        settings.setValue("rQueueSize", sizes[0]);
+        settings.setValue("rQueueJobSize", sizes[1]);
+    }
+
+    bool showRQueue = sizes[0] != 0;
+    actionShowQueue->setChecked(showRQueue);
+    settings.setValue("rQueueVisible", showRQueue);
 }
