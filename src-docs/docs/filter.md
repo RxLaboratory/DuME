@@ -10,7 +10,8 @@ This specific order has been chosen to keep the best quality possible in the str
 
 1. Unmultiply alpha
 2. Deinterlace
-3. Change speed
+3. [Change speed](speed.md)
+4. [Motion interpolation](speed.md)
 4. Crop
 5. Any user defined filters
 6. [LUT](lut.md)

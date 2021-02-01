@@ -78,6 +78,12 @@ public:
     qint64 size();
     void setLoop(int loop, bool silent = false);
     int loop() const;
+    double inPoint() const;
+    void setInPoint(double inPoint, bool silent = false);
+    void setInPoint(QString inPoint, bool silent = false);
+    double outPoint() const;
+    void setOutPoint(double outPoint, bool silent = false);
+    void setOutPoint(QString outPoint, bool silent = false);
 
     //sequence
     void setStartNumber(int startNumber, bool silent = false);
@@ -255,6 +261,14 @@ private:
      * @brief If the files in the sequence are incorrectly named, this will be true.
      */
     QString _info;
+    /**
+     * @brief The inpoint of the media in seconds
+     */
+    double _inPoint;
+    /**
+     * @brief The outpoint of the media in seconds
+     */
+    double _outPoint;
 
     QList<VideoInfo *> _videoStreams;
     QList<AudioInfo *> _audioStreams;

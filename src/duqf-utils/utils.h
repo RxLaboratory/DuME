@@ -90,6 +90,8 @@ namespace MediaUtils
      */
     QString durationToTimecode(double duration);
 
+    double timecodeToDuration(QString timecode);
+
     /**
      * @brief convertBitrate Converts a bitrate from bps to another unit.
      * @param to

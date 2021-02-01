@@ -134,7 +134,7 @@
          <x>0</x>
          <y>0</y>
          <width>533</width>
-         <height>191</height>
+         <height>176</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -319,6 +319,18 @@
    </property>
    <property name="shortcut">
     <string>Alt+Z</string>
+   </property>
+  </action>
+  <action name="actionTimeRange">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/set-time-range</normaloff>:/icons/set-time-range</iconset>
+   </property>
+   <property name="text">
+    <string>Time range</string>
    </property>
   </action>
  </widget>

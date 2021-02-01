@@ -22,6 +22,8 @@ InputWidget::InputWidget(int id, QWidget *parent) :
     addBlockButton->setMenu( blocksMenu );
 
     // CREATE BLOCKS
+    blockTimeRangeContent = new BlockTimeRange( _mediaInfo );
+    blockTimeRange = addBlock( blockTimeRangeContent, actionTimeRange, ":/icons/time-range" );
     blockFrameRateContent = new BlockFrameRate( _mediaInfo );
     blockFrameRate = addBlock( blockFrameRateContent, actionFramerate, ":/icons/framerate" );
     blockColorContent = new BlockColor( _mediaInfo );

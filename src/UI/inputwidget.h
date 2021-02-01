@@ -13,6 +13,7 @@
 #include "UI/Blocks/blockaecomp.h"
 #include "UI/Blocks/blockaethreads.h"
 #include "UI/Blocks/blockcustom.h"
+#include "UI/Blocks/blocktimerange.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -59,6 +60,8 @@ private:
     BlockAEComp *blockAECompContent;
     BlockBaseWidget *blockAEThreads;
     BlockAEThreads *blockAEThreadsContent;
+    BlockBaseWidget *blockTimeRange;
+    BlockTimeRange *blockTimeRangeContent;
 
     // MENUS
     QMenu *blocksMenu;

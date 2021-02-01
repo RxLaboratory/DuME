@@ -28,6 +28,8 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _loop = -1;
     _startNumber = 0;
     _info = "";
+    _inPoint = 0.0;
+    _outPoint = 0.0;
     // STREAMS
     qDeleteAll(_videoStreams);
     _videoStreams.clear();
@@ -215,6 +217,8 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     _frames = other->frames();
     _loop = other->loop();
     _startNumber = other->startNumber();
+    _inPoint = other->inPoint();
+    _outPoint = other->outPoint();
     // STREAMS
     qDeleteAll(_videoStreams);
     _videoStreams.clear();
@@ -318,6 +322,9 @@ QString MediaInfo::getDescription(bool ignoreGeneralInfo)
         mediaInfoString += "\nEnd Frame Number: " + QString::number( _endNumber );
     }
 
+    if (_inPoint != 0.0) mediaInfoString += "\nIn point: " + MediaUtils::durationToTimecode(_inPoint);
+    if (_outPoint != 0.0) mediaInfoString += "\nOut point: " + MediaUtils::durationToTimecode(_outPoint);
+
     qint64 size = _size;
     if (size != 0) mediaInfoString += "\nSize: " + MediaUtils::sizeString( size );
 
@@ -408,6 +415,10 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     QString version = mediaObj.value("version").toString();
     //TODO Check version
 
+    //Time range
+    setInPoint( mediaObj.value("inPoint").toDouble(0.0), true);
+    setOutPoint( mediaObj.value("outPoint").toDouble(0.0), true);
+
     //muxer
     QJsonObject muxerObj = mediaObj.value("muxer").toObject();
 
@@ -458,6 +469,10 @@ QString MediaInfo::exportPreset()
 {
     QJsonObject mediaObj;
     mediaObj.insert("version", qApp->applicationVersion());
+
+    //time range
+    mediaObj.insert("inPoint", _inPoint);
+    mediaObj.insert("outPoint", _outPoint);
 
     //muxer
     mediaObj.insert("muxer", _muxer->toJson());
@@ -1153,6 +1168,38 @@ void MediaInfo::setAudioSampleFormat(FFSampleFormat *value, int id, bool silent)
 void MediaInfo::streamChanged()
 {
     emit changed();
+}
+
+double MediaInfo::outPoint() const
+{
+    return _outPoint;
+}
+
+void MediaInfo::setOutPoint(double outPoint, bool silent)
+{
+    _outPoint = outPoint;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setOutPoint(QString outPoint, bool silent)
+{
+    setOutPoint( MediaUtils::timecodeToDuration(outPoint), silent );
+}
+
+double MediaInfo::inPoint() const
+{
+    return _inPoint;
+}
+
+void MediaInfo::setInPoint(double inPoint, bool silent)
+{
+    _inPoint = inPoint;
+    if(!silent) emit changed();
+}
+
+void MediaInfo::setInPoint(QString inPoint, bool silent)
+{
+    setInPoint( MediaUtils::timecodeToDuration(inPoint), silent );
 }
 
 QStringList MediaInfo::emptyFrames() const

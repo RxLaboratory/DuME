@@ -171,6 +171,10 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
             else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
         }
 
+        //time range
+        if (input->inPoint() != 0.0) arguments << "-ss" << QString::number(input->inPoint());
+        if (input->outPoint() != 0.0) arguments << "-to" << QString::number(input->outPoint());
+
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }

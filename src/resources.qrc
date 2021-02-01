@@ -88,6 +88,8 @@
         <file alias="audio-video">resources/icons/audio-video_sd.svg</file>
         <file alias="set-motion-interpo">resources/icons/set-motion-interpo.svg</file>
         <file alias="motion-interpo">resources/icons/animation_sl.svg</file>
+        <file alias="time-range">resources/icons/video-range_sl.svg</file>
+        <file alias="set-time-range">resources/icons/set-video-range_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

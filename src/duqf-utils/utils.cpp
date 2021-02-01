@@ -173,6 +173,33 @@ QString MediaUtils::durationToTimecode(double duration)
     return d.toString("hh:mm:ss.zzz");
 }
 
+double MediaUtils::timecodeToDuration(QString timecode)
+{
+    QRegularExpression re("(?:(\\d*):)?(?:(\\d*):)?(\\d+\\.?\\d*)");
+    QRegularExpressionMatch match = re.match(timecode);
+    if (match.hasMatch())
+    {
+        QStringList ss = match.captured(3).split(".");
+        int s = ss[0].toInt();
+        int ms = 0;
+        if (ss.count() > 1)
+        {
+            while (ss[1].count() < 3) ss[1] = ss[1] + "0";
+            ms = ss[1].toInt();
+        }
+        int m = match.captured(2).toInt();
+        int h = 0;
+        if (match.captured(2) == "") m = match.captured(1).toInt();
+        else h = match.captured(1).toInt();
+        QTime d(h,m);
+        d = d.addSecs(s);
+        d = d.addMSecs(ms);
+        return double(d.hour())*3600 + double(d.minute())*60 + double(d.second()) + double(d.msec()) / 1000;
+    }
+    return 0.0;
+}
+
+
 MediaUtils::DeinterlaceParity MediaUtils::DeinterlaceParityFromString(QString parity)
 {
     if (parity == "TopFieldFirst") return MediaUtils::TopFieldFirst;
