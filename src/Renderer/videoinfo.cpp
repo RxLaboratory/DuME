@@ -259,6 +259,9 @@ QString VideoInfo::getDescription()
     if ( _speed != 1.0)
     {
         mediaInfoString += "\nSpeed multiplicator: " + QString::number(_speed) + "x";
+    }
+    if (_speedInterpolationMode != MediaUtils::NoMotionInterpolation)
+    {
         mediaInfoString += "\nMotion interpolation: " + MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode );
         if (_speedInterpolationMode == MediaUtils::MCIAO || _speedInterpolationMode == MediaUtils::MCIO)
         {

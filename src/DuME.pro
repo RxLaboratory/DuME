@@ -29,6 +29,7 @@ SOURCES += \
     UI/Blocks/blockcrop.cpp \
     UI/Blocks/blockdeinterlace.cpp \
     UI/Blocks/blocklut.cpp \
+    UI/Blocks/blockmotioninterpolation.cpp \
     UI/Blocks/blockvideospeed.cpp \
     UI/aesettingswidget.cpp \
     UI/cachesettingswidget.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     UI/Blocks/blockcrop.h \
     UI/Blocks/blockdeinterlace.h \
     UI/Blocks/blocklut.h \
+    UI/Blocks/blockmotioninterpolation.h \
     UI/Blocks/blockvideospeed.h \
     UI/aesettingswidget.h \
     UI/cachesettingswidget.h \
@@ -174,6 +176,7 @@ FORMS += \
     UI/Blocks/blockcrop.ui \
     UI/Blocks/blockdeinterlace.ui \
     UI/Blocks/blocklut.ui \
+    UI/Blocks/blockmotioninterpolation.ui \
     UI/Blocks/blockvideospeed.ui \
     UI/aesettingswidget.ui \
     UI/cachesettingswidget.ui \

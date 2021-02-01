@@ -8,6 +8,7 @@
 // BLOCKS
 #include "UI/Blocks/blockbasewidget.h"
 #include "UI/Blocks/blockvideospeed.h"
+#include "UI/Blocks/blockmotioninterpolation.h"
 #include "UI/Blocks/blockcrop.h"
 #include "UI/Blocks/blocklut.h"
 #include "UI/Blocks/blockdeinterlace.h"
@@ -89,6 +90,7 @@ private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon="");
     BlockBaseWidget *blockVideoSpeed;
+    BlockBaseWidget *blockMotionInterpolation;
     BlockBaseWidget *blockCrop;
     BlockBaseWidget *blockLut;
     BlockBaseWidget *blockDeinterlace;

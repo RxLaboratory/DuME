@@ -512,7 +512,7 @@ p, li { white-space: pre-wrap; }
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <widget class="QWidget" name="">
+           <widget class="QWidget" name="layoutWidget">
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <property name="spacing">
               <number>3</number>
@@ -865,7 +865,10 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/icons/show-rqueue</normaloff>:/icons/show-rqueue</iconset>
    </property>
    <property name="text">
-    <string>Show queue</string>
+    <string>Queue</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/hide queue</string>
    </property>
    <property name="shortcut">
     <string>0</string>

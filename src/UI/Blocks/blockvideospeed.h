@@ -15,14 +15,6 @@ public slots:
     void update();
 private slots:
     void on_speedBox_valueChanged(double arg1);
-    void on_interpolationBox_currentIndexChanged(int index);
-
-    void on_estimationBox_currentIndexChanged(int index);
-
-    void on_algorithmBox_currentIndexChanged(int index);
-
-    void on_sceneDetectionBox_clicked(bool checked);
-
 private:
     void updateInterpolationUI();
 };

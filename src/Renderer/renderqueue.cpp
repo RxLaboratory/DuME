@@ -388,32 +388,32 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 }
 
                 //speed
-                if (stream->speed() != 1.0)
+                if (stream->speed() != 1.0) filterChain << "setpts=" + QString::number(1/stream->speed()) + "*PTS";
+
+                //motion interpolation
+                if (stream->speedInterpolationMode() != MediaUtils::NoMotionInterpolation)
                 {
-                    filterChain << "setpts=" + QString::number(1/stream->speed()) + "*PTS";
-                    if (stream->speedInterpolationMode() != MediaUtils::NoMotionInterpolation)
+                    QString speedFilter = "minterpolate='";
+                    if (stream->speedInterpolationMode() == MediaUtils::DuplicateFrames) speedFilter += "mi_mode=dup";
+                    else if (stream->speedInterpolationMode() == MediaUtils::BlendFrames) speedFilter += "mi_mode=blend";
+                    else
                     {
-                        QString speedFilter = "minterpolate='";
-                        if (stream->speedInterpolationMode() == MediaUtils::DuplicateFrames) speedFilter += "mi_mode=dup";
-                        else if (stream->speedInterpolationMode() == MediaUtils::BlendFrames) speedFilter += "mi_mode=blend";
-                        else
-                        {
-                            speedFilter += "mi_mode=mci";
-                            if (stream->speedInterpolationMode() == MediaUtils::MCIO) speedFilter += ":mc_mode=obmc:";
-                            else if (stream->speedInterpolationMode() == MediaUtils::MCIAO) speedFilter += ":mc_mode=aobmc:";
-                            if (stream->speedEstimationMode()->name() != "") speedFilter += ":me_mode=" + stream->speedEstimationMode()->name();
-                            if (stream->speedAlgorithm()->name() != "") speedFilter += ":me=" + stream->speedAlgorithm()->name();
-                        }
-                        if (!stream->sceneDetection()) speedFilter += ":scd=none";
-                        else speedFilter += ":scd=fdiff";
-                        double framerate = stream->framerate();
-                        //get framerate from input
-                        if (framerate == 0.0) framerate = inputFramerate;
-                        if (framerate > 0.0) speedFilter += ":fps=" + QString::number(framerate);
-                        speedFilter += "'";
-                        filterChain << speedFilter;
+                        speedFilter += "mi_mode=mci";
+                        if (stream->speedInterpolationMode() == MediaUtils::MCIO) speedFilter += ":mc_mode=obmc";
+                        else if (stream->speedInterpolationMode() == MediaUtils::MCIAO) speedFilter += ":mc_mode=aobmc";
+                        if (stream->speedEstimationMode()->name() != "") speedFilter += ":me_mode=" + stream->speedEstimationMode()->name();
+                        if (stream->speedAlgorithm()->name() != "") speedFilter += ":me=" + stream->speedAlgorithm()->name();
                     }
+                    if (!stream->sceneDetection()) speedFilter += ":scd=none";
+                    else speedFilter += ":scd=fdiff";
+                    double framerate = stream->framerate();
+                    //get framerate from input
+                    if (framerate == 0.0) framerate = inputFramerate;
+                    if (framerate > 0.0) speedFilter += ":fps=" + QString::number(framerate);
+                    speedFilter += "'";
+                    filterChain << speedFilter;
                 }
+
 
                 //crop
                 if (!stream->cropUseSize() && ( stream->topCrop() != 0 || stream->bottomCrop() != 0 || stream->leftCrop() != 0 || stream->rightCrop() != 0))
