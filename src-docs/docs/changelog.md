@@ -11,10 +11,11 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - **JPEG** support.
 - [**h265 / HEVC**](h264-5.md) support.
 - **Lossless** and **Intra-Frame** h264 / AVC support.
-- Ability to **Crop** videos.
-- Ability to [**Apply a 1D or 3D LUT**](lut.md).
-- Ability to **Deinterlace** video.
-- Ability to change speed.
+- **Crop** videos.
+- [**Apply a 1D or 3D LUT**](lut.md).
+- **Deinterlace** videos.
+- [**Change speed**](speed.md).
+- Added a [**Motion interpolation**](speed.md) filter.
 - [Command Line](cli-options.md) improvements:
     - Ability to load a custom preset file.
     - Added the `--minimize` option.
