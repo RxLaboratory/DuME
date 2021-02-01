@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>959</width>
-    <height>1184</height>
+    <width>1280</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -739,6 +739,15 @@ p, li { white-space: pre-wrap; }
   <action name="actionDevBuild">
    <property name="text">
     <string>Development Build</string>
+   </property>
+  </action>
+  <action name="actionAbout_FFmpeg">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/ffmpegl</normaloff>:/icons/ffmpegl</iconset>
+   </property>
+   <property name="text">
+    <string>About FFmpeg</string>
    </property>
   </action>
  </widget>

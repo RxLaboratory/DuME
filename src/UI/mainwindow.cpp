@@ -34,6 +34,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     // Add default stuff
     duqf_initUi();
 
+    // Complete the help menu
+    helpMenu->addAction(actionAbout_FFmpeg);
+
     log("Initialization");
 
     // === SETTINGS ===
@@ -90,7 +93,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //restore geometry
     settings.beginGroup("mainwindow");
     //size
-    resize(settings.value("size", QSize(850, 850)).toSize());
+    resize(settings.value("size", QSize(1280, 850)).toSize());
     //position
     //move(settings.value("pos", QPoint(200, 200)).toPoint());
     //maximized
@@ -302,7 +305,7 @@ void MainWindow::duqf_initUi()
     helpButton->setIcon(QIcon(":/icons/help"));
     helpButton->setToolTip("Get Help");
     helpButton->setPopupMode( QToolButton::InstantPopup );
-    QMenu *helpMenu = new QMenu(this);
+    helpMenu = new QMenu(this);
     if (QString(URL_DOC) != "")
     {
         QAction *docAction = new QAction(QIcon(":/icons/documentation"), "Help");
@@ -940,4 +943,7 @@ void MainWindow::quit(bool force)
     if (force || !MediaUtils::isBusy( _renderQueue->status() )) close();
 }
 
-
+void MainWindow::on_actionAbout_FFmpeg_triggered()
+{
+    QDesktopServices::openUrl ( QUrl( "https://ffmpeg.org/" ) );
+}

@@ -82,6 +82,8 @@ private slots:
     // GENERAL
     void quit(bool force = false);
 
+    void on_actionAbout_FFmpeg_triggered();
+
 private:
     // ========= RxOT UI ==============
     /**
@@ -107,6 +109,7 @@ private:
     QSettings settings;
     SettingsWidget *settingsWidget;
     QLabel *title;
+    QMenu *helpMenu;
 
     /**
      * @brief go Launches the transcoding process
