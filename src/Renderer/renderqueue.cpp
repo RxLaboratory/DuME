@@ -404,10 +404,13 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                             if (stream->speedEstimationMode()->name() != "") speedFilter += ":me_mode=" + stream->speedEstimationMode()->name();
                             if (stream->speedAlgorithm()->name() != "") speedFilter += ":me=" + stream->speedAlgorithm()->name();
                         }
+                        if (!stream->sceneDetection()) speedFilter += ":scd=none";
+                        else speedFilter += ":scd=fdiff";
                         double framerate = stream->framerate();
                         //get framerate from input
                         if (framerate == 0.0) framerate = inputFramerate;
-                        if (framerate > 0.0) speedFilter += ":fps=" + QString::number(framerate) + "'";
+                        if (framerate > 0.0) speedFilter += ":fps=" + QString::number(framerate);
+                        speedFilter += "'";
                         filterChain << speedFilter;
                     }
                 }

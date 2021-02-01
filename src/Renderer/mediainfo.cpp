@@ -1058,6 +1058,16 @@ void MediaInfo::setVideoSpeedAlgorithm(QString speedAlgorithm, int id, bool sile
         _videoStreams[id]->setSpeedAlgorithm(speedAlgorithm, silent);
 }
 
+void MediaInfo::setSceneDetection(bool sceneDetection, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setSceneDetection(sceneDetection, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setSceneDetection(sceneDetection, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;

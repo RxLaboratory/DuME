@@ -39,6 +39,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _speedAlgorithm = ffmpeg->motionInterpolationAlgorithm("");
     _speedEstimationMode = ffmpeg->motionEstimationMode("");
     _speedInterpolationMode = MediaUtils::NoMotionInterpolation;
+    _sceneDetection = true;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -82,6 +83,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setSpeedAlgorithm( obj.value("speedAlgorithm").toObject(), true);
     setSpeedEstimationMode( obj.value("speedEstimationMode").toObject(), true);
     setSpeedInterpolationMode( MediaUtils::MotionInterpolationModeFromString( obj.value("speedInterpolationMode").toString("NoMotionInterpolation")), true);
+    setSceneDetection( obj.value("sceneDetection").toBool(true), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -123,6 +125,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _speedAlgorithm = other->speedAlgorithm();
     _speedEstimationMode = other->speedEstimationMode();
     _speedInterpolationMode = other->speedInterpolationMode();
+    _sceneDetection = other->sceneDetection();
     if(!silent) emit changed();
 }
 
@@ -170,6 +173,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("speedAlgorithm", _speedAlgorithm->toJson());
     vStream.insert("speedEstimationMode", _speedEstimationMode->toJson());
     vStream.insert("speedInterpolationMode", MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode));
+    vStream.insert("sceneDetection", _sceneDetection);
     return vStream;
 }
 
@@ -261,6 +265,9 @@ QString VideoInfo::getDescription()
             mediaInfoString += "\nMotion estimation: " + _speedEstimationMode->prettyName();
             mediaInfoString += "\nMotion interpolation algorithm: " + _speedAlgorithm->prettyName();
         }
+        mediaInfoString += "\nDetect scenes/shots: ";
+        if (_sceneDetection) mediaInfoString += "yes";
+        else mediaInfoString += "no";
     }
     if ( _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
     if ( _deinterlace )
@@ -762,6 +769,17 @@ void VideoInfo::setSpeedAlgorithm(QString speedAlgorithm, bool silent)
 void VideoInfo::setSpeedAlgorithm(QJsonObject speedAlgorithm, bool silent)
 {
     setSpeedAlgorithm(speedAlgorithm.value("name").toString(), silent);
+}
+
+bool VideoInfo::sceneDetection() const
+{
+    return _sceneDetection;
+}
+
+void VideoInfo::setSceneDetection(bool sceneDetection, bool silent)
+{
+    _sceneDetection = sceneDetection;
+    if(!silent) emit changed();
 }
 
 int VideoInfo::encodingSpeed() const

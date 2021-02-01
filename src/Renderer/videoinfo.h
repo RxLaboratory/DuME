@@ -148,6 +148,9 @@ public:
     void setSpeedAlgorithm(QString speedAlgorithm, bool silent = false);
     void setSpeedAlgorithm(QJsonObject speedAlgorithm, bool silent = false);
 
+    bool sceneDetection() const;
+    void setSceneDetection(bool sceneDetection, bool silent = false);
+
 signals:
     void changed();
 
@@ -217,6 +220,7 @@ private:
     MediaUtils::MotionInterpolationMode _speedInterpolationMode;
     FFBaseObject *_speedEstimationMode;
     FFBaseObject *_speedAlgorithm;
+    bool _sceneDetection;
 };
 
 #endif // VIDEOINFO_H

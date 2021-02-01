@@ -174,6 +174,7 @@ public:
     void setVideoSpeedEstimationMode(QString speedEstimationMode, int id=-1, bool silent = false);
     void setVideoSpeedAlgorithm(FFBaseObject *speedAlgorithm, int id=-1, bool silent = false);
     void setVideoSpeedAlgorithm(QString speedAlgorithm, int id=-1, bool silent = false);
+    void setSceneDetection(bool sceneDetection, int id = -1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);
     void setChannels(QString value, int id = -1, bool silent = false);

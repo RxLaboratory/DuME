@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>430</width>
-    <height>116</height>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -90,6 +90,13 @@
    </item>
    <item row="3" column="1">
     <widget class="DataComboBox" name="algorithmBox"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QCheckBox" name="sceneDetectionBox">
+     <property name="text">
+      <string>Detect scenes/shots</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
