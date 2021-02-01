@@ -181,6 +181,10 @@ public:
     void setVideoSpeedAlgorithm(FFBaseObject *speedAlgorithm, int id=-1, bool silent = false);
     void setVideoSpeedAlgorithm(QString speedAlgorithm, int id=-1, bool silent = false);
     void setSceneDetection(bool sceneDetection, int id = -1, bool silent = false);
+    void setResizeMode(MediaUtils::ResizeMode mode, int id = -1, bool silent = false);
+    void setResizeMode(QString mode, int id = -1, bool silent = false);
+    void setResizeAlgorithm(FFBaseObject *algo, int id = -1, bool silent = false);
+    void setResizeAlgorithm(QString algo, int id = -1, bool silent = false);
     //audio
     void setSamplingRate(int value, int id = -1, bool silent = false);
     void setChannels(QString value, int id = -1, bool silent = false);

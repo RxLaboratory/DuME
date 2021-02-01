@@ -60,6 +60,11 @@ namespace MediaUtils
     MotionInterpolationMode MotionInterpolationModeFromString(QString mode);
     QString MotionInterpolationModeToString(MotionInterpolationMode mode);
 
+    enum ResizeMode{ Letterbox, Stretch, Crop};
+    Q_ENUM_NS(ResizeMode)
+    ResizeMode ResizeModeFromString(QString mode);
+    QString ResizeModeToString(ResizeMode mode);
+
     /**
      * @brief isEncoding Checks if the current status is a busy (encoding or pre/post steps for encoding) status.
      * @param status

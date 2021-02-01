@@ -16,6 +16,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - **Deinterlace** videos.
 - [**Change speed**](speed.md).
 - Added a [**Motion interpolation**](speed.md) filter.
+- Select input time range.
 - [Command Line](cli-options.md) improvements:
     - Ability to load a custom preset file.
     - Added the `--minimize` option.

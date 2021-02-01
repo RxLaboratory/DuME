@@ -9,6 +9,8 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     setType(Type::Video);
     setupUi(this);
 
+    _freezeUI = true;
+
     _presets->addAction( actionKeepRatio );
     _presets->addSeparator();
     _presets->addAction( actionAdaptRatio );
@@ -22,6 +24,13 @@ BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( action4KScope );
     _presets->addAction( actionDSM4K );
     _presets->addAction( action8KUHD );
+
+    foreach(FFBaseObject *a, FFmpeg::instance()->resizeAlgorithms())
+    {
+        algorithmBox->addItem(a->prettyName(), a->name());
+    }
+
+    _freezeUI = false;
 }
 
 void BlockResize::activate(bool activate)
@@ -35,6 +44,8 @@ void BlockResize::activate(bool activate)
     {
         _mediaInfo->setWidth( videoWidthButton->value() );
         _mediaInfo->setHeight( videoHeightButton->value() );
+        _mediaInfo->setResizeMode( modeBox->currentText() );
+        _mediaInfo->setResizeAlgorithm( algorithmBox->currentData( ).toString() );
     }
 }
 
@@ -49,6 +60,10 @@ void BlockResize::update()
     else videoWidthButton->setSuffix( " px" );
     if ( h == 0 ) videoHeightButton->setSuffix( " Same as input" );
     else videoHeightButton->setSuffix( " px" );
+
+    modeBox->setCurrentText(MediaUtils::ResizeModeToString(stream->resizeMode()));
+
+    algorithmBox->setCurrentData( stream->resizeAlgorithm()->name());
 
     checkSizes( );
 }
@@ -116,6 +131,18 @@ void BlockResize::on_videoHeightButton_editingFinished()
     }
     _mediaInfo->setWidth( w );
     _mediaInfo->setHeight( h );
+}
+
+void BlockResize::on_modeBox_currentIndexChanged(const QString &arg1)
+{
+    if(_freezeUI) return;
+    _mediaInfo->setResizeMode(arg1);
+}
+
+void BlockResize::on_algorithmBox_currentIndexChanged(int /*index*/)
+{
+    if(_freezeUI) return;
+    _mediaInfo->setResizeAlgorithm( algorithmBox->currentData().toString());
 }
 
 void BlockResize::checkSizes( )
@@ -206,3 +233,5 @@ void BlockResize::on_action8KUHD_triggered()
 {
     setSize( 7680, 4320 );
 }
+
+

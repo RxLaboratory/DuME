@@ -231,22 +231,6 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     arguments << "-bufsize" << QString::number(bitrate*2);
                 }
 
-                //size
-                int width = stream->width();
-                int height = stream->height();
-                //fix odd sizes (for h264)
-                if (vc->name() == "h264" && width % 2 != 0)
-                {
-                    width--;
-                    emit newLog("Adjusting width for h264 compatibility. New width: " + QString::number(width));
-                }
-                if (vc->name() == "h264" && height % 2 != 0)
-                {
-                    height--;
-                    emit newLog("Adjusting height for h264 compatibility. New height: " + QString::number(height));
-                }
-                if (width != 0 && height != 0) arguments << "-s" << QString::number(width) + "x" + QString::number(height);
-
                 //framerate
                 if (stream->framerate() != 0.0) arguments << "-r" << QString::number(stream->framerate());
 
@@ -418,7 +402,6 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     filterChain << speedFilter;
                 }
 
-
                 //crop
                 if (!stream->cropUseSize() && ( stream->topCrop() != 0 || stream->bottomCrop() != 0 || stream->leftCrop() != 0 || stream->rightCrop() != 0))
                 {
@@ -431,11 +414,11 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                 else if (stream->cropUseSize() && ( stream->cropHeight() != 0 || stream->cropWidth() != 0) )
                 {
                     int wi = stream->cropWidth();
-                    int wh = stream->cropHeight();
+                    int hi = stream->cropHeight();
                     QString w = QString::number( wi );
                     if (wi == 0) w = "in_w";
-                    QString h = QString::number( wh );
-                    if (wh == 0) h = "in_h";
+                    QString h = QString::number( hi );
+                    if (hi == 0) h = "in_h";
                     filterChain << "crop=" + w + ":" + h;
                 }
 
@@ -481,6 +464,52 @@ void RenderQueue::renderFFmpeg(QueueItem *item)
                     }
                     filterChain << "lut1d='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
                 }
+
+                //size
+                int width = stream->width();
+                int height = stream->height();
+                //fix odd sizes
+                if (width % 2 != 0)
+                {
+                    width--;
+                    emit newLog("Adjusting width for better compatibility. New width: " + QString::number(width));
+                }
+                if (height % 2 != 0)
+                {
+                    height--;
+                    emit newLog("Adjusting height for better compatibility. New height: " + QString::number(height));
+                }
+                if (width != 0 || height != 0)
+                {
+                    QString w = QString::number(width);
+                    QString h = QString::number(height);
+                    if (width == 0) w = "in_w";
+                    if (height == 0) h = "in_h";
+                    QString resizeAlgo = "";
+                    if (stream->resizeAlgorithm()->name() != "") resizeAlgo = ":flags=" + stream->resizeAlgorithm()->name();
+
+                    if (stream->resizeMode() == MediaUtils::Stretch)
+                    {
+                        filterChain << "scale=" + w + ":" + h + resizeAlgo;
+                        //we need to set the pixel aspect ratio back to 1:1 to force ffmpeg to stretch
+                        filterChain << "setsar=1:1";
+                    }
+                    else if (stream->resizeMode() == MediaUtils::Crop)
+                    {
+                        //first resize but keeping ratio (increase)
+                        filterChain << "scale=w=" + w + ":h=" + h + ":force_original_aspect_ratio=increase" + resizeAlgo;
+                        //then crop what's to large
+                        filterChain << "crop=" + w + ":" + h;
+                    }
+                    else if (stream->resizeMode() == MediaUtils::Letterbox)
+                    {
+                        //first resize but keeping ratio (decrease)
+                        filterChain << "scale=w=" + w + ":h=" + h + ":force_original_aspect_ratio=decrease" + resizeAlgo;
+                        //then pad with black bars
+                        filterChain << "pad=" + w + ":" + h + ":(ow-iw)/2:(oh-ih)/2";
+                    }
+                }
+
 
                 //compile filters
                 if (filterChain.count() > 0) arguments << "-vf" << filterChain.join(",");

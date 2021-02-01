@@ -1083,6 +1083,41 @@ void MediaInfo::setSceneDetection(bool sceneDetection, int id, bool silent)
         _videoStreams[id]->setSceneDetection(sceneDetection, silent);
 }
 
+void MediaInfo::setResizeMode(MediaUtils::ResizeMode mode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setResizeMode(mode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setResizeMode(mode, silent);
+}
+
+void MediaInfo::setResizeMode(QString mode, int id, bool silent)
+{
+    setResizeMode( MediaUtils::ResizeModeFromString(mode), id, silent);
+}
+
+void MediaInfo::setResizeAlgorithm(FFBaseObject *algo, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setResizeAlgorithm(algo, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setResizeAlgorithm(algo, silent);
+}
+
+void MediaInfo::setResizeAlgorithm(QString algo, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setResizeAlgorithm(algo, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setResizeAlgorithm(algo, silent);
+}
+
 void MediaInfo::setSamplingRate(int value, int id, bool silent)
 {
     if (!hasAudio()) return;

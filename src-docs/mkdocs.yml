@@ -39,6 +39,7 @@ nav:
         - Convert color spaces: color-space.md
         - Applying a LUT: lut.md
         - Speed and framerate: speed.md
+        - Resizing: resize.md
         - Filters: filter.md
     - After Effects Rendering:
         - Installation: after-effects-install.md

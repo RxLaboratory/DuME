@@ -19,6 +19,7 @@ public slots:
 private slots:
     void on_videoWidthButton_editingFinished( );
     void on_videoHeightButton_editingFinished( );
+    void on_modeBox_currentIndexChanged(const QString &arg1);
     void on_actionHD720_triggered();
     void on_actionHD1080_triggered();
     void on_action2KFlat_triggered();
@@ -28,8 +29,9 @@ private slots:
     void on_action4KScope_triggered();
     void on_actionDSM4K_triggered();
     void on_action4KUHD_triggered();
-
     void on_action8KUHD_triggered();
+
+    void on_algorithmBox_currentIndexChanged(int index);
 
 private:
     QString aspectRatio();

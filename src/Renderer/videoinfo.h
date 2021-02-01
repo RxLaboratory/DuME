@@ -151,6 +151,14 @@ public:
     bool sceneDetection() const;
     void setSceneDetection(bool sceneDetection, bool silent = false);
 
+    MediaUtils::ResizeMode resizeMode() const;
+    void setResizeMode(const MediaUtils::ResizeMode &resizeMode, bool silent = false);
+
+    FFBaseObject *resizeAlgorithm() const;
+    void setResizeAlgorithm(FFBaseObject *resizeAlgorithm, bool silent = false);
+    void setResizeAlgorithm(QString resizeAlgorithm, bool silent = false);
+    void setResizeAlgorithm(QJsonObject resizeAlgorithm, bool silent = false);
+
 signals:
     void changed();
 
@@ -194,6 +202,11 @@ private:
     double _framerate;
     int _height;
     int _width;
+    /**
+     * @brief When resized, wether to letterbox or stretch the video
+     */
+    MediaUtils::ResizeMode _resizeMode;
+    FFBaseObject *_resizeAlgorithm;
     FFCodec *_codec;
     FFLanguage *_language;
     FFBaseObject *_colorPrimaries;

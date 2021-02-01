@@ -93,6 +93,20 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _motionEstimationModes << new FFBaseObject("bilat","Bilateral");
     _motionEstimationModes << new FFBaseObject("bidir","Bidirectionnal");
 
+    //The list of resize algorithms
+    _resizeAlgorithms << new FFBaseObject("", "Default (bicubic)");
+    _resizeAlgorithms << new FFBaseObject("fast_bilinear", "Fast Bilinear");
+    _resizeAlgorithms << new FFBaseObject("bilinear", "Bilinear");
+    _resizeAlgorithms << new FFBaseObject("bicubic", "Bicubic");
+    _resizeAlgorithms << new FFBaseObject("experimental", "Experimental scaling");
+    _resizeAlgorithms << new FFBaseObject("neighbor", "Neighbor rescaling");
+    _resizeAlgorithms << new FFBaseObject("area", "Area");
+    _resizeAlgorithms << new FFBaseObject("bicublin", "Bicubic (Luma) + Bilinear (Chroma)");
+    _resizeAlgorithms << new FFBaseObject("gauss", "Gaussian");
+    _resizeAlgorithms << new FFBaseObject("sinc", "Sinc");
+    _resizeAlgorithms << new FFBaseObject("lanczos", "Lanczos");
+    _resizeAlgorithms << new FFBaseObject("spline", "Natural Bicubic Spline");
+
     if (path != "") setBinary(path, false);
 
     _instance = this;
@@ -499,6 +513,25 @@ FFBaseObject *FFmpeg::motionInterpolationAlgorithm(QString name)
         if (mia->prettyName().toLower() == name) return mia;
     }
     return _motionInterpolationAlgorithms[0];
+}
+
+QList<FFBaseObject *> FFmpeg::resizeAlgorithms() const
+{
+    return _resizeAlgorithms;
+}
+
+FFBaseObject *FFmpeg::resizeAlgorithm(QString name)
+{
+    name = name.toLower().trimmed();
+    foreach(FFBaseObject *r, _resizeAlgorithms)
+    {
+        if (r->name().toLower() == name) return r;
+    }
+    foreach(FFBaseObject *r,_resizeAlgorithms)
+    {
+        if (r->prettyName().toLower() == name) return r;
+    }
+    return _resizeAlgorithms[0];
 }
 
 QString FFmpeg::help()

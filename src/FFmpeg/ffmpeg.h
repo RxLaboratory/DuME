@@ -133,6 +133,9 @@ public:
     //Motion estimation modes
     FFBaseObject *motionEstimationMode(QString name);
     QList<FFBaseObject *> motionEstimationModes() const;
+    //Resize algorithms
+    FFBaseObject *resizeAlgorithm(QString name);
+    QList<FFBaseObject *> resizeAlgorithms() const;
     /**
      * @brief getHelp Gets the help text of FFmpeg
      * @return The documentation
@@ -224,6 +227,8 @@ private:
     QList<FFBaseObject *> _motionInterpolationAlgorithms;
     //The list of motion estimation modes
     QList<FFBaseObject *> _motionEstimationModes;
+    //The list of algorithms to resize
+    QList<FFBaseObject *> _resizeAlgorithms;
     // A default object
     FFBaseObject *_defaultObject;
     // The help

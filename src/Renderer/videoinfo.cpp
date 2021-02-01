@@ -40,6 +40,8 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _speedEstimationMode = ffmpeg->motionEstimationMode("");
     _speedInterpolationMode = MediaUtils::NoMotionInterpolation;
     _sceneDetection = true;
+    _resizeMode = MediaUtils::Letterbox;
+    _resizeAlgorithm = ffmpeg->resizeAlgorithm("");
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -84,6 +86,8 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setSpeedEstimationMode( obj.value("speedEstimationMode").toObject(), true);
     setSpeedInterpolationMode( MediaUtils::MotionInterpolationModeFromString( obj.value("speedInterpolationMode").toString("NoMotionInterpolation")), true);
     setSceneDetection( obj.value("sceneDetection").toBool(true), true);
+    setResizeMode( MediaUtils::ResizeModeFromString( obj.value("resizeMode").toString("")), true);
+    setResizeAlgorithm( obj.value("resizeAlgorithm").toObject(), true);
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -126,6 +130,9 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _speedEstimationMode = other->speedEstimationMode();
     _speedInterpolationMode = other->speedInterpolationMode();
     _sceneDetection = other->sceneDetection();
+    _resizeMode = other->resizeMode();
+    _resizeAlgorithm = other->resizeAlgorithm();
+
     if(!silent) emit changed();
 }
 
@@ -174,6 +181,9 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("speedEstimationMode", _speedEstimationMode->toJson());
     vStream.insert("speedInterpolationMode", MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode));
     vStream.insert("sceneDetection", _sceneDetection);
+    vStream.insert("resizeMode", MediaUtils::ResizeModeToString(_resizeMode));
+    vStream.insert("resizeAlgorithm", _resizeAlgorithm->toJson());
+
     return vStream;
 }
 
@@ -209,7 +219,12 @@ QString VideoInfo::getDescription()
             mediaInfoString += "\n- Height: " + QString::number(_cropHeight) + "px";
         }
     }
-    if ( _width !=0 || _height != 0 ) mediaInfoString += "\nResolution: " + QString::number( _width ) + "px x " + QString::number( _height ) + "px";
+    if ( _width !=0 || _height != 0 )
+    {
+        mediaInfoString += "\nResolution: " + QString::number( _width ) + "px x " + QString::number( _height ) + "px";
+        mediaInfoString += "\nResize mode: " + MediaUtils::ResizeModeToString(_resizeMode);
+        if (_resizeAlgorithm->name() != "") mediaInfoString += "\nResize algorithm: " + _resizeAlgorithm->prettyName();
+    }
     if ( aspect() != 0 ) mediaInfoString += "\nVideo Aspect: " + QString::number( int( aspect()*100+0.5 ) / 100.0) + ":1";
     if ( _framerate != 0 ) mediaInfoString += "\nFramerate: " + QString::number( _framerate ) + " fps";
     if (_profile) if ( _profile->name() != "") mediaInfoString += "\nProfile: " + _profile->prettyName();
@@ -782,6 +797,38 @@ bool VideoInfo::sceneDetection() const
 void VideoInfo::setSceneDetection(bool sceneDetection, bool silent)
 {
     _sceneDetection = sceneDetection;
+    if(!silent) emit changed();
+}
+
+MediaUtils::ResizeMode VideoInfo::resizeMode() const
+{
+    return _resizeMode;
+}
+
+void VideoInfo::setResizeMode(const MediaUtils::ResizeMode &resizeMode,  bool silent)
+{
+    _resizeMode = resizeMode;
+    if(!silent) emit changed();
+}
+
+FFBaseObject *VideoInfo::resizeAlgorithm() const
+{
+    return _resizeAlgorithm;
+}
+
+void VideoInfo::setResizeAlgorithm(QString resizeAlgorithm, bool silent)
+{
+    setResizeAlgorithm(FFmpeg::instance()->resizeAlgorithm(resizeAlgorithm), silent);
+}
+
+void VideoInfo::setResizeAlgorithm(QJsonObject resizeAlgorithm, bool silent)
+{
+    setResizeAlgorithm(resizeAlgorithm.value("name").toString(""), silent);
+}
+
+void VideoInfo::setResizeAlgorithm(FFBaseObject *resizeAlgorithm,  bool silent)
+{
+    _resizeAlgorithm = resizeAlgorithm;
     if(!silent) emit changed();
 }
 

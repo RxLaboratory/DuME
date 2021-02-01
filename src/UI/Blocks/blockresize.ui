@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>55</height>
+    <width>338</width>
+    <height>126</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,23 +19,15 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
-   <property name="spacing">
-    <number>3</number>
-   </property>
-   <property name="leftMargin">
-    <number>5</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="rightMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
-    <number>5</number>
-   </property>
-   <item>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Width</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <widget class="QSpinBox" name="videoWidthButton">
      <property name="frame">
       <bool>false</bool>
@@ -44,20 +36,27 @@
       <string> px</string>
      </property>
      <property name="prefix">
-      <string>Width: </string>
+      <string/>
      </property>
      <property name="minimum">
       <number>0</number>
      </property>
      <property name="maximum">
-      <number>10000</number>
+      <number>100000</number>
      </property>
      <property name="value">
       <number>1920</number>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Height</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
     <widget class="QSpinBox" name="videoHeightButton">
      <property name="frame">
       <bool>false</bool>
@@ -66,16 +65,52 @@
       <string> px</string>
      </property>
      <property name="prefix">
-      <string>Height: </string>
+      <string/>
      </property>
      <property name="minimum">
       <number>0</number>
      </property>
      <property name="maximum">
-      <number>10000</number>
+      <number>100000</number>
      </property>
      <property name="value">
       <number>1080</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="modeBox">
+     <item>
+      <property name="text">
+       <string>Letterbox</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Crop</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stretch</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="DataComboBox" name="algorithmBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Algorithm</string>
      </property>
     </widget>
    </item>
@@ -150,6 +185,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/datacombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

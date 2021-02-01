@@ -15,6 +15,7 @@ This specific order has been chosen to keep the best quality possible in the str
 4. Crop
 5. Any user defined filters
 6. [LUT](lut.md)
+7. [Resize](resize.md)
 
 ## Audio Filter Graph
 

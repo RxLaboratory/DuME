@@ -20,6 +20,8 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [Adding / Changing streams](mapping.md)
     - [Convert color spaces](color-space.md)
     - [Applying a LUT](lut.md)
+    - [Speed and framerate](speed.md)
+    - [Resizing](resize.md)
     - [Filters](filter.md)
 - After Effects rendering
     - [Installation](after-effects-install.md)
