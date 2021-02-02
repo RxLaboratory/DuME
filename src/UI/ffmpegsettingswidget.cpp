@@ -59,3 +59,8 @@ void FFmpegSettingsWidget::ffmpegStatus(MediaUtils::RenderStatus status)
     }
 }
 
+
+void FFmpegSettingsWidget::on_openButton_clicked()
+{
+    FileUtils::openInExplorer(PresetManager::instance()->userPresetsPath());
+}

@@ -108,6 +108,17 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QToolButton" name="openButton">
+           <property name="text">
+            <string>Open Folder</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources.qrc">
+             <normaloff>:/icons/go-folder</normaloff>:/icons/go-folder</iconset>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -158,6 +169,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

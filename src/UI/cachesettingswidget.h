@@ -22,6 +22,8 @@ private slots:
     void on_cacheEdit_textChanged(const QString &arg1);
     void on_cacheBrowseButton_clicked();
 
+    void on_openButton_clicked();
+
 private:
     QSettings settings;
     bool _freezeUI;

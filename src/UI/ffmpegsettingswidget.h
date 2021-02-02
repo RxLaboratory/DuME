@@ -8,6 +8,7 @@
 
 #include "duqf-utils/utils.h"
 #include "FFmpeg/ffmpeg.h"
+#include "Renderer/presetmanager.h"
 
 class FFmpegSettingsWidget : public QWidget, private Ui::FFmpegSettingsWidget
 {
@@ -25,6 +26,8 @@ private slots:
     void on_userPresetsBrowseButton_clicked();
     void on_userPresetsPathEdit_editingFinished();
     void ffmpegStatus(MediaUtils::RenderStatus status);
+    void on_openButton_clicked();
+
 private:
     QSettings settings;
     bool _freezeUI;

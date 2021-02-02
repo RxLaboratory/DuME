@@ -7,6 +7,7 @@ PresetManager::PresetManager(QObject *parent) : QObject(parent)
     QSettings settings;
     load();
     _resetDefaultPreset = ":/presets/MP4 - Standard";
+    _defaultUserPresetPath = QDir::homePath() + "/DuME Presets/";
     _defaultPreset = QFileInfo( settings.value("presets/default", _resetDefaultPreset).toString() );
     _instance = this;
 }
@@ -29,10 +30,13 @@ void PresetManager::load()
 
     //list users
     _userPresets.clear();
-    QString userPresetsPath = settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString();
+
+    _userPresetsPath = settings.value("presets/path", "" ).toString();
+    if (_userPresetsPath == "") _userPresetsPath = _defaultUserPresetPath;
+
     QStringList filters("*.meprst");
     filters << "*.json" << "*.dffp";
-    foreach (QFileInfo preset, QDir(userPresetsPath).entryInfoList(filters,QDir::Files))
+    foreach (QFileInfo preset, QDir(_userPresetsPath).entryInfoList(filters,QDir::Files))
     {
         _userPresets << Preset(preset);
     }
@@ -71,6 +75,11 @@ void PresetManager::resetDefaultPreset()
 {
     Preset p = Preset(QFileInfo( _resetDefaultPreset ));
     setDefaultPreset(p);
+}
+
+QString PresetManager::userPresetsPath()
+{
+    return _userPresetsPath;
 }
 
 PresetManager *PresetManager::_instance = nullptr;

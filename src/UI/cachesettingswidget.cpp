@@ -37,3 +37,8 @@ void CacheSettingsWidget::on_cacheBrowseButton_clicked()
     if (path == "") return;
     cacheEdit->setText(path);
 }
+
+void CacheSettingsWidget::on_openButton_clicked()
+{
+    FileUtils::openInExplorer(CacheManager::instance()->getRootCacheDir().absolutePath());
+}

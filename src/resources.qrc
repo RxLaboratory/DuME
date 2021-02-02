@@ -93,6 +93,7 @@
         <file alias="rendering">resources/icons/render-compute-build_sl.svg</file>
         <file alias="error">resources/icons/warning-error_sl.svg</file>
         <file alias="ok">resources/icons/check_sl.svg</file>
+        <file alias="go-folder">resources/icons/go-to-explore-reveal-folder_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

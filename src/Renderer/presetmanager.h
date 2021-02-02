@@ -23,6 +23,8 @@ public:
     void setDefaultPreset(const Preset &defaultPreset);
     void resetDefaultPreset();
 
+    QString userPresetsPath();
+
 signals:
     void changed();
 
@@ -33,6 +35,8 @@ private:
     QList<Preset> _userPresets;
     Preset _defaultPreset;
     QString _resetDefaultPreset;
+    QString _defaultUserPresetPath;
+    QString _userPresetsPath;
 protected:
     static PresetManager *_instance;
 };
