@@ -883,6 +883,18 @@ p, li { white-space: pre-wrap; }
     <string>Launch job</string>
    </property>
   </action>
+  <action name="actionConsole">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/bash_l</normaloff>:/icons/bash_l</iconset>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

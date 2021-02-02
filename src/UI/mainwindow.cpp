@@ -13,12 +13,12 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     setupUi(this);
 
     //populate toolbar
+    mainToolBar->addAction(actionShowQueue);
+    mainToolBar->addAction(actionConsole);
     QMenu *goMenu = new QMenu();
     goMenu->addAction( actionGo );
     goMenu->addAction( actionGoQuit );
     goMenu->addAction( actionLaunchJob );
-
-    mainToolBar->addAction(actionShowQueue);
     goButton = new QToolButton(this);
     goButton->setIcon(actionGo->icon());
     goButton->setText(actionGo->text());
@@ -41,27 +41,27 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     log("Initialization");
 
     // === SETTINGS ===
-    log("Init - Loading settings");
+    log("Init - Loading settings", LogUtils::Debug);
 
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
     home.mkdir("DuME Presets");
 
     // Load Renderers info (to be passed to other widgets)
-    log("Init - Connecting to FFmpeg");
+    log("Init - Connecting to FFmpeg", LogUtils::Debug);
     //FFmpeg
     connect( FFmpeg::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
     connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
-    log("Init - Connecting to After Effects");
+    log("Init - Connecting to After Effects", LogUtils::Debug);
     connect( AfterEffects::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
     connect( AfterEffects::instance(), SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
-    log("Init - Adding settings widget");
+    log("Init - Adding settings widget", LogUtils::Debug);
 
     //settings widget
     ffmpegSettingsWidget = new FFmpegSettingsWidget();
@@ -73,17 +73,13 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     cacheSettingsWidget = new CacheSettingsWidget();
     settingsWidget->addPage(cacheSettingsWidget, "Cache and Memory", QIcon(":/icons/cache"));
 
-    log("Init - Adding queue widget");
+    log("Init - Adding queue widget", LogUtils::Debug);
 
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
     queueListItem = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
     connect(queueWidget->job(), &QueueItem::statusChanged, this, &MainWindow::queueItemStatusChanged);
-
-    bool showQueue = settings.value("rQueueVisible", false).toBool();
-    actionShowQueue->setChecked(showQueue);
-    on_actionShowQueue_triggered(showQueue);
 
     // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
 #ifdef QT_DEBUG
@@ -117,8 +113,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     _cacheButton->setMinimumWidth(100);
     connect(_cacheButton, &QToolButton::clicked, this, &MainWindow::openCacheDir);
     connect(CacheManager::instance(), &CacheManager::cacheSizeChanged, this, &MainWindow::cacheSizeChanged);
+    CacheManager::instance()->scan();
 
-    log("Init - Setting default UI items");
+    log("Init - Setting default UI items", LogUtils::Debug);
 
     //init UI
     consoleTabs->setCurrentIndex(0);
@@ -126,7 +123,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
 
-    log("Init - Setting window geometry");
+    log("Init - Setting window geometry", LogUtils::Debug);
 
     //restore geometry
     settings.beginGroup("mainwindow");
@@ -139,13 +136,14 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     duqf_maximize( settings.value("maximized",false).toBool() );
 #endif
     settings.endGroup();
-    //console splitter sizes
-    settings.beginGroup("consolesplitter");
-    QList<int>sizes;
-    sizes << settings.value("consolesize",0).toInt();
-    sizes << settings.value("queuesize",100).toInt();
-    consoleSplitter->setSizes(sizes);
-    settings.endGroup();
+
+    bool showQueue = settings.value("rQueueVisible", false).toBool();
+    actionShowQueue->setChecked(showQueue);
+    on_actionShowQueue_triggered(showQueue);
+
+    bool showConsole = settings.value("consoleVisible", false).toBool();
+    actionConsole->setChecked(showConsole);
+    on_actionConsole_triggered(showConsole);
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
@@ -170,7 +168,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //settings
     connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
-    log("Init - Setting stylesheet");
+    log("Init - Setting stylesheet", LogUtils::Debug);
     // Set style
     duqf_setStyle();
 
@@ -1022,8 +1020,10 @@ void MainWindow::on_actionShowQueue_triggered(bool checked)
     if (checked)
     {
         QList<int>sizes;
+        settings.beginGroup("queueSplitter");
         sizes << settings.value("rQueueSize",15).toInt();
         sizes << settings.value("rQueueJobSize",85).toInt();
+        settings.endGroup();
         rQueueSplitter->setSizes(sizes);
     }
     else
@@ -1041,11 +1041,50 @@ void MainWindow::on_rQueueSplitter_splitterMoved(int /*pos*/, int /*index*/)
     QList<int> sizes = rQueueSplitter->sizes();
     if (sizes[0] > 100)
     {
+        settings.beginGroup("queueSplitter");
         settings.setValue("rQueueSize", sizes[0]);
         settings.setValue("rQueueJobSize", sizes[1]);
+        settings.endGroup();
     }
 
     bool showRQueue = sizes[0] != 0;
     actionShowQueue->setChecked(showRQueue);
     settings.setValue("rQueueVisible", showRQueue);
+}
+
+void MainWindow::on_actionConsole_triggered(bool checked)
+{
+    if (checked)
+    {
+        QList<int>sizes;
+        settings.beginGroup("consolesplitter");
+        sizes << settings.value("consoleSize",15).toInt();
+        sizes << settings.value("queueSize",85).toInt();
+        settings.endGroup();
+        consoleSplitter->setSizes(sizes);
+    }
+    else
+    {
+        QList<int>sizes;
+        sizes << 0;
+        sizes << 100;
+        consoleSplitter->setSizes(sizes);
+    }
+    settings.setValue("consoleVisible", checked);
+}
+
+void MainWindow::on_consoleSplitter_splitterMoved(int /*pos*/, int /*index*/)
+{
+    QList<int> sizes = consoleSplitter->sizes();
+    if (sizes[0] > 100)
+    {
+        settings.beginGroup("consolesplitter");
+        settings.setValue("consoleSize", sizes[0]);
+        settings.setValue("queueSize", sizes[1]);
+        settings.endGroup();
+    }
+
+    bool showConsole = sizes[0] != 0;
+    actionConsole->setChecked(showConsole);
+    settings.setValue("consoleVisible", showConsole);
 }

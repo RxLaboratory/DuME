@@ -87,6 +87,8 @@ private slots:
     void on_actionAbout_FFmpeg_triggered();
     void on_actionShowQueue_triggered(bool checked);
     void on_rQueueSplitter_splitterMoved(int pos, int index);
+    void on_actionConsole_triggered(bool checked);
+    void on_consoleSplitter_splitterMoved(int pos, int index);
 
     // GENERAL
     void quit(bool force = false);

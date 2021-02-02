@@ -26,6 +26,7 @@ public:
 public slots:
     void setRootCacheDir(QString path, bool purge = true);
     void purgeCache();
+    void scan();
 
 signals:
     void cacheSizeChanged(int);
@@ -41,8 +42,6 @@ private:
     QDir _aeCacheDir;
     qint64 _cacheSize;
 
-private slots:
-    void scan();
 protected:
     static CacheManager *_instance;
 };
