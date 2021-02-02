@@ -150,14 +150,12 @@ private slots:
     // === ffmpeg ===
 
     // logs ffmpeg output
-    void ffmpegLog(QString message, LogUtils::LogType lt = LogUtils::Information );
     void ffmpegStatusChanged(MediaUtils::RenderStatus status);
     void ffmpegProgress();
 
     // === Ae ===
 
     // logs ae output
-    void aeLog(QString message, LogUtils::LogType lt = LogUtils::Information );
     void aeStatusChanged(MediaUtils::RenderStatus status);
     void aeProgress();
 

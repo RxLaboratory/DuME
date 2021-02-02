@@ -150,9 +150,12 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     renderQueue = RenderQueue::instance();
     connect(renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
     connect(renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
-    connect(renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
-    connect(renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
     connect(renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
+
+    connect(FFmpegRenderer::instance(), &AbstractRenderer::console, this, &MainWindow::ffmpegConsole );
+    connect(FFmpegRenderer::instance(), &AbstractRenderer::newLog, this, &MainWindow::ffmpegLog );
+    connect(AERenderer::instance(), &AbstractRenderer::console, this, &MainWindow::aeConsole );
+    connect(AERenderer::instance(), &AbstractRenderer::newLog, this, &MainWindow::aeLog );
 
     // final connections
 
@@ -563,7 +566,7 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
 
 void MainWindow::aeLog(QString l, LogUtils::LogType lt)
 {
-    log("After Effects Info | " + l, lt);
+    log("After Effects | " + l, lt);
 }
 
 void MainWindow::aeConsole(QString c)

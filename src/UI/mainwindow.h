@@ -68,7 +68,7 @@ private slots:
     // Queue Item (to be moved in a new RenderQueueWidget class
     void queueItemStatusChanged(MediaUtils::RenderStatus status);
 
-    // CONSOLE
+    // LOGS
     void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
     // UI EVENTS

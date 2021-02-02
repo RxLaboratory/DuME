@@ -21,8 +21,6 @@ RenderQueue::RenderQueue(QObject *parent ) : QObject(parent)
     _ffmpegRenderer->setBinary( FFmpeg::instance()->binary() );
     // Connections
     connect( FFmpeg::instance(), &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
-    connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
-    connect( _ffmpegRenderer, &FFmpegRenderer::console, this, &RenderQueue::ffmpegConsole ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::statusChanged, this, &RenderQueue::ffmpegStatusChanged ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::progress, this, &RenderQueue::ffmpegProgress ) ;
     _ffmpegRenderer->setStopCommand("q\n");
@@ -32,8 +30,6 @@ RenderQueue::RenderQueue(QObject *parent ) : QObject(parent)
     // Create the renderer
     _aeRenderer = AERenderer::instance();
     // Connections
-    connect( _aeRenderer, &AERenderer::newLog, this, &RenderQueue::aeLog ) ;
-    connect( _aeRenderer, &AERenderer::console, this, &RenderQueue::aeConsole ) ;
     connect( _aeRenderer, &AERenderer::statusChanged, this, &RenderQueue::aeStatusChanged ) ;
     connect( _aeRenderer, &AERenderer::progress, this, &RenderQueue::aeProgress ) ;
 
@@ -55,12 +51,6 @@ void RenderQueue::setStatus(MediaUtils::RenderStatus st)
     if( st == _status) return;
     _status = st;
     emit statusChanged(_status);
-}
-
-void RenderQueue::ffmpegLog(QString message, LogUtils::LogType lt)
-{
-    message = "FFmpeg | " + message;
-    emit newLog( message, lt );
 }
 
 void RenderQueue::ffmpegStatusChanged( MediaUtils::RenderStatus status )
@@ -101,12 +91,6 @@ void RenderQueue::ffmpegProgress()
     _remainingTime = _ffmpegRenderer->timeRemaining();
     _elapsedTime = _ffmpegRenderer->elapsedTime();
     emit progress();
-}
-
-void RenderQueue::aeLog(QString message, LogUtils::LogType lt)
-{
-    message = "After Effects | " + message;
-    emit newLog( message, lt );
 }
 
 void RenderQueue::aeProgress()
