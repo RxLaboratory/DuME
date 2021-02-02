@@ -27,6 +27,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 - Several UI adjustments.
 - Better display of the information for output formats.
+- Track and display cache usage.
 - Restricted the ability to change the color range to YUV pixel formats only.
 - Improved settings UI (moved cache options to their own section, hide After Effects on Linux...)
 - Improved codec profile management for h.264 / AVC.

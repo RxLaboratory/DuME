@@ -409,8 +409,10 @@ void OutputWidget::loadPresets()
     {
         presetsBox->addItem(preset.name(), preset.file().absoluteFilePath() );
     }
-
     _freezeUI = false;
+
+    //Try to select default
+    selectDefaultPreset();
 }
 
 void OutputWidget::selectDefaultPreset()
