@@ -11,6 +11,7 @@
 #include <QFileInfoList>
 #include <QDir>
 
+#include "Renderer/queueitem.h"
 #include "duqf-utils/utils.h"
 
 /**
@@ -144,6 +145,12 @@ public slots:
     void setBinary(const QString &binaryFileName);
     // Changes the current status
     void setStatus(MediaUtils::RenderStatus status);
+    /**
+     * @brief Renders a queueitem
+     * @param job
+     * @return true if render has been launched, false if the render was not launched/nothing to render
+     */
+    bool render(QueueItem *job);
 
 protected:
 
@@ -189,23 +196,32 @@ private:
     // The process(es)
     QList<QProcess *> _renderProcesses;
     QString _binaryFileName;
-    // The status
+    // The status of the renderer
     MediaUtils::RenderStatus _status;
     // The output
     QString _output;
+
     // Process the outputs
     void processOutput(QString output);
-    // A timer to process outputs only if a certain amount of time has passed
+    // A timer to process outputs only if a certain amount of time has passed to improve perf
     QElapsedTimer _timer;
 
     // CONFIGURATION
-
     QString _stopCommand;
 
     // METHODS
 
+    /**
+     * @brief Launches the current job
+     * @return True if the render is launched, false if not/nothing to launch
+     */
+    virtual bool launchJob();
     //Launches a new process
     void launchProcess(QStringList arguments );
+
+protected:
+    // The current job
+    QueueItem *_job;
 };
 
 #endif // ABSTRACTRENDERER_H

@@ -252,6 +252,11 @@ void AbstractRenderer::processOutput(QString output)
 #endif
 }
 
+bool AbstractRenderer::launchJob()
+{
+    return false;
+}
+
 MediaUtils::RenderStatus AbstractRenderer::status() const
 {
     return _status;
@@ -268,6 +273,13 @@ void AbstractRenderer::setStatus(MediaUtils::RenderStatus status)
     if (status == _status) return;
     _status = status;
     emit statusChanged( _status );
+}
+
+bool AbstractRenderer::render(QueueItem *job)
+{
+    setStatus( MediaUtils:: Launching );
+    _job = job;
+    return launchJob();
 }
 
 double AbstractRenderer::expectedSize() const

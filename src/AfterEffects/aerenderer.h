@@ -2,6 +2,8 @@
 #define AERENDERER_H
 
 #include "Renderer/abstractrenderer.h"
+#include "Renderer/cachemanager.h"
+#include "AfterEffects/aftereffects.h"
 
 #include <QObject>
 #include <QRegularExpression>
@@ -16,8 +18,13 @@ protected:
     void readyRead(QString output);
 
 private:
+    // The After Effects renderer info
+    AfterEffects *_ae;
     // Ae returns the duration and not the numframes
     double _duration;
+
+    bool launchJob();
+    void renderAep(MediaInfo *aep, bool audio = false);
 
 };
 

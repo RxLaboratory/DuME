@@ -37,7 +37,7 @@ public:
     MediaUtils::RenderStatus status() const;
 
     /**
-     * @brief getCurrentInputInfos Gets the item currently being encoded
+     * @brief Gets the item currently being encoded
      * @return The queue item
      */
     QueueItem *currentItem();
@@ -56,24 +56,6 @@ public:
      */
     void encode(QList<QueueItem*> list);
     /**
-     * @brief encode Launches the encoding of the given input media with multiple outputs
-     * @param input The input media
-     * @param outputs The list of output medias
-     */
-    void encode(MediaInfo *input,QList<MediaInfo*> outputs);
-    /**
-     * @brief encode Launches the encoding of the given input to the given output
-     * @param input The input media
-     * @param output The output media
-     */
-    void encode(MediaInfo *input, MediaInfo *output);
-    /**
-     * @brief encode Launches the encoding of the given input media with multiple outputs
-     * @param input The input media
-     * @param outputs The list of output medias
-     */
-    void encode(QList<MediaInfo *> inputs, QList<MediaInfo*> outputs);
-    /**
      * @brief addQueueItem Adds an item to the encoding queue
      * @param item
      * @return The item id
@@ -84,7 +66,7 @@ public:
      * The item will be deleted
      * @param id The id of the item to remove
      */
-    void removeQueueItem(int id);
+    void deleteQueueItem(int id);
     /**
      * @brief takeQueueItem Removes the item from the encoding queue and returns it.
      * @param id The id of the item to take
@@ -93,6 +75,10 @@ public:
     QueueItem *takeQueueItem(int id);
     /**
      * @brief clearQueue Clears the current queue and deletes the items
+     */
+    void deleteQueue();
+    /**
+     * @brief Clears the queue
      */
     void clearQueue();
     /**
@@ -210,10 +196,12 @@ private:
 
     // The After Effects renderer info
     AfterEffects *_ae;
-    // The After Effects renderer
+    // The After Effects renderer //TODO create a singleton like ffmpeg
     AERenderer *_aeRenderer;
 
     // ======= RENDERING PROCESS ========
+
+    //TODO some of these info should be moved to the renderers
 
     // the number of frames to render
     int _numFrames;
@@ -240,10 +228,6 @@ private:
 
     // finished current item rendering/transcoding
     void finishCurrentItem(MediaUtils::RenderStatus lastStatus = MediaUtils::Finished );
-    // launch ffmpeg transcoding
-    void renderFFmpeg(QueueItem *item );
-    // launch after effects rendering
-    void renderAep( MediaInfo *input, bool audio = false );
     // encodes the next item in the queue
     void encodeNextItem();
     // removes temp files, cache, restores AE templates...
