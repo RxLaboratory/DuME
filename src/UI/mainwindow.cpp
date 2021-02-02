@@ -796,8 +796,8 @@ void MainWindow::log(QString log, LogUtils::LogType type)
         debugEdit->append(currentTime.toString("[hh:mm:ss.zzz]: "));
         debugEdit->moveCursor(QTextCursor::End);
         if (type == LogUtils::Information) debugEdit->setTextColor(QColor(227,227,227));
-        else if (type == LogUtils::Warning) debugEdit->setTextColor(QColor(249,105,105));
-        else if (type == LogUtils::Critical) debugEdit->setTextColor(QColor(241,136,136));
+        else if (type == LogUtils::Warning) debugEdit->setTextColor(QColor(236,215,24));
+        else if (type == LogUtils::Critical) debugEdit->setTextColor(QColor(249,105,105));
         debugEdit->setFontWeight(800);
         debugEdit->setFontItalic(true);
         debugEdit->insertPlainText(typeString);
