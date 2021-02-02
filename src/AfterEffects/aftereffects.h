@@ -14,7 +14,11 @@ class AfterEffects : public AbstractRendererInfo
 {
     Q_OBJECT
 public:
-    explicit AfterEffects(QObject *parent = nullptr);
+    /**
+     * @brief Gets the unique AfterEffects instance
+     * @return
+     */
+    static AfterEffects *instance();
 
     QList<AfterEffectsVersion *> versions() const;
     QString currentName() const;
@@ -36,6 +40,11 @@ public slots:
     void restoreOriginalTemplates();
 
 private:
+    /**
+     * @brief AfterEffects is a singleton, its constructor is private
+     * @param parent
+     */
+    explicit AfterEffects(QObject *parent = nullptr);
 
     // === ATTRIBUTES ===
 
@@ -54,6 +63,9 @@ private:
 
     // Finds all versions of After Effects installed on the system
     void findAeVersions(QString dir);
+
+protected:
+    static AfterEffects *_instance;
 
 };
 

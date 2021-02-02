@@ -1,11 +1,11 @@
 #include "aesettingswidget.h"
 
-AESettingsWidget::AESettingsWidget(AfterEffects *ae, QWidget *parent) :
+AESettingsWidget::AESettingsWidget(QWidget *parent) :
     QWidget(parent)
 {
     setupUi(this);
 
-    _ae = ae;
+    _ae = AfterEffects::instance();
     _freezeUI = true;
 
     updateAe();

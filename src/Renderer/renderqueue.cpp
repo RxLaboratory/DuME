@@ -1,6 +1,6 @@
 ﻿#include "Renderer/renderqueue.h"
 
-RenderQueue::RenderQueue(AfterEffects *afterEffects, QObject *parent ) : QObject(parent)
+RenderQueue::RenderQueue(QObject *parent ) : QObject(parent)
 {
     setStatus( MediaUtils::Initializing );
 
@@ -20,12 +20,9 @@ RenderQueue::RenderQueue(AfterEffects *afterEffects, QObject *parent ) : QObject
 
     // === After Effects ===
 
-    // The renderer
-    _ae = afterEffects;
     // Create the renderer
-    _aeRenderer = new AERenderer( _ae->binary() );
+    _aeRenderer = AERenderer::instance();
     // Connections
-    connect( _ae, &AfterEffects::binaryChanged, _aeRenderer, &AERenderer::setBinary ) ;
     connect( _aeRenderer, &AERenderer::newLog, this, &RenderQueue::aeLog ) ;
     connect( _aeRenderer, &AERenderer::console, this, &RenderQueue::aeConsole ) ;
     connect( _aeRenderer, &AERenderer::statusChanged, this, &RenderQueue::aeStatusChanged ) ;
@@ -240,8 +237,8 @@ void RenderQueue::postRenderCleanUp( MediaUtils::RenderStatus lastStatus )
     {
         setStatus( MediaUtils::Cleaning );
 
-        //restore ae templates
-        if ( _status == MediaUtils::AERendering ) _ae->restoreOriginalTemplates();
+        //restore ae templates TODO run more tests for this
+        //if ( _status == MediaUtils::AERendering ) _ae->restoreOriginalTemplates();
 
         finishCurrentItem( lastStatus );
 

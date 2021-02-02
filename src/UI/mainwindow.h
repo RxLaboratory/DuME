@@ -142,12 +142,6 @@ private:
     AESettingsWidget *aeSettingsWidget;
     CacheSettingsWidget *cacheSettingsWidget;
 
-    // ===== AE =====
-    /**
-     * @brief ae The After Effects information and utils
-     */
-    AfterEffects *_ae;
-
     // ===== RENDERQUEUE =====
     /**
      * @brief _renderQueue The render queue

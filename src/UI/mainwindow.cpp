@@ -55,11 +55,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
-    log("Init - Initializing the After Effects renderer");
-    _ae = new AfterEffects( this );
     log("Init - Connecting to After Effects");
-    connect( _ae, SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
-    connect( _ae, SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
+    connect( AfterEffects::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
+    connect( AfterEffects::instance(), SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
@@ -69,7 +67,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ffmpegSettingsWidget = new FFmpegSettingsWidget();
     settingsWidget->addPage(ffmpegSettingsWidget, "FFmpeg", QIcon(":/icons/ffmpeg"));
 #ifndef Q_OS_LINUX
-    aeSettingsWidget = new AESettingsWidget(_ae);
+    aeSettingsWidget = new AESettingsWidget( this );
     settingsWidget->addPage(aeSettingsWidget, "After Effects", QIcon(":/icons/ae"));
 #endif
     cacheSettingsWidget = new CacheSettingsWidget();
@@ -149,7 +147,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     log("Init - Creating render queue");
 
-    _renderQueue = new RenderQueue( _ae, this );
+    _renderQueue = new RenderQueue( this );
     connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
     connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
     connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
@@ -244,7 +242,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
                         i++;
                         settings.setValue("aerender/path", args[i]);
                         settings.sync();
-                        _ae->setBinary("Custom");
+                        AfterEffects::instance()->setBinary("Custom");
                     }
 #endif
                     else if (arg != "--no-banner" && arg != "--hide-console")
@@ -804,7 +802,7 @@ void MainWindow::on_aeCommandsButton_clicked()
 {
     QString commands = aeCommandsEdit->text();
     if (commands == "") commands = "-h";
-    _ae->runCommand(commands);
+    AfterEffects::instance()->runCommand(commands);
 }
 
 void MainWindow::go()

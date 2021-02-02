@@ -27,7 +27,7 @@ public:
      * @param aeRenderer The After Effects Renderer
      * @param parent The parent QObject
      */
-    explicit RenderQueue( AfterEffects *afterEffects, QObject *parent = nullptr);
+    explicit RenderQueue( QObject *parent = nullptr);
     ~RenderQueue();
 
     /**

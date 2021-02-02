@@ -17,7 +17,7 @@ class AESettingsWidget : public QWidget, private Ui::AESettingsWidget
     Q_OBJECT
 
 public:
-    explicit AESettingsWidget(AfterEffects *ae, QWidget *parent = nullptr);
+    explicit AESettingsWidget(QWidget *parent = nullptr);
 
 private slots:
     void on_aeVersionBox_currentIndexChanged(int index);

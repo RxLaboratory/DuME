@@ -1,5 +1,14 @@
 #include "aftereffects.h"
 
+//The unique instance, constructed when instance() is first called.
+AfterEffects *AfterEffects::_instance = nullptr;
+
+AfterEffects *AfterEffects::instance()
+{
+    if (!_instance) _instance = new AfterEffects();
+    return _instance;
+}
+
 bool aeVersionSorter(AfterEffectsVersion *v1, AfterEffectsVersion *v2)
 {
     if (v1->version() < v2->version()) return true;

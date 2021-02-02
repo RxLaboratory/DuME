@@ -1,12 +1,20 @@
 #include "aerenderer.h"
 #include <QtDebug>
 
-AERenderer::AERenderer(QString aerender, QObject *parent) : AbstractRenderer(parent)
+//The unique instance is nullptr until instance() has been called once.
+AERenderer *AERenderer::_instance = nullptr;
+
+AERenderer *AERenderer::instance()
+{
+    if (!_instance) _instance = new AERenderer();
+    return _instance;
+}
+
+AERenderer::AERenderer(QObject *parent) : AbstractRenderer(parent)
 {
     _duration = 0;
-    setBinary( aerender );
-
-    _ae = new AfterEffects(this);
+    connect(AfterEffects::instance(), &AfterEffects::binaryChanged, this, &AbstractRenderer::setBinary);
+    setBinary(AfterEffects::instance()->binary());
 }
 
 bool AERenderer::launchJob()
