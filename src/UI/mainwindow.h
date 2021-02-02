@@ -68,6 +68,10 @@ private slots:
     // Queue Item (to be moved in a new RenderQueueWidget class
     void queueItemStatusChanged(MediaUtils::RenderStatus status);
 
+    // Cache
+    void cacheSizeChanged(qint64 size);
+    void openCacheDir();
+
     // LOGS
     void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
@@ -121,6 +125,7 @@ private:
 
     // ====== UI ========
 
+    QToolButton *_cacheButton;
     QueueWidget *queueWidget;
     /**
      * @brief reInitCurrentProgress Initializes the current progress bar and infos

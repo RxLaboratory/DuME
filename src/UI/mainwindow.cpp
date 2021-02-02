@@ -110,6 +110,14 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     rQueueList->setEnabled(false);
 #endif
 
+    // Cache monitoring
+    _cacheButton = new QToolButton(this);
+    _cacheButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    mainStatusBar->addPermanentWidget(_cacheButton);
+    _cacheButton->setMinimumWidth(100);
+    connect(_cacheButton, &QToolButton::clicked, this, &MainWindow::openCacheDir);
+    connect(CacheManager::instance(), &CacheManager::cacheSizeChanged, this, &MainWindow::cacheSizeChanged);
+
     log("Init - Setting default UI items");
 
     //init UI
@@ -161,9 +169,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     //settings
     connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
-
-    //QueueWidget
-    connect(queueWidget,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
 
     log("Init - Setting stylesheet");
     // Set style
@@ -738,6 +743,16 @@ void MainWindow::queueItemStatusChanged(MediaUtils::RenderStatus status)
     else queueListItem->setIcon(QIcon(":/icons/audio-video"));
     itemText += "\n{ " + MediaUtils::RenderStatusToHumanString(status) + " }";
     queueListItem->setText(itemText);
+}
+
+void MainWindow::cacheSizeChanged(qint64 size)
+{
+    _cacheButton->setText( "Cache: " + MediaUtils::sizeString(size));
+}
+
+void MainWindow::openCacheDir()
+{
+    FileUtils::openInExplorer(CacheManager::instance()->getRootCacheDir().absolutePath());
 }
 
 void MainWindow::log(QString log, LogUtils::LogType type)

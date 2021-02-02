@@ -7,6 +7,8 @@
 #include <QRegularExpression>
 #include <QDebug>
 #include <QTime>
+#include <QDir>
+#include <QProcess>
 
 namespace FileUtils
 {
@@ -15,6 +17,8 @@ namespace FileUtils
     void move(QString from, QString to);
     void copy(QString from, QString to);
     void remove(QString path);
+    qint64 getDirSize(QDir d);
+    void openInExplorer(QString path);
 };
 
 namespace MediaUtils

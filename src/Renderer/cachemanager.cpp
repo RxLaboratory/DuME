@@ -5,6 +5,21 @@ CacheManager::CacheManager(QObject *parent) : QObject(parent)
 
 }
 
+void CacheManager::scan()
+{
+    qint64 c = FileUtils::getDirSize(_rootCacheDir);
+    if (c != _cacheSize)
+    {
+        _cacheSize = c;
+        emit cacheSizeChanged(_cacheSize);
+    }
+}
+
+qint64 CacheManager::cacheSize() const
+{
+    return _cacheSize;
+}
+
 CacheManager *CacheManager::instance()
 {
     if (!_instance) _instance = new CacheManager();
@@ -22,6 +37,10 @@ void CacheManager::init()
     qDebug() << "Cache located at " + currentCachePath;
 
     setRootCacheDir( currentCachePath, false );
+
+    _scanTimer = new QTimer(this);
+    connect(_scanTimer, SIGNAL(timeout()), this, SLOT(scan()));
+    _scanTimer->start(5000);
 }
 
 QDir CacheManager::getRootCacheDir() const
@@ -50,7 +69,7 @@ void CacheManager::purgeCache()
     _rootCacheDir.removeRecursively();
 }
 
-QDir CacheManager::getAeCacheDir() const
+QDir CacheManager::aeCacheDir() const
 {
     return _aeCacheDir;
 }

@@ -262,3 +262,45 @@ QString MediaUtils::RenderStatusToHumanString(MediaUtils::RenderStatus status)
     if (status == Error) return "Error - Sorry, something went wrong.";
     return "";
 }
+
+qint64 FileUtils::getDirSize(QDir d)
+{
+    qint64 size = 0;
+    //calculate total size of current directories' files
+    QDir::Filters fileFilters = QDir::Files|QDir::System|QDir::Hidden|QDir::Dirs|QDir::NoDotAndDotDot;
+    for(QFileInfo fi : d.entryInfoList(fileFilters)) {
+        if (fi.isFile()) size+= fi.size();
+        else size += getDirSize( QDir(fi.absoluteFilePath()) );
+    }
+    return size;
+}
+
+void FileUtils::openInExplorer(QString path)
+{
+    const QFileInfo fileInfo(path);
+
+#ifdef Q_OS_WIN
+    QString param("");
+    if (!fileInfo.isDir())
+        param = "/select,";
+    param += QDir::toNativeSeparators(fileInfo.canonicalFilePath());
+    QString command = "explorer.exe " + param;
+    QProcess::startDetached(command);
+#endif
+#ifdef Q_OS_MAC
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+                                     .arg(fileInfo.canonicalFilePath());
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+#endif
+#ifdef Q_OS_LINUX
+    QString p = fileInfo.canonicalFilePath();
+    if (fileInfo.isFile()) p = fileInfo.dir().canonicalPath();
+    QProcess::execute("xdg-open \"" + p + "\"");
+#endif
+}
