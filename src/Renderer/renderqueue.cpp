@@ -62,7 +62,7 @@ void RenderQueue::ffmpegStatusChanged( MediaUtils::RenderStatus status )
     }
     else if ( status == MediaUtils::Finished )
     {
-        emit newLog("FFmpeg Transcoding process successfully finished.");
+        emit newLog("FFmpeg Transcoding process finished.");
         postRenderCleanUp( MediaUtils::Finished );
     }
     else if ( status == MediaUtils::Stopped )
