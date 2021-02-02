@@ -153,6 +153,7 @@
         <file alias="ffmpeg resolution">resources/regex/ffmpegResolution.txt</file>
         <file alias="ffmpeg sampling">resources/regex/ffmpegSampling.txt</file>
         <file alias="ffmpeg sample format">resources/regex/ffmpegSampleFormat.txt</file>
+        <file alias="ffmpeg progress">resources/regex/ffmpegProgress.txt</file>
     </qresource>
     <qresource prefix="/luts">
         <file alias="adobe-to-qt.cube">resources/luts/QT Gamma Compensation.cube</file>

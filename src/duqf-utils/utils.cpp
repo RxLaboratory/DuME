@@ -145,7 +145,7 @@ qint64 MediaUtils::convertToBytes(qint64 value, MediaUtils::SizeUnit from)
 
 QRegularExpression RegExUtils::getRegEx(QString name)
 {
-    QFile regExFile(":regex/" + name );
+    QFile regExFile(":/regex/" + name );
     if (regExFile.open(QFile::ReadOnly))
     {
         QString regExStr = regExFile.readAll();

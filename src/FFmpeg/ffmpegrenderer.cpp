@@ -43,8 +43,13 @@ bool FFmpegRenderer::launchJob()
     MediaInfo *i = _job->getInputMedias()[0];
     if (i->hasVideo()) exrInput = i->videoStreams()[0]->codec()->name() == "exr";
 
-    //some values to be passed from the input to the output
+    //some values to get from the input
     double inputFramerate = 0.0;
+    double totalDuration = 0.0;
+
+    //some values to get from the output
+    double speedMultiplicator = 1.0;
+    double outputFrameRate = 0.0;
 
     //add inputs
     foreach(MediaInfo *input, _job->getInputMedias())
@@ -70,7 +75,11 @@ bool FFmpegRenderer::launchJob()
             {
                 arguments << "-start_number" << QString::number(input->startNumber());
                 if (stream->framerate() != 0.0) arguments << "-framerate" << QString::number(stream->framerate());
-                else arguments << "-framerate" << "24";
+                else
+                {
+                    arguments << "-framerate" << "24";
+                    inputFramerate = 24.0;
+                }
                 inputFileName = input->ffmpegSequenceName();
             }
 
@@ -91,6 +100,20 @@ bool FFmpegRenderer::launchJob()
             else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
             if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
             else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
+        }
+
+        //get duration
+        if (input->inPoint() != 0.0 || input->outPoint() != 0.0)
+        {
+            double test = input->outPoint() - input->inPoint();
+            if (test > totalDuration) totalDuration = test;
+        }
+        else if (input->duration() > totalDuration) totalDuration = input->duration();
+        else if (input->isSequence())
+        {
+            if (inputFramerate == 0.0) inputFramerate = 24.0;
+            double test = input->frames().count() / inputFramerate;
+            if (test > totalDuration) totalDuration = test;
         }
 
         //time range
@@ -154,7 +177,11 @@ bool FFmpegRenderer::launchJob()
                 }
 
                 //framerate
-                if (stream->framerate() != 0.0) arguments << "-r" << QString::number(stream->framerate());
+                if (stream->framerate() != 0.0)
+                {
+                    arguments << "-r" << QString::number(stream->framerate());
+                    outputFrameRate = stream->framerate();
+                }
 
                 //loop (gif)
                 if (vc->name() == "gif")
@@ -299,6 +326,7 @@ bool FFmpegRenderer::launchJob()
 
                 //speed
                 if (stream->speed() != 1.0) filterChain << "setpts=" + QString::number(1/stream->speed()) + "*PTS";
+                speedMultiplicator = stream->speed();
 
                 //motion interpolation
                 if (stream->speedInterpolationMode() != MediaUtils::NoMotionInterpolation)
@@ -500,15 +528,13 @@ bool FFmpegRenderer::launchJob()
     //launch
     this->setOutputFileName( _job->getOutputMedias()[0]->fileName() );
 
-    foreach (MediaInfo *m, _job->getInputMedias())
+    if (outputFrameRate == 0.0) outputFrameRate = inputFramerate;
+    qDebug() << "=================================================";
+    qDebug() << outputFrameRate;
+    if (outputFrameRate != 0.0)
     {
-        if (m->hasVideo())
-        {
-            VideoInfo *stream = m->videoStreams()[0];
-            this->setNumFrames( int( m->duration() * stream->framerate() ) );
-            this->setFrameRate( stream->framerate() );
-            break;
-        }
+        this->setNumFrames( totalDuration * outputFrameRate / speedMultiplicator );
+        this->setFrameRate( outputFrameRate );
     }
 
     this->start( arguments );
@@ -517,7 +543,7 @@ bool FFmpegRenderer::launchJob()
 
 void FFmpegRenderer::readyRead(QString output)
 {
-    QRegularExpression reProgress("(?:frame= *(\\d+).*fps= *(\\d+).*)?size= *(?:(\\d+)kB)?.*time=(\\d\\d:\\d\\d:\\d\\d.\\d\\d).*bitrate= *(?:(\\d+).\\d+kbits)?.*speed= *(\\d+.\\d*)x");
+    QRegularExpression reProgress = RegExUtils::getRegEx("ffmpeg progress");
     QRegularExpressionMatch match = reProgress.match(output);
 
     //if progress, update UI
