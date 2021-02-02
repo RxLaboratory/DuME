@@ -307,6 +307,9 @@
    </property>
   </action>
   <action name="actionAddCustom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/add-custom</normaloff>:/icons/add-custom</iconset>

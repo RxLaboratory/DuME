@@ -803,12 +803,15 @@
    </property>
   </action>
   <action name="actionAddCustom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/add-custom</normaloff>:/icons/add-custom</iconset>
    </property>
    <property name="text">
-    <string>Add FFmpeg parameter</string>
+    <string>FFmpeg parameters</string>
    </property>
    <property name="toolTip">
     <string>Adds a custom FFmpeg parameter for this output file</string>

@@ -60,7 +60,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blockAudioBitrate = addBlock( new BlockAudioBitrate( _mediaInfo ), actionAudioBitrate, ":/icons/audio-quality" );
     blocksMenu->addAction( actionOther );
     blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap, ":/icons/connection" );
-    blocksMenu->addAction( actionAddCustom );
+    blockCustom = addBlock( new BlockCustom( _mediaInfo ), actionAddCustom, ":/icons/add-custom" );
 
     // PRESETS MENU
     presetsMenu->addAction( actionDefaultPreset );
@@ -133,21 +133,6 @@ void OutputWidget::ffmpeg_loadMuxers()
 
 MediaInfo *OutputWidget::mediaInfo()
 {
-    //ADD CUSTOM PARAMS
-    _mediaInfo->clearFFmpegOptions( true );
-    foreach ( BlockBaseWidget *b, _customParams )
-    {
-        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
-        QString param = bc->param();
-
-        if (param != "")
-        {
-            QStringList option(param);
-            option << bc->value();
-            _mediaInfo->addFFmpegOption(option, true);
-        }
-    }
-
     return _mediaInfo;
 }
 
@@ -212,16 +197,6 @@ void OutputWidget::mediaInfoChanged()
         videoCopyButton->setChecked( copy );
     }
 
-    //Customs
-    //remove previous
-    qDeleteAll( _customParams );
-    _customParams.clear();
-    //add others
-    foreach( QStringList option, _mediaInfo->ffmpegOptions() )
-    {
-        addNewParam( option[0], option[1] );
-    }
-
     //set the preset to custom if we're not loading a preset
     if (!_loadingPreset)
     {
@@ -238,22 +213,6 @@ void OutputWidget::mediaInfoChanged()
 void OutputWidget::newInputMedia(MediaInfo *m)
 {
     connect( m, SIGNAL(changed()), this, SLOT(inputChanged()));
-}
-
-void OutputWidget::customParamActivated(bool activated)
-{
-    if (!activated)
-    {
-        for ( int i = 0; i < _customParams.count(); i++)
-        {
-            if (sender() == _customParams[i])
-            {
-                QWidget *w = _customParams.takeAt(i);
-                w->deleteLater();
-                return;
-            }
-        }
-    }
 }
 
 void OutputWidget::on_videoButton_clicked(bool checked)
@@ -415,20 +374,6 @@ void OutputWidget::setOutputPreset(QString preset)
     }
 }
 
-void OutputWidget::addNewParam(QString name, QString value, QString icon)
-{
-    //add a param and a value
-    qDebug() << "New Custom param: " + name + " " + value;
-    BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, icon, blocksWidget );
-    blocksLayout->addWidget( bw );
-    bw->show();
-
-    connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
-    //add to list
-    _customParams << bw;
-}
-
 void OutputWidget::inputChanged()
 {
     MediaInfo *input = static_cast<MediaInfo *>(sender());
@@ -493,11 +438,6 @@ BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *ac
     connect( b, SIGNAL( blockEnabled(bool) ), action, SLOT(setVisible(bool)));
     connect(b,  &BlockBaseWidget::hidden, action, [action]{ action->setChecked(false); });
     return b;
-}
-
-void OutputWidget::on_actionAddCustom_triggered()
-{
-    addNewParam();
 }
 
 void OutputWidget::on_actionSavePreset_triggered()

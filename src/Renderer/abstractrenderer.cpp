@@ -134,6 +134,7 @@ void AbstractRenderer::processStarted()
 
 void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    processOutput("", true);
     // Get the process
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process);
@@ -153,12 +154,16 @@ void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitSt
     //if all processes have finished
     if ( _renderProcesses.count() == 0 )
     {
+        disconnect(this, &AbstractRenderer::statusChanged, _job, &QueueItem::setStatus);
         setStatus( MediaUtils::Finished );
+        if (_job->status() != MediaUtils::Error) _job->setStatus(MediaUtils::Finished);
+
     }
 }
 
 void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
 {
+    processOutput("", true);
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process) + 1;
 
@@ -233,13 +238,13 @@ void AbstractRenderer::killRenderProcesses()
     setStatus( MediaUtils::Stopped );
 }
 
-void AbstractRenderer::processOutput(QString output)
+void AbstractRenderer::processOutput(QString output, bool ignoreTimer)
 {
-    if (_timer.hasExpired(100))
+    if (_timer.hasExpired(100) || ignoreTimer)
     {
         _output += output;
         readyRead(_output);
-        emit newLog( _output, LogUtils::Debug );
+        emit console( _output );
         _output = "";
         _timer.restart();
     }
@@ -247,9 +252,6 @@ void AbstractRenderer::processOutput(QString output)
     {
         _output += output;
     }
-#ifdef QT_DEBUG
-    qDebug() << output;
-#endif
 }
 
 bool AbstractRenderer::launchJob()
@@ -277,8 +279,9 @@ void AbstractRenderer::setStatus(MediaUtils::RenderStatus status)
 
 bool AbstractRenderer::render(QueueItem *job)
 {
-    setStatus( MediaUtils:: Launching );
     _job = job;
+    connect(this, &AbstractRenderer::statusChanged, _job, &QueueItem::setStatus);
+    setStatus( MediaUtils:: Launching );
     return launchJob();
 }
 

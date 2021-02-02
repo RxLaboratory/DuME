@@ -3,6 +3,7 @@
 
 #include "ui_blockcustom.h"
 #include "UI/Blocks/blockcontentwidget.h"
+#include "UI/ffmpegparamwidget.h"
 
 class BlockCustom : public BlockContentWidget, private Ui::BlockCustom
 {
@@ -10,11 +11,18 @@ class BlockCustom : public BlockContentWidget, private Ui::BlockCustom
 
 public:
     explicit BlockCustom(MediaInfo *mediaInfo, QWidget *parent = nullptr);
-    explicit BlockCustom(MediaInfo *mediaInfo, QString p, QString v, QWidget *parent = nullptr);
-    void setParam(QString p);
-    void setValue(QString v);
-    QString param();
-    QString value();
+public slots:
+    void activate( bool blockEnabled );
+    void update();
+private slots:
+    void updateParams();
+    void addParam();
+    void addParam(QString p, QString v);
+    void removeParams();
+    void on_actionAddParameter_triggered();
+
+private:
+    QList<FFmpegParamWidget*> _paramWidgets;
 };
 
 #endif // BLOCKCUSTOM_H

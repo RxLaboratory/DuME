@@ -34,7 +34,8 @@ InputWidget::InputWidget(int id, QWidget *parent) :
     blockAEComp = addBlock( blockAECompContent, actionAfter_Effects_composition, ":/icons/ae-comp");
     blockAEThreadsContent = new BlockAEThreads( _mediaInfo );
     blockAEThreads = addBlock( blockAEThreadsContent, actionAfter_Effects_threads, ":/icons/ae-threads");
-    blocksMenu->addAction( actionAddCustom );
+    blockCustomContent = new BlockCustom( _mediaInfo );
+    blockCustom = addBlock( blockCustomContent, actionAddCustom, ":/icons/add-custom");
 
     //splitter sizes
     QList<int>sizes;
@@ -47,7 +48,6 @@ InputWidget::InputWidget(int id, QWidget *parent) :
 
 MediaInfo *InputWidget::mediaInfo()
 {
-    updateCustomParams();
     return _mediaInfo;
 }
 
@@ -116,39 +116,6 @@ BlockBaseWidget *InputWidget::addBlock(BlockContentWidget *content, QAction *act
     return b;
 }
 
-void InputWidget::addNewParam(QString name, QString value, QString icon)
-{
-    //add a param and a value
-    BlockCustom *block = new BlockCustom( _mediaInfo, name, value );
-    BlockBaseWidget *bw = new BlockBaseWidget( "FFmpeg parameter", block, icon, blocksWidget );
-    blocksLayout->addWidget( bw );
-    bw->show();
-    connect( bw, SIGNAL(activated(bool)), this, SLOT(customParamActivated(bool)));
-    //add to list
-    _customParams << bw;
-}
-
-void InputWidget::customParamActivated(bool activated)
-{
-    if (!activated)
-    {
-        for ( int i = 0; i < _customParams.count(); i++)
-        {
-            if (sender() == _customParams[i])
-            {
-                QWidget *w = _customParams.takeAt(i);
-                w->deleteLater();
-                return;
-            }
-        }
-    }
-}
-
-void InputWidget::on_actionAddCustom_triggered()
-{
-    addNewParam();
-}
-
 void InputWidget::updateOptions()
 {
     // framerate buttons
@@ -204,18 +171,3 @@ void InputWidget::updateInfo()
     mediaInfosText->setText(mediaInfoString);
 }
 
-void InputWidget::updateCustomParams()
-{
-    //ADD CUSTOM PARAMS
-    foreach ( BlockBaseWidget *b, _customParams )
-    {
-        BlockCustom *bc = static_cast<BlockCustom *>( b->content() );
-        QString param = bc->param();
-        if (param != "")
-        {
-            QStringList option(param);
-            option << bc->value();
-            _mediaInfo->addFFmpegOption(option);
-        }
-    }
-}

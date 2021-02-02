@@ -38,8 +38,6 @@ public:
 private slots:
     void on_inputBrowseButton_clicked();
     void on_inputEdit_editingFinished();
-    void on_actionAddCustom_triggered();
-    void customParamActivated(bool activated);
     void updateOptions();
     void updateInfo();
 private:
@@ -57,15 +55,14 @@ private:
     BlockAEThreads *blockAEThreadsContent;
     BlockBaseWidget *blockTimeRange;
     BlockTimeRange *blockTimeRangeContent;
+    BlockBaseWidget *blockCustom;
+    BlockCustom *blockCustomContent;
 
     // MENUS
     QMenu *blocksMenu;
 
-    void addNewParam(QString name = "", QString value = "", QString icon = "");
-
     MediaInfo *_mediaInfo;
     QList<BlockBaseWidget *> _customParams;
-    void updateCustomParams();
 };
 
 #endif // INPUTWIDGET_H

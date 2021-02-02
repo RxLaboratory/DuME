@@ -379,6 +379,17 @@ QString MediaInfo::getDescription(bool ignoreGeneralInfo)
     if (_loop == 0) mediaInfoString += "\n\nInfinite loops";
     else if (_loop > 0) mediaInfoString += "\n\nLoops: " + QString::number(_loop);
 
+    //Custom params
+    if (_ffmpegOptions.count() > 0)
+    {
+        mediaInfoString += "\n\nUsing FFmpeg custom options:";
+        foreach(QStringList o, _ffmpegOptions)
+        {
+            mediaInfoString += "\n" + o[0];
+            if (o.count() == 2) if (o[1] != "") mediaInfoString += " \"" + o[1] + "\"";
+        }
+    }
+
     return mediaInfoString;
 }
 

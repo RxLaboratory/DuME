@@ -66,7 +66,6 @@ private slots:
     void mediaInfoChanged();
     void newInputMedia(MediaInfo* m);
     void inputChanged();
-    void customParamActivated(bool activated);
 
     void on_videoTranscodeButton_toggled(bool checked);
     void on_audioTranscodeButton_toggled(bool checked);
@@ -79,7 +78,6 @@ private slots:
     void on_videoButton_clicked(bool checked);
     void on_audioButton_clicked(bool checked);
 
-    void on_actionAddCustom_triggered();
     void on_actionSavePreset_triggered();
     void on_actionOpenPreset_triggered();
     void on_actionDefaultPreset_triggered(bool checked);
@@ -108,13 +106,13 @@ private:
     BlockBaseWidget *blockAudioBitrate;
     BlockBaseWidget *blockColor;
     BlockBaseWidget *blockMap;
+    BlockBaseWidget *blockCustom;
     BlockBaseWidget *blockAudioSampleFormat;
 
     // MENUS
     QMenu *blocksMenu;
     QMenu *presetsMenu;
 
-    void addNewParam(QString name = "", QString value = "", QString icon = "");
     void addVideoStream();
     void addAudioStream();
 

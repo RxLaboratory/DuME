@@ -26,7 +26,7 @@ public:
     MediaInfo *takeInputMedia(QString fileName);
     MediaInfo *takeOutputMedia(int id);
     MediaInfo *takeOutputMedia(QString fileName);
-    MediaUtils::RenderStatus getStatus();
+    MediaUtils::RenderStatus status();
 
 public slots:
     /**

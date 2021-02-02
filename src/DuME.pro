@@ -34,6 +34,7 @@ SOURCES += \
     UI/Blocks/blockvideospeed.cpp \
     UI/aesettingswidget.cpp \
     UI/cachesettingswidget.cpp \
+    UI/ffmpegparamwidget.cpp \
     UI/ffmpegsettingswidget.cpp \
     duqf-app/app-style.cpp \
     duqf-utils/language-utils.cpp \
@@ -108,6 +109,7 @@ HEADERS += \
     UI/Blocks/blockvideospeed.h \
     UI/aesettingswidget.h \
     UI/cachesettingswidget.h \
+    UI/ffmpegparamwidget.h \
     UI/ffmpegsettingswidget.h \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
@@ -183,6 +185,7 @@ FORMS += \
     UI/Blocks/blockvideospeed.ui \
     UI/aesettingswidget.ui \
     UI/cachesettingswidget.ui \
+    UI/ffmpegparamwidget.ui \
     UI/ffmpegsettingswidget.ui \
     duqf-widgets/aboutdialog.ui \
     duqf-widgets/appearancesettingswidget.ui \

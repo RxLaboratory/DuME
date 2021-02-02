@@ -202,7 +202,7 @@ private:
     QString _output;
 
     // Process the outputs
-    void processOutput(QString output);
+    void processOutput(QString output, bool ignoreTimer = false);
     // A timer to process outputs only if a certain amount of time has passed to improve perf
     QElapsedTimer _timer;
 

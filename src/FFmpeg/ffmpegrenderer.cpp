@@ -539,6 +539,14 @@ void FFmpegRenderer::readyRead(QString output)
 
         emit progress();
     }
-
-    emit console(output);
+    //detect errors
+    else if (output != "")
+    {
+        //If we're rendering, all stuff which is not a progress is an error
+        if (status() == MediaUtils::Encoding)
+        {
+            setStatus(MediaUtils::Error);
+            emit newLog(output, LogUtils::Critical);
+        }
+    }
 }

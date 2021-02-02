@@ -119,7 +119,7 @@ MediaInfo *QueueItem::takeOutputMedia(QString fileName)
     return nullptr;
 }
 
-MediaUtils::RenderStatus QueueItem::getStatus()
+MediaUtils::RenderStatus QueueItem::status()
 {
     return _status;
 }
