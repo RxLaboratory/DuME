@@ -2,9 +2,18 @@
 
 #include <QtDebug>
 
-FFmpegRenderer::FFmpegRenderer(QString ffmpeg, QObject *parent) : AbstractRenderer(parent)
+// Singleton, instance is nullptr by default until instance() is called for the first time
+FFmpegRenderer *FFmpegRenderer::_instance = nullptr;
+
+FFmpegRenderer *FFmpegRenderer::instance()
 {
-    setBinary( ffmpeg );
+    if (!_instance) _instance = new FFmpegRenderer();
+    return _instance;
+}
+
+FFmpegRenderer::FFmpegRenderer(QObject *parent) : AbstractRenderer(parent)
+{
+
 }
 
 bool FFmpegRenderer::launchJob()

@@ -8,7 +8,8 @@ RenderQueue::RenderQueue(AfterEffects *afterEffects, QObject *parent ) : QObject
 
     // The transcoder
     // Create the renderer
-    _ffmpegRenderer = new FFmpegRenderer( FFmpeg::instance()->binary() );
+    _ffmpegRenderer = FFmpegRenderer::instance();
+    _ffmpegRenderer->setBinary( FFmpeg::instance()->binary() );
     // Connections
     connect( FFmpeg::instance(), &FFmpeg::binaryChanged, _ffmpegRenderer, &FFmpegRenderer::setBinary ) ;
     connect( _ffmpegRenderer, &FFmpegRenderer::newLog, this, &RenderQueue::ffmpegLog ) ;
