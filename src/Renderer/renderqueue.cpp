@@ -1,5 +1,14 @@
 ﻿#include "Renderer/renderqueue.h"
 
+// Constructed when instance() is called for the first time.
+RenderQueue *RenderQueue::_instance = nullptr;
+
+RenderQueue *RenderQueue::instance()
+{
+    if (!_instance) _instance = new RenderQueue();
+    return _instance;
+}
+
 RenderQueue::RenderQueue(QObject *parent ) : QObject(parent)
 {
     setStatus( MediaUtils::Initializing );

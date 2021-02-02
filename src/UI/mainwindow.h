@@ -146,7 +146,7 @@ private:
     /**
      * @brief _renderQueue The render queue
      */
-    RenderQueue *_renderQueue;
+    RenderQueue *renderQueue;
     bool autoQuit;
 
 protected:

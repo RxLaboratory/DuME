@@ -21,13 +21,7 @@ class RenderQueue : public QObject
     Q_OBJECT
 
 public:
-    /**
-     * @brief Renderer Constructs the main renderer.
-     * @param ffmpeg The FFmpeg transcoder
-     * @param aeRenderer The After Effects Renderer
-     * @param parent The parent QObject
-     */
-    explicit RenderQueue( QObject *parent = nullptr);
+    static RenderQueue *instance();
     ~RenderQueue();
 
     /**
@@ -168,6 +162,11 @@ private slots:
     void aeProgress();
 
 private:
+    /**
+     * @brief Renderer Constructs the main renderer. This is a singleton, the constructor is private.
+     * @param parent The parent QObject
+     */
+    explicit RenderQueue( QObject *parent = nullptr);
 
     // ======= GENERAL =============
 
@@ -232,6 +231,12 @@ private:
     void encodeNextItem();
     // removes temp files, cache, restores AE templates...
     void postRenderCleanUp( MediaUtils::RenderStatus lastStatus = MediaUtils::Finished );
+
+protected:
+    /**
+    * @brief The unique RenderQueue instance
+    */
+    static RenderQueue *_instance;
 };
 
 #endif // RENDERER_H

@@ -147,12 +147,12 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     log("Init - Creating render queue");
 
-    _renderQueue = new RenderQueue( this );
-    connect(_renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
-    connect(_renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
-    connect(_renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
-    connect(_renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
-    connect(_renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
+    renderQueue = RenderQueue::instance();
+    connect(renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
+    connect(renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
+    connect(renderQueue, SIGNAL( ffmpegConsole( QString )), this, SLOT( ffmpegConsole( QString )) );
+    connect(renderQueue, SIGNAL( aeConsole( QString )), this, SLOT( aeConsole( QString )) );
+    connect(renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
 
     // final connections
 
@@ -579,9 +579,9 @@ void MainWindow::aeConsole(QString c)
 void MainWindow::progress()
 {
     //get input info
-    QueueItem *item = _renderQueue->currentItem();
+    QueueItem *item = renderQueue->currentItem();
     QString filename = "";
-    int numFrames = _renderQueue->numFrames();
+    int numFrames = renderQueue->numFrames();
     if ( item != nullptr )
     {
         foreach(MediaInfo *input, item->getInputMedias())
@@ -611,9 +611,9 @@ void MainWindow::progress()
 
     progressBar->setMaximum( numFrames );
 
-    progressBar->setValue( _renderQueue->currentFrame() );
+    progressBar->setValue( renderQueue->currentFrame() );
 
-    double outputSize = _renderQueue->outputSize();
+    double outputSize = renderQueue->outputSize();
     QString outputSizeText = "";
     if (outputSize < 10)
     {
@@ -631,7 +631,7 @@ void MainWindow::progress()
     }
     outputSizeLabel->setText( outputSizeText );
 
-    double outputBitrate = _renderQueue->outputBitrate();
+    double outputBitrate = renderQueue->outputBitrate();
     QString outputBitrateText = "";
     if (outputBitrate < 10)
     {
@@ -649,7 +649,7 @@ void MainWindow::progress()
     }
     outputBitrateLabel->setText( outputBitrateText );
 
-    double expectedSize = _renderQueue->expectedSize();
+    double expectedSize = renderQueue->expectedSize();
     QString expectedSizeText = "";
     if (expectedSize < 10)
     {
@@ -667,7 +667,7 @@ void MainWindow::progress()
     }
     expectedSizeLabel->setText ( expectedSizeText );
 
-    float speed = int(_renderQueue->encodingSpeed()*100)/100.0;
+    float speed = int(renderQueue->encodingSpeed()*100)/100.0;
     if (speed > 0.1)
     {
         speedTitleLabel->setText("Speed: ");
@@ -676,12 +676,12 @@ void MainWindow::progress()
     else
     {
         speedTitleLabel->setText("Frame: ");
-        speedLabel->setText(QString::number(_renderQueue->currentFrame()) + " / " + QString::number(numFrames));
+        speedLabel->setText(QString::number(renderQueue->currentFrame()) + " / " + QString::number(numFrames));
     }
 
-    timeRemainingLabel->setText( _renderQueue->remainingTime().toString("hh:mm:ss"));
+    timeRemainingLabel->setText( renderQueue->remainingTime().toString("hh:mm:ss"));
 
-    timeLabel->setText( _renderQueue->elapsedTime().toString("hh:mm:ss") );
+    timeLabel->setText( renderQueue->elapsedTime().toString("hh:mm:ss") );
 
 }
 
@@ -809,7 +809,7 @@ void MainWindow::go()
 {
     //Launch!
     log("=== Beginning encoding ===");
-    _renderQueue->encode( queueWidget->job() );
+    renderQueue->encode( queueWidget->job() );
 }
 
 void MainWindow::on_actionGoQuit_triggered()
@@ -822,7 +822,7 @@ void MainWindow::on_actionStop_triggered()
 {
     mainStatusBar->showMessage("Stopping current transcoding...");
     //TODO ask for confirmation
-    _renderQueue->stop(6000);
+    renderQueue->stop(6000);
 }
 
 void MainWindow::reInitCurrentProgress()
@@ -839,7 +839,7 @@ void MainWindow::reInitCurrentProgress()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    _renderQueue->stop(6000);
+    renderQueue->stop(6000);
 
     qDebug() << "Saving geometry and settings...";
 
@@ -978,7 +978,7 @@ void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 
 void MainWindow::quit(bool force)
 {
-    if (force || !MediaUtils::isBusy( _renderQueue->status() )) close();
+    if (force || !MediaUtils::isBusy( renderQueue->status() )) close();
 }
 
 void MainWindow::on_actionAbout_FFmpeg_triggered()
