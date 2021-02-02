@@ -3,9 +3,6 @@
 BlockAudioSampleFormat::BlockAudioSampleFormat(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Audio Sample Format block";
-#endif
     setType(Type::Audio);
     setupUi(this);
 

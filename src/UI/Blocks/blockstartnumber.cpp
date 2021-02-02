@@ -3,9 +3,6 @@
 BlockStartNumber::BlockStartNumber(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Start Number block";
-#endif
     setType(Type::Video);
     setupUi(this);
 }

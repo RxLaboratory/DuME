@@ -3,9 +3,6 @@
 BlockVideoSpeed::BlockVideoSpeed(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create video speed block";
-#endif
     setType(Type::Video);
     setupUi(this);
 }

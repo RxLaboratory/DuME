@@ -3,9 +3,6 @@
 BlockSampling::BlockSampling(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Sampling block";
-#endif
     setType(Type::Audio);
     _freezeUI = true;
     setupUi(this);

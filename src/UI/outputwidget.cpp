@@ -574,6 +574,7 @@ void OutputWidget::on_outputEdit_textEdited(QString text)
 
 void OutputWidget::addVideoStream()
 {
+    _mediaInfo->dumpObjectInfo();
     if (!_mediaInfo->hasVideo())
     {
         //only if muxer is capable of video
@@ -595,10 +596,12 @@ void OutputWidget::addVideoStream()
             return;
         }
         VideoInfo *stream = new VideoInfo( );
-        stream->setCodec( _mediaInfo->muxer()->defaultVideoCodec() );
-        stream->setPixFormat( _mediaInfo->muxer()->defaultVideoCodec()->defaultPixFormat() );
+        FFCodec *vc = _mediaInfo->muxer()->defaultVideoCodec();
+        stream->setCodec( vc );
+        stream->setPixFormat( vc->defaultPixFormat() );
         _mediaInfo->addVideoStream( stream );
     }
+
 }
 
 void OutputWidget::addAudioStream()

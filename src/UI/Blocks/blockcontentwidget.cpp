@@ -2,6 +2,7 @@
 
 BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, MediaList *inputMedias, QWidget *parent) : QWidget(parent)
 {
+    qDebug() << "Creating: " + this->objectName();
     _freezeUI = true;
     _activated = false;
     _mediaInfo = mediaInfo;
@@ -41,6 +42,7 @@ void BlockContentWidget::update()
 
 void BlockContentWidget::setActivated(bool act)
 {
+    qDebug() << "-> Activating: " + this->objectName();
     _activated = act;
 
     bool freeze = _freezeUI;
@@ -48,11 +50,15 @@ void BlockContentWidget::setActivated(bool act)
 
     activate(act);
 
+    if (act) qDebug() << "    - Activaed!";
+    else qDebug() << "    - Deactivated";
+
     _freezeUI = freeze;
 }
 
 void BlockContentWidget::changed()
 {
+    qDebug() << "-> Updating: " + this->objectName();
     if (_freezeUI) return;
     bool freeze = _freezeUI;
     _freezeUI = true;
@@ -94,6 +100,8 @@ void BlockContentWidget::changed()
     emit blockEnabled(true);
 
     update();
+
+    qDebug() << "    - Updated";
 
     _freezeUI = freeze;
 }

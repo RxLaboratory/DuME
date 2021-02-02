@@ -3,9 +3,6 @@
 BlockAEThreads::BlockAEThreads(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Ae Threads block";
-#endif
     _freezeUI = true;
     setupUi(this);
     threadsBox->setValue(QThread::idealThreadCount());

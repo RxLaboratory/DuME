@@ -3,9 +3,6 @@
 BlockResize::BlockResize(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create resize block";
-#endif
     setType(Type::Video);
     setupUi(this);
 

@@ -3,9 +3,6 @@
 BlockAudioCodec::BlockAudioCodec(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Audio Codec block";
-#endif
     setType(Type::Audio);
     _freezeUI = true;
 

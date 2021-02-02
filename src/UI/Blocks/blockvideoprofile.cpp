@@ -3,9 +3,6 @@
 BlockVideoProfile::BlockVideoProfile(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Video Profile block";
-#endif
     setType(Type::Video);
     setupUi(this);
 }
@@ -61,8 +58,8 @@ void BlockVideoProfile::update()
         emit blockEnabled(false);
         return;
     }
-
     FFBaseObject *p = stream->profile();
+
     videoProfileBox->setCurrentData( p->name() );
 
     videoLevelBox->setCurrentData( stream->level() );

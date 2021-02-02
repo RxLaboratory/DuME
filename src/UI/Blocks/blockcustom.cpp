@@ -3,9 +3,6 @@
 BlockCustom::BlockCustom(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Custom block";
-#endif
     setupUi(this);
 }
 

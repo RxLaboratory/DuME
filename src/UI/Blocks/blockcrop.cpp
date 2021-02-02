@@ -3,9 +3,6 @@
 BlockCrop::BlockCrop(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Crop block";
-#endif
     setType(Type::Video);
 
     _freezeUI = true;

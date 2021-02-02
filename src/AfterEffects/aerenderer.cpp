@@ -100,8 +100,9 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
     if (audio && numThreads > 1) numThreads--;
 
     // video
-    this->setNumFrames( int( aep->duration() * aep->videoStreams()[0]->framerate() ) );
-    this->setFrameRate( aep->videoStreams()[0]->framerate() );
+    QList<VideoInfo*> vStreams = aep->videoStreams();
+    this->setNumFrames( int( aep->duration() * vStreams[0]->framerate() ) );
+    this->setFrameRate( vStreams[0]->framerate() );
     this->setOutputFileName( tempPath );
     this->start( arguments, numThreads );
     // audio

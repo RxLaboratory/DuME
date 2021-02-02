@@ -155,6 +155,8 @@ void AfterEffects::findAeVersions(QString dir)
 
     QDir adobeDir(dir);
 
+#ifndef Q_OS_LINUX
+
     adobeDir.setNameFilters(filters);
     adobeDir.setFilter(QDir::Dirs);
 
@@ -168,10 +170,8 @@ void AfterEffects::findAeVersions(QString dir)
 #ifdef Q_OS_MAC
         QString aerenderFile(path.absoluteFilePath() + "/aerender");
 #endif
-#ifdef Q_OS_LINUX
-        QString aerenderFile("");
-#endif
         AfterEffectsVersion *ae = new AfterEffectsVersion( aerenderFile );
         if (ae->isValid()) _versions << ae;
     }
+#endif
 }

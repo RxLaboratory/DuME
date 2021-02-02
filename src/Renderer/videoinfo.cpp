@@ -873,7 +873,9 @@ void VideoInfo::setCodec(FFCodec *codec, bool silent)
         _bitrateType = MediaUtils::BitrateType::VBR;
     }
     if (codec->isLossless() && !codec->isLossy()) _lossless = true;
+    _profile = codec->profile("");
     if(!silent) emit changed();
+
 }
 
 void VideoInfo::setCodec(QString name, bool silent)

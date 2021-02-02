@@ -3,9 +3,6 @@
 BlockDeinterlace::BlockDeinterlace(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo,parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create Deinterlace block";
-#endif
     _freezeUI = true;
 
     setType(Type::Video);

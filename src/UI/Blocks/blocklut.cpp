@@ -3,9 +3,6 @@
 BlockLut::BlockLut(MediaInfo *mediaInfo, QWidget *parent) :
     BlockContentWidget(mediaInfo, parent)
 {
-#ifdef QT_DEBUG
-    qDebug() << "Create LUT block";
-#endif
     setType(Type::Video);
 
     _freezeUI = true;
