@@ -32,6 +32,11 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     mainToolBar->addAction(actionDevBuild);
 #endif
 
+    //custom status bar buttons
+    _cacheButton = new QToolButton(this);
+    _cacheButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    mainStatusBar->addPermanentWidget(_cacheButton,1);
+
     // Add default stuff
     duqf_initUi();
 
@@ -107,9 +112,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 #endif
 
     // Cache monitoring
-    _cacheButton = new QToolButton(this);
-    _cacheButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
-    mainStatusBar->addPermanentWidget(_cacheButton);
     _cacheButton->setMinimumWidth(100);
     connect(_cacheButton, &QToolButton::clicked, this, &MainWindow::openCacheDir);
     connect(CacheManager::instance(), &CacheManager::cacheSizeChanged, this, &MainWindow::cacheSizeChanged);
