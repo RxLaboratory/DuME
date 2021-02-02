@@ -574,7 +574,6 @@ void OutputWidget::on_outputEdit_textEdited(QString text)
 
 void OutputWidget::addVideoStream()
 {
-    _mediaInfo->dumpObjectInfo();
     if (!_mediaInfo->hasVideo())
     {
         //only if muxer is capable of video
