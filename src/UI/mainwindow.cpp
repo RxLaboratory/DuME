@@ -742,9 +742,6 @@ void MainWindow::queueItemStatusChanged(MediaUtils::RenderStatus status)
 
 void MainWindow::log(QString log, LogUtils::LogType type)
 {
-#ifdef QT_DEBUG
-    qDebug() << log;
-#endif
     //type
     QString typeString = "";
     if ( type == LogUtils::Debug )
@@ -755,7 +752,7 @@ void MainWindow::log(QString log, LogUtils::LogType type)
     {
         qInfo().noquote() << log;
     }
-    if (type == LogUtils::Warning)
+    else if (type == LogUtils::Warning)
     {
         qWarning().noquote() << log;
         typeString = "/!\\ Warning: ";
@@ -772,16 +769,32 @@ void MainWindow::log(QString log, LogUtils::LogType type)
     }
 
     //log
+#ifndef QT_DEBUG
     if ( type != LogUtils::Debug )
     {
+#endif
         //status bar
         mainStatusBar->showMessage(log);
 
         //add date
         QTime currentTime = QTime::currentTime();
-        debugEdit->setText(debugEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + typeString + log);
-        debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+        debugEdit->setTextColor(QColor(109,109,109));
+        debugEdit->setFontWeight(300);
+        debugEdit->append(currentTime.toString("[hh:mm:ss.zzz]: "));
+        debugEdit->moveCursor(QTextCursor::End);
+        if (type == LogUtils::Information) debugEdit->setTextColor(QColor(227,227,227));
+        else if (type == LogUtils::Warning) debugEdit->setTextColor(QColor(249,105,105));
+        else if (type == LogUtils::Critical) debugEdit->setTextColor(QColor(241,136,136));
+        debugEdit->setFontWeight(800);
+        debugEdit->setFontItalic(true);
+        debugEdit->insertPlainText(typeString);
+        debugEdit->setFontWeight(400);
+        debugEdit->setFontItalic(false);
+        debugEdit->insertPlainText(log);
+        //debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
+#ifndef QT_DEBUG
     }
+#endif
 }
 
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()

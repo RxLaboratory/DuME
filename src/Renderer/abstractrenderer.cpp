@@ -90,7 +90,7 @@ void AbstractRenderer::start( QStringList arguments, int numThreads )
 
 void AbstractRenderer::stop(int timeout)
 {
-    emit newLog("Sending the stop command");
+    emit newLog("Sending the stop command", LogUtils::Debug);
 
     setStatus( MediaUtils::Cleaning );
 
@@ -104,7 +104,7 @@ void AbstractRenderer::stop(int timeout)
         }
     }
 
-    emit newLog("Stop command sent. Waiting for processes to shut down.");
+    emit newLog("Stop command sent. Waiting for processes to shut down.", LogUtils::Debug);
 
     // wait for timeout and kill all remaining processes
     QTimer::singleShot(timeout, this, SLOT( killRenderProcesses()) );
@@ -129,7 +129,7 @@ void AbstractRenderer::processStarted()
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process) + 1;
 
-    emit newLog("Process " + QString::number( id ) + " started.");
+    emit newLog("Process " + QString::number( id ) + " started.", LogUtils::Debug);
 }
 
 void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -436,5 +436,5 @@ void AbstractRenderer::launchProcess( QStringList arguments )
 
     _renderProcesses << renderer;
 
-    emit newLog("Launched process: " + QString::number( _renderProcesses.count() ));
+    emit newLog("Launched process: " + QString::number( _renderProcesses.count() ), LogUtils::Debug);
 }
