@@ -65,6 +65,9 @@ private slots:
     void progress();
     void renderQueueStatusChanged(MediaUtils::RenderStatus status);
 
+    // Queue Item (to be moved in a new RenderQueueWidget class
+    void queueItemStatusChanged(MediaUtils::RenderStatus status);
+
     // CONSOLE
     void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
@@ -131,6 +134,9 @@ private:
      * @brief goButton The button in the toolbar to launch the queue
      */
     QToolButton *goButton;
+
+    // Queue Item (to be moved in a new RenderQueueWidget class
+    QListWidgetItem *queueListItem;
 
     FFmpegSettingsWidget *ffmpegSettingsWidget;
     AESettingsWidget *aeSettingsWidget;

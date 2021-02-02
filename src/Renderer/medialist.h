@@ -13,7 +13,7 @@ public:
     MediaList(QList<MediaInfo *> medias, QObject *parent = nullptr);
     MediaList(MediaInfo *media, QObject *parent = nullptr);
     QList<MediaInfo *> medias() const;
-    MediaInfo *getMedia(int mediaId);
+    MediaInfo *media(int mediaId);
     int addMedia(MediaInfo *media);
     MediaInfo *takeMedia(int id);
     void removeMedia(int id);
@@ -21,6 +21,8 @@ public:
 
     bool hasVideo();
     bool hasAudio();
+
+    int count();
 
 signals:
     void newMedia(MediaInfo*);

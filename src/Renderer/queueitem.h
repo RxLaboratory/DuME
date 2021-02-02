@@ -3,18 +3,23 @@
 
 #include <QObject>
 #include "mediainfo.h"
+#include "Renderer/medialist.h"
 
 class QueueItem : public QObject
 {
         Q_OBJECT
 public:
+    QueueItem(QObject *parent = nullptr);
+    QueueItem(MediaList *inputs,MediaList *outputs,QObject *parent = nullptr);
     QueueItem(QList<MediaInfo*> inputs,QList<MediaInfo*> outputs,QObject *parent = nullptr);
     QueueItem(MediaInfo *input,QList<MediaInfo*> outputs,QObject *parent = nullptr);
     QueueItem(MediaInfo *input,MediaInfo *output,QObject *parent = nullptr);
     ~QueueItem();
 
     QList<MediaInfo*> getInputMedias();
+    MediaList *inputMedias();
     QList<MediaInfo*> getOutputMedias();
+    MediaList *outputMedias();
     int addInputMedia(MediaInfo *input);
     int addOutputMedia(MediaInfo *output);
     MediaInfo *takeInputMedia(int id);
@@ -37,8 +42,8 @@ signals:
 private slots:
 
 private:
-    QList<MediaInfo *> _inputMedias;
-    QList<MediaInfo *> _outputMedias;
+    MediaList *_inputMedias;
+    MediaList *_outputMedias;
     MediaUtils::RenderStatus _status;
 };
 

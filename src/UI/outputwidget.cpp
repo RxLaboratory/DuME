@@ -131,7 +131,7 @@ void OutputWidget::ffmpeg_loadMuxers()
     _freezeUI = uiFreezed;
 }
 
-MediaInfo *OutputWidget::getMediaInfo()
+MediaInfo *OutputWidget::mediaInfo()
 {
     //ADD CUSTOM PARAMS
     _mediaInfo->clearFFmpegOptions( true );
@@ -147,17 +147,15 @@ MediaInfo *OutputWidget::getMediaInfo()
             _mediaInfo->addFFmpegOption(option, true);
         }
     }
-    MediaInfo *mi = new MediaInfo( );
 
-    mi->copyFrom( _mediaInfo, true, true);
-    return mi;
+    return _mediaInfo;
 }
 
 void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 {
     if (mediaInfo == nullptr) return;
 
-    _mediaInfo->copyFrom( mediaInfo );
+    _mediaInfo = mediaInfo;
 }
 
 void OutputWidget::mediaInfoChanged()
@@ -520,7 +518,7 @@ void OutputWidget::on_actionSavePreset_triggered()
     if ( QFileInfo(saveFileName).suffix() == "" ) saveFileName += ".meprst";
 
     //update infos
-    getMediaInfo();
+    mediaInfo();
     //export
     _mediaInfo->exportPreset(saveFileName);
     //add to box

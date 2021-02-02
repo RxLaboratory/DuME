@@ -31,11 +31,6 @@ public:
      * @return The current MediaInfo
      */
     MediaInfo *mediaInfo();
-    /**
-     * @brief getMediaInfo Gives a pointer to a copy of the current input MediaInfo
-     * @return The new copy
-     */
-    MediaInfo *getMediaInfo();
     void openFile(QString file);
     void openFile(QUrl file);
     bool hasMedia();

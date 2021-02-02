@@ -12,7 +12,10 @@ QueueWidget::QueueWidget(QWidget *parent) :
 #endif
     setupUi(this);
 
-    _inputMedias = new MediaList();
+    _job = new QueueItem();
+
+    _inputMedias = _job->inputMedias();
+    _outputMedias = _job->outputMedias();
 
     addOutput();
 
@@ -38,24 +41,29 @@ QueueWidget::QueueWidget(QWidget *parent) :
     qDebug() << "Queue Widget created";
 }
 
+QueueItem *QueueWidget::job()
+{
+    return _job;
+}
+
 QList<MediaInfo *> QueueWidget::getInputMedia()
 {
-    QList<MediaInfo *> input;
-    foreach(InputWidget *iw,inputWidgets)
-    {
-        input << iw->getMediaInfo();
-    }
-    return input;
+    return _inputMedias->medias();
+}
+
+MediaList *QueueWidget::inputMedias()
+{
+    return _inputMedias;
 }
 
 QList<MediaInfo *> QueueWidget::getOutputMedia()
 {
-    QList<MediaInfo *> output;
-    foreach(OutputWidget *ow,outputWidgets)
-    {
-        output << ow->getMediaInfo();
-    }
-    return output;
+    return _outputMedias->medias();
+}
+
+MediaList *QueueWidget::outputMedias()
+{
+    return _outputMedias;
 }
 
 void QueueWidget::openInputFile(QString file)
@@ -173,8 +181,10 @@ void QueueWidget::addInput()
     //create widget
     InputWidget *inputWidget = new InputWidget(num, this);
     inputWidgets << inputWidget;
-    _inputMedias->addMedia( inputWidget->mediaInfo() );
     inputTab->insertTab( inputTab->count()-1, inputWidget, "Input " + QString::number(num + 1));
+
+    //add media
+    _inputMedias->addMedia( inputWidget->mediaInfo() );
 
     //set tab index
     inputTab->setCurrentIndex(inputTab->count()-2);
@@ -196,6 +206,9 @@ void QueueWidget::addOutput()
     OutputWidget *ow = new OutputWidget(num, _inputMedias, this);
     outputWidgets << ow;
     outputTab->insertTab(outputTab->count()-1,ow,"Output " + QString::number(num));
+
+    //add media
+    _outputMedias->addMedia(ow->mediaInfo());
 
     //connect console
     connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));

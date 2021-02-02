@@ -43,6 +43,13 @@ namespace MediaUtils
      */
     enum RenderStatus { Initializing, Waiting, Launching, Encoding, FramesConversion, FFmpegEncoding, AERendering, BlenderRendering, Cleaning, Finished, Stopped, Error, Other };
     Q_ENUM_NS(RenderStatus)
+    QString RenderStatusToHumanString(RenderStatus status);
+    /**
+     * @brief isEncoding Checks if the current status is a busy (encoding or pre/post steps for encoding) status.
+     * @param status
+     * @return
+     */
+    bool isBusy(MediaUtils::RenderStatus status);
 
     /**
      * @brief The Deinterlace Parity
@@ -65,12 +72,7 @@ namespace MediaUtils
     ResizeMode ResizeModeFromString(QString mode);
     QString ResizeModeToString(ResizeMode mode);
 
-    /**
-     * @brief isEncoding Checks if the current status is a busy (encoding or pre/post steps for encoding) status.
-     * @param status
-     * @return
-     */
-    bool isBusy(MediaUtils::RenderStatus status);
+
 
     /**
      * @brief statusString Converts the status as a human readable string to be used in the UI

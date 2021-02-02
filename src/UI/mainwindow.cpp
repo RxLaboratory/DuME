@@ -80,6 +80,8 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
+    queueListItem = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
+    connect(queueWidget->job(), &QueueItem::statusChanged, this, &MainWindow::queueItemStatusChanged);
 
     bool showQueue = settings.value("rQueueVisible", false).toBool();
     actionShowQueue->setChecked(showQueue);
@@ -87,12 +89,17 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
 #ifdef QT_DEBUG
-    QListWidgetItem *i1 = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
     QListWidgetItem *i2 = new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
     rQueueStack->addWidget(new QueueWidget(this));
     QListWidgetItem *i3 = new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
     rQueueStack->addWidget(new QueueWidget(this));
     rQueueList->setCurrentRow(0);
+    new QListWidgetItem(QIcon(":/icons/ok"), "Job #4", rQueueList);
+    rQueueStack->addWidget(new QueueWidget(this));
+    new QListWidgetItem(QIcon(":/icons/error"), "Job #5", rQueueList);
+    rQueueStack->addWidget(new QueueWidget(this));
+    new QListWidgetItem(QIcon(":/icons/rendering"), "Job #6", rQueueList);
+    rQueueStack->addWidget(new QueueWidget(this));
     connect(rQueueList, &QListWidget::currentRowChanged, rQueueStack, &QStackedWidget::setCurrentIndex);
     //TODO : drag and drop on the queuewidget; drop on the list adds a new queuewidget
 #else // DISABLE QUEUE FOR NOW IN PUBLIC RELEASE
@@ -100,7 +107,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     addJobButton->setEnabled(false);
     removeJobButton->setEnabled(false);
     launchJobButton->setEnabled(false);
-    new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
     new QListWidgetItem("Render queue in development\nAvailable soon!", rQueueList);
     rQueueList->setCurrentRow(0);
     rQueueList->setEnabled(false);
@@ -722,6 +728,17 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
     }
 }
 
+void MainWindow::queueItemStatusChanged(MediaUtils::RenderStatus status)
+{
+    QString itemText = queueListItem->text().split("\n")[0];
+    if (MediaUtils::isBusy(status)) queueListItem->setIcon(QIcon(":/icons/rendering"));
+    else if (status == MediaUtils::Finished || status == MediaUtils::Stopped) queueListItem->setIcon(QIcon(":/icons/ok"));
+    else if (status == MediaUtils::Error) queueListItem->setIcon(QIcon(":/icons/error"));
+    else queueListItem->setIcon(QIcon(":/icons/audio-video"));
+    itemText += "\n{ " + MediaUtils::RenderStatusToHumanString(status) + " }";
+    queueListItem->setText(itemText);
+}
+
 void MainWindow::log(QString log, LogUtils::LogType type)
 {
 #ifdef QT_DEBUG
@@ -792,13 +809,9 @@ void MainWindow::on_aeCommandsButton_clicked()
 
 void MainWindow::go()
 {
-    //generate input and output
-    QList<MediaInfo *> input = queueWidget->getInputMedia();
-    QList<MediaInfo *> output = queueWidget->getOutputMedia();
-
     //Launch!
     log("=== Beginning encoding ===");
-    _renderQueue->encode(input,output);
+    _renderQueue->encode( queueWidget->job() );
 }
 
 void MainWindow::on_actionGoQuit_triggered()

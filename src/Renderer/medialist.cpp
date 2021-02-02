@@ -20,7 +20,7 @@ QList<MediaInfo *> MediaList::medias() const
     return _medias;
 }
 
-MediaInfo *MediaList::getMedia(int mediaId)
+MediaInfo *MediaList::media(int mediaId)
 {
     foreach(MediaInfo *m, _medias)
     {
@@ -77,4 +77,9 @@ bool MediaList::hasAudio()
         if (m->hasAudio()) return true;
     }
     return false;
+}
+
+int MediaList::count()
+{
+    return _medias.count();
 }

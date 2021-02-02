@@ -90,6 +90,9 @@
         <file alias="motion-interpo">resources/icons/animation_sl.svg</file>
         <file alias="time-range">resources/icons/video-range_sl.svg</file>
         <file alias="set-time-range">resources/icons/set-video-range_sl.svg</file>
+        <file alias="rendering">resources/icons/render-compute-build_sl.svg</file>
+        <file alias="error">resources/icons/warning-error_sl.svg</file>
+        <file alias="ok">resources/icons/check_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>

@@ -51,14 +51,6 @@ MediaInfo *InputWidget::mediaInfo()
     return _mediaInfo;
 }
 
-MediaInfo *InputWidget::getMediaInfo()
-{
-    updateCustomParams();
-    MediaInfo *mi = new MediaInfo();
-    mi->copyFrom( _mediaInfo, true, true);
-    return mi;
-}
-
 void InputWidget::openFile(QString file)
 {
     QSettings settings;

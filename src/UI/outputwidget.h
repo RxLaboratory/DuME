@@ -44,7 +44,7 @@ class OutputWidget : public QWidget, private Ui::OutputWidget
 
 public:
     explicit OutputWidget(int id, MediaList *inputMedias, QWidget *parent = nullptr);
-    MediaInfo *getMediaInfo();
+    MediaInfo *mediaInfo();
     void setMediaInfo(MediaInfo *mediaInfo);
 
 signals:

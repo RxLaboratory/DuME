@@ -199,7 +199,6 @@ double MediaUtils::timecodeToDuration(QString timecode)
     return 0.0;
 }
 
-
 MediaUtils::DeinterlaceParity MediaUtils::DeinterlaceParityFromString(QString parity)
 {
     if (parity == "TopFieldFirst") return TopFieldFirst;
@@ -245,4 +244,21 @@ QString MediaUtils::ResizeModeToString(MediaUtils::ResizeMode mode)
     if (mode == Crop) return "Crop";
     else if (mode == Stretch) return "Stretch";
     return "Letterbox";
+}
+
+QString MediaUtils::RenderStatusToHumanString(MediaUtils::RenderStatus status)
+{
+    if (status == Initializing) return "Initializing...";
+    if (status == Waiting) return "Ready";
+    if (status == Launching) return "Launching...";
+    if (status == Encoding) return "Encoding";
+    if (status == FramesConversion) return "Converting frames";
+    if (status == FFmpegEncoding) return "Rendering and transcoding with FFmpeg";
+    if (status == AERendering) return "Rendering with After Effects";
+    if (status == BlenderRendering) return "Rendering with Blender";
+    if (status == Cleaning) return "Cleaning!";
+    if (status == Finished) return "Finished";
+    if (status == Stopped) return "Stopped";
+    if (status == Error) return "Error - Sorry, something went wrong.";
+    return "";
 }

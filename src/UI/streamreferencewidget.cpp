@@ -107,7 +107,7 @@ void StreamReferenceWidget::updateStreamList()
     streamBox->clear();
     if (mediaBox->currentIndex() == -1) return;
 
-    MediaInfo *m = _inputMedias->getMedia( mediaBox->currentData().toInt() );
+    MediaInfo *m = _inputMedias->media( mediaBox->currentData().toInt() );
 
     QList<VideoInfo *> vs = m->videoStreams();
     for (int i = 0; i < vs.count(); i++)
