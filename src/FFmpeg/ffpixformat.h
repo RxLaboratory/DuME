@@ -38,6 +38,8 @@ public:
      */
     FFPixFormat(QString name, QString prettyName, int numComponents, int bitsPerPixel, Abilities abilities, QObject *parent = nullptr);
 
+    void init();
+
     void setAbilities(Abilities &abilities);
 
     void setInput(bool input);
@@ -51,6 +53,7 @@ public:
     bool isOutput();
 
     int bitsPerPixel() const;
+    int bitsPerChannel() const;
     int numComponents() const;
     bool hasAlpha() const;
     ColorSpace colorSpace() const;
@@ -59,10 +62,12 @@ public:
 
     QString yuvComponentsDistribution() const;
 
+
 private:
     Abilities _abilities;
     int _numComponents;
     int _bitsPerPixel;
+    int _bitsPerChannel;
     bool _hasAlpha;
     ColorSpace _colorSpace;
     QString _yuvComponentsDistribution;
