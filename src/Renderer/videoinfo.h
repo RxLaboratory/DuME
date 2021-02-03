@@ -16,7 +16,12 @@ public:
     void copyFrom(VideoInfo *other, bool silent = false);
     bool isCopy();
     QJsonObject toJson();
-    QString getDescription();
+    /**
+     * @brief Generates a human readable description of the media
+     * @param outputMedia If True, includes some information about the way the media will be generated
+     * @return The description
+     */
+    QString getDescription(bool outputMedia = false );
 
     int quality() const;
     void setQuality(int quality, bool silent = false);
@@ -64,16 +69,16 @@ public:
     void setColorTRC(QString tRC, bool silent = false);
     void setColorSpace(QString space, bool silent = false);
     void setColorRange(QString range, bool silent = false);
-    void setColorPrimaries(FFBaseObject *primaries, bool silent = false);
-    void setColorTRC(FFBaseObject *tRC, bool silent = false);
-    void setColorSpace(FFBaseObject *space, bool silent = false);
-    void setColorRange(FFBaseObject *range, bool silent = false);
+    void setColorPrimaries(FFColorItem *primaries, bool silent = false);
+    void setColorTRC(FFColorItem *tRC, bool silent = false);
+    void setColorSpace(FFColorItem *space, bool silent = false);
+    void setColorRange(FFColorItem *range, bool silent = false);
     void setColorProfile(FFColorProfile *colorProfile, bool silent = false);
     void setColorProfile(QString profile, bool silent = false);
-    FFBaseObject *colorPrimaries();
-    FFBaseObject *colorTRC();
-    FFBaseObject *colorSpace();
-    FFBaseObject *colorRange();
+    FFColorItem *colorPrimaries();
+    FFColorItem *colorTRC();
+    FFColorItem *colorSpace();
+    FFColorItem *colorRange();
 
     /**
      * @brief setAlpha Tries to set a pixel format which has alpha (or not)
@@ -159,6 +164,10 @@ public:
     void setResizeAlgorithm(QString resizeAlgorithm, bool silent = false);
     void setResizeAlgorithm(QJsonObject resizeAlgorithm, bool silent = false);
 
+    MediaUtils::ColorConversionMode colorConversionMode() const;
+    void setColorConversionMode(MediaUtils::ColorConversionMode colorConversionMode, bool silent = false);
+    void setColorConversionMode(QString colorConversionMode, bool silent = false);
+
 signals:
     void changed();
 
@@ -209,10 +218,11 @@ private:
     FFBaseObject *_resizeAlgorithm;
     FFCodec *_codec;
     FFLanguage *_language;
-    FFBaseObject *_colorPrimaries;
-    FFBaseObject *_colorTRC;
-    FFBaseObject *_colorSpace;
-    FFBaseObject *_colorRange;
+    FFColorItem *_colorPrimaries;
+    FFColorItem *_colorTRC;
+    FFColorItem *_colorSpace;
+    FFColorItem *_colorRange;
+    MediaUtils::ColorConversionMode _colorConversionMode;
     bool _premultipliedAlpha;
     int _topCrop;
     int _bottomCrop;

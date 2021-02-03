@@ -1,6 +1,6 @@
 #include "ffcolorprofile.h"
 
-FFColorProfile::FFColorProfile(QString name, QString prettyName, FFBaseObject *primaries, FFBaseObject *trc, FFBaseObject *space, FFBaseObject *range, QObject *parent):
+FFColorProfile::FFColorProfile(QString name, QString prettyName, FFColorItem *primaries, FFColorItem *trc, FFColorItem *space, FFColorItem *range, QObject *parent):
     FFBaseObject(name, prettyName, parent)
 {
     _primaries = primaries;
@@ -9,22 +9,22 @@ FFColorProfile::FFColorProfile(QString name, QString prettyName, FFBaseObject *p
     _range = range;
 }
 
-FFBaseObject *FFColorProfile::primaries() const
+FFColorItem *FFColorProfile::primaries() const
 {
     return _primaries;
 }
 
-FFBaseObject *FFColorProfile::trc() const
+FFColorItem *FFColorProfile::trc() const
 {
     return _trc;
 }
 
-FFBaseObject *FFColorProfile::space() const
+FFColorItem *FFColorProfile::space() const
 {
     return _space;
 }
 
-FFBaseObject *FFColorProfile::range() const
+FFColorItem *FFColorProfile::range() const
 {
     return _range;
 }

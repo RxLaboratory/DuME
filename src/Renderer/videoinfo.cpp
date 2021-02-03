@@ -22,6 +22,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _colorTRC = ffmpeg->colorTRC("");
     _colorSpace = ffmpeg->colorSpace("");
     _colorRange = ffmpeg->colorRange("");
+    _colorConversionMode = MediaUtils::ConvertEmbed;
     _premultipliedAlpha = true;
     _topCrop = 0;
     _bottomCrop = 0;
@@ -67,6 +68,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setColorTRC( obj.value("colorTRC").toString(), true);
     setColorSpace( obj.value("colorSpace").toString(), true);
     setColorRange( obj.value("colorRange").toString(), true);
+    setColorConversionMode( obj.value("colorConversionMode").toString(""), true);
     int t = obj.value("topCrop").toInt(0);
     int b = obj.value("bottomCrop").toInt(0);
     int l = obj.value("leftCrop").toInt(0);
@@ -112,6 +114,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _colorTRC = other->colorTRC();
     _colorSpace = other->colorSpace();
     _colorRange = other->colorRange();
+    _colorConversionMode = other->colorConversionMode();
     _premultipliedAlpha = other->premultipliedAlpha();
     _topCrop = other->topCrop();
     _bottomCrop = other->bottomCrop();
@@ -164,6 +167,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("colorTRC", _colorTRC->toJson());
     vStream.insert("colorSpace", _colorSpace->toJson());
     vStream.insert("colorRange", _colorRange->toJson());
+    vStream.insert("colorConversionMode", MediaUtils::ColorConversionModeToString( _colorConversionMode ));
     vStream.insert("topCrop", _topCrop);
     vStream.insert("bottomCrop", _bottomCrop);
     vStream.insert("leftCrop", _leftCrop);
@@ -187,7 +191,7 @@ QJsonObject VideoInfo::toJson()
     return vStream;
 }
 
-QString VideoInfo::getDescription()
+QString VideoInfo::getDescription( bool outputMedia )
 {
     QString mediaInfoString;
     mediaInfoString += "Video stream";
@@ -271,11 +275,17 @@ QString VideoInfo::getDescription()
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
     }
     if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
-    if ( _speed != 1.0)
+    if ( outputMedia && (_colorSpace->name() != "" || _colorPrimaries->name() != "" || _colorTRC->name() != "" || _colorRange->name() != "") )
+    {
+        if (colorConversionMode() == MediaUtils::Convert) mediaInfoString += "\nColor conversion: Convert colors only";
+        else if (colorConversionMode() == MediaUtils::Embed) mediaInfoString += "\nColor conversion: Embed profile (set metadata only)";
+        else mediaInfoString += "\nColor conversion: Convert colors & embed profile";
+    }
+    if ( outputMedia && _speed != 1.0)
     {
         mediaInfoString += "\nSpeed multiplicator: " + QString::number(_speed) + "x";
     }
-    if (_speedInterpolationMode != MediaUtils::NoMotionInterpolation)
+    if (outputMedia && _speedInterpolationMode != MediaUtils::NoMotionInterpolation)
     {
         mediaInfoString += "\nMotion interpolation: " + MediaUtils::MotionInterpolationModeToString(_speedInterpolationMode );
         if (_speedInterpolationMode == MediaUtils::MCIAO || _speedInterpolationMode == MediaUtils::MCIO)
@@ -287,8 +297,8 @@ QString VideoInfo::getDescription()
         if (_sceneDetection) mediaInfoString += "yes";
         else mediaInfoString += "no";
     }
-    if ( _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
-    if ( _deinterlace )
+    if ( outputMedia && _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
+    if ( outputMedia && _deinterlace )
     {
         mediaInfoString += "\nDeinterlace: " + MediaUtils::DeinterlaceParityToString(_deinterlaceParity);
     }
@@ -464,25 +474,25 @@ void VideoInfo::setColorRange(QString range, bool silent)
     setColorRange( FFmpeg::instance()->colorRange(range), silent);
 }
 
-void VideoInfo::setColorPrimaries(FFBaseObject *primaries, bool silent)
+void VideoInfo::setColorPrimaries(FFColorItem *primaries, bool silent)
 {
     _colorPrimaries = primaries;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorTRC(FFBaseObject *tRC, bool silent)
+void VideoInfo::setColorTRC(FFColorItem *tRC, bool silent)
 {
     _colorTRC = tRC;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorSpace(FFBaseObject *space, bool silent)
+void VideoInfo::setColorSpace(FFColorItem *space, bool silent)
 {
     _colorSpace = space;
     if(!silent) emit changed();
 }
 
-void VideoInfo::setColorRange(FFBaseObject *range, bool silent)
+void VideoInfo::setColorRange(FFColorItem *range, bool silent)
 {
     if (_pixFormat->colorSpace() == FFPixFormat::YUV)
         _colorRange = range;
@@ -826,6 +836,22 @@ void VideoInfo::setResizeAlgorithm(QJsonObject resizeAlgorithm, bool silent)
     setResizeAlgorithm(resizeAlgorithm.value("name").toString(""), silent);
 }
 
+MediaUtils::ColorConversionMode VideoInfo::colorConversionMode() const
+{
+    return _colorConversionMode;
+}
+
+void VideoInfo::setColorConversionMode(QString colorConversionMode, bool silent)
+{
+    setColorConversionMode( MediaUtils::ColorConversionModeModeFromString(colorConversionMode), silent);
+}
+
+void VideoInfo::setColorConversionMode(MediaUtils::ColorConversionMode colorConversionMode, bool silent)
+{
+    _colorConversionMode = colorConversionMode;
+    if(!silent) emit changed();
+}
+
 void VideoInfo::setResizeAlgorithm(FFBaseObject *resizeAlgorithm,  bool silent)
 {
     _resizeAlgorithm = resizeAlgorithm;
@@ -843,22 +869,22 @@ void VideoInfo::setEncodingSpeed(int encodingSpeed, bool silent)
     if(!silent) emit changed();
 }
 
-FFBaseObject *VideoInfo::colorPrimaries()
+FFColorItem *VideoInfo::colorPrimaries()
 {
     return _colorPrimaries;
 }
 
-FFBaseObject *VideoInfo::colorTRC()
+FFColorItem *VideoInfo::colorTRC()
 {
     return _colorTRC;
 }
 
-FFBaseObject *VideoInfo::colorSpace()
+FFColorItem *VideoInfo::colorSpace()
 {
     return _colorSpace;
 }
 
-FFBaseObject *VideoInfo::colorRange()
+FFColorItem *VideoInfo::colorRange()
 {
     return _colorRange;
 }

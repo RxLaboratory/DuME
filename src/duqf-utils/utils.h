@@ -76,7 +76,10 @@ namespace MediaUtils
     ResizeMode ResizeModeFromString(QString mode);
     QString ResizeModeToString(ResizeMode mode);
 
-
+    enum ColorConversionMode{ ConvertEmbed, Convert, Embed };
+    Q_ENUM_NS(ColorConversionMode)
+    ColorConversionMode ColorConversionModeModeFromString(QString mode);
+    QString ColorConversionModeToString(ColorConversionMode mode);
 
     /**
      * @brief statusString Converts the status as a human readable string to be used in the UI

@@ -89,15 +89,16 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
 
 void OutputWidget::ffmpeg_init()
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
     _mediaInfo->reInit( false );
     ffmpeg_loadMuxers();
-    _freezeUI = false;
+    _freezeUI = frozen;
 }
 
 void OutputWidget::ffmpeg_loadMuxers()
 {
-    bool uiFreezed = _freezeUI;
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     formatsBox->clear();
@@ -128,7 +129,7 @@ void OutputWidget::ffmpeg_loadMuxers()
     }
 
     formatsBox->setCurrentIndex( -1 );
-    _freezeUI = uiFreezed;
+    _freezeUI = frozen;
 }
 
 MediaInfo *OutputWidget::mediaInfo()
@@ -145,6 +146,7 @@ void OutputWidget::setMediaInfo(MediaInfo *mediaInfo)
 
 void OutputWidget::mediaInfoChanged()
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     //Audio / Video Buttons and Muxer selection
@@ -161,6 +163,7 @@ void OutputWidget::mediaInfoChanged()
     {
         formatsBox->setCurrentData( m->name() );
     }
+
     if (formatsBox->currentIndex() == -1)
     {
         //try without filter
@@ -168,6 +171,7 @@ void OutputWidget::mediaInfoChanged()
         ffmpeg_loadMuxers();
         formatsBox->setCurrentData( m->name() );
     }
+
     // update output path (to set the extension)
     setOutputPath(outputEdit->text());
 
@@ -205,9 +209,10 @@ void OutputWidget::mediaInfoChanged()
         actionDefaultPreset->setChecked( false );
         actionDefaultPreset->setText("Set as default preset");
     }
+
     mediaInfoEdit->setPlainText( _mediaInfo->getDescription( true ));
 
-    _freezeUI = false;
+    _freezeUI = frozen;
 }
 
 void OutputWidget::newInputMedia(MediaInfo *m)
@@ -217,6 +222,7 @@ void OutputWidget::newInputMedia(MediaInfo *m)
 
 void OutputWidget::on_videoButton_clicked(bool checked)
 {
+    if (_freezeUI) return;
     if (checked)
     {
         addVideoStream();
@@ -229,6 +235,7 @@ void OutputWidget::on_videoButton_clicked(bool checked)
 
 void OutputWidget::on_audioButton_clicked(bool checked)
 {
+    if (_freezeUI) return;
     if (checked)
     {
         addAudioStream();
@@ -287,6 +294,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
     if (index == 0) return;
     if (_freezeUI) return;
 
+    bool frozen = _freezeUI;
     _freezeUI = true;
     bool def = presetsBox->itemData(index).toString() == PresetManager::instance()->defaultPreset().file().absoluteFilePath();
     if (def)
@@ -299,7 +307,7 @@ void OutputWidget::on_presetsBox_currentIndexChanged(int index)
         actionDefaultPreset->setChecked( false );
         actionDefaultPreset->setText("Set as default preset");
     }
-    _freezeUI = false;
+    _freezeUI = frozen;
 
     //load
     _loadingPreset = true;
@@ -350,8 +358,11 @@ void OutputWidget::setOutputPath(QString outputPath)
     }
 
     outputPath = QDir::toNativeSeparators(outputPath);
+
     outputEdit->setText( outputPath );
+
     _mediaInfo->setFileName( outputPath, true );
+
     emit newLog( "Output path set to: \"" + outputPath + "\"", LogUtils::Debug );
 }
 
@@ -393,6 +404,7 @@ void OutputWidget::inputChanged()
 void OutputWidget::loadPresets()
 {
     if (_freezeUI) return;
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     presetsBox->clear();
@@ -409,7 +421,7 @@ void OutputWidget::loadPresets()
     {
         presetsBox->addItem(preset.name(), preset.file().absoluteFilePath() );
     }
-    _freezeUI = false;
+    _freezeUI = frozen;
 
     //Try to select default
     selectDefaultPreset();
@@ -422,9 +434,10 @@ void OutputWidget::selectDefaultPreset()
     presetsBox->setCurrentData( defaultPreset );
     if ( presetsBox->currentIndex() != -1 )
     {
+        bool frozen = _freezeUI;
         _freezeUI = true;
         actionDefaultPreset->setChecked(true);
-        _freezeUI = false;
+        _freezeUI = frozen;
     }
 }
 
@@ -444,6 +457,7 @@ BlockBaseWidget *OutputWidget::addBlock(BlockContentWidget *content, QAction *ac
 
 void OutputWidget::on_actionSavePreset_triggered()
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     presetsBox->setCurrentIndex(0);
@@ -452,7 +466,7 @@ void OutputWidget::on_actionSavePreset_triggered()
     QString saveFileName = QFileDialog::getSaveFileName(this,"Save output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
     if (saveFileName == "")
     {
-        _freezeUI = false;
+        _freezeUI = frozen;
         return;
     }
 
@@ -464,12 +478,13 @@ void OutputWidget::on_actionSavePreset_triggered()
     //export
     _mediaInfo->exportPreset(saveFileName);
     //add to box
-    _freezeUI = false;
+    _freezeUI = frozen;
     PresetManager::instance()->load();
 }
 
 void OutputWidget::on_actionOpenPreset_triggered()
 {
+    bool frozen = _freezeUI;
     _freezeUI = true;
 
     presetsBox->setCurrentIndex(0);
@@ -477,10 +492,10 @@ void OutputWidget::on_actionOpenPreset_triggered()
     QString openFileName = QFileDialog::getOpenFileName(this,"Load output preset",settings.value("presets/path",QDir::homePath() + "/DuME Presets/").toString(),"DuME preset (*.meprst);;JSON (*.json);;All Files (*.*)");
     if (openFileName == "")
     {
-        _freezeUI = false;
+        _freezeUI = frozen;
         return;
     }
-    _freezeUI = false;
+    _freezeUI = frozen;
     openPresetFile(openFileName);
 }
 
@@ -510,6 +525,7 @@ void OutputWidget::on_actionDefaultPreset_triggered(bool checked)
 
 void OutputWidget::on_outputEdit_textEdited(QString text)
 {
+    if (_freezeUI) return;
     _mediaInfo->setFileName( text, true );
     _outputPathIsCustom = true;
 }

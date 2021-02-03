@@ -246,6 +246,21 @@ QString MediaUtils::ResizeModeToString(MediaUtils::ResizeMode mode)
     return "Letterbox";
 }
 
+MediaUtils::ColorConversionMode MediaUtils::ColorConversionModeModeFromString(QString mode)
+{
+    if (mode == "Convert") return Convert;
+    if (mode == "Embed") return Embed;
+    else return ConvertEmbed;
+}
+
+QString MediaUtils::ColorConversionModeToString(MediaUtils::ColorConversionMode mode)
+{
+    if (mode == Convert) return "Convert";
+    if (mode == Embed) return "Embed";
+    else return "ConvertEmbed";
+}
+
+
 QString MediaUtils::RenderStatusToHumanString(MediaUtils::RenderStatus status)
 {
     if (status == Initializing) return "Initializing...";
@@ -304,3 +319,4 @@ void FileUtils::openInExplorer(QString path)
     QProcess::execute("xdg-open \"" + p + "\"");
 #endif
 }
+

@@ -19,6 +19,7 @@
 #include "ffpixformat.h"
 #include "ffcolorprofile.h"
 #include "ffsampleformat.h"
+#include "ffcoloritem.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -117,15 +118,15 @@ public:
      */
     FFSampleFormat *sampleFormat(QString name);
     //Colors
-    FFBaseObject *colorTRC(QString name);
-    FFBaseObject *colorPrimary(QString name);
-    FFBaseObject *colorSpace(QString name);
-    FFBaseObject *colorRange(QString name);
+    FFColorItem *colorTRC(QString name);
+    FFColorItem *colorPrimary(QString name);
+    FFColorItem *colorSpace(QString name);
+    FFColorItem *colorRange(QString name);
     FFColorProfile *colorProfile(QString name);
-    QList<FFBaseObject *> colorPrimaries() const;
-    QList<FFBaseObject *> colorTRCs() const;
-    QList<FFBaseObject *> colorSpaces() const;
-    QList<FFBaseObject *> colorRanges() const;
+    QList<FFColorItem *> colorPrimaries() const;
+    QList<FFColorItem *> colorTRCs() const;
+    QList<FFColorItem *> colorSpaces() const;
+    QList<FFColorItem *> colorRanges() const;
     QList<FFColorProfile *> colorProfiles() const;
     //Motion interpolation algos
     FFBaseObject *motionInterpolationAlgorithm(QString name);
@@ -217,10 +218,10 @@ private:
     // The default audio sample format
     FFSampleFormat *_defaultSampleFormat;
     // The list of color profiles
-    QList<FFBaseObject *> _colorPrimaries;
-    QList<FFBaseObject *> _colorTRCs;
-    QList<FFBaseObject *> _colorSpaces;
-    QList<FFBaseObject *> _colorRanges;
+    QList<FFColorItem *> _colorPrimaries;
+    QList<FFColorItem *> _colorTRCs;
+    QList<FFColorItem *> _colorSpaces;
+    QList<FFColorItem *> _colorRanges;
     // The list of color profiles
     QList<FFColorProfile *> _colorProfiles;
     //The list of motion interpolation algorithms

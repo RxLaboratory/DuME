@@ -25,31 +25,12 @@ bool FFmpegRenderer::launchJob()
     QStringList arguments;
     arguments << "-loglevel" << "error" << "-stats" << "-y";
 
-    //output checks
-    MediaInfo *o = _job->getOutputMedias()[0];
-    FFPixFormat *outputPixFmt = nullptr;
-    FFPixFormat::ColorSpace outputColorSpace = FFPixFormat::OTHER;
+    // Check if we need to convert colors
+    bool convertColors = colorManagement();
 
-    if (o->hasVideo())
-    {
-        outputPixFmt = o->videoStreams()[0]->pixFormat();
-        if (outputPixFmt->name() == "") outputPixFmt = o->videoStreams()[0]->defaultPixFormat();
-        if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
-        if (outputPixFmt->name() != "") outputColorSpace = outputPixFmt->colorSpace();
-    }
-
-    //input checks
-    bool exrInput = false;
-    MediaInfo *i = _job->getInputMedias()[0];
-    if (i->hasVideo()) exrInput = i->videoStreams()[0]->codec()->name() == "exr";
-
-    //some values to get from the input
+    //some values needed later to get from the input
     double inputFramerate = 0.0;
     double totalDuration = 0.0;
-
-    //some values to get from the output
-    double speedMultiplicator = 1.0;
-    double outputFrameRate = 0.0;
 
     //add inputs
     foreach(MediaInfo *input, _job->getInputMedias())
@@ -64,6 +45,7 @@ bool FFmpegRenderer::launchJob()
                 if (option[1] != "") arguments << option[1];
             }
         }
+
         if (input->hasVideo())
         {
             VideoInfo *stream = input->videoStreams()[0];
@@ -83,23 +65,26 @@ bool FFmpegRenderer::launchJob()
                 inputFileName = input->ffmpegSequenceName();
             }
 
-            //add color management
-            FFPixFormat::ColorSpace inputColorSpace = FFPixFormat::OTHER;
+            // COLOR MANAGEMENT
+
+            // Get the default pix format and Color profile
             FFPixFormat *inputPixFmt = stream->pixFormat();
             if (inputPixFmt->name() == "") inputPixFmt = stream->defaultPixFormat();
             if (inputPixFmt->name() == "") inputPixFmt = input->defaultPixFormat();
-            inputColorSpace = inputPixFmt->colorSpace();
+            FFColorProfile *profile = FFmpeg::instance()->colorProfile( inputPixFmt->defaultColorProfile() );
 
-            bool convertToYUV = outputColorSpace == FFPixFormat::YUV && inputColorSpace != FFPixFormat::YUV  && input->hasVideo() ;
-
+            // Set input color interpretation
             if (stream->colorTRC()->name() != "" ) arguments << "-color_trc" << stream->colorTRC()->name();
-            else if ( convertToYUV ) arguments << "-color_trc" << "bt709";
+            else if ( convertColors && profile->name() != "" ) arguments << "-color_trc" << profile->trc()->name();
+
             if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-            else if ( convertToYUV ) arguments << "-color_range" << "tv";
+            else if ( convertColors && profile->name() != "" ) arguments << "-color_range" << profile->range()->name();
+
             if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-            else if ( convertToYUV ) arguments << "-color_primaries" << "bt709";
+            else if ( convertColors && profile->name() != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+
             if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
-            else if ( convertToYUV ) arguments << "-colorspace" << "bt709";
+            else if ( convertColors && profile->name() != "" ) arguments << "-colorspace" << profile->space()->name();
         }
 
         //get duration
@@ -123,6 +108,11 @@ bool FFmpegRenderer::launchJob()
         //add input file
         arguments << "-i" << QDir::toNativeSeparators(inputFileName);
     }
+
+    //some values needed later to get from the output
+    double speedMultiplicator = 1.0;
+    double outputFrameRate = 0.0;
+
     //add outputs
     foreach(MediaInfo *output, _job->getOutputMedias())
     {
@@ -292,12 +282,30 @@ bool FFmpegRenderer::launchJob()
 
                 }
 
-                //color
-                //add color management
-                if (stream->colorTRC()->name() != "") arguments << "-color_trc" << stream->colorTRC()->name();
-                if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-                if (stream->colorTRC()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-                if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
+                // COLOR MANAGEMENT
+
+                // Get the default pix format and Color profile
+                FFPixFormat *outputPixFmt = stream->pixFormat();
+                if (outputPixFmt->name() == "") outputPixFmt = stream->defaultPixFormat();
+                if (outputPixFmt->name() == "") outputPixFmt = output->defaultPixFormat();
+                FFColorProfile *profile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
+
+                // color
+                // Add color management MetaData (embed profile)
+                if (stream->colorConversionMode() != MediaUtils::Convert)
+                {
+                    if (stream->colorTRC()->name() != "") arguments << "-color_trc" << stream->colorTRC()->name();
+                    else if (profile->name() != "" && convertColors) arguments << "-color_trc" << profile->trc()->name();
+
+                    if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
+                    else if ( convertColors && profile->name() != "" ) arguments << "-color_range" << profile->range()->name();
+
+                    if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
+                    else if ( convertColors && profile->name() != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+
+                    if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
+                    else if ( convertColors && profile->name() != "" ) arguments << "-colorspace" << profile->space()->name();
+                }
 
                 //b-pyramids
                 //set as none to h264: not really useful (only on very static footage), but has compatibility issues
@@ -384,9 +392,6 @@ bool FFmpegRenderer::launchJob()
                     }
                 }
 
-                //LUT for input EXR
-                if (exrInput) filterChain << "lutrgb=r=gammaval(0.416666667):g=gammaval(0.416666667):b=gammaval(0.416666667)";
-
                 //1D / 3D LUT
                 if (stream->lut() != "")
                 {
@@ -460,6 +465,52 @@ bool FFmpegRenderer::launchJob()
                     }
                 }
 
+                // COLOR MANAGEMENT
+
+                //Color conversion
+                QStringList zScaleArgs;
+                QStringList colorspaceArgs;
+                if (stream->colorConversionMode() != MediaUtils::Embed)
+                {
+                    // Get TRC
+                    FFColorItem *trc = stream->colorTRC();
+                    if (trc->name() == "" && profile->name() != "" && convertColors) trc = profile->trc();
+                    if (trc->scaleName() != "")
+                    {
+                        if (trc->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "transfer=" + trc->scaleName();
+                        else if (trc->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "trc=" + trc->scaleName();
+                    }
+                    // Get Range
+                    FFColorItem *range = stream->colorRange();
+                    if (range->name() == "" && profile->name() != "" && convertColors) range = profile->range();
+                    if (range->scaleName() != "")
+                    {
+                        zScaleArgs << "range=" + range->scaleName();
+                    }
+                    // Get Primaries
+                    FFColorItem *primaries = stream->colorPrimaries();
+                    if (primaries->name() == "" && profile->name() != "" && convertColors) primaries = profile->primaries();
+                    if (primaries->scaleName() != "")
+                    {
+                        if (stream->colorPrimaries()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "primaries=" + primaries->scaleName();
+                        else if (stream->colorPrimaries()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "primaries=" + primaries->scaleName();
+                    }
+                    FFColorItem *space = stream->colorSpace();
+                    if (space->name() == "" && profile->name() != "" && convertColors) space = profile->space();
+                    if (space->scaleName() != "")
+                    {
+                        if (stream->colorSpace()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "matrix=" + space->scaleName();
+                        else if (stream->colorSpace()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "space=" + space->scaleName();
+                    }
+                }
+                if (zScaleArgs.count() > 0)
+                {
+                    filterChain << "zscale=" + zScaleArgs.join(":");
+                }
+                if (colorspaceArgs.count() > 0)
+                {
+                    filterChain << "colorspace" + colorspaceArgs.join(":");
+                }
 
                 //compile filters
                 if (filterChain.count() > 0) arguments << "-vf" << filterChain.join(",");
@@ -529,8 +580,7 @@ bool FFmpegRenderer::launchJob()
     this->setOutputFileName( _job->getOutputMedias()[0]->fileName() );
 
     if (outputFrameRate == 0.0) outputFrameRate = inputFramerate;
-    qDebug() << "=================================================";
-    qDebug() << outputFrameRate;
+
     if (outputFrameRate != 0.0)
     {
         this->setNumFrames( totalDuration * outputFrameRate / speedMultiplicator );
@@ -539,6 +589,75 @@ bool FFmpegRenderer::launchJob()
 
     this->start( arguments );
     return true;
+}
+
+bool FFmpegRenderer::colorManagement()
+{
+    qDebug() << "Color management";
+
+    if (!_job) return false;
+
+    MediaInfo *o = _job->getOutputMedias()[0];
+    if (!o->hasVideo()) return false;
+
+    VideoInfo *ov = o->videoStreams()[0];
+
+    // If copy stream, nothing to convert
+    if (ov->isCopy()) return false;
+
+    qDebug() << "Check if no conversion param explicitly set";
+
+    // If color profile is just embed, do not color convert anything
+    if (ov->colorConversionMode() == MediaUtils::Embed) return false;
+
+    qDebug() << "Check if the user explicitly wants to convert";
+
+    // If any of the color components is set, we need to convert
+    if (ov->colorPrimaries()->name() != "") return true;
+    if (ov->colorRange()->name() != "") return true;
+    if (ov->colorSpace()->name() != "") return true;
+    if (ov->colorTRC()->name() != "") return true;
+
+    // If the color space of the output is different from the input, we do need to convert anyway.
+
+    qDebug() << "Get the default output Color Profile";
+
+    // We can check that from the pixel format, so first get it
+    FFPixFormat *outputPixFmt = ov->pixFormat();
+    if (outputPixFmt->name() == "") outputPixFmt = ov->defaultPixFormat();
+    if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
+    FFColorProfile *outputProfile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
+
+    qDebug() << outputProfile->prettyName();
+
+    // Now let's check if any of the input has a different pixel format // input color profile
+    foreach(MediaInfo *i, _job->getInputMedias())
+    {
+        if (!i->hasVideo()) continue;
+        VideoInfo *iv = i->videoStreams()[0];
+
+        qDebug() << "Check if the user explicitly wants to convert";
+
+        // Check if any of the color components is set and different from the output
+        if (iv->colorPrimaries()->name() != "" && iv->colorPrimaries()->name() != outputProfile->primaries()->name()) return true;
+        if (iv->colorRange()->name() != "" && iv->colorRange()->name() != outputProfile->range()->name()) return true;
+        if (iv->colorSpace()->name() != "" && iv->colorSpace()->name() != outputProfile->space()->name()) return true;
+        if (iv->colorTRC()->name() != "" && iv->colorTRC()->name() != outputProfile->trc()->name()) return true;
+
+        qDebug() << "Get the default input Color Profile";
+
+        // Check from the pixel format
+        FFPixFormat *inputPixFmt = iv->pixFormat();
+        if (inputPixFmt->name() == "") inputPixFmt = iv->defaultPixFormat();
+        if (inputPixFmt->name() == "") inputPixFmt = i->defaultPixFormat();
+
+        qDebug() << "Input: " + inputPixFmt->defaultColorProfile();
+        qDebug() << "Output: " + outputProfile->name();
+
+        // If the profile is different, there is a color conversion
+        if (inputPixFmt->defaultColorProfile() != outputProfile->name()) return true;
+    }
+    return false;
 }
 
 void FFmpegRenderer::readyRead(QString output)
@@ -566,7 +685,7 @@ void FFmpegRenderer::readyRead(QString output)
         emit progress();
     }
     //detect errors
-    else if (output != "")
+    else if (!output.trimmed().startsWith("frame"))
     {
         //If we're rendering, all stuff which is not a progress is an error
         if (status() == MediaUtils::Encoding)

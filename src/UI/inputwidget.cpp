@@ -57,6 +57,9 @@ void InputWidget::openFile(QString file)
     if (file == "") return;
     file = QDir::toNativeSeparators( file );
 
+    qDebug() << "=================================";
+    qDebug() << file;
+
     QFileInfo fileInfo(file);
     _mediaInfo->update( fileInfo );
 

@@ -41,7 +41,7 @@ void FFPixFormat::init()
     }
     else _colorSpace = OTHER;
 
-    //Computes bpc and set pretty name
+    //Computes bpc, default profile and set pretty name
     _bitsPerChannel = 0;
     if ( _colorSpace == YUV && _yuvComponentsDistribution != "")
     {
@@ -52,15 +52,21 @@ void FFPixFormat::init()
         int t = y + u + v;
         _bitsPerChannel = _bitsPerPixel * y / t;
         this->setPrettyName(this->prettyName() + " (YUV - " + QString::number(_bitsPerChannel) + "bits - " + QString::number(_numComponents) + " channels)" );
+        if (_bitsPerChannel < 10) _defaultColorProfile = "bt709";
+        else if (_bitsPerChannel < 12) _defaultColorProfile = "bt2020_10";
+        else _defaultColorProfile = "bt2020_12";
     }
     else if (_colorSpace == RGB)
     {
         _bitsPerChannel = _bitsPerPixel / _numComponents;
         this->setPrettyName(this->prettyName() + " (RGB - " + QString::number(_bitsPerChannel) + "bpc - " + QString::number(_numComponents) + " channels)" );
+        if (_bitsPerChannel < 32) _defaultColorProfile = "srgb";
+        else _defaultColorProfile = "linear";
     }
     else
     {
         this->setPrettyName(this->prettyName() + " (" + QString::number(_bitsPerPixel) + " bits - " + QString::number(_numComponents) + " channels)" );
+        _defaultColorProfile = "";
     }
 }
 
@@ -137,6 +143,11 @@ FFPixFormat *FFPixFormat::getDefault( QObject *parent )
 QString FFPixFormat::yuvComponentsDistribution() const
 {
     return _yuvComponentsDistribution;
+}
+
+QString FFPixFormat::defaultColorProfile() const
+{
+    return _defaultColorProfile;
 }
 
 void FFPixFormat::setAlpha(bool hasAlpha)

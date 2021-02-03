@@ -25,6 +25,11 @@ private:
      * @return
      */
     bool launchJob();
+    /**
+     * @brief Checks if the output needs a color conversion depending on both input & output formats, and sets it up
+     * @return
+     */
+    bool colorManagement();
 
 protected:
     /**

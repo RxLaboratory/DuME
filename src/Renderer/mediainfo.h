@@ -47,7 +47,7 @@ public:
      */
     void reInit(bool removeFileName = true, bool silent = false);
 
-    QString getDescription(bool ignoreGeneralInfo = false);
+    QString getDescription(bool outputMedia = false);
 
     //presets
     QString exportPreset();
@@ -165,6 +165,8 @@ public:
     void setColorSpace(QString value, int id = -1, bool silent = false);
     void setColorRange(QString value, int id = -1, bool silent = false);
     void setColorProfile(QString profile, int id = -1, bool silent = false);
+    void setColorConversionMode(MediaUtils::ColorConversionMode mode, int id = -1, bool silent = false);
+    void setColorConversionMode(QString mode, int id = -1, bool silent = false);
     void setPremultipliedAlpha(bool value, int id = -1, bool silent = false);
     void setCrop(int top, int bottom, int left, int right, int id = -1, bool silent = false);
     void setCrop(int width, int height, int id = -1, bool silent = false);
@@ -324,7 +326,7 @@ private:
     /**
      * @brief loadSequence Loads all the frames of the frame sequence
      */
-    void loadSequence();
+    void loadSequence(bool silent = false);
 
 };
 

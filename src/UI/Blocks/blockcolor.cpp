@@ -25,7 +25,9 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     {
         rangeBox->addItem( c->prettyName(), c->name() );
     }
-
+    modeBox->addItem("Convert colors & Embed profile", "ConvertEmbed");
+    modeBox->addItem("Convert colors only", "Convert");
+    modeBox->addItem("Set Metadata only", "Embed");
     //create actions
     foreach(FFColorProfile *cp, ffmpeg->colorProfiles())
     {
@@ -75,6 +77,12 @@ void BlockColor::update()
         rangeLabel->hide();
     }
 
+}
+
+void BlockColor::on_modeBox_currentIndexChanged(int /*index*/)
+{
+    if(_freezeUI) return;
+    _mediaInfo->setColorConversionMode( modeBox->currentData().toString()  );
 }
 
 void BlockColor::on_spaceBox_currentIndexChanged(int index)
@@ -138,3 +146,4 @@ void BlockColor::on_actionUHD12_triggered()
     _mediaInfo->setColorSpace("bt2020_cl");
     _mediaInfo->setColorRange("pc");
 }
+

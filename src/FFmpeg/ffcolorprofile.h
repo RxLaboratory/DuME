@@ -3,23 +3,23 @@
 
 #include <QObject>
 
-#include "FFmpeg/ffbaseobject.h"
+#include "FFmpeg/ffcoloritem.h"
 
 
 class FFColorProfile : public FFBaseObject
 {
     Q_OBJECT
 public:
-    FFColorProfile(QString name, QString prettyName, FFBaseObject *primaries, FFBaseObject *trc, FFBaseObject *space, FFBaseObject *range, QObject *parent = nullptr);
-    FFBaseObject *primaries() const;
-    FFBaseObject *trc() const;
-    FFBaseObject *space() const;
-    FFBaseObject *range() const;
+    FFColorProfile(QString name, QString prettyName, FFColorItem *primaries, FFColorItem *trc, FFColorItem *space, FFColorItem *range, QObject *parent = nullptr);
+    FFColorItem *primaries() const;
+    FFColorItem *trc() const;
+    FFColorItem *space() const;
+    FFColorItem *range() const;
 private:
-    FFBaseObject *_primaries;
-    FFBaseObject *_trc;
-    FFBaseObject *_space;
-    FFBaseObject *_range;
+    FFColorItem *_primaries;
+    FFColorItem *_trc;
+    FFColorItem *_space;
+    FFColorItem *_range;
 };
 
 #endif // FFCOLORPROFILE_H

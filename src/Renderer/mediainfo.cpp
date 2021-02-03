@@ -253,11 +253,11 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     if(!silent) emit changed();
 }
 
-QString MediaInfo::getDescription(bool ignoreGeneralInfo)
+QString MediaInfo::getDescription(bool outputMedia)
 {
     //Text
     QString mediaInfoString = "";
-    if (_info != "" && !ignoreGeneralInfo) mediaInfoString += _info + "\n";
+    if (_info != "" && !outputMedia) mediaInfoString += _info + "\n";
 
     if (_muxer->isSequence())
     {
@@ -347,7 +347,7 @@ QString MediaInfo::getDescription(bool ignoreGeneralInfo)
         {
             VideoInfo *s = _videoStreams[i];
             mediaInfoString += "\n\n";
-            mediaInfoString += s->getDescription();
+            mediaInfoString += s->getDescription(outputMedia);
         }
 
         for ( int i = 0; i < _audioStreams.count(); i++)
@@ -416,6 +416,8 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
         return;
     }
 
+    qDebug() << "Valid JSON";
+
     QJsonObject mainObj = jsonDoc.object();
     if (mainObj.value("dume").isUndefined()) return;
 
@@ -426,20 +428,28 @@ void MediaInfo::loadPreset(QFileInfo presetFile, bool silent)
     QString version = mediaObj.value("version").toString();
     //TODO Check version
 
+    qDebug() << "IN/OUT points";
+
     //Time range
     setInPoint( mediaObj.value("inPoint").toDouble(0.0), true);
     setOutPoint( mediaObj.value("outPoint").toDouble(0.0), true);
 
+    qDebug() << "Muxer";
+
     //muxer
     QJsonObject muxerObj = mediaObj.value("muxer").toObject();
+
+    qDebug() << "Muxer is: " + muxerObj.value("name").toString("NOT FOUND!");
 
     setMuxer( muxerObj.value("name").toString(), true);
     setLoop( mediaObj.value("loop").toInt(), true );
 
+    qDebug() << "Getting Video streams";
+
     //video
     QJsonArray vStreams = mediaObj.value("videoStreams").toArray();
 
-    qDebug() << "Video streams";
+    qDebug() << "Got " + QString::number(vStreams.count());
 
     foreach( QJsonValue stream, vStreams )
     {
@@ -553,7 +563,7 @@ void MediaInfo::setDuration(double duration, bool silent )
 void MediaInfo::setFileName(QString fileName, bool silent )
 {
     _fileName = fileName;
-    if ( _muxer->isSequence() ) loadSequence();
+    if ( _muxer->isSequence() ) loadSequence(silent);
     if(!silent) emit changed();
 }
 
@@ -931,6 +941,26 @@ void MediaInfo::setColorProfile(QString profile, int id, bool silent)
             stream->setColorProfile(profile, silent);
     else if (id >= 0 && id < _videoStreams.count())
         _videoStreams[id]->setColorProfile(profile, silent);
+}
+
+void MediaInfo::setColorConversionMode(MediaUtils::ColorConversionMode mode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setColorConversionMode(mode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setColorConversionMode(mode, silent);
+}
+
+void MediaInfo::setColorConversionMode(QString mode, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setColorConversionMode(mode, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setColorConversionMode(mode, silent);
 }
 
 void MediaInfo::setPremultipliedAlpha(bool value, int id, bool silent)
@@ -1509,16 +1539,17 @@ QStringList MediaInfo::frames() const
     return _frames;
 }
 
-void MediaInfo::loadSequence()
+void MediaInfo::loadSequence(bool silent)
 {
     _frames.clear();
     _startNumber = 0;
 
     if (_fileName == "") return;
+    if (_videoStreams.count() == 0) return;
 
     qDebug() << "Loading sequence from " + _fileName;
 
-    _videoStreams[0]->setIntra(true);
+    _videoStreams[0]->setIntra(true, silent);
 
     //base file info
     QFileInfo baseFileInfo(_fileName);

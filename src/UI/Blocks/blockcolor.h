@@ -23,6 +23,7 @@ private slots:
     void on_actionBT709_triggered();
     void on_actionUHD10_triggered();
     void on_actionUHD12_triggered();
+    void on_modeBox_currentIndexChanged(int index);
 };
 
 #endif // BLOCKCOLOR_H

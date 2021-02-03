@@ -16,58 +16,62 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _defaultObject = new FFBaseObject("", "Default", this);
 
     // The color TRCs
-    _colorTRCs << new FFBaseObject("", "Auto");
-    _colorTRCs << new FFBaseObject("iec61966_2_1", "sRGB");
-    _colorTRCs << new FFBaseObject("iec61966_2_4", "Extended-gamut YCC (xvYCC)");
-    _colorTRCs << new FFBaseObject("linear", "Linear");
-    _colorTRCs << new FFBaseObject("log100", "Log");
-    _colorTRCs << new FFBaseObject("log_sqrt", "Log square root");
-    _colorTRCs << new FFBaseObject("bt709", "BT.709");
-    _colorTRCs << new FFBaseObject("gamma22", "BT.470 M");
-    _colorTRCs << new FFBaseObject("gamma28", "BT.470 BG");
-    _colorTRCs << new FFBaseObject("bt1361","BT.1361");
-    _colorTRCs << new FFBaseObject("bt1361e","BT.1361 E");
-    _colorTRCs << new FFBaseObject("bt2020_10","BT.2020 - 10 bit");
-    _colorTRCs << new FFBaseObject("bt2020_12","BT.2020 - 12 bit");
-    _colorTRCs << new FFBaseObject("smpte170m","SMPTE 170 M");
-    _colorTRCs << new FFBaseObject("smpte240m","SMPTE 240 M");
-    _colorTRCs << new FFBaseObject("smpte428","SMPTE 428");
-    _colorTRCs << new FFBaseObject("smpte428_1","SMPTE 428-1");
-    _colorTRCs << new FFBaseObject("smpte2084","SMPTE 2084");
+    _colorTRCs << new FFColorItem("", "Auto", "");
+    _colorTRCs << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("iec61966_2_1", "sRGB", "iec61966-2-1", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("iec61966_2_4", "Extended-gamut YCC (xvYCC)", "iec61966-2-4", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("linear", "Linear", "linear", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("log100", "Log");
+    _colorTRCs << new FFColorItem("log_sqrt", "Log square root");
+    _colorTRCs << new FFColorItem("bt709", "BT.709", "709", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("gamma22", "BT.470 M", "bt470m", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("gamma28", "BT.470 BG", "bt470bg", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("bt1361","BT.1361");
+    _colorTRCs << new FFColorItem("bt1361e","BT.1361 E");
+    _colorTRCs << new FFColorItem("bt2020_10","BT.2020 - 10 bit", "2020_10", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("bt2020_12","BT.2020 - 12 bit", "2020_12", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("smpte170m","SMPTE 170 M / BT.601 / BT.470 B.B1.G", "601", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("smpte428","SMPTE 428");
+    _colorTRCs << new FFColorItem("smpte428_1","SMPTE 428-1");
+    _colorTRCs << new FFColorItem("smpte2084","SMPTE 2084", "smpte2084", FFColorItem::ZScale);
 
     // The color Ranges
-    _colorRanges << new FFBaseObject("","Auto");
-    _colorRanges << new FFBaseObject("tv","Limited");
-    _colorRanges << new FFBaseObject("pc","Full");
+    _colorRanges << new FFColorItem("","Auto");
+    _colorRanges << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
+    _colorRanges << new FFColorItem("tv","Limited", "limited", FFColorItem::ZScale);
+    _colorRanges << new FFColorItem("pc","Full", "full", FFColorItem::ZScale);
 
     // The color Spaces
-    _colorSpaces << new FFBaseObject("","Auto");
-    _colorSpaces << new FFBaseObject("rgb","RGB");
-    _colorSpaces << new FFBaseObject("bt709","BT.709");
-    _colorSpaces << new FFBaseObject("bt470bg","BT.470 BG");
-    _colorSpaces << new FFBaseObject("bt2020_ncl","BT.2020 NCL");
-    _colorSpaces << new FFBaseObject("bt2020_cl","BT.2020 CL");
-    _colorSpaces << new FFBaseObject("smpte2085","SMPTE 2085");
-    _colorSpaces << new FFBaseObject("smpte170m","SMPTE 170 M");
-    _colorSpaces << new FFBaseObject("smpte240m","SMPTE 240 M");
-    _colorSpaces << new FFBaseObject("ycgco","YCGCO");
-    _colorSpaces << new FFBaseObject("ycocg","YCOCG");
-    _colorSpaces << new FFBaseObject("fcc","FCC");
+    _colorSpaces << new FFColorItem("","Auto");
+    _colorSpaces << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("rgb","RGB", "709", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt709","BT.709", "709", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt470bg","BT.470 BG", "470bg", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt2020_ncl","BT.2020 NCL", "2020_ncl", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt2020_cl","BT.2020 CL", "2020_cl", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("smpte2085","SMPTE 2085");
+    _colorSpaces << new FFColorItem("smpte170m","SMPTE 170 M", "170m", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
+    _colorSpaces << new FFColorItem("ycgco","YCGCO", "ycgco", FFColorItem::Colorspace);
+    _colorSpaces << new FFColorItem("ycocg","YCOCG");
+    _colorSpaces << new FFColorItem("fcc","FCC", "fcc", FFColorItem::Colorspace);
 
     // The color Primaries
-    _colorPrimaries << new FFBaseObject("","Auto");
-    _colorPrimaries << new FFBaseObject("film","Film");
-    _colorPrimaries << new FFBaseObject("bt709","BT.709 / RGB");
-    _colorPrimaries << new FFBaseObject("bt470m","BT.470 M");
-    _colorPrimaries << new FFBaseObject("bt470bg","BT.470 BG");
-    _colorPrimaries << new FFBaseObject("bt2020","BT.2020");
-    _colorPrimaries << new FFBaseObject("smpte170m","SMPTE 170 M");
-    _colorPrimaries << new FFBaseObject("smpte240m","SMPTE 240 M");
-    _colorPrimaries << new FFBaseObject("smpte428","SMPTE 428");
-    _colorPrimaries << new FFBaseObject("smpte428_1","SMPTE 428-1");
-    _colorPrimaries << new FFBaseObject("smpte431","SMPTE 431");
-    _colorPrimaries << new FFBaseObject("smpte432","SMPTE 432");
-    _colorPrimaries << new FFBaseObject("jedec-p22","JEDEC P22");
+    _colorPrimaries << new FFColorItem("","Auto");
+    _colorPrimaries << new FFColorItem("","Same as input", "input", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("film","Film", "film", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("bt709","BT.709 / RGB", "709", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("bt470m","BT.470 M", "bt470m", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("bt470bg","BT.470 BG", "bt470bg", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("bt2020","BT.2020", "2020", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("smpte170m","SMPTE 170 M", "170m", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("smpte240m","SMPTE 240 M", "240m", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("smpte428","SMPTE 428");
+    _colorPrimaries << new FFColorItem("smpte428_1","SMPTE 428-1");
+    _colorPrimaries << new FFColorItem("smpte431","SMPTE 431", "smpte431", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("smpte432","SMPTE 432", "smpte432", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("jedec-p22","JEDEC P22", "jedec-p22", FFColorItem::Colorspace);
 
     // The complete color Profiles
     _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
@@ -75,6 +79,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("linear", "Data - Intermediary (Linear RGB)", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
 
     //The motion interpolation algorithms
     _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");
@@ -237,22 +242,22 @@ QList<FFColorProfile *> FFmpeg::colorProfiles() const
     return _colorProfiles;
 }
 
-QList<FFBaseObject *> FFmpeg::colorRanges() const
+QList<FFColorItem *> FFmpeg::colorRanges() const
 {
     return _colorRanges;
 }
 
-QList<FFBaseObject *> FFmpeg::colorSpaces() const
+QList<FFColorItem *> FFmpeg::colorSpaces() const
 {
     return _colorSpaces;
 }
 
-QList<FFBaseObject *> FFmpeg::colorTRCs() const
+QList<FFColorItem *> FFmpeg::colorTRCs() const
 {
     return _colorTRCs;
 }
 
-QList<FFBaseObject *> FFmpeg::colorPrimaries() const
+QList<FFColorItem *> FFmpeg::colorPrimaries() const
 {
     return _colorPrimaries;
 }
@@ -407,56 +412,56 @@ FFSampleFormat *FFmpeg::sampleFormat(QString name)
     return _defaultSampleFormat;
 }
 
-FFBaseObject *FFmpeg::colorTRC(QString name)
+FFColorItem *FFmpeg::colorTRC(QString name)
 {
     name = name.trimmed();
-    foreach(FFBaseObject *c,_colorTRCs)
+    foreach(FFColorItem *c,_colorTRCs)
     {
         if (c->name().toLower() == name.trimmed().toLower()) return c;
     }
-    foreach(FFBaseObject *c,_colorTRCs)
+    foreach(FFColorItem *c,_colorTRCs)
     {
         if (c->prettyName() == name) return c;
     }
     return _colorTRCs[0];
 }
 
-FFBaseObject *FFmpeg::colorPrimary(QString name)
+FFColorItem *FFmpeg::colorPrimary(QString name)
 {
     name = name.trimmed();
-    foreach(FFBaseObject *c,_colorPrimaries)
+    foreach(FFColorItem *c,_colorPrimaries)
     {
         if (c->name().toLower() == name.trimmed().toLower()) return c;
     }
-    foreach(FFBaseObject *c,_colorPrimaries)
+    foreach(FFColorItem *c,_colorPrimaries)
     {
         if (c->prettyName() == name) return c;
     }
     return _colorPrimaries[0];
 }
 
-FFBaseObject *FFmpeg::colorSpace(QString name)
+FFColorItem *FFmpeg::colorSpace(QString name)
 {
     name = name.trimmed();
-    foreach(FFBaseObject *c,_colorSpaces)
+    foreach(FFColorItem *c,_colorSpaces)
     {
         if (c->name().toLower() == name.trimmed().toLower()) return c;
     }
-    foreach(FFBaseObject *c,_colorSpaces)
+    foreach(FFColorItem *c,_colorSpaces)
     {
         if (c->prettyName() == name) return c;
     }
     return _colorSpaces[0];
 }
 
-FFBaseObject *FFmpeg::colorRange(QString name)
+FFColorItem *FFmpeg::colorRange(QString name)
 {
     name = name.trimmed();
-    foreach(FFBaseObject *c,_colorRanges)
+    foreach(FFColorItem *c,_colorRanges)
     {
         if (c->name().toLower() == name.trimmed().toLower()) return c;
     }
-    foreach(FFBaseObject *c,_colorRanges)
+    foreach(FFColorItem *c,_colorRanges)
     {
         if (c->prettyName() == name) return c;
     }

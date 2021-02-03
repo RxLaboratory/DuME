@@ -3,7 +3,6 @@
 
 #include "ffbaseobject.h"
 
-
 class FFPixFormat : public FFBaseObject
 {
     Q_OBJECT
@@ -62,6 +61,7 @@ public:
 
     QString yuvComponentsDistribution() const;
 
+    QString defaultColorProfile() const;
 
 private:
     Abilities _abilities;
@@ -71,6 +71,7 @@ private:
     bool _hasAlpha;
     ColorSpace _colorSpace;
     QString _yuvComponentsDistribution;
+    QString _defaultColorProfile;
 
 };
 

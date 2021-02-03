@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
+    FFmpeg/ffcoloritem.cpp \
     UI/Blocks/blockcrop.cpp \
     UI/Blocks/blockdeinterlace.cpp \
     UI/Blocks/blocklut.cpp \
@@ -101,6 +102,7 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
+    FFmpeg/ffcoloritem.h \
     UI/Blocks/blockcrop.h \
     UI/Blocks/blockdeinterlace.h \
     UI/Blocks/blocklut.h \
