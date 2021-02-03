@@ -18,6 +18,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Added a [**Motion interpolation**](speed.md) filter.
 - Added new [**resize**](resize.md) options and algorithms.
 - Select **input time range**.
+- Implemented proper [color management](colors.md).
 - [Command Line](cli-options.md) improvements:
     - Ability to load a custom preset file.
     - Added the `--minimize` option.

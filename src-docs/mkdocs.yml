@@ -36,7 +36,7 @@ nav:
         - MP4 / h.264 AVC / h.265 HEVC: h264-5.md
         - Image sequences: sequences.md
         - Adding / Changing streams: mapping.md
-        - Convert color spaces: color-space.md
+        - Color management: colors.md
         - Applying a LUT: lut.md
         - Speed and framerate: speed.md
         - Resizing: resize.md
