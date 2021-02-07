@@ -1,5 +1,10 @@
 # Work in progress
 
+## UI
+
+- use new sliders from DuQF
+- Sync DuQF and DuME
+
 ## Color management
 
 - Redesign the Input color block specifically for input color interpretation
