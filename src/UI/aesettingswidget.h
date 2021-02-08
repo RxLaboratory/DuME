@@ -20,15 +20,14 @@ public:
     explicit AESettingsWidget(QWidget *parent = nullptr);
 
 private slots:
-    void on_aeVersionBox_currentIndexChanged(int index);
-    void on_aerenderPathEdit_textChanged(const QString &arg1);
-    void on_aerenderBrowseButton_clicked();
+    void aeVersionBox_currentIndexChanged(int index);
+    void aerenderPathEdit_textChanged(const QString &arg1);
+    void aerenderBrowseButton_clicked();
     void updateAe();
 
 private:
     QSettings settings;
     AfterEffects *_ae;
-    bool _freezeUI;
     void refreshAeVersionBox();
 };
 

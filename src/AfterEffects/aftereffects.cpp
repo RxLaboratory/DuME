@@ -9,6 +9,12 @@ AfterEffects *AfterEffects::instance()
     return _instance;
 }
 
+AfterEffects::~AfterEffects()
+{
+    //we have to restore templates, just in case...
+    restoreOriginalTemplates();
+}
+
 bool aeVersionSorter(AfterEffectsVersion *v1, AfterEffectsVersion *v2)
 {
     if (v1->version() < v2->version()) return true;
@@ -107,6 +113,7 @@ bool AfterEffects::setBinary(QString name)
     }
     else
     {
+        _useLatest = false;
         settings.setValue( "aerender/useLatest", false );
         settings.setValue( "aerender/version", name);
     }
@@ -117,13 +124,20 @@ bool AfterEffects::setBinary(QString name)
         {
             settings.setValue("aerender/path", _versions[i]->path() );
 
-            if ( AbstractRendererInfo::setBinary( _versions[i]->path() ) )
+            QString prevName = _currentName;
+            AfterEffectsVersion *prevVersion = _currentVersion;
+
+            _currentName = name;
+            _currentVersion = _versions[i];
+
+            if ( !AbstractRendererInfo::setBinary( _versions[i]->path() ) )
             {
-                emit newLog("After Effects set to renderer: " + _versions[i]->name() );
-                _currentName = name;
-                _currentVersion = _versions[i];
-                return true;
+                _currentName = prevName;
+                _currentVersion = prevVersion;
+                return false;
             }
+
+            return true;
         }
     }
 

@@ -19,6 +19,7 @@ public:
      * @return
      */
     static AfterEffects *instance();
+    ~AfterEffects();
 
     QList<AfterEffectsVersion *> versions() const;
     QString currentName() const;

@@ -6,34 +6,24 @@ AESettingsWidget::AESettingsWidget(QWidget *parent) :
     setupUi(this);
 
     _ae = AfterEffects::instance();
-    _freezeUI = true;
 
     updateAe();
 
-    connect(_ae, &AbstractRendererInfo::binaryChanged, this, &AESettingsWidget::updateAe);
-
-    _freezeUI = false;
+    connect(_ae, &AfterEffects::binaryChanged, this, &AESettingsWidget::updateAe);
+    connect(aeVersionBox, SIGNAL(currentIndexChanged(int)), this, SLOT(aeVersionBox_currentIndexChanged(int)));
+    connect(aerenderPathEdit, SIGNAL(textChanged(QString)), this, SLOT(aerenderPathEdit_textChanged(QString)));
+    connect(aerenderBrowseButton, SIGNAL(clicked()), this, SLOT(aerenderBrowseButton_clicked()));
 }
 
-void AESettingsWidget::on_aeVersionBox_currentIndexChanged(int index)
+void AESettingsWidget::aeVersionBox_currentIndexChanged(int index)
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
-
     QString name = aeVersionBox->itemText(index);
     _ae->setBinary( name );
-
-    aerenderPathEdit->setText( QDir::toNativeSeparators( _ae->binary() ) );
-    aerenderBrowseButton->setEnabled( name == "Custom" );
-    aerenderPathEdit->setEnabled( name == "Custom" );
-
-    _freezeUI = false;
 }
 
-void AESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
+void AESettingsWidget::aerenderPathEdit_textChanged(const QString &arg1)
 {
-    if (_freezeUI) return;
-    _freezeUI = true;
+    QSignalBlocker b1(aerenderPathEdit);
 
     QString path = QDir::toNativeSeparators(arg1);
     aerenderPathEdit->setText(path);
@@ -42,7 +32,6 @@ void AESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
     {
         if (aeVersionBox->itemData(i).toString() == path )
         {
-            _freezeUI = false;
             aeVersionBox->setCurrentIndex(i);
             return;
         }
@@ -51,11 +40,10 @@ void AESettingsWidget::on_aerenderPathEdit_textChanged(const QString &arg1)
     settings.setValue( "aerender/path", path );
     settings.sync();
 
-    _freezeUI = false;
     aeVersionBox->setCurrentText( "Custom" );
 }
 
-void AESettingsWidget::on_aerenderBrowseButton_clicked()
+void AESettingsWidget::aerenderBrowseButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
@@ -64,13 +52,14 @@ void AESettingsWidget::on_aerenderBrowseButton_clicked()
 
 void AESettingsWidget::updateAe()
 {
-    bool frozen = _freezeUI;
-    _freezeUI = true;;
-
     //aerender path
     QString aerenderPath = _ae->binary();
     if (aerenderPath == "") aerenderPath = "Not Found! You may need to install Adobe After Effects.";
     aerenderPath = QDir::toNativeSeparators(aerenderPath);
+
+    QSignalBlocker b1(aerenderPathEdit);
+    QSignalBlocker b2(aeVersionBox);
+
     aerenderPathEdit->setText(aerenderPath);
     //ae versions
     refreshAeVersionBox();
@@ -81,15 +70,10 @@ void AESettingsWidget::updateAe()
 
     aerenderPathEdit->setEnabled( _ae->currentName() == "Custom" );
     aerenderBrowseButton->setEnabled( _ae->currentName() == "Custom" );
-
-    _freezeUI = frozen;
 }
 
 void AESettingsWidget::refreshAeVersionBox()
 {
-    bool frozen = _freezeUI;
-    _freezeUI = true;
-
     aeVersionBox->clear();
 
     foreach(AfterEffectsVersion *ae, _ae->versions())
@@ -98,6 +82,4 @@ void AESettingsWidget::refreshAeVersionBox()
     }
     aeVersionBox->addItem("Latest", "Latest" );
     aeVersionBox->addItem("Custom", _ae->binary() );
-
-    _freezeUI = frozen;
 }

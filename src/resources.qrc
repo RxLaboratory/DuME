@@ -141,6 +141,7 @@
         <file alias="render14">resources/after-effects/-indep-render-14</file>
         <file alias="render16">resources/after-effects/-indep-render-16</file>
         <file alias="render17">resources/after-effects/-indep-render-17</file>
+        <file alias="render18">resources/after-effects/-indep-render-18</file>
     </qresource>
     <qresource prefix="/regex">
         <file alias="ffmpeg video stream">resources/regex/ffmpegVideoStream.txt</file>

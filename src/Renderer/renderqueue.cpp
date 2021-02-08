@@ -231,7 +231,7 @@ void RenderQueue::postRenderCleanUp( MediaUtils::RenderStatus lastStatus )
         setStatus( MediaUtils::Cleaning );
 
         //restore ae templates TODO run more tests for this
-        //if ( _status == MediaUtils::AERendering ) _ae->restoreOriginalTemplates();
+        if ( _status == MediaUtils::AERendering ) _ae->restoreOriginalTemplates();
 
         finishCurrentItem( lastStatus );
 

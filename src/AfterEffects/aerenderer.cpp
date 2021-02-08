@@ -89,7 +89,7 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
         }
 
         // (Try to) Add our templates for rendering // DISABLED FOR NOW as the Ae script (should) does that
-        //_ae->setDuMETemplates();
+        AfterEffects::instance()->setDuMETemplates();
     }
 
     emit newLog("Beginning After Effects rendering\nUsing aerender command:\n" + arguments.join(" | "));
@@ -121,6 +121,8 @@ void AERenderer::readyRead(QString output)
     {
         int currentFrame = match.captured(1).toInt();
         setCurrentFrame( currentFrame );
+        //render has started, let's restore original templates
+        AfterEffects::instance()->restoreOriginalTemplates();
     }
 
     //Duration

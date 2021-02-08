@@ -32,9 +32,12 @@ bool AbstractRendererInfo::setBinary(QString binary)
         _binary = binary;
         _process->setProgram( binary );
         //check result
+        qDebug() << "Renderer set to: " + binary;
         emit binaryChanged( binary );
+        qDebug() << "Renderer is valid.";
         emit valid(true);
         _valid = true;
+        qDebug() << "Renderer ready.";
         return true;
     }
     else

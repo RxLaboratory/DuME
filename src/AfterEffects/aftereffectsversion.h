@@ -11,6 +11,7 @@
 #include <QVersionNumber>
 
 #include "duqf-utils/utils.h"
+#include "duqf-app/app-version.h"
 
 class AfterEffectsVersion : public QObject
 {

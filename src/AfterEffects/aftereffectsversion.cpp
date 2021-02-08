@@ -26,13 +26,13 @@ void AfterEffectsVersion::findDataPath()
 {
     //try to find templates (the Ae data dir)
     QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-
+    qDebug() << "Data paths: " + dataPaths.join("\n") ;
 #ifdef Q_OS_WIN
 
     //search the right one
     foreach(QString dataPath, dataPaths)
     {
-        dataPath = dataPath.replace("/Duduf/DuME","");
+        dataPath = dataPath.replace("/" + QString(STR_COMPANYNAME) + "/" + QString(STR_PRODUCTNAME) ,"");
         dataPath = dataPath.replace("/Rainbox Laboratory/DuME","");
 
         dataPath = dataPath  + "/Adobe";
@@ -245,9 +245,9 @@ void AfterEffectsVersion::restoreOriginalTemplates()
             QString bakPath = _dataPath + "/" + settingsFilePath;
             QString txtPath = _dataPath + "/" + settingsFilePath.replace(".bak","");
 
-#ifdef QT_DEBUG
-qDebug() << "Restoring " + bakPath;
-#endif
+
+            qDebug() << "Restoring " + bakPath;
+
 
             //remove our own
             FileUtils::remove(txtPath);
@@ -271,9 +271,7 @@ qDebug() << "Restoring " + bakPath;
             QString bakPath = _dataPath + "/" + settingsFilePath;
             QString txtPath = _dataPath + "/" + settingsFilePath.replace(".bak","");
 
-#ifdef QT_DEBUG
-qDebug() << "Restoring " + bakPath;
-#endif
+            qDebug() << "Restoring " + bakPath;
 
             //remove our own
             FileUtils::remove(txtPath);
@@ -288,9 +286,8 @@ qDebug() << "Restoring " + bakPath;
             QString bakPath = _dataPath + "/" + outputFilePath;
             QString txtPath = _dataPath + "/" + outputFilePath.replace(".bak","");
 
-#ifdef QT_DEBUG
-qDebug() << "Restoring " + bakPath;
-#endif
+
+            qDebug() << "Restoring " + bakPath;
 
             //remove our own
             FileUtils::remove(txtPath);
