@@ -1,5 +1,7 @@
 # Work in progress
 
+- [ ] Write color management doc
+
 ## Windows / Mac (Ae)
 
 - [x] Change AfterEffects to a singleton
