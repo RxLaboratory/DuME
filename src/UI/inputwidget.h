@@ -9,7 +9,7 @@
 #include "UI/Blocks/blockbasewidget.h"
 #include "UI/Blocks/blockframerate.h"
 #include "UI/Blocks/blockexr.h"
-#include "UI/Blocks/blockcolor.h"
+#include "UI/Blocks/blockcolorinput.h"
 #include "UI/Blocks/blockaecomp.h"
 #include "UI/Blocks/blockaethreads.h"
 #include "UI/Blocks/blockcustom.h"
@@ -48,7 +48,7 @@ private:
     BlockBaseWidget *blockEXR;
     BlockEXR *blockEXRContent;
     BlockBaseWidget *blockColor;
-    BlockColor *blockColorContent;
+    BlockColorInput *blockColorContent;
     BlockBaseWidget *blockAEComp;
     BlockAEComp *blockAECompContent;
     BlockBaseWidget *blockAEThreads;

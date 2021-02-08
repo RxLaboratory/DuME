@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BlockColor</class>
- <widget class="QWidget" name="BlockColor">
+ <class>BlockColorInput</class>
+ <widget class="QWidget" name="BlockColorInput">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>128</height>
+    <width>336</width>
+    <height>103</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,99 +33,52 @@
     <number>3</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Apply</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Colorspace</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="0" column="1">
     <widget class="BigComboBox" name="spaceBox"/>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Color primaries</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="1">
     <widget class="BigComboBox" name="primariesBox"/>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Color transfer</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="2" column="1">
     <widget class="BigComboBox" name="trcBox"/>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="rangeLabel">
      <property name="text">
       <string>YUV Range</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="3" column="1">
     <widget class="BigComboBox" name="rangeBox"/>
    </item>
-   <item row="0" column="1">
-    <widget class="DataComboBox" name="modeBox"/>
-   </item>
   </layout>
-  <action name="actionsRGB">
-   <property name="text">
-    <string>Images (sRGB)</string>
-   </property>
-   <property name="toolTip">
-    <string>Set colors to the sRGB standard</string>
-   </property>
-  </action>
-  <action name="actionBT709">
-   <property name="text">
-    <string>HD Video (BT.709)</string>
-   </property>
-   <property name="toolTip">
-    <string>Set the colors to the BT.709 standard</string>
-   </property>
-  </action>
-  <action name="actionUHD10">
-   <property name="text">
-    <string>UHD video - 4K/8K (BT.2020-10bits)</string>
-   </property>
-   <property name="toolTip">
-    <string>UHD video - 4K/8K (BT.2020-10bits)</string>
-   </property>
-  </action>
-  <action name="actionUHD12">
-   <property name="text">
-    <string>UHD video - HDR 4K/8K (BT.2020-12bits)</string>
-   </property>
-   <property name="toolTip">
-    <string>UHD video - HDR 4K/8K (BT.2020-12bits)</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>BigComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/bigcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DataComboBox</class>
-   <extends>QComboBox</extends>
-   <header>UI/datacombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

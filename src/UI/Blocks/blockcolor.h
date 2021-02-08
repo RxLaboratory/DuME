@@ -19,10 +19,6 @@ private slots:
     void on_trcBox_currentIndexChanged(int index);
     void on_rangeBox_currentIndexChanged(int index);
     void presetTriggered();
-    void on_actionsRGB_triggered();
-    void on_actionBT709_triggered();
-    void on_actionUHD10_triggered();
-    void on_actionUHD12_triggered();
     void on_modeBox_currentIndexChanged(int index);
 };
 

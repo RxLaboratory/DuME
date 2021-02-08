@@ -27,6 +27,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 
 SOURCES += \
     FFmpeg/ffcoloritem.cpp \
+    UI/Blocks/blockcolorinput.cpp \
     UI/Blocks/blockcrop.cpp \
     UI/Blocks/blockdeinterlace.cpp \
     UI/Blocks/blocklut.cpp \
@@ -105,6 +106,7 @@ SOURCES += \
 
 HEADERS += \
     FFmpeg/ffcoloritem.h \
+    UI/Blocks/blockcolorinput.h \
     UI/Blocks/blockcrop.h \
     UI/Blocks/blockdeinterlace.h \
     UI/Blocks/blocklut.h \
@@ -183,6 +185,7 @@ HEADERS += \
     UI/streamreferencewidget.h
 
 FORMS += \
+    UI/Blocks/blockcolorinput.ui \
     UI/Blocks/blockcrop.ui \
     UI/Blocks/blockdeinterlace.ui \
     UI/Blocks/blocklut.ui \

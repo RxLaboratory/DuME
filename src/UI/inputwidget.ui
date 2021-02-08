@@ -134,7 +134,7 @@
          <x>0</x>
          <y>0</y>
          <width>533</width>
-         <height>176</height>
+         <height>172</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -261,7 +261,7 @@
      <normaloff>:/icons/set-color</normaloff>:/icons/set-color</iconset>
    </property>
    <property name="text">
-    <string>Colors interpretation</string>
+    <string>Interpret Colorss</string>
    </property>
    <property name="toolTip">
     <string>Options to interpret the colors of the footage</string>

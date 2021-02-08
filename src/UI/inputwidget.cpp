@@ -26,7 +26,7 @@ InputWidget::InputWidget(int id, QWidget *parent) :
     blockTimeRange = addBlock( blockTimeRangeContent, actionTimeRange, ":/icons/time-range" );
     blockFrameRateContent = new BlockFrameRate( _mediaInfo );
     blockFrameRate = addBlock( blockFrameRateContent, actionFramerate, ":/icons/framerate" );
-    blockColorContent = new BlockColor( _mediaInfo );
+    blockColorContent = new BlockColorInput( _mediaInfo );
     blockColor = addBlock( blockColorContent, actionColor, ":/icons/color" );
     blockEXRContent = new BlockEXR( _mediaInfo );
     blockEXR = addBlock( blockEXRContent, actionEXR, ":/icons/raw-file" );
