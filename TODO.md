@@ -1,14 +1,6 @@
 # Work in progress
 
-## UI
-
-- use new sliders from DuQF
-- Sync DuQF and DuME
-
-## Color management
-
-- Redesign the Input color block specifically for input color interpretation
-- Test to and from all supported formats (presets) to see if colors are preserved
+- [ ] Write color management doc
 
 ## Windows / Mac (Ae)
 
