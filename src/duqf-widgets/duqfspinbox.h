@@ -1,18 +1,18 @@
 #ifndef QSLIDERSPINBOX_H
 #define QSLIDERSPINBOX_H
 
-#include "ui_sliderspinbox.h"
+#include <QStackedWidget>
+#include <QHBoxLayout>
+#include <QSpinBox>
 
-#include <QtDebug>
+#include "duqf-widgets/duqfslider.h"
 
-#include "duqf-widgets/progressslider.h"
-
-class SliderSpinBox : public QWidget, private Ui::SliderSpinBox
+class DuQFSpinBox : public QStackedWidget
 {
     Q_OBJECT
 
 public:
-    explicit SliderSpinBox(QWidget *parent = nullptr);
+    explicit DuQFSpinBox(QWidget *parent = nullptr);
     QString suffix() const;
     void setSuffix(const QString &suffix);
 
@@ -31,20 +31,26 @@ public:
     bool valueVisible() const;
     void showValue(bool showValue);
 
+    DuQFSlider *slider() const;
+
+    QSpinBox *spinBox() const;
+
 signals:
-    void sliderMoved(int value);
+    void valueChanged(int value);
 
 private slots:
-    void on_spinBox_editingFinished();
-    void on_spinBox_valueChanged(int arg1);
+    void spinBox_editingFinished();
+    void spinBox_valueChanged(int arg1);
     void slider_valueChanged(int arg1);
 private:
+    void setupUi();
+    void connectEvents();
     void updateSliderFormat();
-    ProgressSlider *slider;
+    DuQFSlider *_slider;
+    QSpinBox *_spinBox;
     QPoint _originalMousePos;
     QString _suffix;
     QString _prefix;
-    bool _showValue;
 protected:
     void mouseReleaseEvent ( QMouseEvent * event );
     void mousePressEvent ( QMouseEvent * event );

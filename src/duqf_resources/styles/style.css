@@ -419,16 +419,17 @@ QProgressBar::chunk:disabled {
 
 /* CUSTOM SLIDERS */
 
-ProgressSlider {
+DuQFSlider, DuQFDoubleSlider {
     color: @color-light-grey;
     border-radius: @padding-small;
+    height: @big-button-size;
 }
 
-ProgressSlider::chunk {
+DuQFSlider::chunk, DuQFDoubleSlider::chunk {
     border-radius: @padding-small;
 }
 
-ProgressSlider::chunk:hover {
+DuQFSlider::chunk:hover, DuQFDoubleSlider::chunk:hover {
     background-color: @color-less-light-grey;
 }
 

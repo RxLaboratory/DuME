@@ -18,15 +18,15 @@ BlockVideoBitrate::BlockVideoBitrate(MediaInfo *mediaInfo, QWidget *parent) :
     _presets->addAction( actionStreaming_12_Mbps );
     _presets->addAction( actionDVD );
 
-    qualitySlider = new SliderSpinBox();
+    qualitySlider = new DuQFSpinBox(this);
     qualitySlider->setSuffix("%");
     qualityLayout->insertWidget(0,qualitySlider);
-    speedSlider = new SliderSpinBox();
+    speedSlider = new DuQFSpinBox(this);
     speedSlider->showValue(false);
     speedLayout->addWidget(speedSlider);
 
-    connect(qualitySlider, &SliderSpinBox::sliderMoved, this, &BlockVideoBitrate::on_videoQualitySlider_sliderMoved);
-    connect(speedSlider, &SliderSpinBox::sliderMoved, this, &BlockVideoBitrate::on_speedSlider_sliderMoved);
+    connect(qualitySlider, &DuQFSpinBox::valueChanged, this, &BlockVideoBitrate::videoQualitySlider_valueChanged);
+    connect(speedSlider, &DuQFSpinBox::valueChanged, this, &BlockVideoBitrate::speedSlider_valueChanged);
 }
 
 void BlockVideoBitrate::activate(bool activate)
@@ -256,7 +256,7 @@ void BlockVideoBitrate::on_videoQualityButton_clicked(bool checked)
     }
 }
 
-void BlockVideoBitrate::on_videoQualitySlider_sliderMoved(int value)
+void BlockVideoBitrate::videoQualitySlider_valueChanged(int value)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoQuality( value );
@@ -275,7 +275,7 @@ void BlockVideoBitrate::on_speedButton_clicked(bool checked)
     }
 }
 
-void BlockVideoBitrate::on_speedSlider_sliderMoved(int value)
+void BlockVideoBitrate::speedSlider_valueChanged(int value)
 {
     if (_freezeUI) return;
     _mediaInfo->setVideoEncodingSpeed( value );

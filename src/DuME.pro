@@ -42,9 +42,11 @@ SOURCES += \
     duqf-utils/utils.cpp \
     duqf-widgets/aboutdialog.cpp \
     duqf-widgets/appearancesettingswidget.cpp \
-    duqf-widgets/progressslider.cpp \
+    duqf-widgets/duqfdoubleslider.cpp \
+    duqf-widgets/duqfslider.cpp \
     duqf-widgets/settingswidget.cpp \
-    duqf-widgets/sliderspinbox.cpp \
+    duqf-widgets/duqfspinbox.cpp \
+    duqf-widgets/duqfdoublespinbox.cpp \
     duqf-widgets/toolbarspacer.cpp \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
@@ -120,9 +122,11 @@ HEADERS += \
     duqf-utils/utils.h \
     duqf-widgets/aboutdialog.h \
     duqf-widgets/appearancesettingswidget.h \
-    duqf-widgets/progressslider.h \
+    duqf-widgets/duqfslider.h \
+    duqf-widgets/duqfdoubleslider.h \
     duqf-widgets/settingswidget.h \
-    duqf-widgets/sliderspinbox.h \
+    duqf-widgets/duqfdoublespinbox.h \
+    duqf-widgets/duqfspinbox.h \
     duqf-widgets/toolbarspacer.h \
     AfterEffects/aftereffects.h \
     AfterEffects/aftereffectsversion.h \
@@ -192,7 +196,6 @@ FORMS += \
     duqf-widgets/aboutdialog.ui \
     duqf-widgets/appearancesettingswidget.ui \
     duqf-widgets/settingswidget.ui \
-    duqf-widgets/sliderspinbox.ui \
     duqf-widgets/toolbarspacer.ui \
     UI/Blocks/blockaecomp.ui \
     UI/Blocks/blockaethreads.ui \
