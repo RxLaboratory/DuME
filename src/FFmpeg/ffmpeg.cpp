@@ -79,11 +79,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("14"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("15"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("displayp3", "Display P3 / P3 D65", colorPrimary("smpte432"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("dcip3", "DCI P3", colorPrimary("smpte431"), colorTRC("-dcip3"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("linear", "Linear RGB", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("palsecam", "PAL / SECAM", colorPrimary("bt470bg"), colorTRC("gamma22"), colorSpace("bt470bg"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("ntsc", "NTSC", colorPrimary("smpte170m"), colorTRC("smpte170m"), colorSpace("smpte170m"), colorRange("tv"));
-    _colorProfiles << new FFColorProfile("dcip3", "DCI P3", colorPrimary("smpte431"), colorTRC("-dcip3"), colorSpace("rgb"), colorRange("pc"));
-    _colorProfiles << new FFColorProfile("displayp3", "Display P3 / P3 D65", colorPrimary("smpte432"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
-    _colorProfiles << new FFColorProfile("linear", "Linear RGB", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
 
     //The motion interpolation algorithms
     _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");

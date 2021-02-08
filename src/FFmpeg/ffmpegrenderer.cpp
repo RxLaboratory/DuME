@@ -700,7 +700,7 @@ void FFmpegRenderer::readyRead(QString output)
         emit progress();
     }
     //detect errors
-    else if (!output.trimmed().startsWith("frame"))
+    else if (!output.trimmed().startsWith("frame") && output.trimmed() != "")
     {
         //If we're rendering, all stuff which is not a progress is an error
         if (status() == MediaUtils::Encoding)
