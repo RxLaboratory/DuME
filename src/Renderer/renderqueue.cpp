@@ -305,6 +305,8 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
             //set file and launch
             //frames
             double frameRate = input->videoStreams()[0]->framerate();
+            //block signals: we don't want to change any output parameter connected to the input
+            QSignalBlocker b(input);
             input->update( QFileInfo(aeTempPath + "/" + files[0]));
             if (int( frameRate ) != 0) input->videoStreams()[0]->setFramerate(frameRate);
             //add audio
