@@ -46,6 +46,11 @@ AfterEffects::AfterEffects(QObject *parent) : AbstractRendererInfo(parent)
     setBinary();
 }
 
+AfterEffectsVersion *AfterEffects::currentVersion() const
+{
+    return _currentVersion;
+}
+
 QList<AfterEffectsVersion *> AfterEffects::versions() const
 {
     return _versions;

@@ -571,7 +571,7 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
 
 void MainWindow::aeLog(QString l, LogUtils::LogType lt)
 {
-    log("After Effects | " + l, lt);
+    log("After Effects " + AfterEffects::instance()->currentVersion()->name() + " | " + l, lt);
 }
 
 void MainWindow::aeConsole(QString c)

@@ -24,6 +24,8 @@ public:
     QString currentName() const;
     bool useLatest() const;
 
+    AfterEffectsVersion *currentVersion() const;
+
 public slots:
     /**
      * @brief setCurrentAERenderProcess Sets the process (Ae version) to use, based on the settings of the application
