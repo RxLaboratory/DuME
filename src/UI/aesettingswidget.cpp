@@ -9,10 +9,13 @@ AESettingsWidget::AESettingsWidget(QWidget *parent) :
 
     updateAe();
 
+    removeAepButton->setChecked( settings.value("aerender/removeAep", true).toBool() );
+
     connect(_ae, &AfterEffects::binaryChanged, this, &AESettingsWidget::updateAe);
     connect(aeVersionBox, SIGNAL(currentIndexChanged(int)), this, SLOT(aeVersionBox_currentIndexChanged(int)));
     connect(aerenderPathEdit, SIGNAL(textChanged(QString)), this, SLOT(aerenderPathEdit_textChanged(QString)));
     connect(aerenderBrowseButton, SIGNAL(clicked()), this, SLOT(aerenderBrowseButton_clicked()));
+    connect(removeAepButton, SIGNAL(clicked(bool)), this, SLOT (removeAepButton_clicked(bool)));
 }
 
 void AESettingsWidget::aeVersionBox_currentIndexChanged(int index)
@@ -48,6 +51,11 @@ void AESettingsWidget::aerenderBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the aerender executable binary",settings.value("aerender/path","").toString());
     if (path == "") return;
     aerenderPathEdit->setText(path);
+}
+
+void AESettingsWidget::removeAepButton_clicked(bool checked)
+{
+    settings.setValue("aerender/removeAep", checked);
 }
 
 void AESettingsWidget::updateAe()

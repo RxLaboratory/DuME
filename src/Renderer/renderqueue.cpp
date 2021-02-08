@@ -288,6 +288,14 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
         //encode rendered EXR
         if (!input->aeUseRQueue())
         {
+            //Remove Temp AEP
+            if (settings.value("aerender/removeAep", true).toBool())
+            {
+                QFileInfo aep(input->fileName());
+                QDir aepFolder = aep.dir();
+                if (aepFolder.dirName() == "DuME aep") aepFolder.removeRecursively();
+            }
+
             //set exr
             //get one file
             QString aeTempPath = input->cacheDir()->path();
@@ -295,7 +303,7 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
             QStringList filters("DuME_*.exr");
             QStringList files = aeTempDir.entryList(filters,QDir::Files | QDir::NoDotAndDotDot);
 
-           //if nothing has been rendered, set to error and go on with next queue item
+            //if nothing has been rendered, set to error and go on with next queue item
             if (files.count() == 0)
             {
                 postRenderCleanUp( MediaUtils::Error );

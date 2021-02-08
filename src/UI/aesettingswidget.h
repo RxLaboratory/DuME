@@ -23,6 +23,7 @@ private slots:
     void aeVersionBox_currentIndexChanged(int index);
     void aerenderPathEdit_textChanged(const QString &arg1);
     void aerenderBrowseButton_clicked();
+    void removeAepButton_clicked(bool checked);
     void updateAe();
 
 private:
