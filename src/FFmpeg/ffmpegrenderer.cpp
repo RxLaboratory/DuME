@@ -391,7 +391,7 @@ bool FFmpegRenderer::launchJob()
                 //1D / 3D LUT
                 if (stream->lut() != "")
                 {
-                    bool filterName = "lut3d";
+                    QString filterName = "lut3d";
                     QString lutName = stream->lut();
                     //check if it's 3D or 1D
                     if (lutName.endsWith(".cube"))
@@ -413,7 +413,7 @@ bool FFmpegRenderer::launchJob()
                              l.close();
                         }
                     }
-                    filterChain << "lut1d='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
+                    filterChain << filterName + "='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
                 }
 
                 //size
