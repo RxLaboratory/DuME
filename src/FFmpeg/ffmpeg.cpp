@@ -18,23 +18,24 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     // The color TRCs
     _colorTRCs << new FFColorItem("", "Auto", "");
     _colorTRCs << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("iec61966_2_1", "sRGB", "iec61966-2-1", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("iec61966_2_4", "Extended-gamut YCC (xvYCC)", "iec61966-2-4", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("iec61966_2_1", "sRGB / YCCIEC / 61966-2-1", "iec61966-2-1", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("iec61966_2_4", "Extended-gamut YCC (xvYCC) / IEC 61966-2-4", "iec61966-2-4", FFColorItem::Colorspace);
     _colorTRCs << new FFColorItem("linear", "Linear", "linear", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("log100", "Log");
-    _colorTRCs << new FFColorItem("log_sqrt", "Log square root");
-    _colorTRCs << new FFColorItem("bt709", "BT.709", "709", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("gamma22", "BT.470 M", "bt470m", FFColorItem::Colorspace);
-    _colorTRCs << new FFColorItem("gamma28", "BT.470 BG", "bt470bg", FFColorItem::Colorspace);
-    _colorTRCs << new FFColorItem("bt1361","BT.1361");
-    _colorTRCs << new FFColorItem("bt1361e","BT.1361 E");
-    _colorTRCs << new FFColorItem("bt2020_10","BT.2020 - 10 bit", "2020_10", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("bt2020_12","BT.2020 - 12 bit", "2020_12", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("smpte170m","SMPTE 170 M / BT.601 / BT.470 B.B1.G", "601", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("log100", "Logarithmic | Input only");
+    _colorTRCs << new FFColorItem("log_sqrt", "Logarithmic square root | Input only");
+    _colorTRCs << new FFColorItem("bt709", "BT.709 / BT.1361", "709", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("gamma22", "PAL & SECAM / BT.470 M / BT.1700 625 / Gamma 2.2", "bt470m", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("gamma28", "BT.470 BG / Gamma 2.8", "bt470bg", FFColorItem::Colorspace);
+    _colorTRCs << new FFColorItem("bt1361","BT.1361 | Input only");
+    _colorTRCs << new FFColorItem("bt1361e","BT.1361 Extended Colour Gamut | Input only");
+    _colorTRCs << new FFColorItem("14","BT.2020 - 10 bit", "2020_10", FFColorItem::ZScale); // use the index instead of name as the name does not seem to work
+    _colorTRCs << new FFColorItem("15","BT.2020 - 12 bit", "2020_12", FFColorItem::ZScale); // use the index instead of name as the name does not seem to work
+    _colorTRCs << new FFColorItem("smpte170m","NTSC / BT.601-6 / BT.1358 / BT.1700  / SMPTE 170 M / BT.470 B.B1.G", "601", FFColorItem::ZScale);
     _colorTRCs << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
-    _colorTRCs << new FFColorItem("smpte428","SMPTE 428");
-    _colorTRCs << new FFColorItem("smpte428_1","SMPTE 428-1");
-    _colorTRCs << new FFColorItem("smpte2084","SMPTE 2084", "smpte2084", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("smpte428","SMPTE 428 / SMPTE 428-1 | Input only");
+    _colorTRCs << new FFColorItem("smpte2084","SMPTE ST 2084 10/12/14/16 bit", "smpte2084", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("18","Hybrid log-gamma / ARIB STD-B67", "arib-std-b67", FFColorItem::ZScale);
+    _colorTRCs << new FFColorItem("-dcip3", "DCI P3 (Gamma 2.6)", "2.6", FFColorItem::Gamma);
 
     // The color Ranges
     _colorRanges << new FFColorItem("","Auto");
@@ -45,40 +46,43 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     // The color Spaces
     _colorSpaces << new FFColorItem("","Auto");
     _colorSpaces << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("rgb","RGB", "709", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("bt709","BT.709", "709", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("bt470bg","BT.470 BG", "470bg", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("bt2020_ncl","BT.2020 NCL", "2020_ncl", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("bt2020_cl","BT.2020 CL", "2020_cl", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("smpte2085","SMPTE 2085");
-    _colorSpaces << new FFColorItem("smpte170m","SMPTE 170 M", "170m", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("rgb","RGB / IEC 61966-2-1", "709", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt709","BT.709 / BT.1361 / IEC 61966-2-4 xvYCC709 / SMPTE RP177", "709", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt470bg","PAL & SECAM / BT.470 BG / BT.601-6 / BT.1358 / IEC 61966-2-4 xvYCC601", "470bg", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt2020_ncl","BT.2020 NCL (non-constant luminance system)", "2020_ncl", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("bt2020_cl","BT.2020 CL (constant luminance system)", "2020_cl", FFColorItem::ZScale);
+    _colorSpaces << new FFColorItem("smpte2085","SMPTE 2085 / Y'D'zD'x | Input only");
+    _colorSpaces << new FFColorItem("smpte170m","NTSC / SMPTE 170 M / BT.601-6 / BT.1358", "170m", FFColorItem::ZScale);
     _colorSpaces << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
-    _colorSpaces << new FFColorItem("ycgco","YCGCO", "ycgco", FFColorItem::Colorspace);
-    _colorSpaces << new FFColorItem("ycocg","YCOCG");
-    _colorSpaces << new FFColorItem("fcc","FCC", "fcc", FFColorItem::Colorspace);
+    _colorSpaces << new FFColorItem("ycgco","YCGCO / YCOCG / Dirac / VC-2 and H.264 FRext", "ycgco", FFColorItem::Colorspace);
+    _colorSpaces << new FFColorItem("fcc","FCC Title 47", "fcc", FFColorItem::Colorspace);
+    _colorSpaces << new FFColorItem("14","BT.2100-0 / ICtCp | Input only");
 
     // The color Primaries
     _colorPrimaries << new FFColorItem("","Auto");
     _colorPrimaries << new FFColorItem("","Same as input", "input", FFColorItem::ZScale);
-    _colorPrimaries << new FFColorItem("film","Film", "film", FFColorItem::Colorspace);
-    _colorPrimaries << new FFColorItem("bt709","BT.709 / RGB", "709", FFColorItem::ZScale);
-    _colorPrimaries << new FFColorItem("bt470m","BT.470 M", "bt470m", FFColorItem::Colorspace);
-    _colorPrimaries << new FFColorItem("bt470bg","BT.470 BG", "bt470bg", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("film","Film / Illuminant C", "film", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("bt709","BT.709 / RGB / IEC 61966-2-4 / BT.1361", "709", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("bt470m","BT.470 M / FCC Title 47", "bt470m", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("bt470bg","PAL & SECAM / BT.470 BG / BT.601-6 625 / BT.1358 625 / BT.1700 625", "bt470bg", FFColorItem::Colorspace);
     _colorPrimaries << new FFColorItem("bt2020","BT.2020", "2020", FFColorItem::ZScale);
-    _colorPrimaries << new FFColorItem("smpte170m","SMPTE 170 M", "170m", FFColorItem::ZScale);
+    _colorPrimaries << new FFColorItem("smpte170m","NTSC / SMPTE 170 M / BT.601-6 525 / BT.1358 525 / BT.1700", "170m", FFColorItem::ZScale);
     _colorPrimaries << new FFColorItem("smpte240m","SMPTE 240 M", "240m", FFColorItem::ZScale);
-    _colorPrimaries << new FFColorItem("smpte428","SMPTE 428");
-    _colorPrimaries << new FFColorItem("smpte428_1","SMPTE 428-1");
-    _colorPrimaries << new FFColorItem("smpte431","SMPTE 431", "smpte431", FFColorItem::Colorspace);
-    _colorPrimaries << new FFColorItem("smpte432","SMPTE 432", "smpte432", FFColorItem::Colorspace);
-    _colorPrimaries << new FFColorItem("jedec-p22","JEDEC P22", "jedec-p22", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("smpte428","SMPTE 428 / SMPTE ST 428-1 / SMPTE ST 428-1 (CIE 1931 XYZ) | Input only");
+    _colorPrimaries << new FFColorItem("smpte431","DCI P3 / SMPTE ST 431-2 (2011)", "smpte431", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("smpte432","P3 D65 / Display P3 / SMPTE ST 432-1 (2010)", "smpte432", FFColorItem::Colorspace);
+    _colorPrimaries << new FFColorItem("jedec-p22","EBU Tech. 3213-E / JEDEC P22 phosphors", "jedec-p22", FFColorItem::Colorspace);
 
     // The complete color Profiles
     _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
     _colorProfiles << new FFColorProfile("srgb", "Images (sRGB)", colorPrimary("bt709"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
-    _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
-    _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("14"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("15"), colorSpace("bt2020_cl"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("palsecam", "PAL / SECAM", colorPrimary("bt470bg"), colorTRC("gamma22"), colorSpace("bt470bg"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("ntsc", "NTSC", colorPrimary("smpte170m"), colorTRC("smpte170m"), colorSpace("smpte170m"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("dcip3", "DCI P3", colorPrimary("smpte431"), colorTRC("-dcip3"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("displayp3", "Display P3 / P3 D65", colorPrimary("smpte432"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("linear", "Linear RGB", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
 
     //The motion interpolation algorithms

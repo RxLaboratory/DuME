@@ -289,16 +289,12 @@ bool FFmpegRenderer::launchJob()
                 if (outputPixFmt->name() == "") outputPixFmt = stream->defaultPixFormat();
                 if (outputPixFmt->name() == "") outputPixFmt = output->defaultPixFormat();
                 FFColorProfile *profile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
-qDebug() << "========================================";
-qDebug() << profile->name();
-qDebug() << profile->range()->name();
-qDebug() << stream->colorRange()->prettyName();
-qDebug() << stream->pixFormat()->prettyName();
+
                 // color
                 // Add color management MetaData (embed profile)
                 if (stream->colorConversionMode() != MediaUtils::Convert)
                 {
-                    if (stream->colorTRC()->name() != "") arguments << "-color_trc" << stream->colorTRC()->name();
+                    if (stream->colorTRC()->name() != "" && !stream->colorTRC()->name().startsWith("-")) arguments << "-color_trc" << stream->colorTRC()->name();
                     else if (profile->name() != "" && convertColors) arguments << "-color_trc" << profile->trc()->name();
 
                     if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
@@ -474,6 +470,7 @@ qDebug() << stream->pixFormat()->prettyName();
                 //Color conversion
                 QStringList zScaleArgs;
                 QStringList colorspaceArgs;
+                QStringList lutrgbArgs;
                 if (stream->colorConversionMode() != MediaUtils::Embed)
                 {
                     // Get TRC
@@ -483,6 +480,15 @@ qDebug() << stream->pixFormat()->prettyName();
                     {
                         if (trc->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "transfer=" + trc->scaleName();
                         else if (trc->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "trc=" + trc->scaleName();
+                        else if (trc->scaleFilter() == FFColorItem::Gamma)
+                        {
+                            //linearize first
+                            zScaleArgs << "transfer=linear";
+                            //apply gamma
+                            lutrgbArgs << "r=gammaval(1/" + trc->scaleName() + ")";
+                            lutrgbArgs << "g=gammaval(1/" + trc->scaleName() + ")";
+                            lutrgbArgs << "b=gammaval(1/" + trc->scaleName() + ")";
+                        }
                     }
                     // Get Range
                     FFColorItem *range = stream->colorRange();
@@ -509,11 +515,16 @@ qDebug() << stream->pixFormat()->prettyName();
                 }
                 if (zScaleArgs.count() > 0)
                 {
+                    zScaleArgs << "dither=ordered";
                     filterChain << "zscale=" + zScaleArgs.join(":");
                 }
                 if (colorspaceArgs.count() > 0)
                 {
-                    filterChain << "colorspace" + colorspaceArgs.join(":");
+                    filterChain << "colorspace=" + colorspaceArgs.join(":");
+                }
+                if (lutrgbArgs.count() > 0)
+                {
+                    filterChain << "lutrgb=" + lutrgbArgs.join(":");
                 }
 
                 //compile filters

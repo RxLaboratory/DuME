@@ -52,9 +52,7 @@ void FFPixFormat::init()
         int t = y + u + v;
         _bitsPerChannel = _bitsPerPixel * y / t;
         this->setPrettyName(this->prettyName() + " (YUV - " + QString::number(_bitsPerChannel) + "bits - " + QString::number(_numComponents) + " channels)" );
-        if (_bitsPerChannel < 10) _defaultColorProfile = "bt709";
-        else if (_bitsPerChannel < 12) _defaultColorProfile = "bt2020_10";
-        else _defaultColorProfile = "bt2020_12";
+        _defaultColorProfile = "bt709";
     }
     else if (_colorSpace == RGB)
     {

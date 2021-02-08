@@ -6,7 +6,7 @@
 class FFColorItem : public FFBaseObject
 {
 public:
-    enum ScaleFilter{ ZScale, Colorspace, Scale };
+    enum ScaleFilter{ ZScale, Colorspace, Scale, Gamma };
     Q_ENUM(ScaleFilter)
 
     FFColorItem(QString name, QObject *parent = nullptr);
