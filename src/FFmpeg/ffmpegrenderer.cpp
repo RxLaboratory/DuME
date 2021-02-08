@@ -67,18 +67,9 @@ bool FFmpegRenderer::launchJob()
 
             // COLOR MANAGEMENT
 
-            // Get the default pix format and Color profile
-            // From Muxer if avail. else from pix format
-            FFMuxer *muxer = input->muxer();
-            QString profileName = muxer->defaultColorProfile();
-            if (profileName == "")
-            {
-                FFPixFormat *inputPixFmt = stream->pixFormat();
-                if (inputPixFmt->name() == "") inputPixFmt = stream->defaultPixFormat();
-                if (inputPixFmt->name() == "") inputPixFmt = input->defaultPixFormat();
-                profileName = inputPixFmt->defaultColorProfile();
-            }
-            FFColorProfile *profile = FFmpeg::instance()->colorProfile( profileName );
+            // Get the default Color profile
+            FFColorProfile *profile = input->defaultColorProfile();
+            QString profileName = profile->name();
 
             // Set input color interpretation
             if (stream->colorTRC()->name() != "" ) arguments << "-color_trc" << stream->colorTRC()->name();
@@ -291,27 +282,25 @@ bool FFmpegRenderer::launchJob()
 
                 // COLOR MANAGEMENT
 
-                // Get the default pix format and Color profile
-                FFPixFormat *outputPixFmt = stream->pixFormat();
-                if (outputPixFmt->name() == "") outputPixFmt = stream->defaultPixFormat();
-                if (outputPixFmt->name() == "") outputPixFmt = output->defaultPixFormat();
-                FFColorProfile *profile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
+                // Get the default Color profile
+                FFColorProfile *profile = output->defaultColorProfile();
+                QString profileName = profile->name();
 
                 // color
                 // Add color management MetaData (embed profile)
                 if (stream->colorConversionMode() != MediaUtils::Convert)
                 {
                     if (stream->colorTRC()->name() != "" && !stream->colorTRC()->name().startsWith("-")) arguments << "-color_trc" << stream->colorTRC()->name();
-                    else if (profile->name() != "" && convertColors) arguments << "-color_trc" << profile->trc()->name();
+                    else if (profileName != "" && convertColors) arguments << "-color_trc" << profile->trc()->name();
 
                     if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-                    else if ( convertColors && profile->name() != "" ) arguments << "-color_range" << profile->range()->name();
+                    else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->name();
 
                     if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-                    else if ( convertColors && profile->name() != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+                    else if ( convertColors && profileName != "" ) arguments << "-color_primaries" << profile->primaries()->name();
 
                     if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
-                    else if ( convertColors && profile->name() != "" ) arguments << "-colorspace" << profile->space()->name();
+                    else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->name();
                 }
 
                 //b-pyramids
@@ -645,14 +634,12 @@ bool FFmpegRenderer::colorManagement()
     qDebug() << "Get the default output Color Profile";
 
     // We can check that from the pixel format, so first get it
-    FFPixFormat *outputPixFmt = ov->pixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = ov->defaultPixFormat();
-    if (outputPixFmt->name() == "") outputPixFmt = o->defaultPixFormat();
-    FFColorProfile *outputProfile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
+    // Get the default Color profile
+    FFColorProfile *outputProfile = o->defaultColorProfile();
 
     qDebug() << outputProfile->prettyName();
 
-    // Now let's check if any of the input has a different pixel format // input color profile
+    // Now let's check if any of the input has a different input color profile
     foreach(MediaInfo *i, _job->getInputMedias())
     {
         if (!i->hasVideo()) continue;
@@ -669,15 +656,13 @@ bool FFmpegRenderer::colorManagement()
         qDebug() << "Get the default input Color Profile";
 
         // Check from the pixel format
-        FFPixFormat *inputPixFmt = iv->pixFormat();
-        if (inputPixFmt->name() == "") inputPixFmt = iv->defaultPixFormat();
-        if (inputPixFmt->name() == "") inputPixFmt = i->defaultPixFormat();
+        FFColorProfile *inputProfile = i->defaultColorProfile();
 
-        qDebug() << "Input: " + inputPixFmt->defaultColorProfile();
+        qDebug() << "Input: " + inputProfile->name();
         qDebug() << "Output: " + outputProfile->name();
 
         // If the profile is different, there is a color conversion
-        if (inputPixFmt->defaultColorProfile() != outputProfile->name()) return true;
+        if (inputProfile->name() != outputProfile->name()) return true;
     }
     return false;
 }

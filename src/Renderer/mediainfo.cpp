@@ -1488,6 +1488,20 @@ void MediaInfo::setAlpha(bool alpha, bool silent)
     }
 }
 
+FFColorProfile *MediaInfo::defaultColorProfile(int streamId)
+{
+    QString profileName = _muxer->defaultColorProfile();
+    if (profileName == "" && streamId >=0 && streamId < _videoStreams.count())
+    {
+        VideoInfo *stream = _videoStreams[streamId];
+        FFPixFormat *pixFmt = stream->pixFormat();
+        if (pixFmt->name() == "") pixFmt = stream->defaultPixFormat();
+        if (pixFmt->name() == "") pixFmt = stream->defaultPixFormat();
+        profileName = pixFmt->defaultColorProfile();
+    }
+    return FFmpeg::instance()->colorProfile( profileName );
+}
+
 qint64 MediaInfo::bitrate() const
 {
     return _bitrate;

@@ -99,6 +99,9 @@ public:
     bool canHaveAlpha() const;
     void setAlpha(bool alpha, bool silent = false);
 
+    //color
+    FFColorProfile *defaultColorProfile(int streamId = 0);
+
     //custom params
     QList<QStringList> ffmpegOptions();
     void setFFmpegOptions(QList<QStringList> options, bool silent = false);
