@@ -6,8 +6,8 @@
 
 - [x] Change AfterEffects to a singleton
 - [x] Change aerenderer to a singleton
-- [ ] Check output modules
-- [ ] Check if the right version of ae is selected (display it in the status or log)
+- [x] Check output modules
+- [x] Check if the right version of ae is selected (display it in the status or log)
 - [ ] Detect ae errors
 
 ## Filters to add
