@@ -3,6 +3,7 @@
 
 #include "ffbaseobject.h"
 #include "ffcodec.h"
+#include "ffcolorprofile.h"
 
 class FFMuxer : public FFBaseObject
 {
@@ -51,6 +52,7 @@ public:
 
     static FFMuxer *getDefault(QObject *parent = nullptr);
 
+    QString defaultColorProfile() const;
 signals:
 
 public slots:
@@ -58,9 +60,11 @@ public slots:
 private:
     FFCodec *_defaultVideoCodec;
     FFCodec *_defaultAudioCodec;
+    QString _defaultColorProfile;
     Types _types;
     QStringList _extensions;
     bool _decodeOnly;
+    void init();
 };
 
 #endif // FFMUXER_H

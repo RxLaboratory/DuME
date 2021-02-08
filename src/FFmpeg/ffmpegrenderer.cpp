@@ -68,23 +68,30 @@ bool FFmpegRenderer::launchJob()
             // COLOR MANAGEMENT
 
             // Get the default pix format and Color profile
-            FFPixFormat *inputPixFmt = stream->pixFormat();
-            if (inputPixFmt->name() == "") inputPixFmt = stream->defaultPixFormat();
-            if (inputPixFmt->name() == "") inputPixFmt = input->defaultPixFormat();
-            FFColorProfile *profile = FFmpeg::instance()->colorProfile( inputPixFmt->defaultColorProfile() );
+            // From Muxer if avail. else from pix format
+            FFMuxer *muxer = input->muxer();
+            QString profileName = muxer->defaultColorProfile();
+            if (profileName == "")
+            {
+                FFPixFormat *inputPixFmt = stream->pixFormat();
+                if (inputPixFmt->name() == "") inputPixFmt = stream->defaultPixFormat();
+                if (inputPixFmt->name() == "") inputPixFmt = input->defaultPixFormat();
+                profileName = inputPixFmt->defaultColorProfile();
+            }
+            FFColorProfile *profile = FFmpeg::instance()->colorProfile( profileName );
 
             // Set input color interpretation
             if (stream->colorTRC()->name() != "" ) arguments << "-color_trc" << stream->colorTRC()->name();
-            else if ( convertColors && profile->name() != "" ) arguments << "-color_trc" << profile->trc()->name();
+            else if ( convertColors && profileName != "" ) arguments << "-color_trc" << profile->trc()->name();
 
             if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-            else if ( convertColors && profile->name() != "" ) arguments << "-color_range" << profile->range()->name();
+            else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->name();
 
             if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-            else if ( convertColors && profile->name() != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+            else if ( convertColors && profileName != "" ) arguments << "-color_primaries" << profile->primaries()->name();
 
             if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
-            else if ( convertColors && profile->name() != "" ) arguments << "-colorspace" << profile->space()->name();
+            else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->name();
         }
 
         //get duration

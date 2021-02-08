@@ -6,6 +6,7 @@ FFMuxer::FFMuxer(QString name, QString prettyName, QObject *parent) : FFBaseObje
     _defaultVideoCodec = FFCodec::getDefault( this );
     _decodeOnly = false;
     _types = Types( 0 );
+    init();
 }
 
 FFMuxer::FFMuxer(QString name, QString prettyName, Types types, QObject *parent) : FFBaseObject(name, prettyName, parent)
@@ -14,6 +15,15 @@ FFMuxer::FFMuxer(QString name, QString prettyName, Types types, QObject *parent)
     _defaultVideoCodec = FFCodec::getDefault( this );
     _decodeOnly = false;
     _types = types;
+    init();
+}
+
+void FFMuxer::init()
+{
+    if (name() == "exr") _defaultColorProfile = "linear";
+    else if (name() == "mp4") _defaultColorProfile = "bt709";
+    else if (isSequence()) _defaultColorProfile = "srgb";
+    else _defaultColorProfile = "";
 }
 
 QJsonObject FFMuxer::toJson()
@@ -102,6 +112,11 @@ FFMuxer *FFMuxer::getDefault( QObject *parent )
     return m;
 }
 
+QString FFMuxer::defaultColorProfile() const
+{
+    return _defaultColorProfile;
+}
+
 bool FFMuxer::isDecodeOnly() const
 {
     return _decodeOnly;
@@ -116,4 +131,5 @@ void FFMuxer::setSequence(bool sequence)
 {
     if (sequence) _types.setFlag(Video, true);
     _types.setFlag(Sequence, sequence);
+    init();
 }
