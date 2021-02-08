@@ -79,7 +79,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("bt2020_10"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("bt2020_12"), colorSpace("bt2020_cl"), colorRange("pc"));
-    _colorProfiles << new FFColorProfile("linear", "Data - Intermediary (Linear RGB)", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("linear", "Linear RGB", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
 
     //The motion interpolation algorithms
     _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");

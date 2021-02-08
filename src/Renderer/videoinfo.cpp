@@ -252,29 +252,24 @@ QString VideoInfo::getDescription( bool outputMedia )
     }
     else mediaInfoString += "\nAlpha: no";
     mediaInfoString += "\nPixel Format: " + pf->prettyName();
-    if ( _colorTRC->name() == "iec61966_2_1" && _colorPrimaries->name() == "bt709" && _colorSpace->name() == "rgb")
+    //check color profile
+    bool profileFound = false;
+    foreach(FFColorProfile *p, FFmpeg::instance()->colorProfiles())
     {
-        mediaInfoString += "\nColor profile: sRGB";
+        if (p->trc()->name() == _colorTRC->name() && p->primaries()->name() == _colorPrimaries->name() && p->space()->name() == _colorSpace->name() && p->range()->name() == _colorRange->name())
+        {
+            mediaInfoString += "\nColor profile: " + p->prettyName();
+            profileFound = true;
+            break;
+        }
     }
-    else if ( _colorTRC->name() == "bt709" && _colorPrimaries->name() == "bt709" && _colorSpace->name() == "bt709")
-    {
-        mediaInfoString += "\nColor profile: HD video, BT.709";
-    }
-    else if ( _colorTRC->name() == "bt2020_10" && _colorPrimaries->name() == "bt2020" && _colorSpace->name() == "bt2020_cl")
-    {
-        mediaInfoString += "\nColor profile: UHD video, BT.2020 10 bits";
-    }
-    else if ( _colorTRC->name() == "bt2020_12" && _colorPrimaries->name() == "bt2020" && _colorSpace->name() == "bt2020_cl")
-    {
-        mediaInfoString += "\nColor profile: UHD HDR video, BT.2020 12 bits";
-    }
-    else
+    if (!profileFound)
     {
         if ( _colorSpace->name() != "") mediaInfoString += "\nColor space: " + _colorSpace->prettyName();
         if ( _colorPrimaries->name() != "") mediaInfoString += "\nColor primaries: " + _colorPrimaries->prettyName();
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
+        if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
     }
-    if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
     if ( outputMedia && (_colorSpace->name() != "" || _colorPrimaries->name() != "" || _colorTRC->name() != "" || _colorRange->name() != "") )
     {
         if (colorConversionMode() == MediaUtils::Convert) mediaInfoString += "\nColor conversion: Convert colors only";
@@ -503,10 +498,13 @@ void VideoInfo::setColorRange(FFColorItem *range, bool silent)
 
 void VideoInfo::setColorProfile(FFColorProfile *colorProfile, bool silent)
 {
+    QSignalBlocker b(this);
+
     _colorPrimaries = colorProfile->primaries();
     _colorTRC = colorProfile->trc();
     _colorSpace = colorProfile->space();
-    _colorRange = colorProfile->range();
+    setColorRange( colorProfile->range() );
+    b.unblock();
     if(!silent) emit changed();
 }
 

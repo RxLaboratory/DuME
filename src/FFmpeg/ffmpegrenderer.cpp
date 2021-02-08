@@ -289,7 +289,11 @@ bool FFmpegRenderer::launchJob()
                 if (outputPixFmt->name() == "") outputPixFmt = stream->defaultPixFormat();
                 if (outputPixFmt->name() == "") outputPixFmt = output->defaultPixFormat();
                 FFColorProfile *profile = FFmpeg::instance()->colorProfile( outputPixFmt->defaultColorProfile() );
-
+qDebug() << "========================================";
+qDebug() << profile->name();
+qDebug() << profile->range()->name();
+qDebug() << stream->colorRange()->prettyName();
+qDebug() << stream->pixFormat()->prettyName();
                 // color
                 // Add color management MetaData (embed profile)
                 if (stream->colorConversionMode() != MediaUtils::Convert)
