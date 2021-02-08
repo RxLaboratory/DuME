@@ -22,6 +22,7 @@ void FFMuxer::init()
 {
     if (name() == "exr") _defaultColorProfile = "linear";
     else if (name() == "mp4") _defaultColorProfile = "bt709";
+    else if (name() == "webm") _defaultColorProfile = "bt709";
     else if (isSequence()) _defaultColorProfile = "srgb";
     else _defaultColorProfile = "";
 }
