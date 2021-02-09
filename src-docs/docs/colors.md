@@ -14,7 +14,7 @@ Color spaces are usually represented as three independant parameters:
 
 In *DuME*, the primaries and the white point are set together with the same parameter, which means the color profiles used by *DuME* have only two parameters: ***Primaries*** and ***Transfer curve***.
 
-*DuME* also associates with the color spaces a conversion Matrix to convert between the *YUV* and *RGB* spaces.
+*DuME* also associates a conversion Matrix with the color spaces to convert between the *YUV* and *RGB* spaces.
 
 Finally, when working in the *YUV* space, a fourth settings sets if the range is ***full*** or ***limited***. In an 8 bit full range, values for each channel range from `0` to `255` whereas in the limited range, values are constrained to the `16-235` range.
 
