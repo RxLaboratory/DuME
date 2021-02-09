@@ -7,7 +7,7 @@
 
     DuAEF.init("DuME", "0.2.0");
 
-    DuAEF.debug = true;
+    DuAEF.debug = false;
 
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
     DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
