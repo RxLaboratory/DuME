@@ -584,6 +584,10 @@ QToolBar {
     height: @small-button-size;
 }
 
+QToolBar QToolButton {
+    margin-right: @margin;
+}
+
 QToolBar QToolButton:hover {
     background-color: @color-dark-grey;
 }
