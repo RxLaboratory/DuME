@@ -84,6 +84,8 @@ private slots:
 
     void on_outputEdit_textEdited(QString text);
 
+    void revealButton_clicked();
+
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon="");

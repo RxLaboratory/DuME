@@ -44,6 +44,8 @@ InputWidget::InputWidget(int id, QWidget *parent) :
     splitter->setSizes(sizes);
 
     updateOptions();
+
+    connect(revealButton, SIGNAL(clicked()), this, SLOT(revealButton_clicked()));
 }
 
 MediaInfo *InputWidget::mediaInfo()
@@ -56,9 +58,6 @@ void InputWidget::openFile(QString file)
     QSettings settings;
     if (file == "") return;
     file = QDir::toNativeSeparators( file );
-
-    qDebug() << "=================================";
-    qDebug() << file;
 
     QFileInfo fileInfo(file);
     _mediaInfo->update( fileInfo );
@@ -174,3 +173,7 @@ void InputWidget::updateInfo()
     mediaInfosText->setText(mediaInfoString);
 }
 
+void InputWidget::revealButton_clicked()
+{
+    FileUtils::openInExplorer(_mediaInfo->fileName());
+}

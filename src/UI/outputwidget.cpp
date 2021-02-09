@@ -86,6 +86,8 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     sizes << 600;
     splitter->setSizes(sizes);
 
+    connect(revealButton, SIGNAL(clicked()), this, SLOT(revealButton_clicked()));
+
 }
 
 void OutputWidget::ffmpeg_init()
@@ -532,6 +534,11 @@ void OutputWidget::on_outputEdit_textEdited(QString text)
     if (_freezeUI) return;
     _mediaInfo->setFileName( text, true );
     _outputPathIsCustom = true;
+}
+
+void OutputWidget::revealButton_clicked()
+{
+    FileUtils::openInExplorer(QFileInfo(_mediaInfo->fileName()).path());
 }
 
 void OutputWidget::addVideoStream()

@@ -40,6 +40,8 @@ private slots:
     void on_inputEdit_editingFinished();
     void updateOptions();
     void updateInfo();
+    void revealButton_clicked();
+
 private:
     // BLOCKS
     BlockBaseWidget *addBlock(BlockContentWidget *content, QAction *action, QString icon = "");
