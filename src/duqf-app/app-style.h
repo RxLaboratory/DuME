@@ -116,7 +116,7 @@ public:
         return css;
     }
 
-    static void setFont(QString family = "Ubuntu", int size=10, QFont::Weight weight = QFont::Normal)
+    static void setFont(QString family = "Ubuntu", int size=10)
     {
         if (family == "Ubuntu")
         {
@@ -136,7 +136,7 @@ public:
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
         }
-        qApp->setFont(QFont(family,size,weight),"QWidget");
+        qApp->setFont(QFont(family,size));
     }
 
     static void setToolButtonStyle(int styleIndex)
