@@ -1,10 +1,10 @@
-site_name: DuME Documentation<br />v0.1.5
+site_name: DuME Documentation<br />v0.2.0
 site_url: http://rainboxlab.org
 repo_url: http://dume-docs.rainboxlab.org
 edit_uri: https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/
 site_description: The DuME comprehensive documentation
 site_author: Nicolas Dufresne and contributors
-copyright: 'Copyright © 2019-2020 Rainbox Laboratory and Nicolas Dufresne'
+copyright: 'Copyright © 2019-2021 Rainbox Laboratory and Nicolas Dufresne'
 use_directory_urls: false
 theme:
     name: readthedocs
