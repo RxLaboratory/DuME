@@ -7,7 +7,7 @@
 
     DuAEF.init("DuME", "0.2.0");
 
-    DuAEF.debug = false;
+    DuAEF.debug = true;
 
     DuAEF.scriptIcon = DuAEF.DuBinary.toFile(w18_rx_l);
     DuAEF.scriptIconOver = DuAEF.DuBinary.toFile(w18_rx_r);
@@ -23,6 +23,7 @@
 
     var settings = new DuSettings();
     var aerender = null;
+    var loadingSettings = false;
 
     // ================ FUNCTIONS =============
 
@@ -30,11 +31,14 @@
 
     function loadSettings()
     {
+        loadingSettings = true;
+
         //defaults
         settings.data.dumePath = def(settings.data.dumePath, "");
         settings.data.autoStart = def(settings.data.autoStart, false);
         settings.data.autoQuit = def(settings.data.autoQuit, false);
         settings.data.defaultPreset = def(settings.data.defaultPreset, "");
+        settings.data.outputPath = def(settings.data.outputPath, "project");
 
         setDuMEPath( settings.data.dumePath );
         autoStartButton.setChecked( settings.data.autoStart );
@@ -42,6 +46,16 @@
         autoQuitButton.setChecked( settings.data.autoQuit );
 
         aerender = DuAEF.DuAE.App.getAeRender();
+
+        if (settings.data.outputPath == "queue") outputSelector.setCurrentIndex(1);
+        else if (settings.data.outputPath == "project" || settings.data.outputPath == "") outputSelector.setCurrentIndex(0);
+        else 
+        {
+            outputSelector.setCurrentIndex(2); 
+            outputField.setText(settings.data.outputPath);
+        }
+
+        loadingSettings = false;
     }
 
     function setupTemplates()
@@ -108,9 +122,24 @@
         var dumeProjectFile = new File( dumeFolder.absoluteURI + "/" + projectName + " (" + DuAEF.DuJS.Date.toString(currentDate) + ").aep");
         app.project.save( dumeProjectFile );
 
+        // Build output path
         var outputFile = new File( projectFolder.fsName + "/" + projectName );
-        if (outputField.text != "") outputFile = new File(outputField.text);
-
+        if (settings.data.outputPath == "queue")
+        {
+            //find a project item for the current comp
+            new Iterator(app.project.renderQueue.items).do(function(item) {
+                if (item.comp.id == comp.id)
+                {
+                    outputFile = item.outputModule(1).file;
+                    if (item.render) return;
+                }
+                });
+        }
+        else if (settings.data.outputPath != "project" && settings.data.outputPath != "")
+        {
+            if (outputField.text != "") outputFile = new File(outputField.text);
+        }
+        
         //launch process
         DuMEProcess = new DuProcess( settings.data.dumePath );
         var args = ["--comp", compName, "--framerate", framerate,  dumeProjectFile.fsName, "--output", outputFile.fsName, "--preset", presetsButton.text ];
@@ -244,15 +273,34 @@
         settings.save();
     }
 
-    function outputButton_clicked()
+    function outputSelector_changed()
     {
-        outputFile = File.saveDialog( "Export comp as..." );
-        if (outputFile != null)
+        if (outputSelector.index == 2)
         {
-            outputField.setText(outputFile.fsName);
+            outputField.visible = true;
+            if (loadingSettings) return;
+            var outputFile = File.saveDialog( "Export comp as..." );
+            if (outputFile != null)
+            {
+                outputField.setText(outputFile.fsName);
+            }
+            settings.data.outputPath = outputField.text;
+            
         }
+        else if (outputSelector.index == 1)
+        {
+            outputField.visible = false;
+            if (loadingSettings) return;
+            settings.data.outputPath = "queue";
+        }
+        else
+        {
+            outputField.visible = false;
+            if (loadingSettings) return;
+            settings.data.outputPath = "project";
+        }
+        settings.save();
     }
-
     // _______ UI SETUP _______
 
     var ui = DuAEF.DuScriptUI.createMainPanel(thisObj, true, true);
@@ -266,25 +314,26 @@
         true
     );
 
-    var outputGroup = DuAEF.DuScriptUI.addGroup(
-        ui.mainGroup,
-        'row'
-    );
-
-        var outputButton = DuAEF.DuScriptUI.addButton(
-        outputGroup,
-        "Browse..."
-    );
-    outputButton.alignment = ['left', 'fill'];
+    var outputSelector = DuAEF.DuScriptUI.addSelector( ui.mainGroup );
+    outputSelector.addButton(
+        "Output: next to the project file."
+    )
+    outputSelector.addButton(
+        "Output: same as in Render Queue."
+    )
+    outputSelector.addButton(
+        "Output: custom path."
+    )
+    outputSelector.setCurrentIndex(0);
 
     var outputField = DuAEF.DuScriptUI.addEditText(
-        outputGroup,
+        ui.mainGroup,
         "",
         "",
         "",
         "Output path (same as project)"
     );
-    outputField.alignment = ['fill', 'fill'];
+    outputField.alignment = ['fill', 'top'];
 
     var presetsButton = DuAEF.DuScriptUI.addSelector( addCompButton.optionsPanel, true );
     var autoStartButton = DuAEF.DuScriptUI.addCheckBox( addCompButton.optionsPanel, "Auto-start rendering process");
@@ -310,7 +359,7 @@
     // Connections
     browseDuMEButton.onClick = selectDuMEPath;
     addCompButton.onClick = addCompButton_clicked;
-    outputButton.onClick = outputButton_clicked;
+    outputSelector.onChange = outputSelector_changed;
     autoStartButton.onClick = autoStartButton_clicked;
     autoQuitButton.onClick = autoQuitButton_clicked;
     presetsButton.onChange = presetsButton_changed;
