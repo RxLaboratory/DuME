@@ -47,7 +47,7 @@ public:
      */
     void reInit(bool removeFileName = true, bool silent = false);
 
-    QString getDescription(bool outputMedia = false);
+    QString getDescription();
 
     //presets
     QString exportPreset();
@@ -200,6 +200,9 @@ public:
     void setAudioSampleFormat(FFSampleFormat *value, int id = -1, bool silent = false);
     void setAudioSampleFormat(QString value, int id = -1, bool silent = false);
 
+    bool isOutputMedia() const;
+    void setOutputMedia(bool outputMedia);
+
 signals:
     /**
      * @brief changed Emitted when some parameters have been changed.
@@ -323,6 +326,10 @@ private:
      * @brief _aeUseRQueue Wether to launch the render queue when rendering the After Effects project, or render a specific composition or renderqueue item.
      */
     bool _aeUseRQueue;
+    /**
+     * @brief True if this media does not exist on disk yet
+     */
+    bool _outputMedia;
 
     // ======== METHODS =============
 

@@ -3,12 +3,14 @@
 MediaInfo::MediaInfo( QObject *parent ) : QObject(parent)
 {
     _id = -1;
+    _outputMedia = false;
     reInit();
 }
 
 MediaInfo::MediaInfo(QFileInfo mediaFile, QObject *parent ) : QObject(parent)
 {
     _id = -1;
+    _outputMedia = false;
     if ( mediaFile.suffix() == "dffp" ) loadPreset( mediaFile );
     else update( mediaFile );
 }
@@ -253,11 +255,11 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     if(!silent) emit changed();
 }
 
-QString MediaInfo::getDescription(bool outputMedia)
+QString MediaInfo::getDescription()
 {
     //Text
     QString mediaInfoString = "";
-    if (_info != "" && !outputMedia) mediaInfoString += _info + "\n";
+    if (_info != "" && !_outputMedia) mediaInfoString += _info + "\n";
 
     if (_muxer->isSequence())
     {
@@ -347,7 +349,7 @@ QString MediaInfo::getDescription(bool outputMedia)
         {
             VideoInfo *s = _videoStreams[i];
             mediaInfoString += "\n\n";
-            mediaInfoString += s->getDescription(outputMedia);
+            mediaInfoString += s->getDescription(_outputMedia);
         }
 
         for ( int i = 0; i < _audioStreams.count(); i++)
@@ -1246,6 +1248,16 @@ void MediaInfo::streamChanged()
     emit changed();
 }
 
+bool MediaInfo::isOutputMedia() const
+{
+    return _outputMedia;
+}
+
+void MediaInfo::setOutputMedia(bool outputMedia)
+{
+    _outputMedia = outputMedia;
+}
+
 double MediaInfo::outPoint() const
 {
     return _outPoint;
@@ -1571,131 +1583,143 @@ void MediaInfo::loadSequence(bool silent)
     QString baseName = baseFileInfo.completeBaseName();
     QString dirPath = baseFileInfo.path();
 
-    //find digits in the name
-    QRegularExpression reDigits("(\\d+)");
-    QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
+    QRegularExpression regExDigits("{(#+)}");
 
-    //get all files of same type in folder
-    QDir containingDir(dirPath);
-    QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
-
-    //check for each block of digits if we find a sequence
-    QString error = "";
-    QStringList missingFrames;
-    QStringList emptyFrames;
-    bool incorrect = false;
-
-    qDebug() << "Scanning file name.";
-
-    while(reDigitsMatch.hasNext())
+    //find digits in the name (if this is not an output, and file exist)
+    if (!_outputMedia)
     {
-        incorrect = false;
+        QRegularExpression reDigits("(\\d+)");
+        QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
 
-        QStringList tempFrames;
-        QRegularExpressionMatch match = reDigitsMatch.next();
-        QString digits = match.captured(0);
+        //get all files of same type in folder
+        QDir containingDir(dirPath);
+        QFileInfoList files = containingDir.entryInfoList(QStringList("*." + extension),QDir::Files);
 
-        //Get frames and check if this is a sequence
-        //list all files in the sequence matching the pattern, and compute size
-        QString left = baseName.left(match.capturedStart(0));
-        QString right = baseName.right(baseName.count() - match.capturedEnd(0));
-        QString pattern = left + "(\\d+)" + right;
-        QRegularExpression re(pattern);
-        _startNumber = 999999999;
-        _endNumber = 0;
-        _emptyFrames.clear();
-        _missingFrames.clear();
-        _size = 0;
-        int numDigits = 0;
-        foreach(QFileInfo f,files)
+        //check for each block of digits if we find a sequence
+        QString error = "";
+        QStringList missingFrames;
+        QStringList emptyFrames;
+        bool incorrect = false;
+
+        qDebug() << "Scanning file name.";
+
+        while(reDigitsMatch.hasNext())
         {
-            QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
-            if (reMatch.hasMatch())
-            {
-                //check num digits
-                int testNumDigits = reMatch.captured(1).count();
-                if (numDigits != 0 && numDigits != testNumDigits)
-                {
-                    incorrect = true;
-                    qDebug() << "Wrong naming, missing leading zeroes";
-                    if (error == "") error = "Incorrect sequence file names.\nNumbers must have leading zeroes (\"8, 9, 10, 11\" has to be \"08, 09, 10, 11\").\n";
-                }
-                numDigits = testNumDigits;
-                //get start frame
-                int currentNumber = reMatch.captured(1).toInt();
-                if (currentNumber < _startNumber) _startNumber = currentNumber;
-                if (currentNumber > _endNumber) _endNumber = currentNumber;
-                tempFrames << f.filePath();
-                _size += f.size();
-                if (f.size() < 10) _emptyFrames << f.filePath();
-            }
-        }
+            incorrect = false;
 
-        //Check if numbering is ok
-        int numFrames = _endNumber - _startNumber + 1;
-        if (_endNumber == _startNumber)
-        {
-            qDebug() << "Wrong digits block.";
-            error = "This does not look like a sequence, we did not find the frame number.";
-            incorrect = true;
-        }
+            QStringList tempFrames;
+            QRegularExpressionMatch match = reDigitsMatch.next();
+            QString digits = match.captured(0);
 
-        if (numFrames != tempFrames.count() && !incorrect)
-        {
-            incorrect = true;
-            error = "Some frames are missing.\n";
-            tempFrames.sort();
-            int num = _startNumber - 1;
-            //look for missing frames
-            foreach(QFileInfo f, tempFrames)
-            {
-                QRegularExpressionMatch test = reDigits.match(f.completeBaseName());
-                int testNum = test.captured(0).toInt();
-                num++;
-                while (num < testNum)
-                {
-                    _missingFrames << num;
-                    num++;
-                }
-                num = testNum;
-            }
-        }
-
-        //we've found the digits block
-        if (!incorrect)
-        {
-            qDebug() << "Found " + QString::number(tempFrames.count()) + " frames.";
-            error = "";
+            //Get frames and check if this is a sequence
             //list all files in the sequence matching the pattern, and compute size
-            _frames = tempFrames;
-            _bitrate = ( _size * 8 ) / ( _frames.count()/24.0 );
-            if (_startNumber == 999999999) _startNumber = 0;
-            //update filename with dume convention
-            QString digitsBlock = "";
-            while(digitsBlock.count() < digits.count())
+            QString left = baseName.left(match.capturedStart(0));
+            QString right = baseName.right(baseName.count() - match.capturedEnd(0));
+            QString pattern = left + "(\\d+)" + right;
+            QRegularExpression re(pattern);
+            _startNumber = 999999999;
+            _endNumber = 0;
+            _emptyFrames.clear();
+            _missingFrames.clear();
+            _size = 0;
+            int numDigits = 0;
+            foreach(QFileInfo f,files)
             {
-                digitsBlock += "#";
+                QRegularExpressionMatch reMatch = re.match(f.completeBaseName());
+                if (reMatch.hasMatch())
+                {
+                    //check num digits
+                    int testNumDigits = reMatch.captured(1).count();
+                    if (numDigits != 0 && numDigits != testNumDigits)
+                    {
+                        incorrect = true;
+                        qDebug() << "Wrong naming, missing leading zeroes";
+                        if (error == "") error = "Incorrect sequence file names.\nNumbers must have leading zeroes (\"8, 9, 10, 11\" has to be \"08, 09, 10, 11\").\n";
+                    }
+                    numDigits = testNumDigits;
+                    //get start frame
+                    int currentNumber = reMatch.captured(1).toInt();
+                    if (currentNumber < _startNumber) _startNumber = currentNumber;
+                    if (currentNumber > _endNumber) _endNumber = currentNumber;
+                    tempFrames << f.filePath();
+                    _size += f.size();
+                    if (f.size() < 10) _emptyFrames << f.filePath();
+                }
             }
-            _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
-            qDebug() << "Naming scheme: " + _fileName;
-            break;
+
+            //Check if numbering is ok
+            int numFrames = _endNumber - _startNumber + 1;
+            if (_endNumber == _startNumber)
+            {
+                qDebug() << "Wrong digits block.";
+                error = "This does not look like a sequence, we did not find the frame number.";
+                incorrect = true;
+            }
+
+            if (numFrames != tempFrames.count() && !incorrect)
+            {
+                incorrect = true;
+                error = "Some frames are missing.\n";
+                tempFrames.sort();
+                int num = _startNumber - 1;
+                //look for missing frames
+                foreach(QFileInfo f, tempFrames)
+                {
+                    QRegularExpressionMatch test = reDigits.match(f.completeBaseName());
+                    int testNum = test.captured(0).toInt();
+                    num++;
+                    while (num < testNum)
+                    {
+                        _missingFrames << num;
+                        num++;
+                    }
+                    num = testNum;
+                }
+            }
+
+            //we've found the digits block
+            if (!incorrect)
+            {
+                qDebug() << "Found " + QString::number(tempFrames.count()) + " frames.";
+                error = "";
+                //list all files in the sequence matching the pattern, and compute size
+                _frames = tempFrames;
+                _bitrate = ( _size * 8 ) / ( _frames.count()/24.0 );
+                if (_startNumber == 999999999) _startNumber = 0;
+                //update filename with dume convention
+                QString digitsBlock = "";
+                while(digitsBlock.count() < digits.count())
+                {
+                    digitsBlock += "#";
+                }
+                _fileName = dirPath + "/" + left + "{" + digitsBlock + "}" + right + "." + extension;
+                qDebug() << "Naming scheme: " + _fileName;
+                break;
+            }
+        }
+
+        qDebug() << "Finished scanning file name.";
+
+        if (incorrect)
+        {
+            _info += error;
+            qDebug() << "Not a sequence/digits not found.";
+            return;
+        }
+
+        qDebug() << "Found digits, generating ffmpeg name.";
+    }
+    else
+    {
+        if (!_fileName.contains(regExDigits))
+        {
+            _fileName = baseName + "_{#####}." + extension;
         }
     }
-
-    qDebug() << "Finished scanning file name.";
-
-    if (incorrect)
-    {
-        _info += error;
-        qDebug() << "Not a sequence/digits not found.";
-        return;
-    }
-
-    qDebug() << "Found digits, generating ffmpeg name.";
 
     //generates the sequence name used by ffmpeg
     //detects all {###}
-    QRegularExpression regExDigits("{(#+)}");
+
     QRegularExpressionMatchIterator regExDigitsMatch = regExDigits.globalMatch(_fileName);
     _ffmpegSequenceName = _fileName;
 

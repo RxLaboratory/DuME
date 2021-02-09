@@ -19,6 +19,7 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     _index = id;
     // Associated MediaInfo
     _mediaInfo = new MediaInfo( this);
+    _mediaInfo->setOutputMedia(true);
     connect( _mediaInfo, SIGNAL(changed()), this, SLOT(mediaInfoChanged()));
 
     // preset manager
@@ -210,7 +211,7 @@ void OutputWidget::mediaInfoChanged()
         actionDefaultPreset->setText("Set as default preset");
     }
 
-    mediaInfoEdit->setPlainText( _mediaInfo->getDescription( true ));
+    mediaInfoEdit->setPlainText( _mediaInfo->getDescription( ));
 
     _freezeUI = frozen;
 }
@@ -359,9 +360,12 @@ void OutputWidget::setOutputPath(QString outputPath)
 
     outputPath = QDir::toNativeSeparators(outputPath);
 
+    QSignalBlocker b1(outputEdit);
+    QSignalBlocker b2(_mediaInfo);
+
     outputEdit->setText( outputPath );
 
-    _mediaInfo->setFileName( outputPath, true );
+    _mediaInfo->setFileName( outputPath );
 
     emit newLog( "Output path set to: \"" + outputPath + "\"", LogUtils::Debug );
 }
