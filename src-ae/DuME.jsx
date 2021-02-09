@@ -32,7 +32,7 @@
     {
         //defaults
         settings.data.dumePath = def(settings.data.dumePath, "");
-        settings.data.autoStart = def(settings.data.autoStart, true);
+        settings.data.autoStart = def(settings.data.autoStart, false);
         settings.data.autoQuit = def(settings.data.autoQuit, false);
         settings.data.defaultPreset = def(settings.data.defaultPreset, "");
 
