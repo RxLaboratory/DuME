@@ -21,7 +21,7 @@
     <number>3</number>
    </property>
    <property name="topMargin">
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="rightMargin">
     <number>3</number>
@@ -85,13 +85,29 @@
       <item row="1" column="1">
        <widget class="QWidget" name="presetsWidget" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
-          <widget class="QPushButton" name="userPresetsBrowseButton">
+          <widget class="QToolButton" name="userPresetsBrowseButton">
            <property name="text">
             <string>Browse...</string>
            </property>
-           <property name="flat">
-            <bool>true</bool>
+           <property name="icon">
+            <iconset resource="../resources.qrc">
+             <normaloff>:/icons/set-preset-folder</normaloff>:/icons/set-preset-folder</iconset>
            </property>
           </widget>
          </item>
@@ -125,13 +141,29 @@
       <item row="0" column="1">
        <widget class="QWidget" name="pathWidget" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
-          <widget class="QPushButton" name="ffmpegBrowseButton">
+          <widget class="QToolButton" name="ffmpegBrowseButton">
            <property name="text">
             <string>Browse...</string>
            </property>
-           <property name="flat">
-            <bool>true</bool>
+           <property name="icon">
+            <iconset resource="../resources.qrc">
+             <normaloff>:/icons/set-bash-file</normaloff>:/icons/set-bash-file</iconset>
            </property>
           </widget>
          </item>

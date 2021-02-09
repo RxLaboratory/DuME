@@ -94,6 +94,9 @@
         <file alias="error">resources/icons/warning-error_sl.svg</file>
         <file alias="ok">resources/icons/check_sl.svg</file>
         <file alias="go-folder">resources/icons/go-to-explore-reveal-folder_sl.svg</file>
+        <file alias="set-bash-file">resources/icons/set-bash-batch-command-file_sl.svg</file>
+        <file alias="set-cache-folder">resources/icons/set-cache-storage-location-folder_sl.svg</file>
+        <file alias="set-preset-folder">resources/icons/set-preset-location-folder_sl.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
