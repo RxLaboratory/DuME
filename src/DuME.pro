@@ -245,7 +245,7 @@ win* {
     # Need to check the version of c++ used with distros providing Qt > 5.12
     equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 13):QMAKE_CXXFLAGS += "-fno-sized-deallocation"
     # Ignore annoying errors on older versions of Qt
-    QMAKE_CXXFLAGS += -Wdeprecated-copy
+    QMAKE_CXXFLAGS += -Wdeprecated
 } else:macx {
     # Just in case...
 }
