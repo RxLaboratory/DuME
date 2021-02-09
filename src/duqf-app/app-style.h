@@ -13,6 +13,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QToolButton>
+#include <QtDebug>
 
 class DuUI
 {
@@ -115,7 +116,7 @@ public:
         return css;
     }
 
-    static void setFont(QString family = "Ubuntu", int size=10, int weight=500)
+    static void setFont(QString family = "Ubuntu", int size=10, QFont::Weight weight = QFont::Normal)
     {
         if (family == "Ubuntu")
         {
@@ -135,7 +136,6 @@ public:
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
         }
-
         qApp->setFont(QFont(family,size,weight),"QWidget");
     }
 

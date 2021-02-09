@@ -9,7 +9,7 @@ MainWindow, QDialog {
 }
 
 QWidget {
-    font-weight:500;
+    /*font-weight:400;*/
     background-color: @color-dark-grey;
 }
 
