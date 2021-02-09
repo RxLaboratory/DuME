@@ -53,6 +53,9 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
 
     QString tempPath = "";
 
+    //We don't want to trigger changes in the queue now that we're rendering
+    QSignalBlocker b(aep);
+
     //if not using the existing render queue
     if (!aep->aeUseRQueue())
     {
@@ -119,8 +122,12 @@ void AERenderer::readyRead(QString output)
     QRegularExpressionMatch match = reProgress.match(output);
     if (match.hasMatch())
     {
-        int currentFrame = match.captured(1).toInt();
-        setCurrentFrame( currentFrame );
+        //int currentFrame = match.captured(1).toInt();
+        //Lets get progress from the number of files
+        QFileInfo outputFile(this->outputFileName());
+        QDir outputDir = outputFile.dir();
+        QFileInfoList files = outputDir.entryInfoList(QStringList("*.exr"),QDir::Files);
+        setCurrentFrame( files.count() );
         //render has started, let's restore original templates
         AfterEffects::instance()->restoreOriginalTemplates();
     }
