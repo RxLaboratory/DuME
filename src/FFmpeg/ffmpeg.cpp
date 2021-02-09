@@ -156,7 +156,10 @@ void FFmpeg::init()
     _version = settings.value("ffmpeg/version","").toString();
 
 #ifdef Q_OS_LINUX
-    QString defaultFFmpegPath = "ffmpeg";
+    //First, look for a static build in the app folder
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
+    //IF not found, try with the system command
+    if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = "";
 #endif
 #ifdef Q_OS_WIN
     QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
