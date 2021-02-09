@@ -889,11 +889,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("pos", pos());
     settings.setValue("maximized",this->isMaximized());
     settings.endGroup();
-    settings.beginGroup("consolesplitter");
-    settings.setValue("consolesize",consoleSplitter->sizes()[0]);
-    settings.setValue("queuesize",consoleSplitter->sizes()[1]);
-    settings.endGroup();
-    //settings.sync();
+    settings.sync();
 
     qDebug() << "Purging disk cache...";
 
@@ -1069,9 +1065,10 @@ void MainWindow::on_actionConsole_triggered(bool checked)
     {
         QList<int>sizes;
         settings.beginGroup("consolesplitter");
-        sizes << settings.value("consoleSize",15).toInt();
-        sizes << settings.value("queueSize",85).toInt();
+        sizes << settings.value("consoleSize",25).toInt();
+        sizes << settings.value("queueSize",75).toInt();
         settings.endGroup();
+        if (sizes[0] < 100) sizes[0] = 100;
         consoleSplitter->setSizes(sizes);
     }
     else
