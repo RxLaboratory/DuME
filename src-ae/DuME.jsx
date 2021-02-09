@@ -5,7 +5,7 @@
     #include DuAEF.jsxinc
     #include "dume_required/icons.jsxinc"
 
-    DuAEF.init("DuME", "0.1.5");
+    DuAEF.init("DuME", "0.2.0");
 
     DuAEF.debug = false;
 
@@ -108,7 +108,8 @@
         var dumeProjectFile = new File( dumeFolder.absoluteURI + "/" + projectName + " (" + DuAEF.DuJS.Date.toString(currentDate) + ").aep");
         app.project.save( dumeProjectFile );
 
-        var outputFile = new File( projectFolder.fsName + "/" + projectName )
+        var outputFile = new File( projectFolder.fsName + "/" + projectName );
+        if (outputField.text != "") outputFile = new File(outputField.text);
 
         //launch process
         DuMEProcess = new DuProcess( settings.data.dumePath );
@@ -243,6 +244,15 @@
         settings.save();
     }
 
+    function outputButton_clicked()
+    {
+        outputFile = File.saveDialog( "Export comp as..." );
+        if (outputFile != null)
+        {
+            outputField.setText(outputFile.fsName);
+        }
+    }
+
     // _______ UI SETUP _______
 
     var ui = DuAEF.DuScriptUI.createMainPanel(thisObj, true, true);
@@ -255,6 +265,26 @@
         undefined,
         true
     );
+
+    var outputGroup = DuAEF.DuScriptUI.addGroup(
+        ui.mainGroup,
+        'row'
+    );
+
+        var outputButton = DuAEF.DuScriptUI.addButton(
+        outputGroup,
+        "Browse..."
+    );
+    outputButton.alignment = ['left', 'fill'];
+
+    var outputField = DuAEF.DuScriptUI.addEditText(
+        outputGroup,
+        "",
+        "",
+        "",
+        "Output path (same as project)"
+    );
+    outputField.alignment = ['fill', 'fill'];
 
     var presetsButton = DuAEF.DuScriptUI.addSelector( addCompButton.optionsPanel, true );
     var autoStartButton = DuAEF.DuScriptUI.addCheckBox( addCompButton.optionsPanel, "Auto-start rendering process");
@@ -280,6 +310,7 @@
     // Connections
     browseDuMEButton.onClick = selectDuMEPath;
     addCompButton.onClick = addCompButton_clicked;
+    outputButton.onClick = outputButton_clicked;
     autoStartButton.onClick = autoStartButton_clicked;
     autoQuitButton.onClick = autoQuitButton_clicked;
     presetsButton.onChange = presetsButton_changed;
