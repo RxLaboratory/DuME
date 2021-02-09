@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Nicolas Dufresne and contributors">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>Color management - DuME Documentation<br />v0.1.5</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="style.css" rel="stylesheet">
+  <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Color management";
+    var mkdocs_page_input_path = "colors.md";
+    var mkdocs_page_url = "/colors.html";
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.1.5</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="index.html">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Installation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="windows.html">Windows</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mac.html">Mac OS X</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="presets.html">Manage presets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="sequences.html">Image sequences</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="colors.html">Color management</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#manage-and-convert-color-spaces">Manage and convert color spaces</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#color-spaces-in-dume">Color spaces in DuME</a></li>
+        
+            <li><a class="toctree-l4" href="#automatic-color-conversion-by-dume">Automatic color conversion by DuME</a></li>
+        
+            <li><a class="toctree-l4" href="#input-color-interpretation">Input color interpretation</a></li>
+        
+            <li><a class="toctree-l4" href="#output-color-conversion">Output color conversion</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut.html">Applying a LUT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="speed.html">Speed and framerate</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resize.html">Resizing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="filter.html">Filters</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">After Effects Rendering</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="after-effects-install.html">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="after-effects-rendering.html">Rendering</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Control and automation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="api.html">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="cli-options.html">Command line options</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="server-api.html">Server API</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">License</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="gnu-gpl.html">GNU GPLv3</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="doc-license.html">Documentation license</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">About</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="changelog.html">Changelog</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="https://rainboxlab.org/about/donate/">Donate</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">DuME Documentation<br />v0.1.5</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Transcoding &raquo;</li>
+        
+      
+    
+    <li>Color management</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/colors.md"> Edit on Dume-Docs</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="manage-and-convert-color-spaces">Manage and convert color spaces<a class="headerlink" href="#manage-and-convert-color-spaces" title="Permanent link">&para;</a></h1>
+<p>Depending on the file format and pixel format of the input and output medias, <em>DuME</em> tries to automatically manage and convert colors. If you need specific color profiles, you can also set you own parameters.</p>
+<div class="toc">
+<ul>
+<li><a href="#manage-and-convert-color-spaces">Manage and convert color spaces</a><ul>
+<li><a href="#color-spaces-in-dume">Color spaces in DuME</a><ul>
+<li><a href="#color-profile-presets-definitions">Color profile (presets) definitions</a></li>
+</ul>
+</li>
+<li><a href="#automatic-color-conversion-by-dume">Automatic color conversion by DuME</a></li>
+<li><a href="#input-color-interpretation">Input color interpretation</a></li>
+<li><a href="#output-color-conversion">Output color conversion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="color-spaces-in-dume">Color spaces in <em>DuME</em><a class="headerlink" href="#color-spaces-in-dume" title="Permanent link">&para;</a></h2>
+<p>Color spaces are usually represented as three independant parameters:</p>
+<ul>
+<li><strong><em>Primaries</em></strong> define how the primary color of each channel should be represented. i.e. how should be represented the perfect red, green and blue colors in an RGB color space.</li>
+<li>The <strong><em>White Point</em></strong> defines the exact color of what is considered full white in this color space.</li>
+<li>The <strong><em>Transfer curve</em></strong> defines how the values from black to white (levels) are interpolated. It is sometimes referred as <em>gamma</em> but it is not exactly a gamma curve, although a simple gamma can give an approximation of this transfer curve.</li>
+</ul>
+<p>In <em>DuME</em>, the primaries and the white point are set together with the same parameter, which means the color profiles used by <em>DuME</em> have only two parameters: <strong><em>Primaries</em></strong> and <strong><em>Transfer curve</em></strong>.</p>
+<p>Apart from these parameters, the way these colors can be stored can vary according to the <strong><em>pixel format</em></strong>, which, in videos, is usually either <strong><em>RGB</em></strong> or <strong><em>YUV</em></strong>. The first describes the color as Red, Green and Blue components, and the latter as a Luma component, and two Chroma components.</p>
+<p><em>DuME</em> associates a conversion Matrix with the color spaces to convert between the <em>YUV</em> and <em>RGB</em> spaces.</p>
+<p>Finally, when working in the <em>YUV</em> space, a fourth settings sets if the range is <strong><em>full</em></strong> or <strong><em>limited</em></strong>. In an 8 bit full range, values for each channel range from <code>0</code> to <code>255</code> whereas in the limited range, values are constrained to the <code>16-235</code> range.</p>
+<h3 id="color-profile-presets-definitions">Color profile (presets) definitions<a class="headerlink" href="#color-profile-presets-definitions" title="Permanent link">&para;</a></h3>
+<p>This is the list of color profiles (i.e. presets) in <em>DuME</em> and their default parameters</p>
+<table>
+<thead>
+<tr>
+<th>Profile name</th>
+<th>Primaries</th>
+<th>Transfer curve</th>
+<th>Matrix</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Images (sRGB)</td>
+<td>BT.709 / RGB / IEC 61966-2-4</td>
+<td>sRGB / IEC 61966-2-1</td>
+<td>RGB</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>HD Video (BT.709)</td>
+<td>BT.709 / RGB / IEC 61966-2-4</td>
+<td>BT.709</td>
+<td>BT.709</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>UHD Video</td>
+<td>BT.2020</td>
+<td>BT.2020 10 bit</td>
+<td>BT.2020 CL</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>UHD HDR Video</td>
+<td>BT.2020</td>
+<td>BT.2020 12 bit</td>
+<td>BT.2020 CL</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Display P3</td>
+<td>P3 D65</td>
+<td>sRGB / IEC 61966-2-1</td>
+<td>RGB</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>DCI P3</td>
+<td>DCI P3</td>
+<td>DCI P3 (gamma 2.6)</td>
+<td>RGB</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>Linear RGB</td>
+<td>BT.709 / RGB / IEC 61966-2-4</td>
+<td>Linear</td>
+<td>RGB</td>
+<td>Full</td>
+</tr>
+<tr>
+<td>PAL / SECAM</td>
+<td>PAL &amp; SECAM / BT.470 BG / BT.601</td>
+<td>PAL &amp; SECAM / BT.470 M</td>
+<td>PAL &amp; SECAM</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>NTSC</td>
+<td>NTSC / BT.601</td>
+<td>NTSC / BT.601</td>
+<td>NTSC</td>
+<td>Limited</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This list may be adjusted in future versions.<br />
+If you feel these default values could be improved, or other ones added, please <a href="https://github.com/Rainbox-dev/DuME/issues/new/choose">post your suggestions</a> here.</p>
+</div>
+<h2 id="automatic-color-conversion-by-dume">Automatic color conversion by <em>DuME</em><a class="headerlink" href="#automatic-color-conversion-by-dume" title="Permanent link">&para;</a></h2>
+<p>When all color parameters are left to their default values, here is what <em>DuME</em> does:</p>
+<ul>
+<li>If the input and output pixel formats and profiles are the same, there is no conversion.</li>
+<li>If one of the profiles or pixel format differ, <em>DuME</em> automatically converts the colors and sets the color profile, according to the following defaults.</li>
+</ul>
+<p>Here are the default values used by <em>DuME</em>, depending on the container or the pixel format, sorted by priority.</p>
+<ul>
+<li><em>OpenEXR</em> <code>.exr</code> files: <strong><em>Linear RGB</em></strong>.</li>
+<li>In general, all <em>Image sequences</em>: <strong><em>sRGB</em></strong>.</li>
+<li><em>MP4</em> <code>.mp4</code> or <em>WebM</em> <code>.webm</code> files: <strong><em>BT.709</em></strong></li>
+<li><em>h264 / AVC</em> or <em>h265 / HEVC</em> encoded files: <strong><em>BT.709</em></strong></li>
+<li><em>QuickTime Animation / RLE</em> encoded files: <strong><em>BT.709</em></strong> in an RGB space.</li>
+<li><em>RGB</em> pixels, with 32bpc: <strong><em>Linear RGB</em></strong></li>
+<li><em>RGB</em> pixels, with less than 32bpc: <strong><em>sRGB</em></strong></li>
+<li><em>YUV</em> pixels: <strong><em>BT.709</em></strong></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This list may be adjusted in future versions.<br />
+If you feel these default values could be improved, or other ones added, please <a href="https://github.com/Rainbox-dev/DuME/issues/new/choose">post your suggestions</a> here.</p>
+</div>
+<h2 id="input-color-interpretation">Input color interpretation<a class="headerlink" href="#input-color-interpretation" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="img/captures/blocks/color_input.png" /></p>
+<p>If <em>DuME</em> does not correctly detect the colors from the input media (or if they&rsquo;re no standard) and the above default values do not correspond to your media file, you can set the interpretation of the input medias.</p>
+<p>You can quickly set all values to a specific color space by selecting a preset in the options.</p>
+<p><img alt="" src="img/captures/blocks/color_presets.png" /></p>
+<p>For any specific parameter, if you don&rsquo;t know what to choose, leave it on <em>Auto</em>.</p>
+<h2 id="output-color-conversion">Output color conversion<a class="headerlink" href="#output-color-conversion" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="img/captures/blocks/color_output.png" /></p>
+<p><em>DuME</em> tries to automatically manage and convert the colors of the input media depending on the output format. If you need, you can force it to convert to or set a specific color space.</p>
+<p>The first parameter &ldquo;<em>Apply</em>&rdquo; can change the way <em>DuME</em> manages the colors. By default, it will both convert the colors and try to set the metadata in the output file (embed color profile). You can also set it to just convert the colors, or to just add the metadata.</p>
+<p>You can quickly set all values to a specific color space by selecting a preset in the options.</p>
+<p><img alt="" src="img/captures/blocks/color_presets.png" /></p>
+<p>For any specific parameter, if you don&rsquo;t know what to choose, leave it on <em>Auto</em>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lut.html" class="btn btn-neutral float-right" title="Applying a LUT">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="mapping.html" class="btn btn-neutral" title="Adding / Changing streams"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019-2020 Rainbox Laboratory and Nicolas Dufresne</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="mapping.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="lut.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="video.js" defer></script>
+      <script src="search/main.js" defer></script>
+
+</body>
+</html>

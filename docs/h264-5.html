@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>MP4 / h.264 - DuME Documentation<br />v0.1.5</title>
+  <title>MP4 / h.264 AVC / h.265 HEVC - DuME Documentation<br />v0.1.5</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -19,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "MP4 / h.264";
-    var mkdocs_page_input_path = "h264.md";
-    var mkdocs_page_url = "/h264.html";
+    var mkdocs_page_name = "MP4 / h.264 AVC / h.265 HEVC";
+    var mkdocs_page_input_path = "h264-5.md";
+    var mkdocs_page_url = "/h264-5.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -84,10 +84,10 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="h264.html">MP4 / h.264</a>
+    <a class="current" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a></li>
+    <li class="toctree-l3"><a href="#transcoding-to-mp4-h264-avc-h265-hevc">Transcoding to MP4 / h.264 AVC / h.265 HEVC</a></li>
     
         <ul>
         
@@ -106,15 +106,31 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="h265.html">MP4 / h.265 / HEVC</a>
-                </li>
-                <li class="">
-                    
     <a class="" href="sequences.html">Image sequences</a>
                 </li>
                 <li class="">
                     
     <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="colors.html">Color management</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut.html">Applying a LUT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="speed.html">Speed and framerate</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resize.html">Resizing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="filter.html">Filters</a>
                 </li>
     </ul>
 	    </li>
@@ -213,10 +229,10 @@
         
       
     
-    <li>MP4 / h.264</li>
+    <li>MP4 / h.264 AVC / h.265 HEVC</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/h264.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/h264-5.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -225,14 +241,23 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="transcoding-to-mp4-h264">Transcoding to MP4 / h.264<a class="headerlink" href="#transcoding-to-mp4-h264" title="Permanent link">&para;</a></h1>
-<p>Transcoding to mp4 using h.264 has been made very easy and efficient with <em>DuME</em>, and most of the time you should not need to use advanced parameters. But it some cases, you may want to adjust these settings. These are some advices to have the best quality with the smallest possible files, and fix compatibility issues with specific players.</p>
+                <h1 id="transcoding-to-mp4-h264-avc-h265-hevc">Transcoding to MP4 / h.264 AVC / h.265 HEVC<a class="headerlink" href="#transcoding-to-mp4-h264-avc-h265-hevc" title="Permanent link">&para;</a></h1>
+<p>Transcoding to mp4 using h.264 or h.265 has been made very easy and efficient with <em>DuME</em>, and most of the time you should not need to use advanced parameters. But in some cases, you may want to adjust these settings. These are some advices to have the best quality with the smallest possible files, and fix compatibility issues with specific players.</p>
 <p>You can read more details in the <a href="https://trac.ffmpeg.org/wiki/Encode/H.264">FFmpeg wiki</a>.</p>
 <div class="toc">
 <ul>
-<li><a href="#transcoding-to-mp4-h264">Transcoding to MP4 / h.264</a><ul>
+<li><a href="#transcoding-to-mp4-h264-avc-h265-hevc">Transcoding to MP4 / h.264 AVC / h.265 HEVC</a><ul>
 <li><a href="#quality-settings">Quality settings</a></li>
-<li><a href="#compatibility">Compatibility</a></li>
+<li><a href="#compatibility">Compatibility</a><ul>
+<li><a href="#h264-avc">h.264 / AVC</a></li>
+<li><a href="#h265-hevc">h.265 / HEVC</a><ul>
+<li><a href="#8bit-profiles">8bit profiles</a></li>
+<li><a href="#10bit-profiles">10bit profiles</a></li>
+<li><a href="#12bit-profiles">12bit profiles</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#constrained-encoding-vbv-maximum-bit-rate">Constrained encoding (VBV / maximum bit rate)</a></li>
 <li><a href="#faq">FAQ</a><ul>
 <li><a href="#does-dume-support-multi-pass-encoding">Does DuME support multi-pass encoding?</a></li>
@@ -245,10 +270,15 @@
 </ul>
 </div>
 <h2 id="quality-settings"><img alt="" src="img/icons/set-video-quality_bd.svg" /> Quality settings<a class="headerlink" href="#quality-settings" title="Permanent link">&para;</a></h2>
-<p><img alt="" src="img/captures/blocks/video_quality.png" /></p>
+<p><img alt="" src="/img/captures/blocks/video_quality.png" /></p>
 <p>Most of the time, you <strong>should not need to set the <em>bit rate</em> by yourself</strong>. It is easier and better to use the quality slider to set a target quality, unless for technical reasons you need a specific average bitrate or a constant bit rate.</p>
 <p>The <strong><em>quality slider</em></strong> is the most important parameter, which will adjust the quality vs the output file size. Setting the slider to more than 50% should output a good quality video, but if you need a perfect encoding, you can go higher than 75%.<br />
 Setting the quality to 100% will be lossless, but be careful as this is not standard with h.264 and the file may not be played correctly with the majority of players.</p>
+<p>Check the <strong><em>Lossless</em></strong> option for lossless compression.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Lossless compression with h.264 is not standard, and won&rsquo;t play with most players.</p>
+</div>
 <p>The <strong><em>speed</em></strong> setting will provide a certain encoding speed to compression ratio. A slower encoding will provide better compression (compression is quality per filesize). This means that, for example, if you target a certain bit rate, you will achieve better quality with a slower preset. Similarly, when using the quality setting, you will simply save bit rate by choosing a slower encoding.<br />
 Just use the slowest setting that you have patience for.</p>
 <p>You can optionally use the <strong><em>fine tuning</em></strong> to adjust the encoding settings based upon the specifics of your input. Current tunings include:</p>
@@ -260,22 +290,45 @@ Just use the slowest setting that you have patience for.</p>
 <li>Fast Decode – allows faster decoding by disabling certain filters</li>
 <li>Streaming (low latency) – good for fast encoding and low-latency streaming</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some of these tunings are not available for h.265 HEVC, but don&rsquo;t worry: you just don&rsquo;t need them as h.265 is so much better than h.264.</p>
+</div>
 <p>For example, if your input is animation then use the animation tuning, or if you want to preserve grain in a film then use the grain tuning. If you are unsure of what to use or your input does not match any of tunings then omit the <em>Fine tune</em> option.</p>
+<p>The <strong><em>Intra-Frame</em></strong> option can be used to improve decoding performance with non-linear editing software such as <em>Adobe Premiere</em>, <em>Avid Media Composer</em>, <em>DaVinci Resolve</em>, or even <em>Adobe After Effects</em>, but may result in a bigger file. This option also enables frame-by-frame playback with most players.</p>
 <h2 id="compatibility"><img alt="" src="img/icons/set-codec-settings_bd.svg" /> Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
-<p><img alt="" src="img/captures/blocks/video_profile_h264.png" /></p>
 <p>To fix compatibiliy issues with some players, you may need to change the profile and level. Please refer to the documentation of the players you need to be compatible with.</p>
+<h3 id="h264-avc">h.264 / AVC<a class="headerlink" href="#h264-avc" title="Permanent link">&para;</a></h3>
+<p><img alt="" src="img/captures/blocks/video_profile_h264.png" /></p>
+<p>These are the three profiles you can select in DuME:</p>
 <ul>
 <li><strong>Baseline</strong>: Primarily for lower-cost applications with limited computing resources, this profile is used widely in videoconferencing and mobile applications.</li>
 <li><strong>Main</strong>: Originally intended as the mainstream consumer profile for broadcast and storage applications, the importance of this profile faded when the High profile was developed for those applications.</li>
 <li><strong>High</strong>: The primary profile for broadcast and disc storage applications, particularly for high-definition television applications (this is the profile adopted into HD DVD and Blu-ray Disc, for example).</li>
-<li><strong>High 10</strong>: Going beyond today’s mainstream consumer product capabilities, this profile builds on top of the High Profile, adding support for up to 10 bits per sample of decoded picture precision.</li>
-<li><strong>High 4:2:2</strong>: Primarily targeting professional applications that use interlaced video, this profile builds on top of the High 10 Profile, adding support for the 4:2:2 chroma subsampling format while using up to 10 bits per sample of decoded picture precision.</li>
-<li><strong>High 4:4:4</strong>: This profile builds on top of the High 4:2:2 Profile, supporting up to 4:4:4 chroma sampling, up to 14 bits per sample, and additionally supporting efficient lossless region coding and the coding of each picture as three separate color planes.</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To improve compatibility, <em>DuME</em> sets the pixel format to YUV 4:2:0 (12 bits / 8 bpc) for h264, as most of the players won&rsquo;t play 4:2:2 or 4:4:4 (even at 8 bpc). When using high profiles, you will also need to change the pixel format accordingly.</p>
-</div>
+<p>There actually exist three other profiles derived from the <em>High</em> format for the h.264 encoder: <strong>High 10</strong>, <strong>High 4:2:2</strong> and <strong>High 4:4:4</strong>, and DuME will select the right one automatically according the desired pixel format you may have set, if you&rsquo;re using the <strong>High</strong> format.</p>
+<p>You can also select the level, depending on your needs. If you don&rsquo;t know what this means, leave the selection to &ldquo;Auto&rdquo; and let DuME choose the righ level according to your resolution and pixel format.</p>
+<h3 id="h265-hevc">h.265 / HEVC<a class="headerlink" href="#h265-hevc" title="Permanent link">&para;</a></h3>
+<p>There are codec profiles for <em>h.265 / HEVC</em>, but they can be automatically be chosen according to the pixel format you&rsquo;ve set in DuME. If you actually need to set a specific profile, add a custom FFmpeg parameter with <code>-profile:v</code> as parameter and one of these values:</p>
+<h4 id="8bit-profiles">8bit profiles<a class="headerlink" href="#8bit-profiles" title="Permanent link">&para;</a></h4>
+<ul>
+<li>main, main-intra, mainstillpicture</li>
+<li>main444-8, main444-intra, main444-stillpicture</li>
+</ul>
+<h4 id="10bit-profiles">10bit profiles<a class="headerlink" href="#10bit-profiles" title="Permanent link">&para;</a></h4>
+<ul>
+<li>main10, main10-intra</li>
+<li>main422-10, main422-10-intra</li>
+<li>main444-10, main444-10-intra</li>
+</ul>
+<h4 id="12bit-profiles">12bit profiles<a class="headerlink" href="#12bit-profiles" title="Permanent link">&para;</a></h4>
+<ul>
+<li>main12, main12-intra</li>
+<li>main422-12, main422-12-intra</li>
+<li>main444-12, main444-12-intra</li>
+</ul>
+<p><img alt="" src="/img/captures/blocks/ffmpeg_custom.png" /></p>
+<p>There also exists a level for <em>h.265</em>, but you should never have to set it as the encoder will detect the right one for you.</p>
 <h2 id="constrained-encoding-vbv-maximum-bit-rate"><img alt="" src="img/icons/add-property_bd.svg" /> Constrained encoding (VBV / maximum bit rate)<a class="headerlink" href="#constrained-encoding-vbv-maximum-bit-rate" title="Permanent link">&para;</a></h2>
 <p><img alt="" src="img/captures/blocks/constrained_bitrate.png" /></p>
 <p>Use this mode if you want to <strong>constrain the maximum bitrate used</strong>, or keep the stream&rsquo;s bitrate within certain bounds. This is particularly useful for online streaming, where the client expects a certain average bitrate, but you still want the encoder to adjust the bitrate per-frame.</p>
@@ -298,7 +351,7 @@ Just use the slowest setting that you have patience for.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="h265.html" class="btn btn-neutral float-right" title="MP4 / h.265 / HEVC">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="sequences.html" class="btn btn-neutral float-right" title="Image sequences">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="presets.html" class="btn btn-neutral" title="Manage presets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -332,7 +385,7 @@ Just use the slowest setting that you have patience for.</p>
         <span><a href="presets.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="h265.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="sequences.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

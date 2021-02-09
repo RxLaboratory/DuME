@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Image sequences - DuME Documentation<br />v0.1.5</title>
+  <title>Filters - DuME Documentation<br />v0.1.5</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -19,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Image sequences";
-    var mkdocs_page_input_path = "sequences.md";
-    var mkdocs_page_url = "/sequences.html";
+    var mkdocs_page_name = "Filters";
+    var mkdocs_page_input_path = "filter.md";
+    var mkdocs_page_url = "/filter.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -86,15 +86,9 @@
                     
     <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="sequences.html">Image sequences</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#transcoding-from-image-sequences">Transcoding from image sequences</a></li>
-    
-
-    </ul>
+    <a class="" href="sequences.html">Image sequences</a>
                 </li>
                 <li class="">
                     
@@ -116,9 +110,23 @@
                     
     <a class="" href="resize.html">Resizing</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="filter.html">Filters</a>
+    <a class="current" href="filter.html">Filters</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#filters">Filters</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#video-filter-graph">Video Filter Graph</a></li>
+        
+            <li><a class="toctree-l4" href="#audio-filter-graph">Audio Filter Graph</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -217,10 +225,10 @@
         
       
     
-    <li>Image sequences</li>
+    <li>Filters</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/sequences.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/filter.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -229,10 +237,27 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="transcoding-from-image-sequences">Transcoding from image sequences<a class="headerlink" href="#transcoding-from-image-sequences" title="Permanent link">&para;</a></h1>
-<p><img alt="" src="img/captures/sequence.png" /></p>
-<p>To load image sequences as input medias in <em>DuME</em>, <strong>select or drag and drop a single image</strong> from the sequence. It can be any frame, not necessarily the first one. <em>DuME</em> automatically detects the complete sequence.</p>
-<p>Do not forget to <strong>set the framerate</strong> of the sequence in the input panel.</p>
+                <h1 id="filters">Filters<a class="headerlink" href="#filters" title="Permanent link">&para;</a></h1>
+<p>Some of the options available in <em>DuME</em> are actually filters applied to the video or audio streams, which modify the data of the streams.</p>
+<p>As such, the order in which the filters are applied may be important. It is not yet possible to re-order them, but here is the list of these filters and the order in which they&rsquo;re applied.</p>
+<p>This specific order has been chosen to keep the best quality possible in the stream.</p>
+<h2 id="video-filter-graph">Video Filter Graph<a class="headerlink" href="#video-filter-graph" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Unmultiply alpha</li>
+<li>Deinterlace</li>
+<li><a href="speed.html">Change speed</a></li>
+<li><a href="speed.html">Motion interpolation</a></li>
+<li>Crop</li>
+<li>Any user defined filters</li>
+<li><a href="lut.html">LUT</a></li>
+<li><a href="resize.html">Resize</a></li>
+</ol>
+<h2 id="audio-filter-graph">Audio Filter Graph<a class="headerlink" href="#audio-filter-graph" title="Permanent link">&para;</a></h2>
+<p>There are no audio filter applied yet.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The <em>user defined filters</em> are those added as custom FFmpeg parameters using the <code>-vf</code>, <code>-va</code>, <code>-filter:v</code> or <code>-filter:a</code> options.</p>
+</div>
               
             </div>
           </div>
@@ -240,10 +265,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="mapping.html" class="btn btn-neutral float-right" title="Adding / Changing streams">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="after-effects-install.html" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="h264-5.html" class="btn btn-neutral" title="MP4 / h.264 AVC / h.265 HEVC"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="resize.html" class="btn btn-neutral" title="Resizing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -271,10 +296,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="h264-5.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="resize.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="mapping.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="after-effects-install.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

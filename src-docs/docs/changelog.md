@@ -34,7 +34,10 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Improved codec profile management for h.264 / AVC.
 - Improved pixel format management.
 - Improved custom parameters management.
+- Ability to automatically remove temporary After Effects projects.
 - Code refactoring and improvements to improve performance and stability, and prepare the development of the render queue.
+- After Effects script: auto-start unchecked by default.
+- After Effects script: added an option to override the default output path.
 
 ### Fixes
 
@@ -42,6 +45,9 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Automatically sets or reverts to default codec when needed.
 - The closest pixel format is now set when switching the output with or without alpha.
 - Fixed the pixel format list getting back to *Default* when changed.
+- Fixed the list of presets in After effects incorrectly updated.
+- Fixed several issues with the automatic build of the output path, and related crashes
+- Fixed UI font incorrectly set on Windows.
 
 ## 0.1.5
 

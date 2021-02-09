@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Image sequences - DuME Documentation<br />v0.1.5</title>
+  <title>Applying a LUT - DuME Documentation<br />v0.1.5</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
@@ -19,9 +19,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Image sequences";
-    var mkdocs_page_input_path = "sequences.md";
-    var mkdocs_page_url = "/sequences.html";
+    var mkdocs_page_name = "Applying a LUT";
+    var mkdocs_page_input_path = "lut.md";
+    var mkdocs_page_url = "/lut.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -86,15 +86,9 @@
                     
     <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="sequences.html">Image sequences</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#transcoding-from-image-sequences">Transcoding from image sequences</a></li>
-    
-
-    </ul>
+    <a class="" href="sequences.html">Image sequences</a>
                 </li>
                 <li class="">
                     
@@ -104,9 +98,15 @@
                     
     <a class="" href="colors.html">Color management</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="lut.html">Applying a LUT</a>
+    <a class="current" href="lut.html">Applying a LUT</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#apply-a-lut">Apply a LUT</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -217,10 +217,10 @@
         
       
     
-    <li>Image sequences</li>
+    <li>Applying a LUT</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/sequences.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/lut.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -229,10 +229,23 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="transcoding-from-image-sequences">Transcoding from image sequences<a class="headerlink" href="#transcoding-from-image-sequences" title="Permanent link">&para;</a></h1>
-<p><img alt="" src="img/captures/sequence.png" /></p>
-<p>To load image sequences as input medias in <em>DuME</em>, <strong>select or drag and drop a single image</strong> from the sequence. It can be any frame, not necessarily the first one. <em>DuME</em> automatically detects the complete sequence.</p>
-<p>Do not forget to <strong>set the framerate</strong> of the sequence in the input panel.</p>
+                <h1 id="apply-a-lut">Apply a LUT<a class="headerlink" href="#apply-a-lut" title="Permanent link">&para;</a></h1>
+<p><em>DuME</em> can apply a <em>1D</em> or <em>3D</em> LUT to the image.</p>
+<p>The supported LUT formats depend on the associated version of FFmpeg. By default you should be able to use:</p>
+<ul>
+<li><em>3dl</em>: After Effects</li>
+<li><em>cube</em>: Iridas</li>
+<li><em>dat</em>: DaVinci</li>
+<li><em>m3d</em>: Pandora</li>
+<li><em>csp</em>: cineSpace</li>
+</ul>
+<p>Just select the <em>Apply LUT</em> item in the video options, then select the LUT you need.</p>
+<p><img alt="" src="/img/captures/lut.png" /></p>
+<p>Some LUTs are provided with DuME, and you can load your own.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Using a LUT to transform colors of an image depends both on the input format and colors and the output color space. It is NOT the best way to <a href="colors.html">convert color spaces</a>&hellip;</p>
+</div>
               
             </div>
           </div>
@@ -240,10 +253,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="mapping.html" class="btn btn-neutral float-right" title="Adding / Changing streams">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="speed.html" class="btn btn-neutral float-right" title="Speed and framerate">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="h264-5.html" class="btn btn-neutral" title="MP4 / h.264 AVC / h.265 HEVC"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="colors.html" class="btn btn-neutral" title="Color management"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -271,10 +284,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="h264-5.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="colors.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="mapping.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="speed.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

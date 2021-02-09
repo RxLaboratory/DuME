@@ -84,11 +84,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="h264.html">MP4 / h.264</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="h265.html">MP4 / h.265 / HEVC</a>
+    <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
                 </li>
                 <li class="">
                     
@@ -97,6 +93,26 @@
                 <li class="">
                     
     <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="colors.html">Color management</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut.html">Applying a LUT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="speed.html">Speed and framerate</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resize.html">Resizing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="filter.html">Filters</a>
                 </li>
     </ul>
 	    </li>
@@ -162,6 +178,8 @@
     <li class="toctree-l3"><a href="#changelog">Changelog</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l4" href="#020">0.2.0</a></li>
         
             <li><a class="toctree-l4" href="#015">0.1.5</a></li>
         
@@ -236,32 +254,38 @@
 <div class="toc">
 <ul>
 <li><a href="#changelog">Changelog</a><ul>
-<li><a href="#015">0.1.5</a><ul>
+<li><a href="#020">0.2.0</a><ul>
 <li><a href="#new-features">New Features</a></li>
 <li><a href="#improvements">Improvements</a></li>
 <li><a href="#fixes">Fixes</a></li>
 </ul>
 </li>
-<li><a href="#014">0.1.4</a></li>
-<li><a href="#013">0.1.3</a><ul>
+<li><a href="#015">0.1.5</a><ul>
 <li><a href="#new-features_1">New Features</a></li>
 <li><a href="#improvements_1">Improvements</a></li>
 <li><a href="#fixes_1">Fixes</a></li>
 </ul>
 </li>
-<li><a href="#012">0.1.2</a><ul>
+<li><a href="#014">0.1.4</a></li>
+<li><a href="#013">0.1.3</a><ul>
+<li><a href="#new-features_2">New Features</a></li>
+<li><a href="#improvements_2">Improvements</a></li>
 <li><a href="#fixes_2">Fixes</a></li>
 </ul>
 </li>
+<li><a href="#012">0.1.2</a><ul>
+<li><a href="#fixes_3">Fixes</a></li>
+</ul>
+</li>
 <li><a href="#011">0.1.1</a><ul>
-<li><a href="#new-features_2">New Features</a></li>
+<li><a href="#new-features_3">New Features</a></li>
 <li><a href="#presets-and-formats">Presets and formats</a></li>
 <li><a href="#general-improvements">General Improvements</a></li>
 </ul>
 </li>
 <li><a href="#009">0.0.9</a><ul>
 <li><a href="#general-improvements_1">General Improvements</a></li>
-<li><a href="#fixes_3">Fixes</a><ul>
+<li><a href="#fixes_4">Fixes</a><ul>
 <li><a href="#linux">Linux</a></li>
 </ul>
 </li>
@@ -272,34 +296,80 @@
 </li>
 </ul>
 </div>
-<h2 id="015">0.1.5<a class="headerlink" href="#015" title="Permanent link">&para;</a></h2>
+<h2 id="020">0.2.0<a class="headerlink" href="#020" title="Permanent link">&para;</a></h2>
 <h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>JPEG</strong> support.</li>
+<li><a href="h264-5.html"><strong>h265 / HEVC</strong></a> support.</li>
+<li><strong>Lossless</strong> and <strong>Intra-Frame</strong> h264 / AVC support.</li>
+<li><strong>Crop</strong> videos.</li>
+<li><a href="lut.html"><strong>Apply a 1D or 3D LUT</strong></a>.</li>
+<li><strong>Deinterlace</strong> videos.</li>
+<li><a href="speed.html"><strong>Change speed</strong></a>.</li>
+<li>Added a <a href="speed.html"><strong>Motion interpolation</strong></a> filter.</li>
+<li>Added new <a href="resize.html"><strong>resize</strong></a> options and algorithms.</li>
+<li>Select <strong>input time range</strong>.</li>
+<li>Implemented proper <a href="colors.html">color management</a>.</li>
+<li><a href="cli-options.html">Command Line</a> improvements:<ul>
+<li>Ability to load a custom preset file.</li>
+<li>Added the <code>--minimize</code> option.</li>
+</ul>
+</li>
+<li>New <strong>presets</strong>.</li>
+</ul>
+<h3 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Several UI adjustments.</li>
+<li>Better display of the information for output formats.</li>
+<li>Track and display cache usage.</li>
+<li>Restricted the ability to change the color range to YUV pixel formats only.</li>
+<li>Improved settings UI (moved cache options to their own section, hide After Effects on Linux&hellip;)</li>
+<li>Improved codec profile management for h.264 / AVC.</li>
+<li>Improved pixel format management.</li>
+<li>Improved custom parameters management.</li>
+<li>Ability to automatically remove temporary After Effects projects.</li>
+<li>Code refactoring and improvements to improve performance and stability, and prepare the development of the render queue.</li>
+<li>After Effects script: auto-start unchecked by default.</li>
+<li>After Effects script: added an option to override the default output path.</li>
+</ul>
+<h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fixed crash on quit.</li>
+<li>Automatically sets or reverts to default codec when needed.</li>
+<li>The closest pixel format is now set when switching the output with or without alpha.</li>
+<li>Fixed the pixel format list getting back to <em>Default</em> when changed.</li>
+<li>Fixed the list of presets in After effects incorrectly updated.</li>
+<li>Fixed several issues with the automatic build of the output path, and related crashes</li>
+<li>Fixed UI font incorrectly set on Windows.</li>
+</ul>
+<h2 id="015">0.1.5<a class="headerlink" href="#015" title="Permanent link">&para;</a></h2>
+<h3 id="new-features_1">New Features<a class="headerlink" href="#new-features_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Ability to set the audio sample format</li>
 <li>Webm support (with alpha too), with two new presets</li>
 </ul>
-<h3 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h3>
+<h3 id="improvements_1">Improvements<a class="headerlink" href="#improvements_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Complete UI Refactor</li>
 </ul>
-<h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_1">Fixes<a class="headerlink" href="#fixes_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Fixed the extension of the output not changed when changing a preset.</li>
 </ul>
 <h2 id="014">0.1.4<a class="headerlink" href="#014" title="Permanent link">&para;</a></h2>
 <p>Private testing release</p>
 <h2 id="013">0.1.3<a class="headerlink" href="#013" title="Permanent link">&para;</a></h2>
-<h3 id="new-features_1">New Features<a class="headerlink" href="#new-features_1" title="Permanent link">&para;</a></h3>
+<h3 id="new-features_2">New Features<a class="headerlink" href="#new-features_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Now comes with <a href="after-effects-install.html">a script for <em>After Effects</em></a>.</li>
 <li>Added more <a href="cli-options.html">command line options</a>.</li>
-<li>Added some options to tweak <a href="h264.html">h264</a> encoding (including the ability to output CBR streams).</li>
+<li>Added some options to tweak <a href="h264-5.html">h264</a> encoding (including the ability to output CBR streams).</li>
 </ul>
-<h3 id="improvements_1">Improvements<a class="headerlink" href="#improvements_1" title="Permanent link">&para;</a></h3>
+<h3 id="improvements_2">Improvements<a class="headerlink" href="#improvements_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Lots of code improvements to make maintenance and contributions easier.</li>
 </ul>
-<h3 id="fixes_1">Fixes<a class="headerlink" href="#fixes_1" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_2">Fixes<a class="headerlink" href="#fixes_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Fixed crash with the Vidvox HAP codec.</li>
 <li>Fixed console output on Windows.</li>
@@ -308,13 +378,13 @@
 <li>Reduced launch time (again).</li>
 </ul>
 <h2 id="012">0.1.2<a class="headerlink" href="#012" title="Permanent link">&para;</a></h2>
-<h3 id="fixes_2">Fixes<a class="headerlink" href="#fixes_2" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_3">Fixes<a class="headerlink" href="#fixes_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>EXR sequences are now correctly detected.</li>
 <li>Fixed transcoding sequence not working if the framerate is kept to the default value.</li>
 </ul>
 <h2 id="011">0.1.1<a class="headerlink" href="#011" title="Permanent link">&para;</a></h2>
-<h3 id="new-features_2">New Features<a class="headerlink" href="#new-features_2" title="Permanent link">&para;</a></h3>
+<h3 id="new-features_3">New Features<a class="headerlink" href="#new-features_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Added controls for the <em>Profile</em> and <em>Level</em> when transcoding to h.264</li>
 <li>Added <em>Quality</em> control for ProRes.</li>
@@ -354,7 +424,7 @@
 <li>Check video size before transcoding using h264: Adjust to even numbers.</li>
 <li>The default gamma for EXR files and After Effects projects is now automatically set to BT.470M (gamma 2.2).</li>
 </ul>
-<h3 id="fixes_3">Fixes<a class="headerlink" href="#fixes_3" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_4">Fixes<a class="headerlink" href="#fixes_4" title="Permanent link">&para;</a></h3>
 <h4 id="linux">Linux<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
 <ul>
 <li>User Interface: Margins and fonts are now correctly displayed on Linux.</li>

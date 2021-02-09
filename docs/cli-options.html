@@ -84,11 +84,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="h264.html">MP4 / h.264</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="h265.html">MP4 / h.265 / HEVC</a>
+    <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
                 </li>
                 <li class="">
                     
@@ -97,6 +93,26 @@
                 <li class="">
                     
     <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="colors.html">Color management</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut.html">Applying a LUT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="speed.html">Speed and framerate</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resize.html">Resizing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="filter.html">Filters</a>
                 </li>
     </ul>
 	    </li>
@@ -247,7 +263,7 @@
 </ul>
 </div>
 <p>DuME can be launched with several options, which is an easy way to add medias in DuME from other applications and scripts.</p>
-<p><code>DuME [inputOptions] inputFile1 [[inputOptions] inputFile2 ... [inputOptions] inputFileN] [outputOptions]</code></p>
+<p><code>DuME [general options] [input options] inputFile1 [[input options] inputFile2 ... [input options] inputFileN] [output options]</code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>On Windows, don&rsquo;t forget to add the extension <code>.exe</code> to the DuME command if it&rsquo;s not in your <em>PATH</em> variable.</p>
@@ -298,6 +314,11 @@
 <td><code>--hide-console</code></td>
 <td></td>
 <td>On <em>Windows</em>, hides the console as soon as DuME is launched. This is implicit if there are no other arguments. Useful when launching DuME from other applications.</td>
+</tr>
+<tr>
+<td><code>--minimize</code> / <code>-m</code></td>
+<td></td>
+<td>Minimizes the window as soon as it is ready.</td>
 </tr>
 </tbody>
 </table>
@@ -386,7 +407,7 @@
 <tr>
 <td><code>--preset name</code> / <code>-p name</code></td>
 <td>string</td>
-<td>The name of the preset to use. Use <code>--help:presets</code> to get the list of available presets</td>
+<td>The name of the preset to use. Use <code>--help:presets</code> to get the list of available presets. You can also provide any preset filename to use a custom preset not available in DuME.</td>
 </tr>
 <tr>
 <td><code>--autostart</code></td>
