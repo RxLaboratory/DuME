@@ -629,17 +629,18 @@ bool FFmpegRenderer::colorManagement()
     if (ov->colorSpace()->name() != "") return true;
     if (ov->colorTRC()->name() != "") return true;
 
-    // If the color space of the output is different from the input, we do need to convert anyway.
+    // If the color profile of the output is different from the input, we do need to convert anyway.
 
     qDebug() << "Get the default output Color Profile";
 
-    // We can check that from the pixel format, so first get it
     // Get the default Color profile
     FFColorProfile *outputProfile = o->defaultColorProfile();
+    // We also need the pixel format, as we ultimately need to compare if space is changed
+    FFPixFormat *outputPixFormat = o->pixFormat();
 
     qDebug() << outputProfile->prettyName();
 
-    // Now let's check if any of the input has a different input color profile
+    // Now let's check if any of the input has a different input color profile or color space
     foreach(MediaInfo *i, _job->getInputMedias())
     {
         if (!i->hasVideo()) continue;
@@ -657,12 +658,14 @@ bool FFmpegRenderer::colorManagement()
 
         // Check from the pixel format
         FFColorProfile *inputProfile = i->defaultColorProfile();
+        FFPixFormat *inputPixFormat = i->pixFormat();
 
         qDebug() << "Input: " + inputProfile->name();
         qDebug() << "Output: " + outputProfile->name();
 
         // If the profile is different, there is a color conversion
         if (inputProfile->name() != outputProfile->name()) return true;
+        if (inputPixFormat->colorSpace() != outputPixFormat->colorSpace()) return true;
     }
     return false;
 }

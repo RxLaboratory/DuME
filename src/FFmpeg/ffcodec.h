@@ -135,6 +135,8 @@ public:
 
     QList<FFBaseObject *> levels() const;
 
+    QString defaultColorProfile() const;
+
 private:
     void init();
 
@@ -142,6 +144,7 @@ private:
     Capabilities _capabilities;
     QList<FFPixFormat *> _pixFormats;
     FFPixFormat *_defaultPixFormat;
+    QString _defaultColorProfile;
 
     QString _qualityParam;
     void setQualityParam();

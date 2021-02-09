@@ -1502,16 +1502,36 @@ void MediaInfo::setAlpha(bool alpha, bool silent)
 
 FFColorProfile *MediaInfo::defaultColorProfile(int streamId)
 {
+    //Try to get from muxer
     QString profileName = _muxer->defaultColorProfile();
+    //If not found, let's check the stream
     if (profileName == "" && streamId >=0 && streamId < _videoStreams.count())
     {
         VideoInfo *stream = _videoStreams[streamId];
-        FFPixFormat *pixFmt = stream->pixFormat();
-        if (pixFmt->name() == "") pixFmt = stream->defaultPixFormat();
-        if (pixFmt->name() == "") pixFmt = stream->defaultPixFormat();
-        profileName = pixFmt->defaultColorProfile();
+        //Try to get from the codec
+        FFCodec *c = stream->codec();
+        if (c) profileName = c->defaultColorProfile();
+        //Try to get from pixel format
+        if (profileName =="")
+        {
+            FFPixFormat *pixFmt = pixFormat(streamId);
+            if (pixFmt) profileName = pixFmt->defaultColorProfile();
+        }
     }
     return FFmpeg::instance()->colorProfile( profileName );
+}
+
+FFPixFormat *MediaInfo::pixFormat(int streamId)
+{
+    FFPixFormat *pixFmt = nullptr;
+    if (streamId >=0 && streamId < _videoStreams.count())
+    {
+        VideoInfo *stream = _videoStreams[streamId];
+        pixFmt = stream->pixFormat();
+        if (pixFmt->name() == "") pixFmt = stream->defaultPixFormat();
+        if (pixFmt->name() == "") pixFmt = this->defaultPixFormat();
+    }
+    return pixFmt;
 }
 
 qint64 MediaInfo::bitrate() const

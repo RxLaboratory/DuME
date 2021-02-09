@@ -14,7 +14,9 @@ Color spaces are usually represented as three independant parameters:
 
 In *DuME*, the primaries and the white point are set together with the same parameter, which means the color profiles used by *DuME* have only two parameters: ***Primaries*** and ***Transfer curve***.
 
-*DuME* also associates a conversion Matrix with the color spaces to convert between the *YUV* and *RGB* spaces.
+Apart from these parameters, the way these colors can be stored can vary according to the ***pixel format***, which, in videos, is usually either ***RGB*** or ***YUV***. The first describes the color as Red, Green and Blue components, and the latter as a Luma component, and two Chroma components.
+
+*DuME* associates a conversion Matrix with the color spaces to convert between the *YUV* and *RGB* spaces.
 
 Finally, when working in the *YUV* space, a fourth settings sets if the range is ***full*** or ***limited***. In an 8 bit full range, values for each channel range from `0` to `255` whereas in the limited range, values are constrained to the `16-235` range.
 
@@ -50,6 +52,8 @@ Here are the default values used by *DuME*, depending on the container or the pi
 - *OpenEXR* `.exr` files: ***Linear RGB***.
 - In general, all *Image sequences*: ***sRGB***.
 - *MP4* `.mp4` or *WebM* `.webm` files: ***BT.709***
+- *h264 / AVC* or *h265 / HEVC* encoded files: ***BT.709***
+- *QuickTime Animation / RLE* encoded files: ***BT.709*** in an RGB space.
 - *RGB* pixels, with 32bpc: ***Linear RGB***
 - *RGB* pixels, with less than 32bpc: ***sRGB***
 - *YUV* pixels: ***BT.709***

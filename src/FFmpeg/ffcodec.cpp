@@ -93,6 +93,21 @@ void FFCodec::init()
     {
         setLevelCapability(false);
     }
+
+    //COLOR PROFILES
+    if (_name == "h264" || _name == "h265" || _name == "hevc" || _name == "libx265" || _name == "libx264")
+    {
+        _defaultColorProfile = "bt709";
+    }
+    if (_name =="qtrle") // it seems QT RLE (animation) is bt709 even if in RGB space
+    {
+        _defaultColorProfile = "bt709";
+    }
+}
+
+QString FFCodec::defaultColorProfile() const
+{
+    return _defaultColorProfile;
 }
 
 bool FFCodec::isVideo() const

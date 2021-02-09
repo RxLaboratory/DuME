@@ -101,6 +101,7 @@ public:
 
     //color
     FFColorProfile *defaultColorProfile(int streamId = 0);
+    FFPixFormat *pixFormat(int streamId = 0);
 
     //custom params
     QList<QStringList> ffmpegOptions();
