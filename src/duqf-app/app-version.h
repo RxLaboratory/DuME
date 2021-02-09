@@ -2,9 +2,9 @@
 #define APPVERSION_H
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 1
-#define VERSION_BUILD 6
-#define VERSION_SUFFIX "-dev"
+#define VERSION_MINOR 2
+#define VERSION_BUILD 0
+#define VERSION_SUFFIX ""
 
 #define STRINGIFY_VERSION(A, B, C) CONCAT(A, B, C )
 #define CONCAT(A, B, C ) STRINGIFY( A##.##B##.##C )
@@ -26,7 +26,7 @@
 #define STR_COMPANYNAME "Rainbox Laboratory"
 #define STR_FILEDESCRIPTION "DuME"
 #define STR_INTERNALNAME "DuME"
-#define STR_LEGALCOPYRIGHT "Copyright (c) 2020 Rainbox Laboratory, Nicolas Dufresne and contributors"
+#define STR_LEGALCOPYRIGHT "Copyright (c) 2020-2021 Rainbox Laboratory, Nicolas Dufresne and contributors"
 #define STR_LEGALTRADEMARKS1 "All Rights Reserved"
 #define STR_ORIGINALFILENAME "DuME.exe"
 #define STR_PRODUCTNAME "DuME - Duduf Media Encoder"
