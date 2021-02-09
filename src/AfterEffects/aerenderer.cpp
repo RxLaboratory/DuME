@@ -45,7 +45,7 @@ bool AERenderer::launchJob()
 
 void AERenderer::renderAep(MediaInfo *aep, bool audio)
 {
-    qDebug() << "Launching After Effects Job...";
+    emit newLog( "Launching After Effects Job...", LogUtils::Debug);
     setStatus( MediaUtils::Launching );
     QStringList arguments("-project");
     QStringList audioArguments;
@@ -53,15 +53,18 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
 
     QString tempPath = "";
 
+    qDebug() << "Here's the project: " + QDir::toNativeSeparators(aep->fileName());
+
     //We don't want to trigger changes in the queue now that we're rendering
     QSignalBlocker b(aep);
 
     //if not using the existing render queue
     if (!aep->aeUseRQueue())
     {
+        qDebug() << "We're not using Ae render queue, let's build the command.";
         //set the cache dir
         QTemporaryDir *aeTempDir = CacheManager::instance()->getAeTempDir();
-        emit newLog( "After Effects temporary dir set to: " + QDir::toNativeSeparators(aeTempDir->path()) );
+        qDebug() << "After Effects temporary dir set to: " + QDir::toNativeSeparators(aeTempDir->path());
         aep->setCacheDir(aeTempDir);
 
         //if a comp name is specified, render this comp
@@ -95,23 +98,30 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
         AfterEffects::instance()->setDuMETemplates();
     }
 
-    emit newLog("Beginning After Effects rendering\nUsing aerender command:\n" + arguments.join(" | "));
+    qDebug() << "Beginning After Effects rendering\nUsing aerender command:\n" + arguments.join(" | ");
 
     //adjust the number of threads
     //keep one available for exporting the audio
     int numThreads = aep->aepNumThreads();
     if (audio && numThreads > 1) numThreads--;
 
+    qDebug() << "Using " + QString::number(numThreads) + " threads.";
+
     // video
     QList<VideoInfo*> vStreams = aep->videoStreams();
     this->setNumFrames( int( aep->duration() * vStreams[0]->framerate() ) );
     this->setFrameRate( vStreams[0]->framerate() );
     this->setOutputFileName( tempPath );
+
+    qDebug() << "Starting...";
+
     this->start( arguments, numThreads );
     // audio
     if (audio) this->start( audioArguments );
 
     setStatus( MediaUtils::AERendering );
+
+    qDebug() << "Launched!";
 }
 
 void AERenderer::readyRead(QString output)

@@ -78,7 +78,7 @@ void AbstractRenderer::start( QStringList arguments, int numThreads )
 
     _timer.start();
 
-    emit newLog("Launching " + QString::number( numThreads ) + " processes.");
+    qDebug().noquote() << "Launching " + QString::number( numThreads ) + " processes.";
     for (int i = 0; i < numThreads; i++ )
     {
         launchProcess( arguments );
@@ -90,7 +90,7 @@ void AbstractRenderer::start( QStringList arguments, int numThreads )
 
 void AbstractRenderer::stop(int timeout)
 {
-    emit newLog("Sending the stop command", LogUtils::Debug);
+    qDebug().noquote() << "Sending the stop command";
 
     setStatus( MediaUtils::Cleaning );
 
@@ -104,7 +104,7 @@ void AbstractRenderer::stop(int timeout)
         }
     }
 
-    emit newLog("Stop command sent. Waiting for processes to shut down.", LogUtils::Debug);
+   qDebug().noquote() << "Stop command sent. Waiting for processes to shut down.";
 
     // wait for timeout and kill all remaining processes
     QTimer::singleShot(timeout, this, SLOT( killRenderProcesses()) );
@@ -129,7 +129,7 @@ void AbstractRenderer::processStarted()
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process) + 1;
 
-    emit newLog("Process " + QString::number( id ) + " started.", LogUtils::Debug);
+    qDebug().noquote() << "Process " + QString::number( id ) + " started.";
 }
 
 void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -141,11 +141,11 @@ void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitSt
 
     if (exitStatus == QProcess::NormalExit)
     {
-        emit newLog("Process " + QString::number(id + 1) + " has exited with code " + QString::number(exitCode) + ".", LogUtils::Debug);
+        qDebug().noquote() << "Process " + QString::number(id + 1) + " has exited with code " + QString::number(exitCode) + ".";
     }
     if (exitStatus == QProcess::CrashExit)
     {
-        emit newLog("Process " + QString::number(id + 1) + " has crashed with code " + QString::number(exitCode) + ". Some output files may be corrupted", LogUtils::Warning);
+        qDebug().noquote() << "Process " + QString::number(id + 1) + " has crashed with code " + QString::number(exitCode) + ". Some output files may be corrupted";
     }
 
     _renderProcesses.removeAt(id);
@@ -228,7 +228,7 @@ void AbstractRenderer::killRenderProcesses()
         if (rp->state() != QProcess::NotRunning)
         {
             rp->kill();
-            emit newLog( "Killed process " + QString::number( _renderProcesses.count() + 1 ) );
+            qDebug().noquote() << "Killed process " + QString::number( _renderProcesses.count() + 1 ) ;
             killed = true;
         }
         rp->deleteLater();
@@ -430,11 +430,10 @@ void AbstractRenderer::launchProcess( QStringList arguments )
         else args = args + " " + arg;
     }
     qDebug().noquote() << renderer->program() + args;
-    emit newLog("Command:\n" + renderer->program() + args);
 
     //TODO check processor affinity?
 
     _renderProcesses << renderer;
 
-    emit newLog("Launched process: " + QString::number( _renderProcesses.count() ), LogUtils::Debug);
+    qDebug().noquote() << "Launched process: " + QString::number( _renderProcesses.count() );
 }
