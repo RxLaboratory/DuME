@@ -157,8 +157,10 @@ void FFmpeg::init()
 
 #ifdef Q_OS_LINUX
     //First, look for a static build in the app folder
-    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
-    //IF not found, try with the system command
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/duffmpeg-static";
+    //IF not found, try with a standard name
+    if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
+    //IF not found, try with a system command
     if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = "";
 #endif
 #ifdef Q_OS_WIN
