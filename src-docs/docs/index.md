@@ -24,7 +24,6 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [Resizing](resize.md)
     - [Filters](filter.md)
 - After Effects rendering
-    - [Installation](after-effects-install.md)
     - [Rendering](after-effects-rendering.md)
 - Control and automation
     - [Introduction](api.md)
