@@ -42,7 +42,6 @@ nav:
         - Resizing: resize.md
         - Filters: filter.md
     - After Effects Rendering:
-        - Installation: after-effects-install.md
         - Rendering: after-effects-rendering.md
     - Control and automation:
         - Introduction: api.md

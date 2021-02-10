@@ -2,8 +2,6 @@
 
 [TOC]
 
-DuME for After Effects has to be correctly installed and configured first, [read the installation section](after-effects-install.md) of this documentation.
-
 ## From After Effects, using the script
 
 ![](img/captures/aePanel.png)

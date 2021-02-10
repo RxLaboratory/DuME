@@ -1,12 +1,12 @@
 # Install DuME on Windows
 
 !!! note
-    For now, DuME on Windows is only availabe in 64bit and will not work on 32bit systems (unless you build it from source by yourself).
+    For now, DuME on Windows is only availabe on intel/amd 64bit platforms and will not work on 32bit systems (unless you build it from source by yourself) nor on *arm* systems.
 
 **You can [download DuME here](https://rainboxlab.org/tools/dume/).**
 
 !!! note
-    For now, only a zip archive is available and there is no installer provided. DuME is a portable application and you can just unzip the files on a flash drive if you'd like to keep it with you.
+    For now, only a zip archive is available and there is no installer provided. *DuME* is a portable application and you can just unzip the files on a flash drive if you'd like to keep it with you.
 
 [TOC]
 
@@ -16,10 +16,10 @@ You can download the `.zip` archive and just unzip **all** the files on your com
 
 ## After Effects Script
 
-If you intend to use *DuME* with *Adobe After Effects*, you can also download the *DuME Script for After Effects* and copy the content of the `ScriptUI Panels` folder from the zip to the scripts panels folder of *After Effects*.  
+If you intend to use *DuME* with *Adobe After Effects*, you can also install the *DuME Script for After Effects* and copy the content of the `ScriptUI Panels` folder from the zip to the `ScriptUI Panels` folder of *After Effects*.  
 There are two ways to do this:
 
-- Manually (if you have administrator privileges) by copying the file to  
+- Manually (if you have administrator privileges) by copying the `.jsx` file to  
 `C:\Program Files\Adobe\Adobe After Effects\Support Files\Scripts\ScriptUI Panels`
 - Automatically through the `File\Scripts\Install ScriptUI Panel...` meny entry in *After Effects*.
 

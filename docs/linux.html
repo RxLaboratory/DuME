@@ -139,10 +139,6 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="after-effects-install.html">Installation</a>
-                </li>
-                <li class="">
-                    
     <a class="" href="after-effects-rendering.html">Rendering</a>
                 </li>
     </ul>
@@ -242,7 +238,7 @@
                 <h1 id="install-dume-on-linux">Install DuME on linux<a class="headerlink" href="#install-dume-on-linux" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For now, DuME on linux is only availabe in 64bit and will not work on 32bit systems (unless you build it from source by yourself).</p>
+<p>For now, DuME on linux is only availabe in 64bit (on intel/amd systems but not arm) and will not work on 32bit systems (unless you build it from source by yourself).</p>
 </div>
 <p><strong>You can <a href="https://rainboxlab.org/tools/dume/">download DuME here</a>.</strong></p>
 <div class="toc">
@@ -256,18 +252,24 @@
 </ul>
 </div>
 <h2 id="debian-and-ubuntu">Debian and Ubuntu<a class="headerlink" href="#debian-and-ubuntu" title="Permanent link">&para;</a></h2>
-<p>If you&rsquo;re using Debian or Ubuntu, you can download the <code>.deb</code> package and install it the usual way.</p>
+<p>If you&rsquo;re using Debian or Ubuntu, in most cases you can just download and install the <em>.deb</em> package the usual way. There are two different packages:</p>
+<ul>
+<li><strong><em>dume</em></strong> is the default choice which installs <em>DuME</em> and gets the dependencies (<em>FFmpeg</em> and <em>Qt-5</em>) from the Debian/Ubuntu repository, as usual. This should work well on all recent systems.</li>
+</ul>
+<p>On older LTS systems (like <em>Ubuntu Bionic Beaver</em> (18.04)), the version of FFmpeg may be inferior than v4.0 needed by <em>DuME</em>. In this case you can get and install the <em>dume-static</em> build.</p>
+<ul>
+<li><strong><em>dume-static</em></strong> includes a static build of FFmpeg v4.3, and should work with all and older versions of <em>Debian</em>/<em>Ubuntu</em>, but in this case ffmpeg will not be updated if there are new updates available until DuME updates are available too.</li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>DuME depends on the package qt5-default in version 5.9.5 or more recent. If it&rsquo;s not available in your package manager, use the AppImage instead.<br />
-For Ubuntu, these libraries are available since Bionic Beaver (18.04).</p>
+For <em>Ubuntu</em>, these libraries are available since <em>Bionic Beaver</em> (18.04).</p>
 </div>
 <h2 id="appimage-for-all-distributions">AppImage for all distributions<a class="headerlink" href="#appimage-for-all-distributions" title="Permanent link">&para;</a></h2>
 <p>An easy way to use DuME is to download the AppImage file.</p>
 <p>Make the file executable, either with your file explorer or the command line (replace <code>x.x.x</code> by the actual version):<br />
 <code>chmod u=rwx DuME-x.x.x-x86_64.AppImage</code></p>
-<p>You&rsquo;ll also need to <a href="https://ffmpeg.org/download.html#build-linux">download and install FFmpeg</a>. Most of the time, it should be available in your distribution package manager. For example, in Debian or Ubuntu:<br />
-<code>sudo apt-get install ffmpeg</code></p>
+<p>All dependencies are included in the <em>AppImage</em>, so everything should work out of the box.</p>
 <p>Then you can launch it by double clicking on the AppImage file or with the command line:<br />
 <code>./DuME-x.x.x-x86_64.AppImage</code></p>
 <h2 id="build-from-source">Build from source<a class="headerlink" href="#build-from-source" title="Permanent link">&para;</a></h2>
