@@ -13,6 +13,7 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [Windows](windows.md)
     - [Mac OS X](mac.md)
     - [Linux](linux.md)
+- [The Green Guide to transcoding](green.md)
 - Transcoding
     - [Manage Presets](presets.md)
     - [MP4 / h.264 / h.265](h264-5.md)

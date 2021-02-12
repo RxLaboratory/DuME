@@ -31,6 +31,8 @@ nav:
         - Windows: windows.md
         - Mac OS X: mac.md
         - Linux: linux.md
+    - The Green Guide to transcoding: 
+        - Eco-Friendly transcoding: green.md
     - Transcoding:
         - Manage presets: presets.md
         - MP4 / h.264 AVC / h.265 HEVC: h264-5.md
