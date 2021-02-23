@@ -16,5 +16,8 @@ Just select the *Apply LUT* item in the video options, then select the LUT you n
 
 Some LUTs are provided with DuME, and you can load your own.
 
+!!! note
+    The LUT is applied after all other filters but **before** the color management conversions, if any. That means the LUT has to work with the input color space and not the output color space.
+
 !!! hint
     Using a LUT to transform colors of an image depends both on the input format and colors and the output color space. It is NOT the best way to [convert color spaces](colors.md)...

@@ -9,6 +9,9 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 ### Fixes
 
 - Fixed a bug resetting the first frame number to 0 when rendering frame sequences.
+- Fixed the broken audio codec selection
+- Fixed the audio transcode checkbox not working after checking audio copy.
+- Fixed the render presets sometimes incorrectly installed when launching the render from inside After Effects with the script.
 
 ## 0.2.0
 
