@@ -6,6 +6,10 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 ## 0.2.1
 
+### Improvements
+
+- Added an option to apply LUT before or after color management (on input or output color space).
+
 ### Fixes
 
 - Fixed a bug resetting the first frame number to 0 when rendering frame sequences.

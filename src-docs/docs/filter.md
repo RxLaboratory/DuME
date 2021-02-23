@@ -14,9 +14,10 @@ This specific order has been chosen to keep the best quality possible in the str
 4. [Motion interpolation](speed.md)
 4. Crop
 5. Any user defined filters
-6. [LUT](lut.md)
+6. [LUT](lut.md) on *input* color space
 7. [Resize](resize.md)
 8. [Color management](colors.md)
+9. [LUT](lut.md) on *output* color space
 
 ## Audio Filter Graph
 
