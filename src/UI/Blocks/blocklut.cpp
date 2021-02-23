@@ -8,9 +8,10 @@ BlockLut::BlockLut(MediaInfo *mediaInfo, QWidget *parent) :
     setupUi(this);
 
     //populate box
-    lutBox->addItem("None", "");
-    lutBox->addItem("Adobe Gamma 2.4 to QT Gamma 1.96", ":/luts/adobe-to-qt.cube");
-    lutBox->addItem("QT Gamma 1.96 to Adobe Gamma 2.4", ":/luts/qt-to-adobe.cube");
+    foreach(FFLut *lut, FFmpeg::instance()->luts())
+    {
+        lutBox->addItem(lut->prettyName(), lut->name());
+    }
     lutBox->addItem("Custom...","");
 
     connect(lutBox, SIGNAL(currentIndexChanged(int)), this, SLOT(lutBox_currentIndexChanged(int)));
@@ -40,7 +41,11 @@ void BlockLut::lutBox_currentIndexChanged(int index)
 {
     if (index == lutBox->count() -1 )
     {
-        QString openFileName = QFileDialog::getOpenFileName(this,"Load LUT file", QDir::homePath(), "LUT files (*.3dl *.cube *.dat *.m3d *.csp);;After Effects (*.3dl);;Iridas (*.cube)::DaVinci (*.dat);;Pandora (*.m3d);;cineSpace (*.csp);;All Files (*.*)");
+#ifdef Q_OS_LINUX
+        QString openFileName = QFileDialog::getOpenFileName(this,"Load LUT file", QDir::homePath(), "LUT files (*.3dl *.cube *.dat *.m3d *.csp *.3DL *.CUBE *.DAT *.M3D *.CSP);;After Effects / Autodesk (*.3dl *.3DL);;Iridas (*.cube *.CUBE)::DaVinci (*.dat *.DAT);;Pandora (*.m3d *.M3D);;cineSpace (*.csp *.CSP);;All Files (*.*)");
+#else
+        QString openFileName = QFileDialog::getOpenFileName(this,"Load LUT file", QDir::homePath(), "LUT files (*.3dl *.cube *.dat *.m3d *.csp);;After Effects / Autodesk (*.3dl);;Iridas (*.cube)::DaVinci (*.dat);;Pandora (*.m3d);;cineSpace (*.csp);;All Files (*.*)");
+#endif
         lutBox->setItemData(index, openFileName);
         if (openFileName == "")
         {
@@ -59,6 +64,8 @@ void BlockLut::lutBox_currentIndexChanged(int index)
         lutBox->setItemData(index, destinationLutPath);
     }
     _mediaInfo->setLut(lutBox->currentData(Qt::UserRole).toString());
+
+    applyBox->setEnabled(index != 0);
 }
 
 void BlockLut::applyBox_currentIndexChanged(int index)

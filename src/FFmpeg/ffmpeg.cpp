@@ -85,6 +85,12 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("palsecam", "PAL / SECAM", colorPrimary("bt470bg"), colorTRC("gamma22"), colorSpace("bt470bg"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("ntsc", "NTSC", colorPrimary("smpte170m"), colorTRC("smpte170m"), colorSpace("smpte170m"), colorRange("tv"));
 
+    // The LUTs
+    _luts << new FFLut( "", "None");
+    _luts << new FFLut( ":/luts/linear-to-filmic.spi1d", "Linear → Blender Filmic", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "BT.709 → QT Gamma 1.96", "bt709", "qt196");
+    _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "QT Gamma 1.96 → BT.709", "qt196", "bt709");
+
     //The motion interpolation algorithms
     _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");
     _motionInterpolationAlgorithms << new FFBaseObject("esa", "Exhaustive search");
@@ -269,6 +275,25 @@ QList<FFColorItem *> FFmpeg::colorTRCs() const
 QList<FFColorItem *> FFmpeg::colorPrimaries() const
 {
     return _colorPrimaries;
+}
+
+QList<FFLut *> FFmpeg::luts() const
+{
+    return _luts;
+}
+
+FFLut *FFmpeg::lut(QString name)
+{
+    name = name.trimmed();
+    foreach(FFLut *l, _luts)
+    {
+        if (l->name().toLower() == name.trimmed().toLower()) return l;
+    }
+    foreach(FFLut *l, _luts)
+    {
+        if (l->prettyName() == name) return l;
+    }
+    return _luts[0];
 }
 
 QList<FFMuxer *> FFmpeg::muxers(bool encodeOnly)

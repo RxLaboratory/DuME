@@ -20,6 +20,7 @@
 #include "ffcolorprofile.h"
 #include "ffsampleformat.h"
 #include "ffcoloritem.h"
+#include "fflut.h"
 
 class FFmpeg : public AbstractRendererInfo
 {
@@ -128,6 +129,9 @@ public:
     QList<FFColorItem *> colorSpaces() const;
     QList<FFColorItem *> colorRanges() const;
     QList<FFColorProfile *> colorProfiles() const;
+    //LUTs
+    QList<FFLut *> luts() const;
+    FFLut *lut(QString name);
     //Motion interpolation algos
     FFBaseObject *motionInterpolationAlgorithm(QString name);
     QList<FFBaseObject *> motionInterpolationAlgorithms() const;
@@ -224,6 +228,8 @@ private:
     QList<FFColorItem *> _colorRanges;
     // The list of color profiles
     QList<FFColorProfile *> _colorProfiles;
+    // The list of LUTs
+    QList<FFLut *> _luts;
     //The list of motion interpolation algorithms
     QList<FFBaseObject *> _motionInterpolationAlgorithms;
     //The list of motion estimation modes

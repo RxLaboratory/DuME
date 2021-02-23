@@ -162,5 +162,6 @@
     <qresource prefix="/luts">
         <file alias="adobe-to-qt.cube">resources/luts/QT Gamma Compensation.cube</file>
         <file alias="qt-to-adobe.cube">resources/luts/Undo QT Gamma Compensation.cube</file>
+        <file alias="linear-to-filmic.spi1d">resources/luts/filmic_to_0-70_1-03.spi1d</file>
     </qresource>
 </RCC>
