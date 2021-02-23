@@ -4,6 +4,12 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 [TOC]
 
+## 0.2.1
+
+### Fixes
+
+- Fixed a bug resetting the first frame number to 0 when rendering frame sequences.
+
 ## 0.2.0
 
 ### New Features
