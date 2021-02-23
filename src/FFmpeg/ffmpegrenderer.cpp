@@ -535,10 +535,10 @@ bool FFmpegRenderer::launchJob()
         //audio
         if (output->hasAudio())
         {
-            AudioInfo *stream = output->audioStreams()[0];
+            QList<AudioInfo*> audioStreams = output->audioStreams();
+            AudioInfo *stream = audioStreams[0];
 
             QString acodec = stream->codec()->name();
-            if (acodec == "")
 
             //codec
             if (acodec != "") arguments << "-c:a" << acodec;
