@@ -320,8 +320,11 @@ QString MediaInfo::getDescription()
                                "fps: " +
                                MediaUtils::durationToTimecode( _frames.count() / fr );
         }
-        mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
-        mediaInfoString += "\nEnd Frame Number: " + QString::number( _endNumber );
+        if (!_outputMedia)
+        {
+            mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
+            mediaInfoString += "\nEnd Frame Number: " + QString::number( _endNumber );
+        }
     }
 
     if (_inPoint != 0.0) mediaInfoString += "\nIn point: " + MediaUtils::durationToTimecode(_inPoint);
@@ -1587,9 +1590,6 @@ QStringList MediaInfo::frames() const
 
 void MediaInfo::loadSequence(bool silent)
 {
-    _frames.clear();
-    _startNumber = 0;
-
     if (_fileName == "") return;
     if (_videoStreams.count() == 0) return;
 
@@ -1608,6 +1608,9 @@ void MediaInfo::loadSequence(bool silent)
     //find digits in the name (if this is not an output, and file exist)
     if (!_outputMedia)
     {
+        _frames.clear();
+        _startNumber = 0;
+
         QRegularExpression reDigits("(\\d+)");
         QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
 

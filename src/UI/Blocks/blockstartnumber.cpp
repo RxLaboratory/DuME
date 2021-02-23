@@ -26,7 +26,7 @@ void BlockStartNumber::update()
         emit blockEnabled(false);
         return;
     }
-
+    QSignalBlocker b(startNumberEdit);
     startNumberEdit->setValue( _mediaInfo->startNumber() );
 }
 
