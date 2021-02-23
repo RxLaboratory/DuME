@@ -5,7 +5,6 @@ BlockLut::BlockLut(MediaInfo *mediaInfo, QWidget *parent) :
 {
     setType(Type::Video);
 
-    _freezeUI = true;
     setupUi(this);
 
     //populate box
@@ -14,7 +13,8 @@ BlockLut::BlockLut(MediaInfo *mediaInfo, QWidget *parent) :
     lutBox->addItem("QT Gamma 1.96 to Adobe Gamma 2.4", ":/luts/qt-to-adobe.cube");
     lutBox->addItem("Custom...","");
 
-    _freezeUI = false;
+    connect(lutBox, SIGNAL(currentIndexChanged(int)), this, SLOT(lutBox_currentIndexChanged(int)));
+    connect(applyBox, SIGNAL(currentIndexChanged(int)), this, SLOT(applyBox_currentIndexChanged(int)));
 }
 
 void BlockLut::activate(bool blockEnabled)
@@ -25,13 +25,19 @@ void BlockLut::activate(bool blockEnabled)
 
 void BlockLut::update()
 {
-    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    QSignalBlocker b(lutBox);
+    QSignalBlocker b2(applyBox);
+
+    VideoInfo *stream =  _mediaInfo->videoStreams().at(0);
+
     lutBox->setCurrentData(stream->lut());
+
+    if (stream->applyLutOnOutputSpace()) applyBox->setCurrentIndex(1);
+    else applyBox->setCurrentIndex(0);
 }
 
-void BlockLut::on_lutBox_currentIndexChanged(int index)
+void BlockLut::lutBox_currentIndexChanged(int index)
 {
-    if (_freezeUI) return;
     if (index == lutBox->count() -1 )
     {
         QString openFileName = QFileDialog::getOpenFileName(this,"Load LUT file", QDir::homePath(), "LUT files (*.3dl *.cube *.dat *.m3d *.csp);;After Effects (*.3dl);;Iridas (*.cube)::DaVinci (*.dat);;Pandora (*.m3d);;cineSpace (*.csp);;All Files (*.*)");
@@ -53,4 +59,9 @@ void BlockLut::on_lutBox_currentIndexChanged(int index)
         lutBox->setItemData(index, destinationLutPath);
     }
     _mediaInfo->setLut(lutBox->currentData(Qt::UserRole).toString());
+}
+
+void BlockLut::applyBox_currentIndexChanged(int index)
+{
+    _mediaInfo->setApplyLutOnOutputSpace( index == 1 );
 }

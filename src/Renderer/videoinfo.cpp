@@ -32,6 +32,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _cropHeight = 0;
     _cropUseSize = false;
     _lut = "";
+    _applyLutOnOutputSpace = false;
     _deinterlace = false;
     _deinterlaceParity = MediaUtils::AutoParity;
     _intra = false;
@@ -49,47 +50,52 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
 {
     _language = nullptr;
     _id = -1;
-    setCodec( obj.value("codec").toObject(), true);
-    setQuality( obj.value("quality").toInt(-1), true);
-    setEncodingSpeed( obj.value("encodingSpeed").toInt(-1), true);
-    setProfile( obj.value("profile").toObject(), true);
-    setLevel( obj.value("level").toString(), true);
-    setTuning( obj.value("tuning").toObject(), true);
-    setBitrateType( obj.value("bitrateType").toString("VBR"), true);
-    setPixAspect( obj.value("pixAspect").toDouble(1), true);
-    setPixFormat( obj.value("pixFormat").toObject(), true);
-    setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(true), true);
-    setBitrate( obj.value("bitrate").toInt(0), true);
-    setFramerate( obj.value("framerate").toDouble(0.0), true);
-    setHeight( obj.value("height").toInt(0), true);
-    setWidth( obj.value("width").toInt(0), true);
-    setLanguage( obj.value("language").toObject().value("name").toString(), true);
-    setColorPrimaries( obj.value("colorPrimaries").toString(), true);
-    setColorTRC( obj.value("colorTRC").toString(), true);
-    setColorSpace( obj.value("colorSpace").toString(), true);
-    setColorRange( obj.value("colorRange").toString(), true);
-    setColorConversionMode( obj.value("colorConversionMode").toString(""), true);
+
+    //Don't send the changed signal when loading a json
+    QSignalBlocker bThis(this);
+
+    setCodec( obj.value("codec").toObject());
+    setQuality( obj.value("quality").toInt(-1));
+    setEncodingSpeed( obj.value("encodingSpeed").toInt(-1));
+    setProfile( obj.value("profile").toObject());
+    setLevel( obj.value("level").toString());
+    setTuning( obj.value("tuning").toObject());
+    setBitrateType( obj.value("bitrateType").toString("VBR"));
+    setPixAspect( obj.value("pixAspect").toDouble(1));
+    setPixFormat( obj.value("pixFormat").toObject());
+    setPremultipliedAlpha( obj.value("premultipliedAlpha").toBool(true));
+    setBitrate( obj.value("bitrate").toInt(0));
+    setFramerate( obj.value("framerate").toDouble(0.0));
+    setHeight( obj.value("height").toInt(0));
+    setWidth( obj.value("width").toInt(0));
+    setLanguage( obj.value("language").toObject().value("name").toString());
+    setColorPrimaries( obj.value("colorPrimaries").toString());
+    setColorTRC( obj.value("colorTRC").toString());
+    setColorSpace( obj.value("colorSpace").toString());
+    setColorRange( obj.value("colorRange").toString());
+    setColorConversionMode( obj.value("colorConversionMode").toString(""));
     int t = obj.value("topCrop").toInt(0);
     int b = obj.value("bottomCrop").toInt(0);
     int l = obj.value("leftCrop").toInt(0);
     int r = obj.value("rightCrop").toInt(0);
     int w = obj.value("cropWidth").toInt(0);
     int h = obj.value("cropHeight").toInt(0);
-    setCrop(w,h, true);
-    setCrop(t, b, l, r, true);
-    setCropUseSize( obj.value("cropUseSize").toBool(false), true);
-    setLut(obj.value("lut").toString(""), true);
-    setDeinterlace( obj.value("deinterlace").toBool(false), true);
-    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto") ), true);
-    setIntra( obj.value("intra").toBool(false), true);
-    setLossless( obj.value("lossless").toBool(false), true);
-    setSpeed( obj.value("speed").toDouble(1.0), true);
-    setSpeedAlgorithm( obj.value("speedAlgorithm").toObject(), true);
-    setSpeedEstimationMode( obj.value("speedEstimationMode").toObject(), true);
-    setSpeedInterpolationMode( MediaUtils::MotionInterpolationModeFromString( obj.value("speedInterpolationMode").toString("NoMotionInterpolation")), true);
-    setSceneDetection( obj.value("sceneDetection").toBool(true), true);
-    setResizeMode( MediaUtils::ResizeModeFromString( obj.value("resizeMode").toString("")), true);
-    setResizeAlgorithm( obj.value("resizeAlgorithm").toObject(), true);
+    setCrop(w,h);
+    setCrop(t, b, l, r);
+    setCropUseSize( obj.value("cropUseSize").toBool(false));
+    setLut(obj.value("lut").toString(""));
+    setApplyLutOnOutputSpace( obj.value("applyLutOnOutputSpace").toBool(false));
+    setDeinterlace( obj.value("deinterlace").toBool(false));
+    setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto") ));
+    setIntra( obj.value("intra").toBool(false));
+    setLossless( obj.value("lossless").toBool(false));
+    setSpeed( obj.value("speed").toDouble(1.0));
+    setSpeedAlgorithm( obj.value("speedAlgorithm").toObject());
+    setSpeedEstimationMode( obj.value("speedEstimationMode").toObject());
+    setSpeedInterpolationMode( MediaUtils::MotionInterpolationModeFromString( obj.value("speedInterpolationMode").toString("NoMotionInterpolation")));
+    setSceneDetection( obj.value("sceneDetection").toBool(true));
+    setResizeMode( MediaUtils::ResizeModeFromString( obj.value("resizeMode").toString("")));
+    setResizeAlgorithm( obj.value("resizeAlgorithm").toObject());
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -124,6 +130,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _cropWidth = other->cropWidth();
     _cropUseSize = other->cropUseSize();
     _lut = other->lut();
+    _applyLutOnOutputSpace = other->applyLutOnOutputSpace();
     _deinterlace = other->deinterlace();
     _deinterlaceParity = other->deinterlaceParity();
     _intra = other->intra();
@@ -176,6 +183,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("cropHWidth", _cropWidth);
     vStream.insert("cropUseSize", _cropUseSize);
     vStream.insert("lut", _lut);
+    vStream.insert("applyLutOnOutputSpace", _applyLutOnOutputSpace);
     vStream.insert("deinterlace", _deinterlace);
     vStream.insert("deinterlaceParity", MediaUtils::DeinterlaceParityToString(_deinterlaceParity));
     vStream.insert("intra", _intra);
@@ -292,7 +300,14 @@ QString VideoInfo::getDescription( bool outputMedia )
         if (_sceneDetection) mediaInfoString += "yes";
         else mediaInfoString += "no";
     }
-    if ( outputMedia && _lut != "") mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
+    if ( outputMedia && _lut != "")
+    {
+        mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
+        mediaInfoString += "\nLUT will be applied on ";
+        if (_applyLutOnOutputSpace) mediaInfoString += "output";
+        else mediaInfoString += "input";
+        mediaInfoString += " color space.";
+    }
     if ( outputMedia && _deinterlace )
     {
         mediaInfoString += "\nDeinterlace: " + MediaUtils::DeinterlaceParityToString(_deinterlaceParity);
@@ -842,6 +857,17 @@ MediaUtils::ColorConversionMode VideoInfo::colorConversionMode() const
 void VideoInfo::setColorConversionMode(QString colorConversionMode, bool silent)
 {
     setColorConversionMode( MediaUtils::ColorConversionModeModeFromString(colorConversionMode), silent);
+}
+
+bool VideoInfo::applyLutOnOutputSpace() const
+{
+    return _applyLutOnOutputSpace;
+}
+
+void VideoInfo::setApplyLutOnOutputSpace(bool applyLutOnOutputSpace, bool silent)
+{
+    _applyLutOnOutputSpace = applyLutOnOutputSpace;
+    if(!silent) emit changed();
 }
 
 void VideoInfo::setColorConversionMode(MediaUtils::ColorConversionMode colorConversionMode, bool silent)

@@ -30,6 +30,11 @@ private:
      * @return
      */
     bool colorManagement();
+    /**
+     * @brief Constructs the LUT filter to add to the filterchain
+     * @return The ffmpeg filter description
+     */
+    QString getLutFilter(VideoInfo *stream);
 
 protected:
     /**

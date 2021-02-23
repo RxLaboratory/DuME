@@ -388,33 +388,8 @@ bool FFmpegRenderer::launchJob()
                     }
                 }
 
-                //1D / 3D LUT
-                if (stream->lut() != "")
-                {
-                    QString filterName = "lut3d";
-                    QString lutName = stream->lut();
-                    //check if it's 3D or 1D
-                    if (lutName.endsWith(".cube"))
-                    {
-                        QFile l(lutName);
-                        if (l.open(QIODevice::ReadOnly | QIODevice::Text))
-                        {
-                             QTextStream in(&l);
-                             QString line = in.readLine();
-                             while (!line.isNull())
-                             {
-                                 if (line.trimmed().toUpper().startsWith("LUT_1D"))
-                                 {
-                                     filterName = "lut1d";
-                                     break;
-                                 }
-                                 line = in.readLine();
-                             }
-                             l.close();
-                        }
-                    }
-                    filterChain << filterName + "='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
-                }
+                //1D / 3D LUT (on input)
+                if (!stream->applyLutOnOutputSpace()) filterChain << getLutFilter(stream);
 
                 //size
                 int width = stream->width();
@@ -523,7 +498,11 @@ bool FFmpegRenderer::launchJob()
                     filterChain << "lutrgb=" + lutrgbArgs.join(":");
                 }
 
+                //1D / 3D LUT (on output)
+                if (stream->applyLutOnOutputSpace()) filterChain << getLutFilter(stream);
+
                 //compile filters
+                filterChain.removeAll(QString(""));
                 if (filterChain.count() > 0) arguments << "-vf" << filterChain.join(",");
             }
         }
@@ -588,7 +567,7 @@ bool FFmpegRenderer::launchJob()
     emit newLog("Beginning new encoding\nUsing FFmpeg commands:\n" + arguments.join(" | "));
 
     //launch
-    this->setOutputFileName( _job->getOutputMedias()[0]->fileName() );
+    this->setOutputFileName( _job->getOutputMedias().at(0)->fileName() );
 
     if (outputFrameRate == 0.0) outputFrameRate = inputFramerate;
 
@@ -608,10 +587,10 @@ bool FFmpegRenderer::colorManagement()
 
     if (!_job) return false;
 
-    MediaInfo *o = _job->getOutputMedias()[0];
+    MediaInfo *o = _job->getOutputMedias().at(0);
     if (!o->hasVideo()) return false;
 
-    VideoInfo *ov = o->videoStreams()[0];
+    VideoInfo *ov = o->videoStreams().at(0);
 
     // If copy stream, nothing to convert
     if (ov->isCopy()) return false;
@@ -668,6 +647,36 @@ bool FFmpegRenderer::colorManagement()
         if (inputPixFormat->colorSpace() != outputPixFormat->colorSpace()) return true;
     }
     return false;
+}
+
+QString FFmpegRenderer::getLutFilter(VideoInfo *stream)
+{
+    if (stream->lut() == "") return "";
+
+    QString filterName = "lut3d";
+    QString lutName = stream->lut();
+    //check if it's 3D or 1D
+    if (lutName.endsWith(".cube"))
+    {
+        QFile l(lutName);
+        if (l.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+             QTextStream in(&l);
+             QString line = in.readLine();
+             while (!line.isNull())
+             {
+                 if (line.trimmed().toUpper().startsWith("LUT_1D"))
+                 {
+                     filterName = "lut1d";
+                     break;
+                 }
+                 line = in.readLine();
+             }
+             l.close();
+        }
+    }
+
+    return filterName + "='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
 }
 
 void FFmpegRenderer::readyRead(QString output)

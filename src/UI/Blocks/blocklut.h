@@ -18,7 +18,8 @@ public slots:
     void activate( bool blockEnabled );
     void update();
 private slots:
-    void on_lutBox_currentIndexChanged(int index);
+    void lutBox_currentIndexChanged(int index);
+    void applyBox_currentIndexChanged(int index);
 };
 
 #endif // BLOCKLUT_H

@@ -123,7 +123,8 @@ public:
 
     QString lut() const;
     void setLut(const QString &lut, bool silent = false);
-
+    bool applyLutOnOutputSpace() const;
+    void setApplyLutOnOutputSpace(bool applyLutOnOutputSpace, bool silent = false);
 
     bool deinterlace() const;
     void setDeinterlace(bool deinterlace, bool silent = false);
@@ -232,6 +233,7 @@ private:
     int _cropWidth;
     bool _cropUseSize;
     QString _lut;
+    bool _applyLutOnOutputSpace;
     bool _deinterlace;
     MediaUtils::DeinterlaceParity _deinterlaceParity;
     bool _intra;

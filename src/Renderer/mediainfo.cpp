@@ -1019,6 +1019,16 @@ void MediaInfo::setLut(QString lut, int id, bool silent)
         _videoStreams[id]->setLut(lut, silent);
 }
 
+void MediaInfo::setApplyLutOnOutputSpace(bool applyonOutput, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setApplyLutOnOutputSpace(applyonOutput, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setApplyLutOnOutputSpace(applyonOutput, silent);
+}
+
 void MediaInfo::setDeinterlace(bool deinterlace, int id, bool silent)
 {
     if (!hasVideo()) return;
