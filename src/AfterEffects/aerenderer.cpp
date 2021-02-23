@@ -13,6 +13,7 @@ AERenderer *AERenderer::instance()
 AERenderer::AERenderer(QObject *parent) : AbstractRenderer(parent)
 {
     _duration = 0;
+    _setTemplates = true;
     connect(AfterEffects::instance(), &AfterEffects::binaryChanged, this, &AbstractRenderer::setBinary);
     setBinary(AfterEffects::instance()->binary());
 }
@@ -94,8 +95,8 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
             audioArguments.clear();
         }
 
-        // (Try to) Add our templates for rendering // DISABLED FOR NOW as the Ae script (should) does that
-        AfterEffects::instance()->setDuMETemplates();
+        // (Try to) Add our templates for rendering
+        if (_setTemplates) AfterEffects::instance()->setDuMETemplates();
     }
 
     qDebug() << "Beginning After Effects rendering\nUsing aerender command:\n" + arguments.join(" | ");
@@ -124,10 +125,20 @@ void AERenderer::renderAep(MediaInfo *aep, bool audio)
     qDebug() << "Launched!";
 }
 
+bool AERenderer::isUsingTemplates() const
+{
+    return _setTemplates;
+}
+
+void AERenderer::setUseTemplates(bool setTemplates)
+{
+    _setTemplates = setTemplates;
+}
+
 void AERenderer::readyRead(QString output)
 {
     emit console(output);
-
+    
     QRegularExpression reProgress("PROGRESS:\\s*[\\d:]+\\s*\\((\\d+)\\)");
     QRegularExpressionMatch match = reProgress.match(output);
     if (match.hasMatch())

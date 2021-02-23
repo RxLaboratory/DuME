@@ -53,7 +53,7 @@ Read the [After Effects Rendering](after-effects-rendering.md) section for more 
 | `--comp composition` / `-c composition` | string | The name of the composition to render. |
 | `--rq-item item` | integer | The index of the After EFfects render queue item to render. |
 | `--use-queue` | | Just launches the After Effects render queue. |
-| `--aerender aerenderpath` | string | Explicitly set the After Effects renderer to use. |
+| `--aerender aerenderpath` | string | Explicitly set the After Effects renderer to use. Note: when using this option, DuME will NOT try to install the rendering templates it needs, they have to be available globally or in the project. |
 
 ## Output options
 

@@ -17,6 +17,9 @@ public:
      */
     static AERenderer *instance();
 
+    void setUseTemplates(bool isUsingTemplates);
+    bool isUsingTemplates() const;
+
 protected:
     // reimplementation from AbstractRenderer to handle ae output
     void readyRead(QString output);
@@ -42,6 +45,10 @@ private:
      * @param audio
      */
     void renderAep(MediaInfo *aep, bool audio = false);
+    /**
+     * @brief when False, won't try to install dume templates before rendering (if they're set by a script in Ae for example)
+     */
+    bool _setTemplates;
 protected:
     /**
      * @brief The unique AEREnderer instance

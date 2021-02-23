@@ -251,6 +251,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
                         settings.setValue("aerender/path", args[i]);
                         settings.sync();
                         AfterEffects::instance()->setBinary("Custom");
+                        AERenderer::instance()->setUseTemplates(false);
                     }
 #endif
                     else if (arg != "--no-banner" && arg != "--hide-console")
