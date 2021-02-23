@@ -261,7 +261,7 @@ void OutputWidget::on_audioTranscodeButton_toggled( bool checked )
 {
     if (!_mediaInfo->hasAudio()) return;
     if (!_loadingPreset) presetsBox->setCurrentIndex(0);
-    if ( checked ) _mediaInfo->videoStreams()[0]->setCodec( _mediaInfo->muxer()->defaultAudioCodec() );
+    if ( checked ) _mediaInfo->setAudioCodec( _mediaInfo->muxer()->defaultAudioCodec() );
     else _mediaInfo->setAudioCodec( "copy" );
 }
 
