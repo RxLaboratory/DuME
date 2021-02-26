@@ -154,4 +154,10 @@ namespace Interpolations {
     double linear( double val, double fromMin, double fromMax, double toMin = 0, double toMax = 100);
 }
 
+namespace ProcessUtils {
+    QProcess *runProcess(QString binary, QStringList arguments = QStringList());
+    void runProcess(QProcess *p, QString binary, QStringList arguments = QStringList());
+    void runIndependantProcess(QString binary, QStringList arguments = QStringList());
+}
+
 #endif // UTILS_H

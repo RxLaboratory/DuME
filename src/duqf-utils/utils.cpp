@@ -320,3 +320,33 @@ void FileUtils::openInExplorer(QString path)
 #endif
 }
 
+
+QProcess *ProcessUtils::runProcess(QString binary, QStringList arguments)
+{
+    QProcess *p = new QProcess();
+    ProcessUtils::runProcess(p, binary, arguments);
+    return p;
+}
+
+void ProcessUtils::runIndependantProcess(QString binary, QStringList arguments)
+{
+    QProcess *p = new QProcess();
+    QObject::connect(p, SIGNAL(finished(int)), p, SLOT(deleteLater()));
+    ProcessUtils::runProcess(p, binary, arguments);
+}
+
+void ProcessUtils::runProcess(QProcess *p, QString binary, QStringList arguments)
+{
+    p->setProgram(binary);
+    p->setArguments(arguments);
+
+    QString args = "";
+    foreach(QString arg, arguments)
+    {
+        if (arg.indexOf(" ") > 0) args = args + " \"" + arg + "\"";
+        else args = args + " " + arg;
+    }
+    qDebug().noquote() << p->program() + args;
+
+    p->start(QIODevice::ReadWrite);
+}

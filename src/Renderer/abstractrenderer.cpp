@@ -419,21 +419,10 @@ void AbstractRenderer::launchProcess( QStringList arguments )
     connect( renderer, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(processErrorOccurred(QProcess::ProcessError)));
 
     //launch
-    renderer->setProgram( _binaryFileName );
-    renderer->setArguments( arguments );
-    renderer->start(QIODevice::ReadWrite);
-
-    QString args = "";
-    foreach(QString arg, arguments)
-    {
-        if (arg.indexOf(" ") > 0) args = args + " \"" + arg + "\"";
-        else args = args + " " + arg;
-    }
-    qDebug().noquote() << renderer->program() + args;
 
     //TODO check processor affinity?
-
     _renderProcesses << renderer;
+    ProcessUtils::runProcess( renderer, _binaryFileName, arguments);
 
     qDebug().noquote() << "Launched process: " + QString::number( _renderProcesses.count() );
 }
