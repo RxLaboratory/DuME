@@ -107,7 +107,7 @@
      <item row="3" column="1">
       <widget class="QLineEdit" name="shaperEdit">
        <property name="placeholderText">
-        <string>Name of OCIO colorspace or role for the shaper (optional)^</string>
+        <string>Name of OCIO colorspace or role for the shaper (optional)</string>
        </property>
       </widget>
      </item>

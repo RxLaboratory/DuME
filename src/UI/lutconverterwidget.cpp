@@ -40,7 +40,7 @@ void LutConverterWidget::inputBrowse()
     filters += ";;Cinespace (*.csp *.CSP)";
     filters += ";;Truelight (*.cub *.CUB)";
     filters += ";;Iridas / Resolve (*.cube *.CUBE)";
-    filters += ";;Discreet legacy 1D-LUT (*.lut *.LUT)";
+    filters += ";;Discreet legacy 1D-LUT / Houdini (*.lut *.LUT)";
     filters += ";;Houdini (*.hdl *.hdl)";
     filters += ";;ICC profile format (*.icc *.icm *.pf *.ICC *.ICM *.PF)";
     filters += ";;Iridas Look (*.look *.LOOK)";
