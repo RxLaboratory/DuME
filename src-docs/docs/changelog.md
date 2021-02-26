@@ -10,6 +10,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 - Added LUT tools (working with OCIO's `ociobakelut`)
 - Added [*The Green Guide to transcoding*](green.md) to the documentation.
+- Added support for conversion to/from ACEScg color space.
 
 ### Improvements
 

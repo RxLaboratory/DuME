@@ -46,3 +46,4 @@ QJsonObject FFBaseObject::toJson()
     obj.insert("prettyName", _prettyName);
     return obj;
 }
+

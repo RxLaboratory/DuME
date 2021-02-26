@@ -1,13 +1,11 @@
 #include "fflut.h"
 
-FFLut::FFLut(QString name, QString prettyName, QString inputTrc, QString outputTrc, QObject *parent):
+FFLut::FFLut(QString name, QString prettyName, QString inputProfile, QString outputProfile, Type type, QObject *parent):
         FFBaseObject(name, prettyName, parent)
 {
-    _inputPrimaries = "";
-    _outputPrimaries = "";
-    _inputTrc = inputTrc;
-    _outputTrc = outputTrc;
-    _type = OneD;
+    _inputProfile = inputProfile;
+    _outputProfile = outputProfile;
+    _type = type;
 }
 
 FFLut::Type FFLut::type() const
@@ -20,42 +18,34 @@ void FFLut::setType(const Type &type)
     _type = type;
 }
 
-QString FFLut::outputTrc() const
+QString FFLut::outputProfile() const
 {
-    return _outputTrc;
+    return _outputProfile;
 }
 
-void FFLut::setOutputTrc(const QString &outputTrc)
+void FFLut::setOutputProfile(const QString &outputProfile)
 {
-    _outputTrc = outputTrc;
+    _outputProfile = outputProfile;
 }
 
-QString FFLut::inputTrc() const
+QString FFLut::inputProfile() const
 {
-    return _inputTrc;
+    return _inputProfile;
 }
 
-void FFLut::setInputTrc(const QString &inputTrc)
+void FFLut::setInputProfile(const QString &inputProfile)
 {
-    _inputTrc = inputTrc;
+    _inputProfile = inputProfile;
 }
 
-QString FFLut::outputPrimaries() const
+QString FFLut::extract()
 {
-    return _outputPrimaries;
-}
-
-void FFLut::setOutputPrimaries(const QString &outputPrimaries)
-{
-    _outputPrimaries = outputPrimaries;
-}
-
-QString FFLut::inputPrimaries() const
-{
-    return _inputPrimaries;
-}
-
-void FFLut::setInputPrimaries(const QString &inputPrimaries)
-{
-    _inputPrimaries = inputPrimaries;
+    //extract LUT
+    CacheManager *cm = CacheManager::instance();
+    QDir d = cm->getRootCacheDir();
+    if (!_name.startsWith(":/")) return _name;
+    QFileInfo sourceInfo(_name);
+    QString destinationLutPath = d.absolutePath() + "/" + sourceInfo.fileName();
+    QFile::copy(_name, destinationLutPath);
+    return destinationLutPath;
 }

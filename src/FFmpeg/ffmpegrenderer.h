@@ -31,6 +31,11 @@ private:
      */
     bool colorManagement();
     /**
+     * @brief Checks if there's a need for color conversion of the input to apply an output LUT
+     * @return The LUT input color profile
+     */
+    FFColorProfile *convertInputForLut();
+    /**
      * @brief Constructs the LUT filter to add to the filterchain
      * @return The ffmpeg filter description
      */

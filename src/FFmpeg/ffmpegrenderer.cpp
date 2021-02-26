@@ -27,10 +27,13 @@ bool FFmpegRenderer::launchJob()
 
     // Check if we need to convert colors
     bool convertColors = colorManagement();
+    FFColorProfile *lutProfile = convertInputForLut();
 
     //some values needed later to get from the input
     double inputFramerate = 0.0;
     double totalDuration = 0.0;
+    FFColorItem *inputPrimaries = nullptr;
+    FFColorItem *inputTrc = nullptr;
 
     //add inputs
     foreach(MediaInfo *input, _job->getInputMedias())
@@ -48,7 +51,7 @@ bool FFmpegRenderer::launchJob()
 
         if (input->hasVideo())
         {
-            VideoInfo *stream = input->videoStreams()[0];
+            VideoInfo *stream = input->videoStreams().at(0);
 
             if (stream->framerate() != 0.0) inputFramerate = stream->framerate();
 
@@ -72,17 +75,59 @@ bool FFmpegRenderer::launchJob()
             QString profileName = profile->name();
 
             // Set input color interpretation
-            if (stream->colorTRC()->name() != "" ) arguments << "-color_trc" << stream->colorTRC()->name();
-            else if ( convertColors && profileName != "" ) arguments << "-color_trc" << profile->trc()->name();
+            if (lutProfile)
+            {
+                if (lutProfile->trc()->metadataName() != "") arguments << "-color_trc" << lutProfile->trc()->metadataName();
+            }
 
-            if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-            else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->name();
+            if (stream->colorTRC()->metadataName() != "")
+            {
+                if (!lutProfile) arguments << "-color_trc" << stream->colorTRC()->metadataName();
+                inputTrc = stream->colorTRC();
+            }
+            else if ( convertColors && profileName != "" )
+            {
+                if (!lutProfile) arguments << "-color_trc" << profile->trc()->metadataName();
+                inputTrc = profile->trc();
+            }
+            else if (stream->colorTRC()->name() != "")
+            {
+                inputTrc = stream->colorTRC();
+            }
+            else
+            {
+                inputTrc = profile->trc();
+            }
 
-            if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-            else if ( convertColors && profileName != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+            if (stream->colorRange()->metadataName() != "") arguments << "-color_range" << stream->colorRange()->metadataName();
+            else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->metadataName();
 
-            if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
-            else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->name();
+            if (lutProfile && _job->getOutputMedias().at(0)->videoStreams().at(0)->lut()->type() == FFLut::ThreeD)
+            {
+                if (lutProfile->primaries()->metadataName() != "") arguments << "-color_primaries" << lutProfile->primaries()->metadataName();
+            }
+
+            if (stream->colorPrimaries()->metadataName() != "")
+            {
+                if (!lutProfile ||  _job->getOutputMedias().at(0)->videoStreams().at(0)->lut()->type() == FFLut::OneD) arguments << "-color_primaries" << stream->colorPrimaries()->metadataName();
+                inputPrimaries = stream->colorPrimaries();
+            }
+            else if ( convertColors && profileName != "" )
+            {
+                if (!lutProfile ||  _job->getOutputMedias().at(0)->videoStreams().at(0)->lut()->type() == FFLut::OneD) arguments << "-color_primaries" << profile->primaries()->metadataName();
+                inputPrimaries = profile->primaries();
+            }
+            else if (stream->colorPrimaries()->name() != "")
+            {
+                inputPrimaries = stream->colorPrimaries();
+            }
+            else
+            {
+                inputPrimaries = profile->primaries();
+            }
+
+            if (stream->colorSpace()->metadataName() != "") arguments << "-colorspace" << stream->colorSpace()->metadataName();
+            else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->metadataName();
         }
 
         //get duration
@@ -290,17 +335,17 @@ bool FFmpegRenderer::launchJob()
                 // Add color management MetaData (embed profile)
                 if (stream->colorConversionMode() != MediaUtils::Convert)
                 {
-                    if (stream->colorTRC()->name() != "" && !stream->colorTRC()->name().startsWith("-")) arguments << "-color_trc" << stream->colorTRC()->name();
-                    else if (profileName != "" && convertColors) arguments << "-color_trc" << profile->trc()->name();
+                    if (stream->colorTRC()->metadataName() != "" ) arguments << "-color_trc" << stream->colorTRC()->metadataName();
+                    else if (profileName != "" && convertColors) arguments << "-color_trc" << profile->trc()->metadataName();
 
-                    if (stream->colorRange()->name() != "") arguments << "-color_range" << stream->colorRange()->name();
-                    else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->name();
+                    if (stream->colorRange()->metadataName() != "" ) arguments << "-color_range" << stream->colorRange()->metadataName();
+                    else if ( convertColors && profileName != "" ) arguments << "-color_range" << profile->range()->metadataName();
 
-                    if (stream->colorPrimaries()->name() != "") arguments << "-color_primaries" << stream->colorPrimaries()->name();
-                    else if ( convertColors && profileName != "" ) arguments << "-color_primaries" << profile->primaries()->name();
+                    if (stream->colorPrimaries()->metadataName() != "" ) arguments << "-color_primaries" << stream->colorPrimaries()->metadataName();
+                    else if ( convertColors && profileName != "" ) arguments << "-color_primaries" << profile->primaries()->metadataName();
 
-                    if (stream->colorSpace()->name() != "") arguments << "-colorspace" << stream->colorSpace()->name();
-                    else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->name();
+                    if (stream->colorSpace()->metadataName() != "" ) arguments << "-colorspace" << stream->colorSpace()->metadataName();
+                    else if ( convertColors && profileName != "" ) arguments << "-colorspace" << profile->space()->metadataName();
                 }
 
                 //b-pyramids
@@ -388,7 +433,15 @@ bool FFmpegRenderer::launchJob()
                     }
                 }
 
-                //1D / 3D LUT (on input)
+                //1D / 3D LUT (before color management)
+                //first check if we need to adjust input profile
+                if (lutProfile)
+                {
+                     if ( _job->getOutputMedias().at(0)->videoStreams().at(0)->lut()->type() == FFLut::ThreeD)
+                     {
+
+                     }
+                }
                 if (!stream->applyLutOnOutputSpace()) filterChain << getLutFilter(stream);
 
                 //size
@@ -442,47 +495,87 @@ bool FFmpegRenderer::launchJob()
                 QStringList zScaleArgs;
                 QStringList colorspaceArgs;
                 QStringList lutrgbArgs;
+                QStringList outputLut3dArgs;
+                QStringList inputLut3dArgs;
+                QStringList inputGammaArgs;
                 if (stream->colorConversionMode() != MediaUtils::Embed)
                 {
                     // Get TRC
+                    // Input Gamma first
+                    if (inputTrc)
+                    {
+                        if (inputTrc->inputScaleName() != "" && inputTrc->scaleFilter() == FFColorItem::Gamma)
+                        {
+                            inputGammaArgs << "r=gammaval(" + inputTrc->inputScaleName() + ")";
+                            inputGammaArgs << "g=gammaval(" + inputTrc->inputScaleName() + ")";
+                            inputGammaArgs << "b=gammaval(" + inputTrc->inputScaleName() + ")";
+                        }
+                    }
+                    // TRC
                     FFColorItem *trc = stream->colorTRC();
                     if (trc->name() == "" && profile->name() != "" && convertColors) trc = profile->trc();
-                    if (trc->scaleName() != "")
+                    if (trc->outputScaleName() != "" && trc->isOutput())
                     {
-                        if (trc->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "transfer=" + trc->scaleName();
-                        else if (trc->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "trc=" + trc->scaleName();
+                        if (trc->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "transfer=" + trc->outputScaleName();
+                        else if (trc->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "trc=" + trc->outputScaleName();
                         else if (trc->scaleFilter() == FFColorItem::Gamma)
                         {
                             //linearize first
                             zScaleArgs << "transfer=linear";
                             //apply gamma
-                            lutrgbArgs << "r=gammaval(1/" + trc->scaleName() + ")";
-                            lutrgbArgs << "g=gammaval(1/" + trc->scaleName() + ")";
-                            lutrgbArgs << "b=gammaval(1/" + trc->scaleName() + ")";
+                            lutrgbArgs << "r=gammaval(1/" + trc->outputScaleName() + ")";
+                            lutrgbArgs << "g=gammaval(1/" + trc->outputScaleName() + ")";
+                            lutrgbArgs << "b=gammaval(1/" + trc->outputScaleName() + ")";
                         }
                     }
                     // Get Range
                     FFColorItem *range = stream->colorRange();
                     if (range->name() == "" && profile->name() != "" && convertColors) range = profile->range();
-                    if (range->scaleName() != "")
+                    if (range->outputScaleName() != "" && range->isOutput())
                     {
-                        zScaleArgs << "range=" + range->scaleName();
+                        zScaleArgs << "range=" + range->outputScaleName();
                     }
                     // Get Primaries
+                    // ACEScg support from input first
+                    if (inputPrimaries)
+                    {
+                        if (inputPrimaries->inputScaleName() != "" && inputPrimaries->scaleFilter() == FFColorItem::LUT)
+                        {
+                            //get and extract lut
+                            FFLut *lut = FFmpeg::instance()->lut( inputPrimaries->inputScaleName() );
+                            inputLut3dArgs << "'" + FFmpeg::escapeFilterOption( lut->extract().replace("\\","/") ) + "'";
+                        }
+                    }
+                    // Primaries
                     FFColorItem *primaries = stream->colorPrimaries();
                     if (primaries->name() == "" && profile->name() != "" && convertColors) primaries = profile->primaries();
-                    if (primaries->scaleName() != "")
+                    if (primaries->outputScaleName() != "" && primaries->isOutput())
                     {
-                        if (stream->colorPrimaries()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "primaries=" + primaries->scaleName();
-                        else if (stream->colorPrimaries()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "primaries=" + primaries->scaleName();
+                        if (stream->colorPrimaries()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "primaries=" + primaries->outputScaleName();
+                        else if (stream->colorPrimaries()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "primaries=" + primaries->outputScaleName();
+                        else if (stream->colorPrimaries()->scaleFilter()  == FFColorItem::LUT)
+                        {
+                            //get and extract lut
+                            FFLut *lut = FFmpeg::instance()->lut( primaries->outputScaleName() );
+                            outputLut3dArgs << "'" + FFmpeg::escapeFilterOption( lut->extract().replace("\\","/") ) + "'";
+                        }
                     }
                     FFColorItem *space = stream->colorSpace();
                     if (space->name() == "" && profile->name() != "" && convertColors) space = profile->space();
-                    if (space->scaleName() != "")
+                    if (space->outputScaleName() != "" && space->isOutput())
                     {
-                        if (stream->colorSpace()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "matrix=" + space->scaleName();
-                        else if (stream->colorSpace()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "space=" + space->scaleName();
+                        if (stream->colorSpace()->scaleFilter() == FFColorItem::ZScale) zScaleArgs << "matrix=" + space->outputScaleName();
+                        else if (stream->colorSpace()->scaleFilter() == FFColorItem::Colorspace) colorspaceArgs << "space=" + space->outputScaleName();
                     }
+                }
+
+                if (inputGammaArgs.count() > 0)
+                {
+                    filterChain << "lutrgb=" + inputGammaArgs.join(":");
+                }
+                if (inputLut3dArgs.count() > 0)
+                {
+                    filterChain << "lut3d=" + inputLut3dArgs.join(":");
                 }
                 if (zScaleArgs.count() > 0)
                 {
@@ -496,6 +589,10 @@ bool FFmpegRenderer::launchJob()
                 if (lutrgbArgs.count() > 0)
                 {
                     filterChain << "lutrgb=" + lutrgbArgs.join(":");
+                }
+                if (outputLut3dArgs.count() > 0)
+                {
+                    filterChain << "lut3d=" + outputLut3dArgs.join(":");
                 }
 
                 //1D / 3D LUT (on output)
@@ -646,15 +743,63 @@ bool FFmpegRenderer::colorManagement()
         if (inputProfile->name() != outputProfile->name()) return true;
         if (inputPixFormat->colorSpace() != outputPixFormat->colorSpace()) return true;
     }
+
     return false;
+}
+
+FFColorProfile *FFmpegRenderer::convertInputForLut()
+{
+    qDebug() << "Checking if a conversion is needed for input LUT";
+
+    if (!_job) return nullptr;
+
+    MediaInfo *o = _job->getOutputMedias().at(0);
+    if (!o->hasVideo()) return nullptr;
+
+    VideoInfo *ov = o->videoStreams().at(0);
+
+    // If copy stream, nothing to convert
+    if (ov->isCopy()) return nullptr;
+
+    if (!ov->lut()) return nullptr;
+    if (ov->lut()->name() == "") return nullptr;
+    if (ov->lut()->name() == "custom") return nullptr;
+
+    if (ov->applyLutOnOutputSpace()) return nullptr;
+
+    FFColorProfile *lutInputProfile = FFmpeg::instance()->colorProfile( ov->lut()->inputProfile() );
+    QString lutInputTrcName = lutInputProfile->trc()->name();
+    QString lutInputPrimariesName = lutInputProfile->primaries()->name();
+
+    // Now let's check if there's a need for conversion
+    foreach(MediaInfo *i, _job->getInputMedias())
+    {
+        if (!i->hasVideo()) continue;
+        VideoInfo *iv = i->videoStreams()[0];
+
+        // Check if any of the color components is set and different from the lut input
+        if (iv->colorPrimaries()->name() != "" && lutInputPrimariesName != "" && iv->colorPrimaries()->name() != lutInputPrimariesName && ov->lut()->type() == FFLut::ThreeD) return lutInputProfile;
+        if (iv->colorTRC()->name() != "" && lutInputTrcName != "" && iv->colorTRC()->name() != lutInputTrcName ) return lutInputProfile;
+
+        // Check from the pixel format
+        FFColorProfile *inputProfile = i->defaultColorProfile();
+
+        // If the profile is different, there is a color conversion
+        if (inputProfile->name() != lutInputProfile->name()) return lutInputProfile;
+    }
+
+    return nullptr;
 }
 
 QString FFmpegRenderer::getLutFilter(VideoInfo *stream)
 {
-    if (stream->lut() == "") return "";
+    if (!stream->lut()) return "";
+    if (stream->lut()->name() == "") return "";
+    if (stream->lut()->name() == "custom") return "";
 
     QString filterName = "lut3d";
-    QString lutName = stream->lut();
+    QString lutName = stream->lut()->name();
+
     //check if it's 3D or 1D
     if (lutName.endsWith(".cube"))
     {
@@ -676,7 +821,7 @@ QString FFmpegRenderer::getLutFilter(VideoInfo *stream)
         }
     }
 
-    return filterName + "='" + FFmpeg::escapeFilterOption( stream->lut().replace("\\","/") ) + "'";
+    return filterName + "='" + FFmpeg::escapeFilterOption( lutName.replace("\\","/") ) + "'";
 }
 
 void FFmpegRenderer::readyRead(QString output)

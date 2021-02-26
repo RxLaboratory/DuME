@@ -31,7 +31,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _cropWidth = 0;
     _cropHeight = 0;
     _cropUseSize = false;
-    _lut = "";
+    _lut = nullptr;
     _applyLutOnOutputSpace = false;
     _deinterlace = false;
     _deinterlaceParity = MediaUtils::AutoParity;
@@ -69,10 +69,10 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setHeight( obj.value("height").toInt(0));
     setWidth( obj.value("width").toInt(0));
     setLanguage( obj.value("language").toObject().value("name").toString());
-    setColorPrimaries( obj.value("colorPrimaries").toString());
-    setColorTRC( obj.value("colorTRC").toString());
-    setColorSpace( obj.value("colorSpace").toString());
-    setColorRange( obj.value("colorRange").toString());
+    setColorPrimaries( obj.value("colorPrimaries").toObject());
+    setColorTRC( obj.value("colorTRC").toObject());
+    setColorSpace( obj.value("colorSpace").toObject());
+    setColorRange( obj.value("colorRange").toObject());
     setColorConversionMode( obj.value("colorConversionMode").toString(""));
     int t = obj.value("topCrop").toInt(0);
     int b = obj.value("bottomCrop").toInt(0);
@@ -83,7 +83,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setCrop(w,h);
     setCrop(t, b, l, r);
     setCropUseSize( obj.value("cropUseSize").toBool(false));
-    setLut(obj.value("lut").toString(""));
+    setLut(obj.value("lut").toObject());
     setApplyLutOnOutputSpace( obj.value("applyLutOnOutputSpace").toBool(false));
     setDeinterlace( obj.value("deinterlace").toBool(false));
     setDeinterlaceParity( MediaUtils::DeinterlaceParityFromString( obj.value("deinterlaceParity").toString("Auto") ));
@@ -182,7 +182,7 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("cropHeight", _cropHeight);
     vStream.insert("cropHWidth", _cropWidth);
     vStream.insert("cropUseSize", _cropUseSize);
-    vStream.insert("lut", _lut);
+    vStream.insert("lut", _lut->toJson());
     vStream.insert("applyLutOnOutputSpace", _applyLutOnOutputSpace);
     vStream.insert("deinterlace", _deinterlace);
     vStream.insert("deinterlaceParity", MediaUtils::DeinterlaceParityToString(_deinterlaceParity));
@@ -300,13 +300,16 @@ QString VideoInfo::getDescription( bool outputMedia )
         if (_sceneDetection) mediaInfoString += "yes";
         else mediaInfoString += "no";
     }
-    if ( outputMedia && _lut != "")
+    if ( outputMedia && _lut)
     {
-        mediaInfoString += "\nLUT File: " + QDir::toNativeSeparators(_lut);
-        mediaInfoString += "\nLUT will be applied on ";
-        if (_applyLutOnOutputSpace) mediaInfoString += "output";
-        else mediaInfoString += "input";
-        mediaInfoString += " color space.";
+        if (_lut->name() != "")
+        {
+            mediaInfoString += "\nLUT: " + _lut->prettyName();
+            mediaInfoString += "\nLUT will be applied on ";
+            if (_applyLutOnOutputSpace) mediaInfoString += "output";
+            else mediaInfoString += "input";
+            mediaInfoString += " color space.";
+        }
     }
     if ( outputMedia && _deinterlace )
     {
@@ -469,9 +472,19 @@ void VideoInfo::setColorPrimaries(QString primaries, bool silent)
     setColorPrimaries( FFmpeg::instance()->colorPrimary(primaries), silent );
 }
 
+void VideoInfo::setColorPrimaries(QJsonObject primaries, bool silent)
+{
+    setColorPrimaries( primaries.value("name").toString(), silent);
+}
+
 void VideoInfo::setColorTRC(QString tRC, bool silent)
 {
     setColorTRC( FFmpeg::instance()->colorTRC(tRC), silent );
+}
+
+void VideoInfo::setColorTRC(QJsonObject tRC, bool silent)
+{
+    setColorTRC( tRC.value("name").toString(), silent);
 }
 
 void VideoInfo::setColorSpace(QString space, bool silent)
@@ -479,9 +492,19 @@ void VideoInfo::setColorSpace(QString space, bool silent)
     setColorSpace( FFmpeg::instance()->colorSpace(space), silent);
 }
 
+void VideoInfo::setColorSpace(QJsonObject space, bool silent)
+{
+    setColorSpace( space.value("name").toString(), silent);
+}
+
 void VideoInfo::setColorRange(QString range, bool silent)
 {
     setColorRange( FFmpeg::instance()->colorRange(range), silent);
+}
+
+void VideoInfo::setColorRange(QJsonObject range, bool silent)
+{
+    setColorRange( range.value("name").toString(), silent);
 }
 
 void VideoInfo::setColorPrimaries(FFColorItem *primaries, bool silent)
@@ -690,15 +713,24 @@ void VideoInfo::setCropUseSize(bool cropUseSize, bool silent)
     if(!silent) emit changed();
 }
 
-QString VideoInfo::lut() const
+FFLut *VideoInfo::lut() const
 {
     return _lut;
 }
 
 void VideoInfo::setLut(const QString &lut, bool silent)
 {
-    _lut = lut;
+    setLut(FFmpeg::instance()->lut(lut), silent);
+}
 
+void VideoInfo::setLut(const QJsonObject &lut, bool silent)
+{
+    setLut(lut.value("name").toString(), silent);
+}
+
+void VideoInfo::setLut(FFLut *lut, bool silent)
+{
+    _lut = lut;
     if(!silent) emit changed();
 }
 

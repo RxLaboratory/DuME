@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>533</width>
-    <height>68</height>
+    <height>115</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Apply on</string>
+      <string>Apply</string>
      </property>
     </widget>
    </item>
@@ -53,12 +53,44 @@
     <widget class="DataComboBox" name="applyBox">
      <item>
       <property name="text">
-       <string>Input color space</string>
+       <string>Before color management (on input profile)</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Output color space</string>
+       <string>After color management (on output profile)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>LUT Input color profile</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="DataComboBox" name="inputSpaceBox">
+     <item>
+      <property name="text">
+       <string>Ignore</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>LUT Output color profile</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="DataComboBox" name="outputSpaceBox">
+     <item>
+      <property name="text">
+       <string>Ignore</string>
       </property>
      </item>
     </widget>

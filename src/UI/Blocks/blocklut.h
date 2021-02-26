@@ -20,6 +20,11 @@ public slots:
 private slots:
     void lutBox_currentIndexChanged(int index);
     void applyBox_currentIndexChanged(int index);
+    void inputSpaceBox_currentIndexChanged(int index);
+    void outputSpaceBox_currentIndexChanged(int index);
+private:
+    void updateLutInputOutputBoxes();
+    FFLut *_customLut;
 };
 
 #endif // BLOCKLUT_H

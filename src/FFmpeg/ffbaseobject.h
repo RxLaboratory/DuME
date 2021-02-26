@@ -24,6 +24,7 @@ public:
 protected:
     QString _name;
     QString _prettyName;
+
 };
 
 #endif // FFBASEOBJECT_H

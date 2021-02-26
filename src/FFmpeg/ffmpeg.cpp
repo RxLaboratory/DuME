@@ -21,21 +21,38 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorTRCs << new FFColorItem("iec61966_2_1", "sRGB / YCCIEC / 61966-2-1", "iec61966-2-1", FFColorItem::ZScale);
     _colorTRCs << new FFColorItem("iec61966_2_4", "Extended-gamut YCC (xvYCC) / IEC 61966-2-4", "iec61966-2-4", FFColorItem::Colorspace);
     _colorTRCs << new FFColorItem("linear", "Linear", "linear", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("log100", "Logarithmic | Input only");
-    _colorTRCs << new FFColorItem("log_sqrt", "Logarithmic square root | Input only");
+    FFColorItem *lg = new FFColorItem("log100", "Logarithmic");
+    lg->setOutput(false);
+    _colorTRCs << lg;
+    FFColorItem *logs = new FFColorItem("log_sqrt", "Logarithmic square root");
+    logs->setOutput(false);
+    _colorTRCs << logs;
     _colorTRCs << new FFColorItem("bt709", "BT.709 / BT.1361", "709", FFColorItem::ZScale);
     _colorTRCs << new FFColorItem("gamma22", "PAL & SECAM / BT.470 M / BT.1700 625 / Gamma 2.2", "bt470m", FFColorItem::Colorspace);
     _colorTRCs << new FFColorItem("gamma28", "BT.470 BG / Gamma 2.8", "bt470bg", FFColorItem::Colorspace);
-    _colorTRCs << new FFColorItem("bt1361","BT.1361 | Input only");
-    _colorTRCs << new FFColorItem("bt1361e","BT.1361 Extended Colour Gamut | Input only");
+    FFColorItem *bt1361 = new FFColorItem("bt1361","BT.1361");
+    bt1361->setOutput(false);
+    _colorTRCs << bt1361;
+    FFColorItem *bt1361e = new FFColorItem("bt1361e","BT.1361 Extended Colour Gamut");
+    bt1361e->setOutput(false);
+    _colorTRCs << bt1361e;
     _colorTRCs << new FFColorItem("14","BT.2020 - 10 bit", "2020_10", FFColorItem::ZScale); // use the index instead of name as the name does not seem to work
     _colorTRCs << new FFColorItem("15","BT.2020 - 12 bit", "2020_12", FFColorItem::ZScale); // use the index instead of name as the name does not seem to work
     _colorTRCs << new FFColorItem("smpte170m","NTSC / BT.601-6 / BT.1358 / BT.1700  / SMPTE 170 M / BT.470 B.B1.G", "601", FFColorItem::ZScale);
     _colorTRCs << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
-    _colorTRCs << new FFColorItem("smpte428","SMPTE 428 / SMPTE 428-1 | Input only");
+    FFColorItem *smpte428 = new FFColorItem("smpte428","SMPTE 428 / SMPTE 428-1");
+    smpte428->setOutput(false);
+    _colorTRCs << smpte428;
     _colorTRCs << new FFColorItem("smpte2084","SMPTE ST 2084 10/12/14/16 bit", "smpte2084", FFColorItem::ZScale);
     _colorTRCs << new FFColorItem("18","Hybrid log-gamma / ARIB STD-B67", "arib-std-b67", FFColorItem::ZScale);
-    _colorTRCs << new FFColorItem("-dcip3", "DCI P3 (Gamma 2.6)", "2.6", FFColorItem::Gamma);
+    FFColorItem *dci = new FFColorItem("dcip3", "DCI P3 (Gamma 2.6)", "1/2.6", FFColorItem::Gamma);
+    dci->setMetadataName("linear");
+    dci->setInputScaleName("2.6");
+    _colorTRCs << dci;
+    FFColorItem *qttrc = new FFColorItem("qt196", "QT gamma 1.96", "1/1.96", FFColorItem::Gamma);
+    qttrc->setMetadataName("linear");
+    qttrc->setInputScaleName("1.96");
+    _colorTRCs << qttrc;
 
     // The color Ranges
     _colorRanges << new FFColorItem("","Auto");
@@ -51,12 +68,16 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorSpaces << new FFColorItem("bt470bg","PAL & SECAM / BT.470 BG / BT.601-6 / BT.1358 / IEC 61966-2-4 xvYCC601", "470bg", FFColorItem::ZScale);
     _colorSpaces << new FFColorItem("bt2020_ncl","BT.2020 NCL (non-constant luminance system)", "2020_ncl", FFColorItem::ZScale);
     _colorSpaces << new FFColorItem("bt2020_cl","BT.2020 CL (constant luminance system)", "2020_cl", FFColorItem::ZScale);
-    _colorSpaces << new FFColorItem("smpte2085","SMPTE 2085 / Y'D'zD'x | Input only");
+    FFColorItem *smpte2085 = new FFColorItem("smpte2085","SMPTE 2085 / Y'D'zD'x");
+    smpte2085->setOutput(false);
+    _colorSpaces << smpte2085;
     _colorSpaces << new FFColorItem("smpte170m","NTSC / SMPTE 170 M / BT.601-6 / BT.1358", "170m", FFColorItem::ZScale);
     _colorSpaces << new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);
     _colorSpaces << new FFColorItem("ycgco","YCGCO / YCOCG / Dirac / VC-2 and H.264 FRext", "ycgco", FFColorItem::Colorspace);
     _colorSpaces << new FFColorItem("fcc","FCC Title 47", "fcc", FFColorItem::Colorspace);
-    _colorSpaces << new FFColorItem("14","BT.2100-0 / ICtCp | Input only");
+    FFColorItem *bt2100 = new FFColorItem("14","BT.2100-0 / ICtCp");
+    bt2100->setOutput(false);
+    _colorSpaces << bt2100;
 
     // The color Primaries
     _colorPrimaries << new FFColorItem("","Auto");
@@ -68,10 +89,17 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorPrimaries << new FFColorItem("bt2020","BT.2020", "2020", FFColorItem::ZScale);
     _colorPrimaries << new FFColorItem("smpte170m","NTSC / SMPTE 170 M / BT.601-6 525 / BT.1358 525 / BT.1700", "170m", FFColorItem::ZScale);
     _colorPrimaries << new FFColorItem("smpte240m","SMPTE 240 M", "240m", FFColorItem::ZScale);
-    _colorPrimaries << new FFColorItem("smpte428","SMPTE 428 / SMPTE ST 428-1 / SMPTE ST 428-1 (CIE 1931 XYZ) | Input only");
+    FFColorItem *smpte428p = new FFColorItem("smpte428","SMPTE 428 / SMPTE ST 428-1 / SMPTE ST 428-1 (CIE 1931 XYZ)");
+    smpte428p->setOutput(false);
+    _colorPrimaries << smpte428p;
     _colorPrimaries << new FFColorItem("smpte431","DCI P3 / SMPTE ST 431-2 (2011)", "smpte431", FFColorItem::Colorspace);
     _colorPrimaries << new FFColorItem("smpte432","P3 D65 / Display P3 / SMPTE ST 432-1 (2010)", "smpte432", FFColorItem::Colorspace);
     _colorPrimaries << new FFColorItem("jedec-p22","EBU Tech. 3213-E / JEDEC P22 phosphors", "jedec-p22", FFColorItem::Colorspace);
+    FFColorItem *ac = new FFColorItem("acescg", "ACEScg", ":/luts/rgb-to-aces.3dl", FFColorItem::LUT);
+    ac->setMetadataName("bt709");
+    ac->setInputScaleName(":/luts/aces-to-rgb.3dl");
+    ac->setInput(false);
+    _colorPrimaries << ac;
 
     // The complete color Profiles
     _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
@@ -80,30 +108,27 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("14"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt2020_12", "UHD (4K/8K) HDR Video (BT.2020-12bits)", colorPrimary("bt2020"), colorTRC("15"), colorSpace("bt2020_cl"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("displayp3", "Display P3 / P3 D65", colorPrimary("smpte432"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
-    _colorProfiles << new FFColorProfile("dcip3", "DCI P3", colorPrimary("smpte431"), colorTRC("-dcip3"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("dcip3", "DCI P3", colorPrimary("smpte431"), colorTRC("dcip3"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("linear", "Linear RGB", colorPrimary("bt709"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
+    _colorProfiles << new FFColorProfile("acescg", "ACEScg", colorPrimary("acescg"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("palsecam", "PAL / SECAM", colorPrimary("bt470bg"), colorTRC("gamma22"), colorSpace("bt470bg"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("ntsc", "NTSC", colorPrimary("smpte170m"), colorTRC("smpte170m"), colorSpace("smpte170m"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("qt196", "QT 709 gamma 1.96", colorPrimary("bt709"), colorTRC("qt196"), colorSpace("rgb"), colorRange("tv"));
 
     // The LUTs
     _luts << new FFLut( "", "None");
-    FFLut *lta = new FFLut( ":/luts/linear-to-aces.3dl", "Linear RGB → Linear ACES", "linear", "linear");
-    lta->setInputPrimaries("bt709");
-    lta->setOutputPrimaries("aces");
-    _luts << lta;
-    FFLut *atl = new FFLut( ":/luts/aces-to-linear.3dl", "Linear ACES → Linear RGB", "linear", "linear");
-    atl->setInputPrimaries("bt709");
-    atl->setOutputPrimaries("aces");
-    _luts << atl;
-    _luts << new FFLut(  ":/luts/linear-to-filmic_veryhigh.3dl", "Linear RGB → Blender Filmic sRGB (Very high contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_high.3dl", "Linear RGB → Blender Filmic sRGB (High contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumhigh.3dl", "Linear RGB → Blender Filmic sRGB (Medium high contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_medium.3dl", "Linear RGB → Blender Filmic sRGB (Medium contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumlow.3dl", "Linear RGB → Blender Filmic sRGB (Medium low contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_low.3dl", "Linear RGB → Blender Filmic sRGB (Low contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/linear-to-filmic_verylow.3dl", "Linear RGB → Blender Filmic sRGB (Very low contrast)", "linear", "iec61966_2_1");
-    _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "BT.709 → QT Gamma 1.96", "bt709", "qt196");
-    _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "QT Gamma 1.96 → BT.709", "qt196", "bt709");
+    _luts << new FFLut( ":/luts/rgb-to-aces.3dl", "Linear RGB → Linear ACES", "linear", "acescg", FFLut::ThreeD);
+    _luts << new FFLut( ":/luts/aces-to-rgb.3dl", "Linear ACES → Linear RGB", "acescg", "linear", FFLut::ThreeD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_veryhigh.3dl", "Linear RGB → Blender Filmic sRGB (Very high contrast)", "linear", "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_high.3dl", "Linear RGB → Blender Filmic sRGB (High contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumhigh.3dl", "Linear RGB → Blender Filmic sRGB (Medium high contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_medium.3dl", "Linear RGB → Blender Filmic sRGB (Medium contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumlow.3dl", "Linear RGB → Blender Filmic sRGB (Medium low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_low.3dl", "Linear RGB → Blender Filmic sRGB (Low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_verylow.3dl", "Linear RGB → Blender Filmic sRGB (Very low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "BT.709 → QT Gamma 1.96", "bt709", "qt196", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "QT Gamma 1.96 → BT.709", "qt196", "bt709", FFLut::OneD);
+    _luts << new FFLut( "custom", "Custom...");
 
     //The motion interpolation algorithms
     _motionInterpolationAlgorithms << new FFBaseObject("","Default (epzs)");

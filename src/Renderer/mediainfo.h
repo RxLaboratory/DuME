@@ -176,6 +176,7 @@ public:
     void setCrop(int width, int height, int id = -1, bool silent = false);
     void setCropUseSize(bool useSize, int id = -1, bool silent = false);
     void setLut(QString lut, int id = -1, bool silent = false);
+    void setLut(FFLut *lut, int id = -1, bool silent = false);
     void setApplyLutOnOutputSpace(bool applyonOutput, int id = -1, bool silent = false);
     void setDeinterlace(bool deinterlace, int id = -1, bool silent = false);
     void setDeinterlaceParity(MediaUtils::DeinterlaceParity parity, int id = -1, bool silent = false);

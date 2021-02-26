@@ -66,9 +66,13 @@ public:
     void setLanguage(const QString &languageId, bool silent = false);
 
     void setColorPrimaries(QString primaries, bool silent = false);
+    void setColorPrimaries(QJsonObject primaries, bool silent = false);
     void setColorTRC(QString tRC, bool silent = false);
+    void setColorTRC(QJsonObject tRC, bool silent = false);
     void setColorSpace(QString space, bool silent = false);
+    void setColorSpace(QJsonObject space, bool silent = false);
     void setColorRange(QString range, bool silent = false);
+    void setColorRange(QJsonObject range, bool silent = false);
     void setColorPrimaries(FFColorItem *primaries, bool silent = false);
     void setColorTRC(FFColorItem *tRC, bool silent = false);
     void setColorSpace(FFColorItem *space, bool silent = false);
@@ -121,8 +125,10 @@ public:
     bool cropUseSize() const;
     void setCropUseSize(bool cropUseSize, bool silent = false);
 
-    QString lut() const;
+    FFLut *lut() const;
     void setLut(const QString &lut, bool silent = false);
+    void setLut(const QJsonObject &lut, bool silent = false);
+    void setLut(FFLut *lut, bool silent = false);
     bool applyLutOnOutputSpace() const;
     void setApplyLutOnOutputSpace(bool applyLutOnOutputSpace, bool silent = false);
 
@@ -232,7 +238,7 @@ private:
     int _cropHeight;
     int _cropWidth;
     bool _cropUseSize;
-    QString _lut;
+    FFLut *_lut;
     bool _applyLutOnOutputSpace;
     bool _deinterlace;
     MediaUtils::DeinterlaceParity _deinterlaceParity;
