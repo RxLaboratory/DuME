@@ -45,6 +45,9 @@ nav:
         - Filters: filter.md
     - After Effects Rendering:
         - Rendering: after-effects-rendering.md
+    - Tools:
+        - OCIO LUT baker: lut-baker.md
+        - LUT converter: lut-converter.md
     - Control and automation:
         - Introduction: api.md
         - Command line options: cli-options.md

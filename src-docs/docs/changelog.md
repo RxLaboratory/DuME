@@ -4,11 +4,17 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 
 [TOC]
 
-## 0.2.1
+## 0.3.0
+
+### New Features
+
+- Added LUT tools (working with OCIO's `ociobakelut`)
+- Added [*The Green Guide to transcoding*](green.md) to the documentation.
 
 ### Improvements
 
 - Added an option to apply LUT before or after color management (on input or output color space).
+- Included Blender LUTs to convert from Linear to Filmic.
 
 ### Fixes
 
