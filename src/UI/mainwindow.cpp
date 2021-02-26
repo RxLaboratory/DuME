@@ -15,6 +15,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //populate toolbar
     mainToolBar->addAction(actionShowQueue);
     mainToolBar->addAction(actionConsole);
+    mainToolBar->addAction(actionTools);
     QMenu *goMenu = new QMenu();
     goMenu->addAction( actionGo );
     goMenu->addAction( actionGoQuit );
@@ -75,8 +76,18 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     aeSettingsWidget = new AESettingsWidget( this );
     settingsWidget->addPage(aeSettingsWidget, "After Effects", QIcon(":/icons/ae"));
 #endif
+    ocioSettingsWidget = new OcioSettingsWidget();
+    settingsWidget->addPage(ocioSettingsWidget, "OpenColorIO", QIcon(":/icons/ocio"));
     cacheSettingsWidget = new CacheSettingsWidget();
     settingsWidget->addPage(cacheSettingsWidget, "Cache and Memory", QIcon(":/icons/cache"));
+
+    //tools widget
+    SettingsWidget *toolsWidget = new SettingsWidget("Tools", this);
+    toolsWidget->showReinitButton(false);
+    mainStack->addWidget(toolsWidget);
+    connect(toolsWidget,&SettingsWidget::closeRequested, this, &MainWindow::closeTools);
+    toolsWidget->addPage(new LutBakerWidget(this), "OCIO LUT Baker", QIcon(":/icons/lut-baker"));
+    toolsWidget->addPage(new LutConverterWidget(this), "LUT Converter", QIcon(":/icons/lut-settings"));
 
     log("Init - Adding queue widget", LogUtils::Debug);
 
@@ -400,7 +411,6 @@ void MainWindow::duqf_initUi()
 
     settingsWidget = new SettingsWidget();
     duqf_settingsLayout->addWidget(settingsWidget);
-    duqf_closeSettingsButton->setObjectName("windowButton");
 
     AppearanceSettingsWidget *asw = new AppearanceSettingsWidget();
     settingsWidget->addPage(asw, "Appearance", QIcon(":/icons/color"));
@@ -414,8 +424,8 @@ void MainWindow::duqf_initUi()
 
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(duqf_settingsButton, SIGNAL(clicked(bool)), this, SLOT(duqf_settings(bool)));
-    connect(duqf_closeSettingsButton, SIGNAL(clicked()), this, SLOT(duqf_closeSettings()));
-    connect(duqf_reinitSettingsButton, SIGNAL(clicked()), this, SLOT(duqf_reinitSettings()));
+    connect(settingsWidget, SIGNAL(closeRequested()), this, SLOT(duqf_closeSettings()));
+    connect(settingsWidget, SIGNAL(reinitRequested()), this, SLOT(duqf_reinitSettings()));
 }
 
 void MainWindow::duqf_setStyle()
@@ -822,6 +832,13 @@ void MainWindow::log(QString log, LogUtils::LogType type)
 #endif
 }
 
+void MainWindow::closeTools()
+{
+    mainStack->setCurrentIndex(0);
+    actionTools->setChecked(false);
+    on_actionTools_triggered(false);
+}
+
 void MainWindow::on_ffmpegCommandsEdit_returnPressed()
 {
     on_ffmpegCommandsButton_clicked();
@@ -1080,6 +1097,20 @@ void MainWindow::on_actionConsole_triggered(bool checked)
         consoleSplitter->setSizes(sizes);
     }
     settings.setValue("consoleVisible", checked);
+}
+
+void MainWindow::on_actionTools_triggered(bool checked)
+{
+    if (checked)
+    {
+        mainStack->setCurrentIndex(2);
+        actionShowQueue->setChecked(false);
+    }
+    else
+    {
+        mainStack->setCurrentIndex(0);
+        actionShowQueue->setChecked( settings.value("rQueueVisible", false).toBool() );
+    }
 }
 
 void MainWindow::on_consoleSplitter_splitterMoved(int /*pos*/, int /*index*/)

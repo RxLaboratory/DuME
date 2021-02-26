@@ -25,10 +25,13 @@
 #include "AfterEffects/aftereffects.h"
 #include "Renderer/renderqueue.h"
 #include "Renderer/presetmanager.h"
+#include "lutbakerwidget.h"
+#include "lutconverterwidget.h"
 
 #include "UI/ffmpegsettingswidget.h"
 #include "UI/aesettingswidget.h"
 #include "UI/cachesettingswidget.h"
+#include "UI/ociosettingswidget.h"
 #include "UI/queuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
@@ -75,6 +78,9 @@ private slots:
     // LOGS
     void log(QString log,LogUtils::LogType type = LogUtils::Information);
 
+    // Tools
+    void closeTools();
+
     // UI EVENTS
     void on_ffmpegCommandsEdit_returnPressed();
     void on_ffmpegCommandsButton_clicked();
@@ -88,6 +94,7 @@ private slots:
     void on_actionShowQueue_triggered(bool checked);
     void on_rQueueSplitter_splitterMoved(int pos, int index);
     void on_actionConsole_triggered(bool checked);
+    void on_actionTools_triggered(bool checked);
     void on_consoleSplitter_splitterMoved(int pos, int index);
 
     // GENERAL
@@ -148,6 +155,7 @@ private:
     FFmpegSettingsWidget *ffmpegSettingsWidget;
     AESettingsWidget *aeSettingsWidget;
     CacheSettingsWidget *cacheSettingsWidget;
+    OcioSettingsWidget *ocioSettingsWidget;
 
     // ===== RENDERQUEUE =====
     /**

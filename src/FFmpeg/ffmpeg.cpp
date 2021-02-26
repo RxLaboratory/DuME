@@ -87,7 +87,21 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The LUTs
     _luts << new FFLut( "", "None");
-    _luts << new FFLut( ":/luts/linear-to-filmic.spi1d", "Linear → Blender Filmic", "linear", "iec61966_2_1");
+    FFLut *lta = new FFLut( ":/luts/linear-to-aces.3dl", "Linear RGB → Linear ACES", "linear", "linear");
+    lta->setInputPrimaries("bt709");
+    lta->setOutputPrimaries("aces");
+    _luts << lta;
+    FFLut *atl = new FFLut( ":/luts/aces-to-linear.3dl", "Linear ACES → Linear RGB", "linear", "linear");
+    atl->setInputPrimaries("bt709");
+    atl->setOutputPrimaries("aces");
+    _luts << atl;
+    _luts << new FFLut(  ":/luts/linear-to-filmic_veryhigh.3dl", "Linear RGB → Blender Filmic sRGB (Very high contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_high.3dl", "Linear RGB → Blender Filmic sRGB (High contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumhigh.3dl", "Linear RGB → Blender Filmic sRGB (Medium high contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_medium.3dl", "Linear RGB → Blender Filmic sRGB (Medium contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumlow.3dl", "Linear RGB → Blender Filmic sRGB (Medium low contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_low.3dl", "Linear RGB → Blender Filmic sRGB (Low contrast)", "linear", "iec61966_2_1");
+    _luts << new FFLut(  ":/luts/linear-to-filmic_verylow.3dl", "Linear RGB → Blender Filmic sRGB (Very low contrast)", "linear", "iec61966_2_1");
     _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "BT.709 → QT Gamma 1.96", "bt709", "qt196");
     _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "QT Gamma 1.96 → BT.709", "qt196", "bt709");
 
@@ -162,8 +176,8 @@ void FFmpeg::init()
     _version = settings.value("ffmpeg/version","").toString();
 
 #ifdef Q_OS_LINUX
-    //First, look for a static build in the app folder
-    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/duffmpeg-static";
+    //First, look for a dume static build in the app folder
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/dume-ffmpeg";
     //IF not found, try with a standard name
     if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
     //IF not found, try with a system command

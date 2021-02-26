@@ -8,7 +8,7 @@ FFmpegSettingsWidget::FFmpegSettingsWidget(QWidget *parent) :
     _freezeUI = true;
 
     ffmpegPathEdit->setText( QDir::toNativeSeparators( FFmpeg::instance()->binary() ) );
-    userPresetsPathEdit->setText(settings.value("presets/path","").toString());
+    userPresetsPathEdit->setText(_settings.value("presets/path","").toString());
 
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
 
@@ -20,6 +20,7 @@ void FFmpegSettingsWidget::on_ffmpegBrowseButton_clicked()
     QString path = QFileDialog::getOpenFileName(this,"Select the ffmpeg executable binary");
     if (path == "") return;
     ffmpegPathEdit->setText(path);
+    QSignalBlocker b(ffmpegPathEdit);
     FFmpeg::instance()->setBinary( path, true );
 }
 
@@ -30,18 +31,18 @@ void FFmpegSettingsWidget::on_ffmpegPathEdit_editingFinished()
 
 void FFmpegSettingsWidget::on_userPresetsBrowseButton_clicked()
 {
-    QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",settings.value("presets/path").toString());
+    QString path = QFileDialog::getExistingDirectory(this,"Select the folder containing user presets",_settings.value("presets/path").toString());
     if (path == "") return;
     userPresetsPathEdit->setText(path);
-    settings.setValue("presets/path",path);
-    settings.sync();
+    _settings.setValue("presets/path",path);
+    _settings.sync();
     emit presetsPathChanged();
 }
 
 void FFmpegSettingsWidget::on_userPresetsPathEdit_editingFinished()
 {
-    settings.setValue("presets/path",userPresetsPathEdit->text());
-    settings.sync();
+    _settings.setValue("presets/path",userPresetsPathEdit->text());
+    _settings.sync();
     emit presetsPathChanged();
 }
 

@@ -28,6 +28,7 @@ DEFINES += INIT_AE INIT_FFMPEG
 SOURCES += \
     FFmpeg/ffcoloritem.cpp \
     FFmpeg/fflut.cpp \
+    OCIO/ociolutbakerinfo.cpp \
     UI/Blocks/blockcolorinput.cpp \
     UI/Blocks/blockcrop.cpp \
     UI/Blocks/blockdeinterlace.cpp \
@@ -39,6 +40,9 @@ SOURCES += \
     UI/cachesettingswidget.cpp \
     UI/ffmpegparamwidget.cpp \
     UI/ffmpegsettingswidget.cpp \
+    UI/lutbakerwidget.cpp \
+    UI/lutconverterwidget.cpp \
+    UI/ociosettingswidget.cpp \
     duqf-app/app-style.cpp \
     duqf-utils/language-utils.cpp \
     duqf-utils/utils.cpp \
@@ -49,6 +53,7 @@ SOURCES += \
     duqf-widgets/settingswidget.cpp \
     duqf-widgets/duqfspinbox.cpp \
     duqf-widgets/duqfdoublespinbox.cpp \
+    duqf-widgets/titlebar.cpp \
     duqf-widgets/toolbarspacer.cpp \
     AfterEffects/aftereffects.cpp \
     AfterEffects/aftereffectsversion.cpp \
@@ -108,6 +113,7 @@ SOURCES += \
 HEADERS += \
     FFmpeg/ffcoloritem.h \
     FFmpeg/fflut.h \
+    OCIO/ociolutbakerinfo.h \
     UI/Blocks/blockcolorinput.h \
     UI/Blocks/blockcrop.h \
     UI/Blocks/blockdeinterlace.h \
@@ -119,6 +125,9 @@ HEADERS += \
     UI/cachesettingswidget.h \
     UI/ffmpegparamwidget.h \
     UI/ffmpegsettingswidget.h \
+    UI/lutbakerwidget.h \
+    UI/lutconverterwidget.h \
+    UI/ociosettingswidget.h \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
     duqf-app/app-version.h \
@@ -131,6 +140,7 @@ HEADERS += \
     duqf-widgets/settingswidget.h \
     duqf-widgets/duqfdoublespinbox.h \
     duqf-widgets/duqfspinbox.h \
+    duqf-widgets/titlebar.h \
     duqf-widgets/toolbarspacer.h \
     AfterEffects/aftereffects.h \
     AfterEffects/aftereffectsversion.h \
@@ -198,9 +208,13 @@ FORMS += \
     UI/cachesettingswidget.ui \
     UI/ffmpegparamwidget.ui \
     UI/ffmpegsettingswidget.ui \
+    UI/lutbakerwidget.ui \
+    UI/lutconverterwidget.ui \
+    UI/ociosettingswidget.ui \
     duqf-widgets/aboutdialog.ui \
     duqf-widgets/appearancesettingswidget.ui \
     duqf-widgets/settingswidget.ui \
+    duqf-widgets/titlebar.ui \
     duqf-widgets/toolbarspacer.ui \
     UI/Blocks/blockaecomp.ui \
     UI/Blocks/blockaethreads.ui \

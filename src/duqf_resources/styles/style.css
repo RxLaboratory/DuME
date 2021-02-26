@@ -567,7 +567,7 @@ QMenu::separator {
 
 /* TITLE BAR */
 
-#titleWidget {
+TitleBar {
     background-color: @color-less-dark-grey;
 }
 

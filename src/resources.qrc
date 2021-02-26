@@ -97,6 +97,11 @@
         <file alias="set-bash-file">resources/icons/set-bash-batch-command-file_sl.svg</file>
         <file alias="set-cache-folder">resources/icons/set-cache-storage-location-folder_sl.svg</file>
         <file alias="set-preset-folder">resources/icons/set-preset-location-folder_sl.svg</file>
+        <file alias="ocio">resources/icons/ocio_sl.svg</file>
+        <file alias="tools">resources/icons/tools_sl.svg</file>
+        <file alias="ocio-bake-lut">resources/icons/bake-ocio-lut-3d-look_sl.svg</file>
+        <file alias="lut-baker">resources/icons/ocio-lut-baker.svg</file>
+        <file alias="lut-settings">resources/icons/lut-settings.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default-dume">resources/styles/style-dume.css</file>
@@ -162,6 +167,14 @@
     <qresource prefix="/luts">
         <file alias="adobe-to-qt.cube">resources/luts/QT Gamma Compensation.cube</file>
         <file alias="qt-to-adobe.cube">resources/luts/Undo QT Gamma Compensation.cube</file>
-        <file alias="linear-to-filmic.spi1d">resources/luts/filmic_to_0-70_1-03.spi1d</file>
+        <file alias="aces-to-linear">resources/luts/linear-ACES_to_linear-RGB.3dl</file>
+        <file alias="linear-to-aces">resources/luts/linear-RGB_to_linear-ACES.3dl</file>
+        <file alias="linear-to-filmic_high">resources/luts/linear_to_filmic-sRGB-High.3dl</file>
+        <file alias="linear-to-filmic_low">resources/luts/linear_to_filmic-sRGB-Low.3dl</file>
+        <file alias="linear-to-filmic_medium">resources/luts/linear_to_filmic-sRGB-Medium.3dl</file>
+        <file alias="linear-to-filmic_mediumhigh">resources/luts/linear_to_filmic-sRGB-MediumHigh.3dl</file>
+        <file alias="linear-to-filmic_mediumlow">resources/luts/linear_to_filmic-sRGB-MediumLow.3dl</file>
+        <file alias="linear-to-filmic_veryhigh">resources/luts/linear_to_filmic-sRGB-VeryHigh.3dl</file>
+        <file alias="linear-to-filmic_verylow">resources/luts/linear_to_filmic-sRGB-VeryLow.3dl</file>
     </qresource>
 </RCC>

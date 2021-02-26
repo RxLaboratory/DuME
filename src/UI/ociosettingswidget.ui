@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FFmpegSettingsWidget</class>
- <widget class="QWidget" name="FFmpegSettingsWidget">
+ <class>OcioSettingsWidget</class>
+ <widget class="QWidget" name="OcioSettingsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1154</width>
-    <height>560</height>
+    <width>887</width>
+    <height>363</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,6 @@
     <number>3</number>
    </property>
    <property name="leftMargin">
-    <number>9</number>
-   </property>
-   <property name="topMargin">
     <number>9</number>
    </property>
    <property name="rightMargin">
@@ -65,20 +62,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>FFmpeg</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>User Presets</string>
+         <string>OCIO bake LUTs</string>
         </property>
        </widget>
       </item>
@@ -100,41 +84,6 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QToolButton" name="userPresetsBrowseButton">
-           <property name="text">
-            <string>Browse...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../resources.qrc">
-             <normaloff>:/icons/set-preset-folder</normaloff>:/icons/set-preset-folder</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="userPresetsPathEdit">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="frame">
-            <bool>false</bool>
-           </property>
-           <property name="placeholderText">
-            <string>User presets path (leave empty for default)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="openButton">
-           <property name="text">
-            <string>Open Folder</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../resources.qrc">
-             <normaloff>:/icons/go-folder</normaloff>:/icons/go-folder</iconset>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -157,7 +106,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="ffmpegBrowseButton">
+          <widget class="QToolButton" name="ociobakelutBrowseButton">
            <property name="text">
             <string>Browse...</string>
            </property>
@@ -168,7 +117,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ffmpegPathEdit">
+          <widget class="QLineEdit" name="ociobakelutEdit">
            <property name="text">
             <string/>
            </property>
@@ -176,7 +125,7 @@
             <bool>false</bool>
            </property>
            <property name="placeholderText">
-            <string>FFmpeg executable...</string>
+            <string>ociobakelut executable...</string>
            </property>
           </widget>
          </item>
@@ -194,7 +143,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>319</height>
       </size>
      </property>
     </spacer>

@@ -29,7 +29,7 @@ private slots:
     void on_openButton_clicked();
 
 private:
-    QSettings settings;
+    QSettings _settings;
     bool _freezeUI;
 };
 
