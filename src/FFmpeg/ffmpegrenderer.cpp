@@ -439,7 +439,7 @@ bool FFmpegRenderer::launchJob()
                 {
                      if ( _job->getOutputMedias().at(0)->videoStreams().at(0)->lut()->type() == FFLut::ThreeD)
                      {
-
+//WIP
                      }
                 }
                 if (!stream->applyLutOnOutputSpace()) filterChain << getLutFilter(stream);
