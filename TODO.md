@@ -1,19 +1,39 @@
+## modifs WIP
+
+- check gamma values in After Effects
+
+- in inputblockcolor, list only input coloritems
+
+- in outputblockcolor, list only output coloritems if convert
+- in outputblockcolor, list only metadata coloritems if embed
+
+- option to disable color management (which deactivates corresponding blocks and luts) for faster transcoding
+- activate or not color management in ui by setting a working color profile
+    - if deactivated, disable lut input/output spaces
+    - Filter color options depending on working space
+
+## Tests
+
+- disable matrices in color management and check the difference
+
+## Refactor
+
+- Remove the "silent" param from setters in MediaInfo, VideoInfo and AudioInfo; use QSignalBlocker instead
+
+- Move sequence related methods from MediaInfo to VideoInfo
+    - Update getDescription on both
+
+- Move ffmpegsequencename to ffmpegrenderer
+
+## Improvements
+
+- Improve "getDescription" in MediaInfo, VideoInfo and AudioInfo, depending if it's an input or output media.
+
+- option to change working space (and adjust available output profiles)
+
 ## LUT Implementation
 
-à reprendre:
-
-il faut à chaque étape garder le trc/primaries courant pour le donner aux algos de conversions comme input.
-
-- if LUT added before color management :
-    - check if trc and primaries on input need to be changed DONE
-        - use LUT output metadata for trc and primaries on color interpretation for inputs  
-        DONE mais pas bon : le zscale de conversion a besoin des bonnes métadata
-        - convert trc and primaries before applying lut on output WIP line 442 in FFmpegRenderer
-        - apply lut
-- if LUT added after color management :
-    - check if trc and primaries on output need to be changed
-        - convert output trc and primaries if needed
-        - apply lut
+à tester
 
 ## Windows / Mac (Ae)
 
