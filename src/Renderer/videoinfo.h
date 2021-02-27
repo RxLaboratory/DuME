@@ -175,6 +175,12 @@ public:
     void setColorConversionMode(MediaUtils::ColorConversionMode colorConversionMode, bool silent = false);
     void setColorConversionMode(QString colorConversionMode, bool silent = false);
 
+    bool isSequence() const;
+    void setSequence(bool isSequence, bool silent = false);
+
+    int startNumber() const;
+    void setStartNumber(int startNumber, bool silent = false);
+
 signals:
     void changed();
 
@@ -252,6 +258,8 @@ private:
     FFBaseObject *_speedEstimationMode;
     FFBaseObject *_speedAlgorithm;
     bool _sceneDetection;
+    bool _isSequence;
+    int _startNumber;
 };
 
 #endif // VIDEOINFO_H

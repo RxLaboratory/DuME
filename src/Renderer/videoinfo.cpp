@@ -44,6 +44,8 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _sceneDetection = true;
     _resizeMode = MediaUtils::Letterbox;
     _resizeAlgorithm = ffmpeg->resizeAlgorithm("");
+    _isSequence = false;
+    _startNumber = 0;
 }
 
 VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
@@ -96,6 +98,8 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setSceneDetection( obj.value("sceneDetection").toBool(true));
     setResizeMode( MediaUtils::ResizeModeFromString( obj.value("resizeMode").toString("")));
     setResizeAlgorithm( obj.value("resizeAlgorithm").toObject());
+    setSequence( obj.value("isSequence").toBool(false));
+    setStartNumber( obj.value("startNumber").toInt(0));
 }
 
 void VideoInfo::copyFrom(VideoInfo *other, bool silent)
@@ -142,6 +146,8 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _sceneDetection = other->sceneDetection();
     _resizeMode = other->resizeMode();
     _resizeAlgorithm = other->resizeAlgorithm();
+    _isSequence = other->isSequence();
+    _startNumber = other->startNumber();
 
     if(!silent) emit changed();
 }
@@ -195,6 +201,8 @@ QJsonObject VideoInfo::toJson()
     vStream.insert("sceneDetection", _sceneDetection);
     vStream.insert("resizeMode", MediaUtils::ResizeModeToString(_resizeMode));
     vStream.insert("resizeAlgorithm", _resizeAlgorithm->toJson());
+    vStream.insert("isSequence", _isSequence);
+    vStream.insert("startNumber", _startNumber);
 
     return vStream;
 }
@@ -209,6 +217,8 @@ QString VideoInfo::getDescription( bool outputMedia )
     mediaInfoString += "\nVideo codec: ";
     FFCodec *vc = _codec;
     mediaInfoString += vc->prettyName();
+
+    if ( _isSequence ) mediaInfoString += "\nFrame sequence starting at " + QString::number( _startNumber );
 
     if ( vc->name() == "copy" ) return mediaInfoString;
 
@@ -889,6 +899,28 @@ MediaUtils::ColorConversionMode VideoInfo::colorConversionMode() const
 void VideoInfo::setColorConversionMode(QString colorConversionMode, bool silent)
 {
     setColorConversionMode( MediaUtils::ColorConversionModeModeFromString(colorConversionMode), silent);
+}
+
+bool VideoInfo::isSequence() const
+{
+    return _isSequence;
+}
+
+void VideoInfo::setSequence(bool isSequence, bool silent)
+{
+    _isSequence = isSequence;
+    if(!silent) emit changed();
+}
+
+int VideoInfo::startNumber() const
+{
+    return _startNumber;
+}
+
+void VideoInfo::setStartNumber(int startNumber, bool silent)
+{
+    _startNumber = startNumber;
+    if(!silent) emit changed();
 }
 
 bool VideoInfo::applyLutOnOutputSpace() const

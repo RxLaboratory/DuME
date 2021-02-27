@@ -86,8 +86,6 @@ public:
     void setOutPoint(QString outPoint, bool silent = false);
 
     //sequence
-    void setStartNumber(int startNumber, bool silent = false);
-    int startNumber() const;
     void setFrames(const QStringList &frames, bool silent = false);
     QStringList frames() const;
     QString ffmpegSequenceName() const;
@@ -147,6 +145,7 @@ public:
 
     //stream setters
     //video
+    void setStartNumber(int startNumber, int id = -1, bool silent = false);
     void setVideoQuality(int value, int id = -1, bool silent = false);
     void setVideoEncodingSpeed(int value, int id = -1, bool silent = false);
     void setVideoProfile(QString value, int id = -1, bool silent = false);
@@ -264,10 +263,6 @@ private:
      * @brief The number of loops to be encoded (-1 for inifite, available only with some specific formats like GIF)
      */
     int _loop;
-    /**
-     * @brief The number of the first frame
-     */
-    int _startNumber;
     /**
      * @brief The number of the last frame
      */

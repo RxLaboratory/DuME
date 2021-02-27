@@ -6,7 +6,7 @@
 class FFColorItem : public FFBaseObject
 {
 public:
-    enum ScaleFilter{ ZScale, Colorspace, Scale, Gamma, LUT };
+    enum ScaleFilter{ ZScale, Colorspace, Gamma, LUT, None };
     Q_ENUM(ScaleFilter)
 
     enum Ability { Input = 1 << 0,
@@ -16,7 +16,6 @@ public:
 
     FFColorItem(QString name, QObject *parent = nullptr);
     FFColorItem(QString name, QString prettyName, QObject *parent = nullptr);
-    FFColorItem(QString name, QString prettyName, QString outputScaleName, QObject *parent = nullptr);
     FFColorItem(QString name, QString prettyName, QString outputScaleName, ScaleFilter scaleFilter, QObject *parent = nullptr);
 
     bool isInput() const;
@@ -24,22 +23,48 @@ public:
     void setInput(bool i = true);
     void setOutput(bool o = true);
 
-    QString outputScaleName() const;
-    void setOutputScaleName(const QString &scaleName);
+    ScaleFilter selectOutputFilter(FFColorItem *inputItem);
 
-    ScaleFilter scaleFilter() const;
-    void setScaleFilter(const ScaleFilter &scaleFilter);
+    ScaleFilter defaultScaleFilter() const;
+    void setDefaultScaleFilter(const ScaleFilter &scaleFilter);
+
+    QString outputZScaleName() const;
+    void setOutputZScaleName(const QString &scaleName);
+
+    QString inputZScaleName() const;
+    void setInputZScaleName(const QString &inputScaleName);
+
+    QString outputCSScaleName() const;
+    void setOutputCSScaleName(const QString &outputCSScaleName);
+
+    QString inputCSScaleName() const;
+    void setInputCSScaleName(const QString &inputCSScaleName);
+
+    QString outputGScaleName() const;
+    void setOutputGScaleName(const QString &outputGScaleName);
+
+    QString inputGScaleName() const;
+    void setInputGScaleName(const QString &inputGScaleName);
+
+    QString outputLScaleName() const;
+    void setOutputLScaleName(const QString &outputLScaleName);
+
+    QString inputLScaleName() const;
+    void setInputLScaleName(const QString &inputLScaleName);
 
     QString metadataName() const;
     void setMetadataName(const QString &metadataName);
 
-    QString inputScaleName() const;
-    void setInputScaleName(const QString &inputScaleName);
-
 protected:
-    QString _outputScaleName;
-    QString _inputScaleName;
-    ScaleFilter _scaleFilter;
+    QString _outputZScaleName;
+    QString _inputZScaleName;
+    QString _outputCSScaleName;
+    QString _inputCSScaleName;
+    QString _outputGScaleName;
+    QString _inputGScaleName;
+    QString _outputLScaleName;
+    QString _inputLScaleName;
+    ScaleFilter _defaultScaleFilter;
     Abilities _abilities;
     QString _metadataName;
 };

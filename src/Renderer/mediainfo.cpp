@@ -28,7 +28,6 @@ void MediaInfo::reInit(bool removeFileName, bool silent)
     _missingFrames.clear();
     _emptyFrames.clear();
     _loop = -1;
-    _startNumber = 0;
     _info = "";
     _inPoint = 0.0;
     _outPoint = 0.0;
@@ -218,7 +217,6 @@ void MediaInfo::copyFrom(MediaInfo *other, bool updateFilename, bool silent)
     _bitrate = other->bitrate();
     _frames = other->frames();
     _loop = other->loop();
-    _startNumber = other->startNumber();
     _inPoint = other->inPoint();
     _outPoint = other->outPoint();
     // STREAMS
@@ -322,7 +320,7 @@ QString MediaInfo::getDescription()
         }
         if (!_outputMedia)
         {
-            mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
+            //mediaInfoString += "\nStart Frame Number: " + QString::number( _startNumber );
             mediaInfoString += "\nEnd Frame Number: " + QString::number( _endNumber );
         }
     }
@@ -724,6 +722,16 @@ void MediaInfo::setMapStream(int mapIndex, int streamId, bool silent)
         _maps[mapIndex].setStreamId(streamId);
     }
     if (!silent) emit changed();
+}
+
+void MediaInfo::setStartNumber(int startNumber, int id, bool silent )
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setStartNumber(startNumber, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setStartNumber(startNumber, silent);
 }
 
 void MediaInfo::setVideoQuality(int value, int id, bool silent)
@@ -1364,12 +1372,6 @@ void MediaInfo::setFrames(const QStringList &frames, bool silent )
     if(!silent) emit changed();
 }
 
-void MediaInfo::setStartNumber(int startNumber, bool silent )
-{
-    _startNumber = startNumber;
-    if(!silent) emit changed();
-}
-
 void MediaInfo::setAep(bool isAep, bool silent )
 {
     _isAep = isAep;
@@ -1616,6 +1618,7 @@ void MediaInfo::loadSequence(bool silent)
     qDebug() << "Loading sequence from " + _fileName;
 
     _videoStreams[0]->setIntra(true, silent);
+    _videoStreams[0]->setSequence(true);
 
     //base file info
     QFileInfo baseFileInfo(_fileName);
@@ -1629,7 +1632,7 @@ void MediaInfo::loadSequence(bool silent)
     if (!_outputMedia)
     {
         _frames.clear();
-        _startNumber = 0;
+        _videoStreams[0]->setStartNumber(0);
 
         QRegularExpression reDigits("(\\d+)");
         QRegularExpressionMatchIterator reDigitsMatch = reDigits.globalMatch(baseName);
@@ -1660,7 +1663,7 @@ void MediaInfo::loadSequence(bool silent)
             QString right = baseName.right(baseName.count() - match.capturedEnd(0));
             QString pattern = left + "(\\d+)" + right;
             QRegularExpression re(pattern);
-            _startNumber = 999999999;
+            _videoStreams[0]->setStartNumber( 999999999 );
             _endNumber = 0;
             _emptyFrames.clear();
             _missingFrames.clear();
@@ -1682,7 +1685,7 @@ void MediaInfo::loadSequence(bool silent)
                     numDigits = testNumDigits;
                     //get start frame
                     int currentNumber = reMatch.captured(1).toInt();
-                    if (currentNumber < _startNumber) _startNumber = currentNumber;
+                    if (currentNumber < _videoStreams[0]->startNumber()) _videoStreams[0]->setStartNumber( currentNumber );
                     if (currentNumber > _endNumber) _endNumber = currentNumber;
                     tempFrames << f.filePath();
                     _size += f.size();
@@ -1691,8 +1694,8 @@ void MediaInfo::loadSequence(bool silent)
             }
 
             //Check if numbering is ok
-            int numFrames = _endNumber - _startNumber + 1;
-            if (_endNumber == _startNumber)
+            int numFrames = _endNumber - _videoStreams[0]->startNumber() + 1;
+            if (_endNumber == _videoStreams[0]->startNumber())
             {
                 qDebug() << "Wrong digits block.";
                 error = "This does not look like a sequence, we did not find the frame number.";
@@ -1704,7 +1707,7 @@ void MediaInfo::loadSequence(bool silent)
                 incorrect = true;
                 error = "Some frames are missing.\n";
                 tempFrames.sort();
-                int num = _startNumber - 1;
+                int num = _videoStreams[0]->startNumber() - 1;
                 //look for missing frames
                 foreach(QFileInfo f, tempFrames)
                 {
@@ -1728,7 +1731,7 @@ void MediaInfo::loadSequence(bool silent)
                 //list all files in the sequence matching the pattern, and compute size
                 _frames = tempFrames;
                 _bitrate = ( _size * 8 ) / ( _frames.count()/24.0 );
-                if (_startNumber == 999999999) _startNumber = 0;
+                if (_videoStreams[0]->startNumber() == 999999999) _videoStreams[0]->setStartNumber(0);
                 //update filename with dume convention
                 QString digitsBlock = "";
                 while(digitsBlock.count() < digits.count())
@@ -1777,11 +1780,6 @@ void MediaInfo::loadSequence(bool silent)
     }
 
     qDebug() << "Sequence found!";
-}
-
-int MediaInfo::startNumber() const
-{
-    return _startNumber;
 }
 
 int MediaInfo::loop() const

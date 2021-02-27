@@ -26,8 +26,14 @@ void BlockStartNumber::update()
         emit blockEnabled(false);
         return;
     }
+
+    if (!_mediaInfo->hasVideo())
+    {
+        emit blockEnabled(false);
+        return;
+    }
     QSignalBlocker b(startNumberEdit);
-    startNumberEdit->setValue( _mediaInfo->startNumber() );
+    startNumberEdit->setValue( _mediaInfo->videoStreams().at(0)->startNumber() );
 }
 
 void BlockStartNumber::on_startNumberEdit_valueChanged(int arg1)
