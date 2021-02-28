@@ -33,8 +33,10 @@ This is the list of color profiles (i.e. presets) in *DuME* and their default pa
 | Display P3 | P3 D65 | sRGB / IEC 61966-2-1 | RGB | Full |
 | DCI P3 | DCI P3 | DCI P3 (gamma 2.6) | RGB | Full |
 | Linear RGB | BT.709 / RGB / IEC 61966-2-4 | Linear | RGB | Full |
+| ACEScg | ACEScg | Linear | RGB | Full |
 | PAL / SECAM | PAL & SECAM / BT.470 BG / BT.601 | PAL & SECAM / BT.470 M | PAL & SECAM | Limited |
 | NTSC | NTSC / BT.601 | NTSC / BT.601 | NTSC | Limited |
+| QT gamma 1.96 | BT.709 / RGB / IEC 61966-2-4 | QT gamma 1.96 | BT.709 | Limited |
 
 !!! note
     This list may be adjusted in future versions.  
@@ -87,3 +89,6 @@ You can quickly set all values to a specific color space by selecting a preset i
 ![](img/captures/blocks/color_presets.png)
 
 For any specific parameter, if you don't know what to choose, leave it on *Auto*.
+
+!!! Note
+    The available parameters change a bit depending on the need for conversion. *DuME* does not support conversion to all formats (espacially the older ones).
