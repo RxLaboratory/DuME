@@ -14,8 +14,12 @@ FFmpegRenderer *FFmpegRenderer::instance()
 FFmpegRenderer::FFmpegRenderer(QObject *parent) : AbstractRenderer(parent)
 {
     _ffmpeg = FFmpeg::instance();
+
     // Let's work in BT.2020_12 by default, which is fully compatible with ffmpeg and has a wide gammut
-    _workingColorProfile = _ffmpeg->colorProfile( "bt2020_12" );
+    //_workingColorProfile = _ffmpeg->colorProfile( "bt2020_12" );
+    // Or in input space
+    _workingColorProfile = _ffmpeg->colorProfile( "input" );
+
     initJob();
 }
 
@@ -560,12 +564,14 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     //1D / 3D LUT (on output)
     if (stream->applyLutOnOutputSpace()) filterChain += applyLutFilters( stream, outputProfile );
 
-   //compile filters
-   filterChain.removeAll(QString(""));
+    outputProfile->deleteLater();
 
-   QStringList filters;
-   if (filterChain.count() > 0) filters << "-vf" << filterChain.join(",");
-   return filters;
+    //compile filters
+    filterChain.removeAll(QString(""));
+
+    QStringList filters;
+    if (filterChain.count() > 0) filters << "-vf" << filterChain.join(",");
+    return filters;
 }
 
 QString FFmpegRenderer::unpremultiplyFilter(VideoInfo *stream)
@@ -849,12 +855,28 @@ QStringList FFmpegRenderer::applyLutFilters(VideoInfo *stream, FFColorProfile *c
     {
         if (lut->name() != "" && lut->name() != "custom")
         {
-            // Convert to input lut space if needed
-            if ( lut->inputProfile() != colorProfile->name() && colorProfile->name() != "") lutFilters += colorConversionFilters( colorProfile, _ffmpeg->colorProfile( lut->inputProfile() ) );
-            // Appluy lut
+            FFColorProfile *lutInputProfile = _ffmpeg->colorProfile( lut->inputProfile() );
+            // Convert to input lut space
+            if ( colorProfile->name() != "" && lutInputProfile->name() != "" && lutInputProfile->name() != colorProfile->name())
+            {
+                if (lut->type() == FFLut::OneD)
+                    lutFilters += colorConversionFilters( lutInputProfile->trc() , nullptr, nullptr, nullptr, colorProfile->trc() );
+                else if (lut->type() == FFLut::ThreeD)
+                    lutFilters += colorConversionFilters( lutInputProfile->trc(), lutInputProfile->primaries(), nullptr, nullptr, colorProfile->trc(), colorProfile->primaries() );
+            }
+
+            // Apply lut
             lutFilters << getLutFilter(lut);
-            // Convert back to working space if needed
-            if ( lut->outputProfile() != colorProfile->name() && colorProfile->name() != "") lutFilters += colorConversionFilters( _ffmpeg->colorProfile( lut->outputProfile() ), colorProfile );
+
+            // Convert back to previous space
+            FFColorProfile *lutOutputProfile = _ffmpeg->colorProfile( lut->outputProfile() );
+            if ( colorProfile->name() != "" && lutOutputProfile->name() != "" && lutOutputProfile->name() != colorProfile->name())
+            {
+                if (lut->type() == FFLut::OneD)
+                    lutFilters += colorConversionFilters( colorProfile->trc() , nullptr, nullptr, nullptr, lutOutputProfile->trc() );
+                else if (lut->type() == FFLut::ThreeD)
+                    lutFilters += colorConversionFilters( colorProfile->trc(), colorProfile->primaries(), nullptr, nullptr, lutOutputProfile->trc(), lutOutputProfile->primaries() );
+            }
         }
     }
 

@@ -174,7 +174,11 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The color Ranges
     _colorRanges << new FFColorItem("","Auto");
-    _colorRanges << new FFColorItem("", "Same as input", "input", FFColorItem::ZScale);
+    FFColorItem *r = new FFColorItem("input", "Same as input", "input", FFColorItem::ZScale);
+    r->setMetadataName("");
+    r->setInput(false);
+    _colorRanges << r;
+
     _colorRanges << new FFColorItem("tv","Limited", "limited", FFColorItem::ZScale);
     _colorRanges << new FFColorItem("pc","Full", "full", FFColorItem::ZScale);
 
@@ -236,6 +240,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The complete color Profiles
     _colorProfiles << new FFColorProfile("", "Auto", colorPrimary(""), colorTRC(""), colorSpace(""), colorRange(""));
+    _colorProfiles << new FFColorProfile("input", "Same as input", colorPrimary("input"), colorTRC("input"), colorSpace("input"), colorRange("input"));
     _colorProfiles << new FFColorProfile("srgb", "Images (sRGB)", colorPrimary("bt709"), colorTRC("iec61966_2_1"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("bt709", "HD Video (BT.709)", colorPrimary("bt709"), colorTRC("bt709"), colorSpace("bt709"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("bt2020_10", "UHD (4K/8K) Video (BT.2020-10bits)", colorPrimary("bt2020"), colorTRC("14"), colorSpace("bt2020_cl"), colorRange("pc"));
