@@ -20,6 +20,7 @@ private slots:
     void outputFormatChanged(int index);
     void inputBrowse();
     void convert();
+    void ocioLutBakerIsValid(bool valid);
 };
 
 #endif // LUTCONVERTERWIDGET_H

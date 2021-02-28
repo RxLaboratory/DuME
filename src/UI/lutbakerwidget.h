@@ -20,6 +20,7 @@ private slots:
     void outputFormatChanged(int index);
     void ocioBrowse();
     void bake();
+    void ocioLutBakerIsValid(bool valid);
 
 private:
     QSettings _settings;

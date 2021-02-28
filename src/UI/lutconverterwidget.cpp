@@ -18,6 +18,9 @@ LutConverterWidget::LutConverterWidget(QWidget *parent) :
     connect( outputFormatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(outputFormatChanged(int)));
     connect( lutBrowseButton, SIGNAL(clicked()), this, SLOT(inputBrowse()));
     connect( convertButton, SIGNAL(clicked()), this, SLOT(convert()));
+    connect(OcioLutBakerInfo::instance(), SIGNAL(valid(bool)), this, SLOT(ocioLutBakerIsValid(bool)));
+
+    ocioLutBakerIsValid( OcioLutBakerInfo::instance()->isValid() );
 }
 
 void LutConverterWidget::outputFormatChanged(int index)
@@ -90,4 +93,10 @@ void LutConverterWidget::convert()
     arguments << outputPath;
 
     ProcessUtils::runIndependantProcess(OcioLutBakerInfo::instance()->binary(), arguments);
+}
+
+void LutConverterWidget::ocioLutBakerIsValid(bool valid)
+{
+    this->setEnabled(valid);
+    ocioNotFoundLabel->setVisible(!valid);
 }

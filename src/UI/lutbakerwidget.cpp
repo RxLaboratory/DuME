@@ -20,6 +20,9 @@ LutBakerWidget::LutBakerWidget(QWidget *parent) :
     connect( outputFormatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(outputFormatChanged(int)));
     connect( ocioBrowseButton, SIGNAL(clicked()), this, SLOT(ocioBrowse()));
     connect( bakeButton, SIGNAL(clicked()), this, SLOT(bake()));
+    connect(OcioLutBakerInfo::instance(), SIGNAL(valid(bool)), this, SLOT(ocioLutBakerIsValid(bool)));
+
+    ocioLutBakerIsValid( OcioLutBakerInfo::instance()->isValid() );
 }
 
 void LutBakerWidget::outputFormatChanged(int index)
@@ -67,4 +70,10 @@ void LutBakerWidget::bake()
     arguments << outputPath;
 
     ProcessUtils::runIndependantProcess(OcioLutBakerInfo::instance()->binary(), arguments);
+}
+
+void LutBakerWidget::ocioLutBakerIsValid(bool valid)
+{
+    this->setEnabled(valid);
+    ocioNotFoundLabel->setVisible(!valid);
 }
