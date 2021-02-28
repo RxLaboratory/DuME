@@ -246,7 +246,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorProfiles << new FFColorProfile("acescg", "ACEScg", colorPrimary("acescg"), colorTRC("linear"), colorSpace("rgb"), colorRange("pc"));
     _colorProfiles << new FFColorProfile("palsecam", "PAL / SECAM", colorPrimary("bt470bg"), colorTRC("gamma22"), colorSpace("bt470bg"), colorRange("tv"));
     _colorProfiles << new FFColorProfile("ntsc", "NTSC", colorPrimary("smpte170m"), colorTRC("smpte170m"), colorSpace("smpte170m"), colorRange("tv"));
-    _colorProfiles << new FFColorProfile("qt196", "QT 709 gamma 1.96", colorPrimary("bt709"), colorTRC("qt196"), colorSpace("rgb"), colorRange("tv"));
+    _colorProfiles << new FFColorProfile("qt196", "QT 709 gamma 1.96", colorPrimary("bt709"), colorTRC("qt196"), colorSpace("bt709"), colorRange("tv"));
 
     // The LUTs
     _luts << new FFLut( "", "None");
