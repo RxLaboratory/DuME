@@ -35,6 +35,9 @@ You can also use *DuME* to render the whole queue, but in this case *DuME* canno
 
 You have the option to use several threads at once when rendering *After Effects* projects, but be careful as this may not work correctly if the number of threads is too high, especially with projects needing a lot of memory.
 
+!!! Warning
+    Do not disable [color management](colors.md) when rendering an *After Effects* composition, as *After Effects* compositions are rendered in a *linear RGB* color space and not in the output color space.
+
 ## Add sound to an After Effects composition
 
 You can add another input to add sound to an After Effects composition. See [*Adding / Changing streams*](mapping.md)

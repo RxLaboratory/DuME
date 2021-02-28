@@ -4,8 +4,9 @@
 
 If you have to convert LUTs, *DuME* is able to handle a lot of different formats thanks to *OCIO*.
 
-You will need a working build of the *OCIO* tool `ociobakelut`, a command-line tool included in *OpenColorIO*. You can set its path in the settings of *DuME* to activate these LUT tools.
-
+!!! warning
+    To be able to use the baker, you need a working build of the *OCIO* tool `ociobakelut`, a command-line tool included in *OpenColorIO*. You can set its path in the settings of *DuME*.
+    
 *DuME* can convert LUTs [from all formats supported by OCIO](https://opencolorio.readthedocs.io/en/latest/guides/using_ocio/using_ocio.html#supported-lut-formats), and to these formats:
 
 - __Discreet / After Effects / Autodesk (*.3dl)__\*

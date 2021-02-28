@@ -76,11 +76,11 @@ Intermediary Media files, which will be used during the production process betwe
 
 - ***h.265 Intra-frame mp4, 8-bit YUV 422*** will achieve all of the above points, and the resulting file size can be quite small, while being very easy to decode. It can use a lossless compression if you need, and you could also use all chroma data with a *444* encoding if you need. You can also increase to 10- or 12-bit channels. The only caveat is that it is not a frame sequence, so you won't be able to easily re-render only part of the video. Use only for short videos. If your software can't encode or decode *h.265*, try with intra-frame *h.264 (AVC-Intra)*.
 
-- ***OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression*** can achieve very small files. The *Luma/Chroma* option is equivalent to a *422* reduction and also saves space without perceptible loss. If you need chroma key in the next step you could just omit the option. *DWAA* compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.
+- ***OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression*** can achieve very small files. The *Luma/Chroma* option is equivalent to a *422* chroma sub-sampling and also saves space without perceptible loss. If you need chroma key in the next step you could just omit the option. *DWAA* compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.
 
 ### Formats to avoid
 
-- ***Prores*** and ***DnxHD/HR***, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with intra-frame *h.265* or *openEXR*.
+- ***Prores*** and ***DnxHD/HR***, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with smaller intra-frame *h.265* or *openEXR* files.
 
 - ***PNG*** is nice, but *openEXR* is better. With the right compression settings, *openEXR* files can be smaller or at least the same size, and at least *Adobe After Effects* is much more performant for encoding and decoding *openEXR*. *OpenEXR* can be both lossy or lossless.
 
@@ -133,11 +133,11 @@ When reaching the last step, which should be edit and maybe color grading, you w
 
 - ***h.265 Intra-frame mp4, 8-bit YUV 420*** will achieve all of the above points, and the resulting file size can be quite small, while being very easy to decode. Its lossy compression is very efficient, and you could also use more chroma data with a *422* or *444* encoding if you need. You can also increase to 10- or 12-bit channels. The only caveat is that it is not a frame sequence, so you won't be able to easily re-render only part of the video. Use only for short videos. If your software can't encode or decode *h.265*, try with intra-frame *h.264 (AVC-Intra)*.
 
-- ***OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression*** can achieve very small files. The *Luma/Chroma* option is equivalent to a *422* reduction and also saves space without perceptible loss. *DWAA* compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.
+- ***OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression*** can achieve very small files. The *Luma/Chroma* option is equivalent to a *422* chroma sub-sampling and also saves space without perceptible loss. *DWAA* compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.
 
 ### Formats to avoid
 
-- ***Prores*** and ***DnxHD/HR***, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with intra-frame *h.265* or *openEXR*.
+- ***Prores*** and ***DnxHD/HR***, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with smaller intra-frame *h.265* or *openEXR* files.
 
 - ***PNG*** is nice, but *openEXR* is better. With the right compression settings, *openEXR* files can be smaller or at least the same size, and at least *Adobe After Effects* is much more performant for encoding and decoding *openEXR*. *OpenEXR* can be both lossy or lossless.
 

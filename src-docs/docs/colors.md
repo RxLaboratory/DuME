@@ -42,6 +42,25 @@ This is the list of color profiles (i.e. presets) in *DuME* and their default pa
     This list may be adjusted in future versions.  
     If you feel these default values could be improved, or other ones added, please [post your suggestions](https://github.com/Rainbox-dev/DuME/issues/new/choose) here.
 
+### Setting the color management
+
+![](img/captures/blocks-header.png)
+
+You can change the color space *DuME* works in. The default is to keep the color profile from the input media, but you may need to change this if:
+
+- You're using specific [LUTs](lut.md), options, or a lot of filters, which need specific or wider color profiles.
+
+!!! hint
+    You don't necessarily need to change the working color space when applying a LUT, as *DuME* is able to change the color space before and after applying the LUT to use it in its intended color space.
+
+If you know you don't need any color conversions and color management, you can turn off *DuME* color management by setting the working color space to *None*. This will make encoding a bit faster and may make things simpler as *DuME* will just copy color data without altering anything. 
+
+!!! note
+    When transcoding from image sequences (*sRGB*) to videos (mostly *BT.709* or *BT.2020 YUV*), turning off color management will result in a gamma shift.
+
+    When rendering *After Effects* compositions, you'll also need to enable color management, as *After Effects* compositions are rendered in a *linear RGB* color space and not in the output color space.
+
+
 ## Automatic color conversion by *DuME*
 
 When all color parameters are left to their default values, here is what *DuME* does:
