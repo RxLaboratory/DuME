@@ -693,6 +693,18 @@ FFColorProfile *FFmpeg::colorProfile(QString name)
     return _colorProfiles[0];
 }
 
+FFColorProfile *FFmpeg::colorProfile(FFColorItem *primaries, FFColorItem *trc, FFColorItem *space, FFColorItem *range, QObject *parent)
+{
+    foreach( FFColorProfile *p, _colorProfiles)
+    {
+        if (p->primaries()->name() == primaries->name() && p->trc()->name() == trc->name() && p->space()->name() == space->name() && p->range()->name() == range->name())
+        {
+            return p;
+        }
+    }
+    return new FFColorProfile("temp", "temp", primaries, trc, space, range, parent);
+}
+
 QList<FFBaseObject *> FFmpeg::motionInterpolationAlgorithms() const
 {
     return _motionInterpolationAlgorithms;

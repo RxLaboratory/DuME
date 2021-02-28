@@ -124,6 +124,7 @@ public:
     FFColorItem *colorSpace(QString name);
     FFColorItem *colorRange(QString name);
     FFColorProfile *colorProfile(QString name);
+    FFColorProfile *colorProfile(FFColorItem *primaries, FFColorItem *trc, FFColorItem *space, FFColorItem *range, QObject *parent = nullptr);
     QList<FFColorItem *> colorPrimaries() const;
     QList<FFColorItem *> colorTRCs() const;
     QList<FFColorItem *> colorSpaces() const;

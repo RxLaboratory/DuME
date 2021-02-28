@@ -558,13 +558,13 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     filterChain += resizeFilters( stream );
 
     // COLOR MANAGEMENT
-    FFColorProfile *outputProfile = new FFColorProfile("temp", "temp", stream->colorPrimaries(), stream->colorTRC(), stream->colorSpace(), stream->colorRange());
+    FFColorProfile *outputProfile = _ffmpeg->colorProfile(stream->colorPrimaries(), stream->colorTRC(), stream->colorSpace(), stream->colorRange(), this);
     filterChain += colorConversionFilters( _workingColorProfile, outputProfile );
 
     //1D / 3D LUT (on output)
     if (stream->applyLutOnOutputSpace()) filterChain += applyLutFilters( stream, outputProfile );
 
-    outputProfile->deleteLater();
+    if (outputProfile->name() == "temp") outputProfile->deleteLater();
 
     //compile filters
     filterChain.removeAll(QString(""));
@@ -810,8 +810,6 @@ QStringList FFmpegRenderer::inputColorConversionFilters()
 {
     QStringList filters;
 
-    if ( _workingColorProfile->name() == "") return filters;
-
     // Convert Colors from input for TRCs and Primaries' not supported by ffmpeg
 
     // Convert TRC
@@ -839,6 +837,9 @@ QStringList FFmpegRenderer::inputColorConversionFilters()
             filters << generateFilter("lut3d", filterArgs);
         }
     }
+
+    if ( _workingColorProfile->name() == "") return filters;
+    if ( _workingColorProfile->name() == "input") return filters;
 
     // Convert to working profile
     filters += colorConversionFilters( _workingColorProfile );
@@ -873,9 +874,15 @@ QStringList FFmpegRenderer::applyLutFilters(VideoInfo *stream, FFColorProfile *c
             if ( colorProfile->name() != "" && lutOutputProfile->name() != "" && lutOutputProfile->name() != colorProfile->name())
             {
                 if (lut->type() == FFLut::OneD)
-                    lutFilters += colorConversionFilters( colorProfile->trc() , nullptr, nullptr, nullptr, lutOutputProfile->trc() );
+                {
+                    if (colorProfile->name() !=  "input") lutFilters += colorConversionFilters( colorProfile->trc() , nullptr, nullptr, nullptr, lutOutputProfile->trc() );
+                    else if (_inputTrc) lutFilters += colorConversionFilters( _inputTrc , nullptr, nullptr, nullptr, lutOutputProfile->trc() );
+                }
                 else if (lut->type() == FFLut::ThreeD)
-                    lutFilters += colorConversionFilters( colorProfile->trc(), colorProfile->primaries(), nullptr, nullptr, lutOutputProfile->trc(), lutOutputProfile->primaries() );
+                {
+                    if (colorProfile->name() !=  "input") lutFilters += colorConversionFilters( colorProfile->trc(), colorProfile->primaries(), nullptr, nullptr, lutOutputProfile->trc(), lutOutputProfile->primaries() );
+                    else if (_inputTrc && _inputPrimaries) lutFilters += colorConversionFilters( _inputTrc, _inputPrimaries, nullptr, nullptr, lutOutputProfile->trc(), lutOutputProfile->primaries() );
+                }
             }
         }
     }
