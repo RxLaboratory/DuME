@@ -28,6 +28,7 @@ BlockLut::BlockLut(MediaInfo *mediaInfo, QWidget *parent) :
 
     connect(lutBox, SIGNAL(currentIndexChanged(int)), this, SLOT(lutBox_currentIndexChanged(int)));
     connect(applyBox, SIGNAL(currentIndexChanged(int)), this, SLOT(applyBox_currentIndexChanged(int)));
+    connect(typeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(typeBox_currentIndexChanged(int)));
     connect(inputSpaceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(inputSpaceBox_currentIndexChanged(int)));
     connect(outputSpaceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(outputSpaceBox_currentIndexChanged(int)));
 }
@@ -88,7 +89,13 @@ void BlockLut::inputSpaceBox_currentIndexChanged(int /*index*/)
 
 void BlockLut::outputSpaceBox_currentIndexChanged(int /*index*/)
 {
-   _customLut->setOutputProfile( inputSpaceBox->currentData().toString());
+    _customLut->setOutputProfile( inputSpaceBox->currentData().toString());
+}
+
+void BlockLut::typeBox_currentIndexChanged(int index)
+{
+    if (index == 0) _customLut->setType(FFLut::ThreeD);
+    else _customLut->setType(FFLut::OneD);
 }
 
 void BlockLut::updateLutInputOutputBoxes()
@@ -98,6 +105,7 @@ void BlockLut::updateLutInputOutputBoxes()
     inputSpaceBox->setEnabled(enabled && !none);
     outputSpaceBox->setEnabled(enabled && !none);
     applyBox->setEnabled(!none);
+    typeBox->setEnabled(enabled && !none);
 
     inputSpaceBox->setCurrentIndex(0);
     outputSpaceBox->setCurrentIndex(0);

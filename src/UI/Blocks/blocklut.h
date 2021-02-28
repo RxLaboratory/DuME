@@ -22,6 +22,7 @@ private slots:
     void applyBox_currentIndexChanged(int index);
     void inputSpaceBox_currentIndexChanged(int index);
     void outputSpaceBox_currentIndexChanged(int index);
+    void typeBox_currentIndexChanged(int index);
 private:
     void updateLutInputOutputBoxes();
     FFLut *_customLut;
