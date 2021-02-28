@@ -7,29 +7,15 @@ BlockColor::BlockColor(MediaInfo *mediaInfo, QWidget *parent) :
     _freezeUI = true;
     setupUi(this);
 
-    //pouplate boxes
-    FFmpeg *ffmpeg = FFmpeg::instance();
-    foreach(FFColorItem *c, ffmpeg->colorPrimaries())
-    {
-        primariesBox->addItem( c->prettyName(), c->name() );
-    }
-    foreach(FFColorItem *c, ffmpeg->colorTRCs())
-    {
-        trcBox->addItem( c->prettyName(), c->name() );
-    }
-    foreach(FFColorItem *c, ffmpeg->colorSpaces())
-    {
-        spaceBox->addItem( c->prettyName(), c->name() );
-    }
-    foreach(FFColorItem *c, ffmpeg->colorRanges())
-    {
-        rangeBox->addItem( c->prettyName(), c->name() );
-    }
     modeBox->addItem("Convert colors & Embed profile", "ConvertEmbed");
     modeBox->addItem("Convert colors only", "Convert");
     modeBox->addItem("Set Metadata only", "Embed");
+
+    //pouplate boxes
+    populateItems();
+
     //create actions
-    foreach(FFColorProfile *cp, ffmpeg->colorProfiles())
+    foreach(FFColorProfile *cp, FFmpeg::instance()->colorProfiles())
     {
         QAction *a = new QAction(cp->prettyName());
         a->setData(cp->name());
@@ -81,8 +67,43 @@ void BlockColor::update()
 
 void BlockColor::on_modeBox_currentIndexChanged(int /*index*/)
 {
+    populateItems();
     if(_freezeUI) return;
     _mediaInfo->setColorConversionMode( modeBox->currentData().toString()  );
+}
+
+void BlockColor::populateItems()
+{
+    FFmpeg *ffmpeg = FFmpeg::instance();
+
+    bool convert = modeBox->currentIndex() == 0 || modeBox->currentIndex() == 1;
+
+    QSignalBlocker b(primariesBox);
+    QSignalBlocker b1(trcBox);
+    QSignalBlocker b2(spaceBox);
+    QSignalBlocker b3(rangeBox);
+
+    primariesBox->clear();
+    trcBox->clear();
+    spaceBox->clear();
+    rangeBox->clear();
+
+    foreach(FFColorItem *c, ffmpeg->colorPrimaries())
+    {
+        if (!convert || c->isOutput()) primariesBox->addItem( c->prettyName(), c->name() );
+    }
+    foreach(FFColorItem *c, ffmpeg->colorTRCs())
+    {
+        if (!convert || c->isOutput()) trcBox->addItem( c->prettyName(), c->name() );
+    }
+    foreach(FFColorItem *c, ffmpeg->colorSpaces())
+    {
+        if (!convert || c->isOutput()) spaceBox->addItem( c->prettyName(), c->name() );
+    }
+    foreach(FFColorItem *c, ffmpeg->colorRanges())
+    {
+        if (!convert || c->isOutput()) rangeBox->addItem( c->prettyName(), c->name() );
+    }
 }
 
 void BlockColor::on_spaceBox_currentIndexChanged(int index)

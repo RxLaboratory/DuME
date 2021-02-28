@@ -20,6 +20,8 @@ private slots:
     void on_rangeBox_currentIndexChanged(int index);
     void presetTriggered();
     void on_modeBox_currentIndexChanged(int index);
+private:
+    void populateItems();
 };
 
 #endif // BLOCKCOLOR_H
