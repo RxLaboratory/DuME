@@ -26,10 +26,7 @@
    <item>
     <widget class="QLabel" name="ocioNotFoundLabel">
      <property name="text">
-      <string>**_OCIO_'s `ociobakelut` tool not found.** Please set its path in the settings.</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::MarkdownText</enum>
+      <string>OCIO's ociobakelut tool not found. Please set its path in the settings.</string>
      </property>
     </widget>
    </item>
