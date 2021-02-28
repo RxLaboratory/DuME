@@ -250,7 +250,9 @@ private:
      * @param args The arguments of the filter
      * @return The filter
      */
+    QString generateFilter(QString filterName, QList<QStringList> opts);
     QString generateFilter(QString filterName, QStringList args);
+    QString generateFilter(QString filterName, QString arg);
 };
 
 #endif // FFMPEGRENDERER_H

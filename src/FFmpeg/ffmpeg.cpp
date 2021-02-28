@@ -85,6 +85,8 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorTRCs << trc;
 
     trc = new FFColorItem("smpte170m","NTSC / BT.601-6 / BT.1358 / BT.1700  / SMPTE 170 M / BT.470 B.B1.G", "601", FFColorItem::ZScale);
+    trc->setOutputGScaleName("1/2.4");
+    trc->setInputGScaleName("2.4");
     _colorTRCs << trc;
 
     trc = new FFColorItem("smpte240m","SMPTE 240 M", "smpte240m", FFColorItem::Colorspace);

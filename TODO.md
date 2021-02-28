@@ -1,10 +1,10 @@
-## modifs WIP
+## au prochain build
 
-- check gamma values in After Effects
-
-## Tests
-
-- disable matrices in color management and check the difference
+- Linux look for ociobakelut static build
+- linux rename duffmpeg-static to dume-ffmpeg
+- add opencolorio-tools dependency >= 1.0
+- windows ociobakelut static build
+- mac ociobakelut static build
 
 ## Refactor
 

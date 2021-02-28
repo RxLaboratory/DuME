@@ -63,6 +63,7 @@ void FFmpegRenderer::initJob()
 
 void FFmpegRenderer::setupInput(MediaInfo *inputMedia)
 {
+    emit newLog("Input Setup");
     // add custom options
     _inputArgs += getFFmpegCustomOptions( inputMedia );
 
@@ -109,6 +110,8 @@ QStringList FFmpegRenderer::getFFmpegCustomOptions(MediaInfo *media)
         if (option.count() > 1) if (option[1] != "") customArgs << option[1];
     }
 
+    emit newLog("FFmpeg Custom input arguments:\n" + customArgs.join(" "));
+
     return customArgs;
 }
 
@@ -121,6 +124,8 @@ QStringList FFmpegRenderer::getInputSequenceSettings(VideoInfo *sequence)
     sequenceSettings << "-start_number" << QString::number(sequence->startNumber());
     // Framerate
     sequenceSettings << "-framerate" << QString::number( _jobFramerate );
+
+    emit newLog("Input sequence settings:\n" + sequenceSettings.join(" "));
 
     return sequenceSettings;
 }
@@ -138,9 +143,6 @@ QStringList FFmpegRenderer::getColorMetadata(VideoInfo *videoStream, FFColorProf
     if (trc->metadataName() != "") colorArgs << "-color_trc" << trc->metadataName();
     if (isInput) _inputTrc = trc;
 
-    if (videoStream->colorTRC()->metadataName() != "") colorArgs << "-color_trc" << videoStream->colorTRC()->metadataName();
-    else if ( profileName != "" ) colorArgs << "-color_trc" << defaultProfile->trc()->metadataName();
-
     // RANGE
     if (videoStream->colorRange()->metadataName() != "") colorArgs << "-color_range" << videoStream->colorRange()->metadataName();
     else if ( profileName != "" ) colorArgs << "-color_range" << defaultProfile->range()->metadataName();
@@ -154,6 +156,8 @@ QStringList FFmpegRenderer::getColorMetadata(VideoInfo *videoStream, FFColorProf
     // MATRIX
     if (videoStream->colorSpace()->metadataName() != "") colorArgs << "-colorspace" << videoStream->colorSpace()->metadataName();
     else if ( profileName != "" ) colorArgs << "-colorspace" << defaultProfile->space()->metadataName();
+
+    emit newLog("Color metadata:\n" + colorArgs.join(" "));
 
     return colorArgs;
 }
@@ -173,6 +177,8 @@ QStringList FFmpegRenderer::getTimeRange(MediaInfo *media)
     QStringList timeRangeArgs;
     if (media->inPoint() != 0.0) timeRangeArgs << "-ss" << QString::number( media->inPoint() );
     if (media->outPoint() != 0.0) timeRangeArgs << "-to" << QString::number( media->outPoint() );
+
+    emit newLog("Time range:\n" + timeRangeArgs.join(" "));
     return timeRangeArgs;
 }
 
@@ -181,11 +187,16 @@ QString FFmpegRenderer::getFileName(MediaInfo *media)
     QString filename;
     if ( media->isSequence() ) filename = media->ffmpegSequenceName();
     else filename = media->fileName();
+
+    emit newLog("Filename:\n" + QDir::toNativeSeparators( filename ));
+
     return QDir::toNativeSeparators( filename );
 }
 
 void FFmpegRenderer::setupOutput(MediaInfo *outputMedia)
 {
+    emit newLog("Output Setup");
+
     //maps
     _outputArgs += getMaps( outputMedia );
 
@@ -272,6 +283,8 @@ QStringList FFmpegRenderer::getMaps(MediaInfo *media)
         if (mediaId >= 0 && streamId >= 0) maps << "-map" << QString::number( mediaId ) + ":" + QString::number( streamId );
     }
 
+    emit newLog("Stream maps:\n" + maps.join(" "));
+
     return maps;
 }
 
@@ -286,6 +299,8 @@ QStringList FFmpegRenderer::getMuxer(MediaInfo *media)
     if (m->isSequence()) muxer = "image2";
 
     if (muxer != "") muxerArgs << "-f" << muxer;
+
+    emit newLog("Muxer:\n" + muxerArgs.join(" "));
 
     return muxerArgs;
 }
@@ -313,6 +328,8 @@ QStringList FFmpegRenderer::getCodec(VideoInfo *stream)
     FFCodec *vc = stream->codec();
     if (!vc) return codecArgs;
     if (vc->name() != "") codecArgs << "-c:v" << vc->name();
+
+    emit newLog("Video Codec:\n" + codecArgs.join(" "));
     return codecArgs;
 }
 
@@ -323,6 +340,8 @@ QStringList FFmpegRenderer::getCodec(AudioInfo *stream)
     FFCodec *ac = stream->codec();
     if (!ac) return codecArgs;
     if (ac->name() != "") codecArgs << "-c:a" << ac->name();
+
+    emit newLog("Audio Codec:\n" + codecArgs.join(" "));
     return codecArgs;
 }
 
@@ -341,6 +360,7 @@ QStringList FFmpegRenderer::getBitRate(VideoInfo *stream, FFCodec *codec)
         bitrateArgs << "-bufsize" << QString::number(bitrate*2);
     }
 
+    emit newLog("Video Bitrate:\n" + bitrateArgs.join(" "));
     return bitrateArgs;
 }
 
@@ -352,6 +372,7 @@ QStringList FFmpegRenderer::getBitRate(AudioInfo *stream)
     {
         bitrateArgs << "-b:a" << QString::number(stream->bitrate());
     }
+    emit newLog("Audio Bitrate:\n" + bitrateArgs.join(" "));
     return bitrateArgs;
 }
 
@@ -363,6 +384,7 @@ QStringList FFmpegRenderer::getSampling(AudioInfo *stream)
     {
         samplingArgs << "-ar" << QString::number(sampling);
     }
+    emit newLog("Audio Sampling:\n" + samplingArgs.join(" "));
     return samplingArgs;
 }
 
@@ -374,6 +396,7 @@ QStringList FFmpegRenderer::getSampleFormat(AudioInfo *stream)
     {
         sampleArgs << "-sample_fmt" << sampleFormat;
     }
+    emit newLog("Audio Format:\n" + sampleArgs.join(" "));
     return sampleArgs;
 }
 
@@ -387,6 +410,7 @@ QStringList FFmpegRenderer::getFramerate(VideoInfo *stream)
         _jobFramerate = stream->framerate();
     }
 
+    emit newLog("Framerate:\n" + framerateArgs.join(" "));
     return framerateArgs;
 }
 
@@ -398,6 +422,7 @@ QStringList FFmpegRenderer::getLoop(MediaInfo *media, FFCodec *codec)
         int loop = media->loop();
         loopArgs << "-loop" << QString::number(loop);
     }
+    emit newLog("Loops:\n" + loopArgs.join(" "));
     return loopArgs;
 }
 
@@ -486,6 +511,8 @@ QStringList FFmpegRenderer::getCodecSettings(VideoInfo *stream, FFCodec *codec, 
         codecSettings << "-vendor" << "ap10";
     }
 
+
+    emit newLog("Codec settings:\n" + codecSettings.join(" "));
     return codecSettings;
 }
 
@@ -497,6 +524,7 @@ QStringList FFmpegRenderer::getOutputSequenceSettings(VideoInfo *stream)
     int startNumber = stream->startNumber();
     sequenceSettings << "-start_number" << QString::number(startNumber);
 
+    emit newLog("Sequebce output settings:\n" + sequenceSettings.join(" "));
     return sequenceSettings;
 }
 
@@ -525,17 +553,13 @@ QStringList FFmpegRenderer::getPixelFormatSettings(VideoInfo *stream, FFPixForma
     // video codecs with alpha need to set -auto-alt-ref to 0
     if (pixFormat->hasAlpha() && !stream->isSequence()) pixelArgs << "-auto-alt-ref" << "0";
 
+    emit newLog("Pixel format:\n" + pixelArgs.join(" "));
     return pixelArgs;
 }
 
 QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
 {
     QStringList filterChain;
-
-    //convert colors to working space
-    filterChain += inputColorConversionFilters( stream );
-
-    //apply filters
 
     //unpremultiply
     filterChain << unpremultiplyFilter( stream );
@@ -545,6 +569,10 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     filterChain += motionFilters( stream );
     //crop
     filterChain << cropFilter( stream );
+
+    //convert colors to working space
+    filterChain += inputColorConversionFilters( stream );
+
     //Collect custom
     filterChain += customVideoFilters( media );
     //1D / 3D LUT (before color management)
@@ -557,6 +585,7 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     if (stream->workingSpace()->name() != "")
     {
         outputProfile = _ffmpeg->colorProfile(stream->colorPrimaries(), stream->colorTRC(), stream->colorSpace(), stream->colorRange(), this);
+        if (outputProfile->name() == "") outputProfile = media->defaultColorProfile();
         filterChain += colorConversionFilters( stream->workingSpace(), outputProfile );
     }
     else outputProfile = _ffmpeg->colorProfile("");
@@ -572,6 +601,8 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
 
     QStringList filters;
     if (filterChain.count() > 0) filters << "-vf" << filterChain.join(",");
+
+    emit newLog("Video Filters:\n" + filters.join(" "));
     return filters;
 }
 
@@ -674,10 +705,42 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
     QStringList filters;
 
     // Color conversion filters
-    QStringList zScaleArgs;
-    QStringList colorspaceArgs;
-    QStringList lutrgbArgs;
-    QStringList outputLut3dArgs;
+    QList<QStringList> inputLutrgbOpts;
+    QList<QStringList> inputLut3DOpts;
+    QList<QStringList> zScaleOpts;
+    QList<QStringList> colorspaceOpts;
+    QList<QStringList> lutrgbOpts;
+    QList<QStringList> outputLut3dOpts;
+
+    // Convert Colors from input for TRCs and Primaries' not supported by ffmpeg
+
+    // Convert TRC
+    if (inputTrc && outputTrc)
+    {
+        if (inputTrc->outputGScaleName() != "" && inputTrc->defaultScaleFilter() == FFColorItem::Gamma)
+        {
+            QStringList r;
+            r << "r" << "gammaval(" + inputTrc->outputGScaleName() + ")";
+            inputLutrgbOpts << r;
+            QStringList g;
+            g << "g" << "gammaval(" + inputTrc->outputGScaleName() + ")";
+            inputLutrgbOpts << g;
+            QStringList b;
+            b << "b" << "gammaval(" + inputTrc->outputGScaleName() + ")";
+            inputLutrgbOpts << b;
+        }
+    }
+
+    // Convert Primaries
+    if (inputPrimaries && outputPrimaries)
+    {
+        if (inputPrimaries->inputLScaleName() != "" && inputPrimaries->defaultScaleFilter() == FFColorItem::LUT)
+        {
+            //get and extract lut
+            FFLut *lut = FFmpeg::instance()->lut( inputPrimaries->inputLScaleName() );
+            if (lut) if ( lut->name() != "" ) inputLut3DOpts << QStringList( lut->extract().replace("\\","/") );
+        }
+    }
 
     // Now we can convert
     // TRC
@@ -690,23 +753,23 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
 
             if (filter == FFColorItem::ZScale)
             {
-                if ( inputTrc ) if ( inputTrc->inputZScaleName() != "" ) zScaleArgs << "transferin=" + inputTrc->inputZScaleName();
-                zScaleArgs << "transfer=" + outputTrc->outputZScaleName();
+                if ( inputTrc ) if ( inputTrc->inputZScaleName() != "" ) zScaleOpts << ( QStringList("transferin") << inputTrc->inputZScaleName() );
+                zScaleOpts << ( QStringList("transfer") << outputTrc->outputZScaleName() );
             }
             else if (filter == FFColorItem::Colorspace)
             {
-                if ( inputTrc ) if ( inputTrc->inputCSScaleName() != "" ) colorspaceArgs << "itrc=" + inputTrc->inputCSScaleName();
-                colorspaceArgs << "trc=" + outputTrc->outputZScaleName();
+                if ( inputTrc ) if ( inputTrc->inputCSScaleName() != "" ) colorspaceOpts << ( QStringList("itrc") << inputTrc->inputCSScaleName() );
+                colorspaceOpts << ( QStringList("trc" ) << outputTrc->outputZScaleName() );
             }
             else if (filter == FFColorItem::Gamma)
             {
                 //linearize first
-                if ( inputTrc ) if ( inputTrc->inputZScaleName() != "" ) zScaleArgs << "transferin=" + inputTrc->inputZScaleName();
-                zScaleArgs << "transfer=linear";
+                if ( inputTrc ) if ( inputTrc->inputZScaleName() != "" ) zScaleOpts << ( QStringList("transferin") << inputTrc->inputZScaleName() );
+                zScaleOpts << ( QStringList("transfer") << "linear" );
                 //apply gamma
-                lutrgbArgs << "r=gammaval(" + outputTrc->outputGScaleName() + ")";
-                lutrgbArgs << "g=gammaval(" + outputTrc->outputGScaleName() + ")";
-                lutrgbArgs << "b=gammaval(" + outputTrc->outputGScaleName() + ")";
+                lutrgbOpts << ( QStringList("r") << "gammaval(" + outputTrc->outputGScaleName() + ")" );
+                lutrgbOpts << ( QStringList("g") << "gammaval(" + outputTrc->outputGScaleName() + ")" );
+                lutrgbOpts << ( QStringList("b") << "gammaval(" + outputTrc->outputGScaleName() + ")" );
             }
         }
     }
@@ -721,13 +784,13 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
 
             if (filter == FFColorItem::ZScale)
             {
-                if ( inputPrimaries ) if ( inputPrimaries->inputZScaleName() != "" ) zScaleArgs << "primariesin=" + inputPrimaries->inputZScaleName();
-                zScaleArgs << "primaries=" + outputPrimaries->outputZScaleName();
+                if ( inputPrimaries ) if ( inputPrimaries->inputZScaleName() != "" ) zScaleOpts << ( QStringList("primariesin") << inputPrimaries->inputZScaleName() );
+                zScaleOpts << ( QStringList("primaries") << outputPrimaries->outputZScaleName() );
             }
             else if (filter == FFColorItem::Colorspace)
             {
-                if ( inputPrimaries ) if ( inputPrimaries->inputCSScaleName() != "" ) colorspaceArgs << "iprimaries=" + inputPrimaries->inputCSScaleName();
-                colorspaceArgs << "primaries=" + outputPrimaries->outputZScaleName();
+                if ( inputPrimaries ) if ( inputPrimaries->inputCSScaleName() != "" ) colorspaceOpts << ( QStringList("iprimaries") << inputPrimaries->inputCSScaleName() );
+                colorspaceOpts << ( QStringList("primaries") << outputPrimaries->outputZScaleName() );
             }
             else if (filter == FFColorItem::LUT)
             {
@@ -735,8 +798,11 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
                 FFLut *lut = FFmpeg::instance()->lut( outputPrimaries->outputLScaleName() );
                 //convert to lut input space
                 FFColorProfile *lutInputProfile = _ffmpeg->colorProfile( lut->inputProfile() );
-                filters += colorConversionFilters( nullptr, lutInputProfile->primaries(), nullptr, nullptr, nullptr, inputPrimaries );
-                outputLut3dArgs << lut->extract().replace("\\","/");
+                if (lut) if ( lut->name() != "" )
+                {
+                    filters += colorConversionFilters( nullptr, lutInputProfile->primaries(), nullptr, nullptr, nullptr, inputPrimaries );
+                    outputLut3dOpts << QStringList( lut->extract().replace("\\","/") );
+                }
             }
         }
     }
@@ -744,8 +810,8 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
     // RANGE
     if (outputRange)
     {
-        if (inputRange) zScaleArgs << "rangein=" + inputRange->inputZScaleName();
-        zScaleArgs << "range=" + outputRange->outputZScaleName();
+        if (inputRange) zScaleOpts << ( QStringList("rangein") << inputRange->inputZScaleName() );
+        zScaleOpts << ( QStringList("range") << outputRange->outputZScaleName() );
     }
 
     //MATRIX
@@ -758,33 +824,42 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorItem *outputTrc, FFCol
 
             if (filter == FFColorItem::ZScale)
             {
-                if (inputMatrix) if (inputMatrix->inputZScaleName() != "") zScaleArgs << "matrixin=" + inputMatrix->inputZScaleName();
-                zScaleArgs << "matrix=" + outputMatrix->outputZScaleName();
+                if (inputMatrix) if (inputMatrix->inputZScaleName() != "") zScaleOpts << ( QStringList("matrixin") << inputMatrix->inputZScaleName() );
+                zScaleOpts << ( QStringList("matrix") << outputMatrix->outputZScaleName() );
             }
             else if (filter == FFColorItem::Colorspace)
             {
-                if (inputMatrix) if (inputMatrix->inputCSScaleName() != "") colorspaceArgs << "ispace=" + inputMatrix->inputCSScaleName();
-                colorspaceArgs << "space=" + outputMatrix->outputCSScaleName();
+                if (inputMatrix) if (inputMatrix->inputCSScaleName() != "") colorspaceOpts << ( QStringList("ispace") << inputMatrix->inputCSScaleName() );
+                colorspaceOpts << ( QStringList("space") << outputMatrix->outputCSScaleName() );
             }
         }
     }
 
-    if (zScaleArgs.count() > 0)
+    if (inputLutrgbOpts.count() > 0)
     {
-        zScaleArgs << "dither=ordered";
-        filters << generateFilter("zscale", zScaleArgs);
+        filters << generateFilter("lutrgb", inputLutrgbOpts);
     }
-    if (colorspaceArgs.count() > 0)
+    if (inputLut3DOpts.count() > 0)
     {
-        filters << generateFilter("colorspace", colorspaceArgs);
+        filters << generateFilter("lut3d", inputLut3DOpts);
     }
-    if (lutrgbArgs.count() > 0)
+    if (zScaleOpts.count() > 0)
     {
-        filters << generateFilter("lutrgb", lutrgbArgs);
+        zScaleOpts << ( QStringList("dither") << "ordered" );
+        filters << generateFilter("zscale", zScaleOpts);
     }
-    if (outputLut3dArgs.count() > 0)
+    if (colorspaceOpts.count() > 0)
     {
-        filters << generateFilter("lut3d", outputLut3dArgs);
+        colorspaceOpts << ( QStringList("dither") << "fsb" );
+        filters << generateFilter("colorspace", colorspaceOpts);
+    }
+    if (lutrgbOpts.count() > 0)
+    {
+        filters << generateFilter("lutrgb", lutrgbOpts);
+    }
+    if (outputLut3dOpts.count() > 0)
+    {
+        filters << generateFilter("lut3d", outputLut3dOpts);
     }
 
     return filters;
@@ -821,11 +896,17 @@ QStringList FFmpegRenderer::inputColorConversionFilters(VideoInfo *stream)
     {
         if (_inputTrc->inputGScaleName() != "" && _inputTrc->defaultScaleFilter() == FFColorItem::Gamma)
         {
-            QStringList filterArgs;
-            filterArgs << "r=gammaval(" + _inputTrc->inputGScaleName() + ")";
-            filterArgs << "g=gammaval(" + _inputTrc->inputGScaleName() + ")";
-            filterArgs << "b=gammaval(" + _inputTrc->inputGScaleName() + ")";
-            filters << generateFilter("lutrgb", filterArgs);
+            QList<QStringList> filterOpts;
+            QStringList r;
+            r << "r" << "gammaval(" + _inputTrc->inputGScaleName() + ")";
+            filterOpts << r;
+            QStringList g;
+            g << "g" << "gammaval(" + _inputTrc->inputGScaleName() + ")";
+            filterOpts << g;
+            QStringList b;
+            b << "b" << "gammaval(" + _inputTrc->inputGScaleName() + ")";
+            filterOpts << b;
+            filters << generateFilter("lutrgb", filterOpts);
         }
     }
 
@@ -836,9 +917,7 @@ QStringList FFmpegRenderer::inputColorConversionFilters(VideoInfo *stream)
         {
             //get and extract lut
             FFLut *lut = FFmpeg::instance()->lut( _inputPrimaries->inputLScaleName() );
-            QStringList filterArgs;
-            filterArgs << lut->extract().replace("\\","/");
-            filters << generateFilter("lut3d", filterArgs);
+            filters << generateFilter("lut3d", lut->extract().replace("\\","/"));
         }
     }
 
@@ -1059,7 +1138,7 @@ FFColorProfile *FFmpegRenderer::convertInputForLut()
 QString FFmpegRenderer::getLutFilter(FFLut *lut)
 {
     QString filterName = "lut3d";
-    QString lutName = lut->name();
+    QString lutName = lut->extract();
 
     //check if it's 3D or 1D
     if (lutName.endsWith(".cube"))
@@ -1082,19 +1161,35 @@ QString FFmpegRenderer::getLutFilter(FFLut *lut)
         }
     }
 
-    return generateFilter(filterName, QStringList( lutName.replace("\\","/") ));
+    return generateFilter(filterName, lutName.replace("\\","/"));
+}
+
+QString FFmpegRenderer::generateFilter(QString filterName, QList<QStringList> opts)
+{
+    QString filter = filterName + "=";
+    bool first = true;
+    foreach(QStringList opt, opts)
+    {
+        if (!first) filter += ":";
+        first = false;
+        filter += "'" + FFmpeg::escapeFilterOption( opt[0] ) + "'";
+        if (opt.count() == 2) filter += "='" + FFmpeg::escapeFilterOption( opt[1] ) + "'";
+    }
+    return filter;
 }
 
 QString FFmpegRenderer::generateFilter(QString filterName, QStringList args)
 {
-    QString filter = filterName + "=";
-    bool first = true;
-    foreach(QString arg, args)
-    {
-        if (!first) filter += ":";
-        filter += "'" + FFmpeg::escapeFilterOption( arg ) + "'";
-    }
-    return filter;
+    QList<QStringList> opts;
+    opts << args;
+    return generateFilter(filterName, opts);
+}
+
+QString FFmpegRenderer::generateFilter(QString filterName, QString arg)
+{
+    QList<QStringList> opts;
+    opts << QStringList(arg);
+    return generateFilter(filterName, opts);
 }
 
 void FFmpegRenderer::readyRead(QString output)
