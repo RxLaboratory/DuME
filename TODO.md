@@ -1,14 +1,26 @@
+## ociobakelut
+
+check default path on win & mac
+
+add a console / Debug info
+
 ## au prochain build
 
-- Linux look for ociobakelut static build
+- Linux include ociobakelut in static version
 - linux rename duffmpeg-static to dume-ffmpeg
-- add opencolorio-tools dependency >= 1.0
-- windows ociobakelut static build
-- mac ociobakelut static build
+
+- add opencolorio-tools dependency >= 1.0 for non static package
+
+- mac include ociobakelut
+
+- windows include ociobakelut
+    - DONE using vcpkg
 
 ## Refactor
 
 - Remove the "silent" param from setters in MediaInfo, VideoInfo and AudioInfo; use QSignalBlocker instead
+
+- Remove the "freezeui" flag from blocks, use QSignalBlocker instead
 
 - Move sequence related methods from MediaInfo to VideoInfo
     - Update getDescription on both
