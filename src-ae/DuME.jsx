@@ -5,7 +5,7 @@
     #include DuAEF.jsxinc
     #include "dume_required/icons.jsxinc"
 
-    DuAEF.init("DuME", "0.2.1");
+    DuAEF.init("DuME", "0.3.0");
 
     DuAEF.debug = false;
 
