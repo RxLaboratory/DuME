@@ -18,8 +18,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     // The color TRCs
 
     FFColorItem *trc = new FFColorItem("", "Auto");
-    trc->setInput(false);
-    trc->setOutput(false);
     _colorTRCs << trc;
 
     trc = new FFColorItem("input", "Same as input", "input", FFColorItem::ZScale);
@@ -116,8 +114,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The color Primaries
     FFColorItem *pri = new FFColorItem("","Auto");
-    pri->setInput(false);
-    pri->setOutput(false);
     _colorPrimaries << pri;
 
     pri = new FFColorItem("input","Same as input", "input", FFColorItem::ZScale);
@@ -174,6 +170,7 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The color Ranges
     _colorRanges << new FFColorItem("","Auto");
+
     FFColorItem *r = new FFColorItem("input", "Same as input", "input", FFColorItem::ZScale);
     r->setMetadataName("");
     r->setInput(false);
@@ -184,8 +181,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The color matrices
     FFColorItem *m = new FFColorItem("","Auto");
-    m->setInput(false);
-    m->setOutput(false);
     _colorSpaces << m;
 
     m = new FFColorItem("input", "Same as input", "input", FFColorItem::ZScale);

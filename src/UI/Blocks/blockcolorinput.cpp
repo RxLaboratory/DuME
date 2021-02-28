@@ -9,21 +9,21 @@ BlockColorInput::BlockColorInput(MediaInfo *mediaInfo, QWidget *parent) :
 
     //pouplate boxes
     FFmpeg *ffmpeg = FFmpeg::instance();
-    foreach(FFBaseObject *c, ffmpeg->colorPrimaries())
+    foreach(FFColorItem *c, ffmpeg->colorPrimaries())
     {
-        primariesBox->addItem( c->prettyName(), c->name() );
+        if (c->isInput()) primariesBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, ffmpeg->colorTRCs())
+    foreach(FFColorItem *c, ffmpeg->colorTRCs())
     {
-        trcBox->addItem( c->prettyName(), c->name() );
+        if (c->isInput()) trcBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, ffmpeg->colorSpaces())
+    foreach(FFColorItem *c, ffmpeg->colorSpaces())
     {
-        spaceBox->addItem( c->prettyName(), c->name() );
+        if (c->isInput()) spaceBox->addItem( c->prettyName(), c->name() );
     }
-    foreach(FFBaseObject *c, ffmpeg->colorRanges())
+    foreach(FFColorItem *c, ffmpeg->colorRanges())
     {
-        rangeBox->addItem( c->prettyName(), c->name() );
+        if (c->isInput()) rangeBox->addItem( c->prettyName(), c->name() );
     }
     //create actions
     foreach(FFColorProfile *cp, ffmpeg->colorProfiles())
