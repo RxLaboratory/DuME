@@ -250,17 +250,17 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
 
     // The LUTs
     _luts << new FFLut( "", "None");
-    _luts << new FFLut( ":/luts/rgb-to-aces.3dl", "Linear RGB → Linear ACES", "linear", "acescg", FFLut::ThreeD);
-    _luts << new FFLut( ":/luts/aces-to-rgb.3dl", "Linear ACES → Linear RGB", "acescg", "linear", FFLut::ThreeD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_veryhigh.3dl", "Linear RGB → Blender Filmic sRGB (Very high contrast)", "linear", "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_high.3dl", "Linear RGB → Blender Filmic sRGB (High contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumhigh.3dl", "Linear RGB → Blender Filmic sRGB (Medium high contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_medium.3dl", "Linear RGB → Blender Filmic sRGB (Medium contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumlow.3dl", "Linear RGB → Blender Filmic sRGB (Medium low contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_low.3dl", "Linear RGB → Blender Filmic sRGB (Low contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/linear-to-filmic_verylow.3dl", "Linear RGB → Blender Filmic sRGB (Very low contrast)", "linear",  "srgb", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "BT.709 → QT Gamma 1.96", "bt709", "qt196", FFLut::OneD);
-    _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "QT Gamma 1.96 → BT.709", "qt196", "bt709", FFLut::OneD);
+    _luts << new FFLut( ":/luts/rgb-to-aces.3dl", "Convert to Linear ACES", "linear", "acescg", FFLut::ThreeD);
+    _luts << new FFLut( ":/luts/aces-to-rgb.3dl", "Convert from Linear ACES to Linear RGB", "acescg", "linear", FFLut::ThreeD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_veryhigh.3dl", "Blender Filmic (Very high contrast)", "linear", "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_high.3dl", "Blender Filmic (High contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumhigh.3dl", "Blender Filmic (Medium high contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_medium.3dl", "Blender Filmic (Medium contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_mediumlow.3dl", "Blender Filmic (Medium low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_low.3dl", "Blender Filmic (Low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/linear-to-filmic_verylow.3dl", "Blender Filmic (Very low contrast)", "linear",  "srgb", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/adobe-to-qt.cube", "Set QT Gamma 1.96 (Adobe LUT)", "bt709", "qt196", FFLut::OneD);
+    _luts << new FFLut(  ":/luts/qt-to-adobe.cube", "Undo QT Gamma 1.96 (Adobe LUT)", "qt196", "bt709", FFLut::OneD);
     _luts << new FFLut( "custom", "Custom...");
 
     //The motion interpolation algorithms

@@ -26,6 +26,7 @@
 #include "UI/Blocks/blockaudiobitrate.h"
 #include "UI/Blocks/blockcustom.h"
 #include "UI/Blocks/blockcolor.h"
+#include "UI/Blocks/blockworkingspace.h"
 #include "UI/Blocks/blockmapping.h"
 #include "UI/Blocks/blockaudiosampleformat.h"
 
@@ -110,6 +111,8 @@ private:
     BlockBaseWidget *blockMap;
     BlockBaseWidget *blockCustom;
     BlockBaseWidget *blockAudioSampleFormat;
+
+    BlockWorkingSpace *blockWorkingSpace;
 
     // MENUS
     QMenu *blocksMenu;

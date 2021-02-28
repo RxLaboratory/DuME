@@ -46,7 +46,15 @@ void BlockColor::activate(bool activate)
 
 void BlockColor::update()
 {
-    VideoInfo *stream = _mediaInfo->videoStreams()[0];
+    VideoInfo *stream = _mediaInfo->videoStreams().at(0);
+
+    // If no color management
+    if (stream->workingSpace()->name() == "")
+    {
+        emit blockEnabled(false);
+        return;
+    }
+
     trcBox->setCurrentData( stream->colorTRC()->name());
     spaceBox->setCurrentData( stream->colorSpace()->name());
     primariesBox->setCurrentData( stream->colorPrimaries()->name());
@@ -62,7 +70,6 @@ void BlockColor::update()
         rangeBox->hide();
         rangeLabel->hide();
     }
-
 }
 
 void BlockColor::on_modeBox_currentIndexChanged(int /*index*/)

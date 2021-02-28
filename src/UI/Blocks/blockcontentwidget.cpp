@@ -72,7 +72,7 @@ void BlockContentWidget::changed()
             return;
         }
 
-        VideoInfo *stream = _mediaInfo->videoStreams()[0];
+        VideoInfo *stream = _mediaInfo->videoStreams().at(0);
         if (stream->isCopy())
         {
             emit blockEnabled(false);

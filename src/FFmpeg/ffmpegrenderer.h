@@ -14,9 +14,6 @@ public:
      */
     static FFmpegRenderer *instance();
 
-    FFColorProfile *workingColorProfile() const;
-    void setWorkingColorProfile(FFColorProfile *workingColorProfile);
-
 protected:
     /**
      * @brief The unique FFmpegRenderer instance
@@ -44,7 +41,6 @@ private:
     double _speedMultiplicator;
     FFColorItem *_inputTrc;
     FFColorItem *_inputPrimaries;
-    FFColorProfile *_workingColorProfile;
 
     // ======= SINGLETON CONSTRUCTOR =======
 
@@ -230,7 +226,7 @@ private:
     QStringList colorConversionFilters(FFColorProfile *from, FFColorItem *outputTrc, FFColorItem *outputPrimaries, FFColorItem *outputMatrix = nullptr, FFColorItem *outputRange = nullptr);
     QStringList colorConversionFilters(FFColorProfile *outputProfile);
     QStringList colorConversionFilters(FFColorProfile *from, FFColorProfile *to);
-    QStringList inputColorConversionFilters();
+    QStringList inputColorConversionFilters(VideoInfo *stream);
     QStringList applyLutFilters(VideoInfo *stream, FFColorProfile *colorProfile);
     QStringList resizeFilters(VideoInfo *stream);
     /**

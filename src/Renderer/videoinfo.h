@@ -83,6 +83,10 @@ public:
     FFColorItem *colorTRC();
     FFColorItem *colorSpace();
     FFColorItem *colorRange();
+    FFColorProfile *workingSpace() const;
+    void setWorkingSpace(FFColorProfile *workingSpace, bool silent = false);
+    void setWorkingSpace(QString workingSpace, bool silent = false);
+    void setWorkingSpace(QJsonObject workingSpace, bool silent = false);
 
     /**
      * @brief setAlpha Tries to set a pixel format which has alpha (or not)
@@ -236,6 +240,7 @@ private:
     FFColorItem *_colorSpace;
     FFColorItem *_colorRange;
     MediaUtils::ColorConversionMode _colorConversionMode;
+    FFColorProfile *_workingSpace;
     bool _premultipliedAlpha;
     int _topCrop;
     int _bottomCrop;

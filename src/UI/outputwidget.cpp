@@ -63,6 +63,10 @@ OutputWidget::OutputWidget(int id, MediaList *inputMedias, QWidget *parent) :
     blockMap = addBlock( new BlockMapping( _mediaInfo, _inputMedias ), actionMap, ":/icons/connection" );
     blockCustom = addBlock( new BlockCustom( _mediaInfo ), actionAddCustom, ":/icons/add-custom" );
 
+    // Working color space
+    blockWorkingSpace = new BlockWorkingSpace( _mediaInfo, this );
+    blocksLayout->insertWidget(0, blockWorkingSpace);
+
     // PRESETS MENU
     presetsMenu->addAction( actionDefaultPreset );
     presetsMenu->addSeparator();
@@ -199,7 +203,8 @@ void OutputWidget::mediaInfoChanged()
     videoCopyButton->setEnabled( _mediaInfo->hasVideo() );
     if ( _mediaInfo->hasVideo() )
     {
-        bool copy = _mediaInfo->videoStreams()[0]->isCopy();
+        VideoInfo *stream = _mediaInfo->videoStreams().at(0);
+        bool copy = stream->isCopy();
         videoTranscodeButton->setChecked( !copy );
         videoCopyButton->setChecked( copy );
     }

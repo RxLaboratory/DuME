@@ -15,11 +15,6 @@ FFmpegRenderer::FFmpegRenderer(QObject *parent) : AbstractRenderer(parent)
 {
     _ffmpeg = FFmpeg::instance();
 
-    // Let's work in BT.2020_12 by default, which is fully compatible with ffmpeg and has a wide gammut
-    //_workingColorProfile = _ffmpeg->colorProfile( "bt2020_12" );
-    // Or in input space
-    _workingColorProfile = _ffmpeg->colorProfile( "input" );
-
     initJob();
 }
 
@@ -85,7 +80,7 @@ void FFmpegRenderer::setupInput(MediaInfo *inputMedia)
         _inputArgs += getInputSequenceSettings( videoStream );
 
         // Get Color metadata
-        _inputArgs += getColorMetadata( videoStream, inputMedia->defaultColorProfile(), true );
+        if (videoStream->workingSpace()->name() != "") _inputArgs += getColorMetadata( videoStream, inputMedia->defaultColorProfile(), true );
     }
 
     // Update job duration
@@ -228,7 +223,7 @@ void FFmpegRenderer::setupOutput(MediaInfo *outputMedia)
             // Pixel format
             _outputArgs += getPixelFormatSettings( videoStream, pixFormat);
             // Color Metadata
-            if ( videoStream->colorConversionMode() != MediaUtils::Convert) _outputArgs += getColorMetadata( videoStream, outputMedia->defaultColorProfile() );
+            if (videoStream->workingSpace()->name() != "") if ( videoStream->colorConversionMode() != MediaUtils::Convert) _outputArgs += getColorMetadata( videoStream, outputMedia->defaultColorProfile() );
             // Filters
             _outputArgs += getFilters( outputMedia, videoStream );
         }
@@ -538,7 +533,7 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     QStringList filterChain;
 
     //convert colors to working space
-    filterChain += inputColorConversionFilters();
+    filterChain += inputColorConversionFilters( stream );
 
     //apply filters
 
@@ -553,13 +548,19 @@ QStringList FFmpegRenderer::getFilters(MediaInfo *media, VideoInfo *stream)
     //Collect custom
     filterChain += customVideoFilters( media );
     //1D / 3D LUT (before color management)
-    if (!stream->applyLutOnOutputSpace()) filterChain += applyLutFilters( stream, _workingColorProfile );
+    if (!stream->applyLutOnOutputSpace()) filterChain += applyLutFilters( stream, stream->workingSpace() );
     //resize
     filterChain += resizeFilters( stream );
 
     // COLOR MANAGEMENT
-    FFColorProfile *outputProfile = _ffmpeg->colorProfile(stream->colorPrimaries(), stream->colorTRC(), stream->colorSpace(), stream->colorRange(), this);
-    filterChain += colorConversionFilters( _workingColorProfile, outputProfile );
+    FFColorProfile *outputProfile;
+    if (stream->workingSpace()->name() != "")
+    {
+        outputProfile = _ffmpeg->colorProfile(stream->colorPrimaries(), stream->colorTRC(), stream->colorSpace(), stream->colorRange(), this);
+        filterChain += colorConversionFilters( stream->workingSpace(), outputProfile );
+    }
+    else outputProfile = _ffmpeg->colorProfile("");
+
 
     //1D / 3D LUT (on output)
     if (stream->applyLutOnOutputSpace()) filterChain += applyLutFilters( stream, outputProfile );
@@ -806,9 +807,12 @@ QStringList FFmpegRenderer::colorConversionFilters(FFColorProfile *from, FFColor
     return colorConversionFilters(to->trc(), to->primaries(), to->space(), to->range(), from->trc(), from->primaries(), from->space(), from->range());
 }
 
-QStringList FFmpegRenderer::inputColorConversionFilters()
+QStringList FFmpegRenderer::inputColorConversionFilters(VideoInfo *stream)
 {
     QStringList filters;
+
+    // No color management at all
+    if ( stream->workingSpace()->name() == "") return filters;
 
     // Convert Colors from input for TRCs and Primaries' not supported by ffmpeg
 
@@ -838,11 +842,10 @@ QStringList FFmpegRenderer::inputColorConversionFilters()
         }
     }
 
-    if ( _workingColorProfile->name() == "") return filters;
-    if ( _workingColorProfile->name() == "input") return filters;
+    if ( stream->workingSpace()->name() == "input") return filters;
 
     // Convert to working profile
-    filters += colorConversionFilters( _workingColorProfile );
+    filters += colorConversionFilters( stream->workingSpace() );
 
     return filters;
 }
@@ -1130,12 +1133,3 @@ void FFmpegRenderer::readyRead(QString output)
     }
 }
 
-FFColorProfile *FFmpegRenderer::workingColorProfile() const
-{
-    return _workingColorProfile;
-}
-
-void FFmpegRenderer::setWorkingColorProfile(FFColorProfile *workingColorProfile)
-{
-    _workingColorProfile = workingColorProfile;
-}

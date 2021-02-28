@@ -46,6 +46,8 @@ void BlockLut::update()
 
     VideoInfo *stream =  _mediaInfo->videoStreams().at(0);
 
+    FFLut *lut = stream->lut();
+    if (!lut) return;
     lutBox->setCurrentData(stream->lut()->name());
     updateLutInputOutputBoxes();
 
@@ -100,12 +102,23 @@ void BlockLut::typeBox_currentIndexChanged(int index)
 
 void BlockLut::updateLutInputOutputBoxes()
 {
-    bool enabled = lutBox->currentIndex() == lutBox->count() - 1;
+    inputSpaceBox->setEnabled(false);
+    outputSpaceBox->setEnabled(false);
+    applyBox->setEnabled(false);
+    typeBox->setEnabled(false);
+
+    if (!_mediaInfo->hasVideo()) return;
+    VideoInfo *stream = _mediaInfo->videoStreams().at(0);
+    if (stream->isCopy()) return;
+
+    bool enabled = lutBox->currentIndex() == lutBox->count() - 1 && stream->workingSpace()->name() != "";
     bool none = lutBox->currentIndex() == 0;
+
     inputSpaceBox->setEnabled(enabled && !none);
     outputSpaceBox->setEnabled(enabled && !none);
-    applyBox->setEnabled(!none);
     typeBox->setEnabled(enabled && !none);
+    applyBox->setEnabled(!none);
+
 
     inputSpaceBox->setCurrentIndex(0);
     outputSpaceBox->setCurrentIndex(0);

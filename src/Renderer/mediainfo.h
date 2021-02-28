@@ -170,6 +170,7 @@ public:
     void setColorProfile(QString profile, int id = -1, bool silent = false);
     void setColorConversionMode(MediaUtils::ColorConversionMode mode, int id = -1, bool silent = false);
     void setColorConversionMode(QString mode, int id = -1, bool silent = false);
+    void setWorkingSpace(QString workingSpace, int id = -1, bool silent = false);
     void setPremultipliedAlpha(bool value, int id = -1, bool silent = false);
     void setCrop(int top, int bottom, int left, int right, int id = -1, bool silent = false);
     void setCrop(int width, int height, int id = -1, bool silent = false);

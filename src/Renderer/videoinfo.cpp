@@ -23,6 +23,7 @@ VideoInfo::VideoInfo(QObject *parent) : QObject(parent)
     _colorSpace = ffmpeg->colorSpace("");
     _colorRange = ffmpeg->colorRange("");
     _colorConversionMode = MediaUtils::ConvertEmbed;
+    _workingSpace = ffmpeg->colorProfile("input");
     _premultipliedAlpha = true;
     _topCrop = 0;
     _bottomCrop = 0;
@@ -76,6 +77,7 @@ VideoInfo::VideoInfo(QJsonObject obj, QObject *parent) : QObject(parent)
     setColorSpace( obj.value("colorSpace").toObject());
     setColorRange( obj.value("colorRange").toObject());
     setColorConversionMode( obj.value("colorConversionMode").toString(""));
+    setWorkingSpace( obj.value("workingSpace").toObject() );
     int t = obj.value("topCrop").toInt(0);
     int b = obj.value("bottomCrop").toInt(0);
     int l = obj.value("leftCrop").toInt(0);
@@ -125,6 +127,7 @@ void VideoInfo::copyFrom(VideoInfo *other, bool silent)
     _colorSpace = other->colorSpace();
     _colorRange = other->colorRange();
     _colorConversionMode = other->colorConversionMode();
+    _workingSpace = other->workingSpace();
     _premultipliedAlpha = other->premultipliedAlpha();
     _topCrop = other->topCrop();
     _bottomCrop = other->bottomCrop();
@@ -271,22 +274,15 @@ QString VideoInfo::getDescription( bool outputMedia )
     else mediaInfoString += "\nAlpha: no";
     mediaInfoString += "\nPixel Format: " + pf->prettyName();
     //check color profile
-    bool profileFound = false;
-    foreach(FFColorProfile *p, FFmpeg::instance()->colorProfiles())
-    {
-        if (p->trc()->name() == _colorTRC->name() && p->primaries()->name() == _colorPrimaries->name() && p->space()->name() == _colorSpace->name() && p->range()->name() == _colorRange->name())
-        {
-            mediaInfoString += "\nColor profile: " + p->prettyName();
-            profileFound = true;
-            break;
-        }
-    }
-    if (!profileFound)
+    FFColorProfile *p = FFmpeg::instance()->colorProfile( _colorPrimaries, _colorTRC, _colorSpace, _colorRange, this );
+    if (p->name() != "temp" && p->name() != "") mediaInfoString += "\nColor profile: " + p->prettyName();
+    else if (p->name() == "temp")
     {
         if ( _colorSpace->name() != "") mediaInfoString += "\nColor space: " + _colorSpace->prettyName();
         if ( _colorPrimaries->name() != "") mediaInfoString += "\nColor primaries: " + _colorPrimaries->prettyName();
         if ( _colorTRC->name() != "") mediaInfoString += "\nColor transfer function: " + _colorTRC->prettyName();
         if ( _colorRange->name() != "" ) mediaInfoString += "\nColor range: " + _colorRange->prettyName();
+        p->deleteLater();
     }
     if ( outputMedia && (_colorSpace->name() != "" || _colorPrimaries->name() != "" || _colorTRC->name() != "" || _colorRange->name() != "") )
     {
@@ -294,6 +290,7 @@ QString VideoInfo::getDescription( bool outputMedia )
         else if (colorConversionMode() == MediaUtils::Embed) mediaInfoString += "\nColor conversion: Embed profile (set metadata only)";
         else mediaInfoString += "\nColor conversion: Convert colors & embed profile";
     }
+    if (outputMedia && _workingSpace->name() != "") mediaInfoString += "\nColor working space: " + _workingSpace->prettyName();
     if ( outputMedia && _speed != 1.0)
     {
         mediaInfoString += "\nSpeed multiplicator: " + QString::number(_speed) + "x";
@@ -921,6 +918,27 @@ void VideoInfo::setStartNumber(int startNumber, bool silent)
 {
     _startNumber = startNumber;
     if(!silent) emit changed();
+}
+
+FFColorProfile *VideoInfo::workingSpace() const
+{
+    return _workingSpace;
+}
+
+void VideoInfo::setWorkingSpace(FFColorProfile *workingSpace, bool silent)
+{
+    _workingSpace = workingSpace;
+    if(!silent) emit changed();
+}
+
+void VideoInfo::setWorkingSpace(QString workingSpace, bool silent)
+{
+    setWorkingSpace( FFmpeg::instance()->colorProfile(workingSpace), silent);
+}
+
+void VideoInfo::setWorkingSpace(QJsonObject workingSpace, bool silent)
+{
+    setWorkingSpace( workingSpace.value("name").toString("input"), silent);
 }
 
 bool VideoInfo::applyLutOnOutputSpace() const

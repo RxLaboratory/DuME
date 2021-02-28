@@ -976,6 +976,16 @@ void MediaInfo::setColorConversionMode(QString mode, int id, bool silent)
         _videoStreams[id]->setColorConversionMode(mode, silent);
 }
 
+void MediaInfo::setWorkingSpace(QString workingSpace, int id, bool silent)
+{
+    if (!hasVideo()) return;
+    if (id < 0)
+        foreach( VideoInfo *stream, _videoStreams)
+            stream->setWorkingSpace(workingSpace, silent);
+    else if (id >= 0 && id < _videoStreams.count())
+        _videoStreams[id]->setWorkingSpace(workingSpace, silent);
+}
+
 void MediaInfo::setPremultipliedAlpha(bool value, int id, bool silent)
 {
     if (!hasVideo()) return;

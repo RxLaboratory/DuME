@@ -36,6 +36,7 @@ SOURCES += \
     UI/Blocks/blockmotioninterpolation.cpp \
     UI/Blocks/blocktimerange.cpp \
     UI/Blocks/blockvideospeed.cpp \
+    UI/Blocks/blockworkingspace.cpp \
     UI/aesettingswidget.cpp \
     UI/cachesettingswidget.cpp \
     UI/ffmpegparamwidget.cpp \
@@ -121,6 +122,7 @@ HEADERS += \
     UI/Blocks/blockmotioninterpolation.h \
     UI/Blocks/blocktimerange.h \
     UI/Blocks/blockvideospeed.h \
+    UI/Blocks/blockworkingspace.h \
     UI/aesettingswidget.h \
     UI/cachesettingswidget.h \
     UI/ffmpegparamwidget.h \
@@ -204,6 +206,7 @@ FORMS += \
     UI/Blocks/blockmotioninterpolation.ui \
     UI/Blocks/blocktimerange.ui \
     UI/Blocks/blockvideospeed.ui \
+    UI/Blocks/blockworkingspace.ui \
     UI/aesettingswidget.ui \
     UI/cachesettingswidget.ui \
     UI/ffmpegparamwidget.ui \
