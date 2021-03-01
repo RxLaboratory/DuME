@@ -13,8 +13,8 @@ test blender luts against the original ones
 - ajouter infos dans le about sur : ocio, luts blender
 
 - linux rename duffmpeg-static to dume-ffmpeg
-
-- add opencolorio-tools dependency >= 1.0
+- linux always include dume-ffmpeg (to have needed libs / zscale)
+- linux add opencolorio-tools dependency >= 1.0 (or include ociobakelut)
 
 - mac include ociobakelut
 
