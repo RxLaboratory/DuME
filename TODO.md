@@ -8,6 +8,8 @@ test blender luts against the original ones
 
 ## au prochain build
 
+- check reset settings pour voir si les chemins sont bien trouvés
+
 - ajouter infos dans le about sur : ocio, luts blender
 
 - linux rename duffmpeg-static to dume-ffmpeg
