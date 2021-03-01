@@ -51,6 +51,7 @@ protected:
     QString _output;
     // The Status
     MediaUtils::RenderStatus _status;
+    bool _valid;
 
 private:
     QString _binary;
@@ -61,7 +62,6 @@ private:
 
     void readyRead(QString output);
 
-    bool _valid;
     bool _ignoreErrors;
 };
 

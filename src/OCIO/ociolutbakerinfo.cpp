@@ -20,10 +20,15 @@ bool OcioLutBakerInfo::setBinary(QString path)
     if (path == "")
     {
         path = settings.value("ociobakelut/path", "ociobakelut").toString();
+
         //check
         bool found = false;
-        if (runCommand( "", 1000))
-            found = _output.startsWith("ociobakelut");
+        if ( AbstractRendererInfo::setBinary(path) )
+        {
+            if (runCommand( "", 1000))
+                found = _output.startsWith("ociobakelut");
+        }
+
 
         if (!found)
         {
@@ -43,20 +48,27 @@ bool OcioLutBakerInfo::setBinary(QString path)
             path = QCoreApplication::applicationDirPath() + "/ociobakelut";
             if (!QFileInfo::exists(path)) path = "ociobakelut";
 #endif
-            //check again
-            if (runCommand( "", 1000))
-                if (!_output.startsWith("ociobakelut")) return false;
         }
     }
-    if (AbstractRendererInfo::setBinary(path))
+
+    if ( AbstractRendererInfo::setBinary(path) )
     {
-          //save
+        runCommand( "", 1000);
+        if (_output.length() < 10)
+        {
+            _valid = false;
+            return false;
+        }
+        //save
         settings.setValue("ociobakelut/path", path);
         emit binaryChanged( path );
         qDebug() << "New ociobakelut path correctly set: " + path;
+        _valid = true;
         return true;
     }
-    return false;
+
+    _valid = false;
+    return _valid;
 }
 
 

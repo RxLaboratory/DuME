@@ -114,14 +114,14 @@ void AbstractRenderer::processStdError()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     QString log = process->readAllStandardError();
-    processOutput( log );
+    processOutput( log  , true);
 }
 
 void AbstractRenderer::processStdOutput()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     QString log = process->readAllStandardOutput();
-    processOutput( log );
+    processOutput( log , true);
 }
 
 void AbstractRenderer::processStarted()
