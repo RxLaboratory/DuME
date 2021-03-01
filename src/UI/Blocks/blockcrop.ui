@@ -42,7 +42,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QSpinBox" name="top">
+      <widget class="AutoSelectSpinBox" name="top">
        <property name="suffix">
         <string>px</string>
        </property>
@@ -58,7 +58,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="bottom">
+      <widget class="AutoSelectSpinBox" name="bottom">
        <property name="suffix">
         <string>px</string>
        </property>
@@ -78,7 +78,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QSpinBox" name="left">
+      <widget class="AutoSelectSpinBox" name="left">
        <property name="suffix">
         <string>px</string>
        </property>
@@ -94,7 +94,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="right">
+      <widget class="AutoSelectSpinBox" name="right">
        <property name="suffix">
         <string>px</string>
        </property>
@@ -121,7 +121,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QSpinBox" name="widthSpinBox">
+      <widget class="AutoSelectSpinBox" name="widthSpinBox">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -140,7 +140,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="heightSpinBox">
+      <widget class="AutoSelectSpinBox" name="heightSpinBox">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -222,6 +222,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

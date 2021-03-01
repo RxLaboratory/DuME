@@ -30,7 +30,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="QSpinBox" name="threadsBox">
+    <widget class="AutoSelectSpinBox" name="threadsBox">
      <property name="toolTip">
       <string/>
      </property>
@@ -50,6 +50,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

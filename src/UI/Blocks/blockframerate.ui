@@ -30,7 +30,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="QDoubleSpinBox" name="frameRateEdit">
+    <widget class="AutoSelectDoubleSpinBox" name="frameRateEdit">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -113,6 +113,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>duqf-widgets/autoselectdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -30,7 +30,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="QSpinBox" name="startNumberEdit">
+    <widget class="AutoSelectSpinBox" name="startNumberEdit">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -50,6 +50,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -167,7 +167,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QSpinBox" name="iccWhitePointBox">
+       <widget class="AutoSelectSpinBox" name="iccWhitePointBox">
         <property name="maximum">
          <number>10000</number>
         </property>
@@ -276,9 +276,16 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
   <include location="../duqf_resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

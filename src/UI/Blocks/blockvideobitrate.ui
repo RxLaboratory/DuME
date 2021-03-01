@@ -67,7 +67,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QDoubleSpinBox" name="videoBitRateEdit">
+       <widget class="AutoSelectDoubleSpinBox" name="videoBitRateEdit">
         <property name="frame">
          <bool>false</bool>
         </property>
@@ -251,6 +251,11 @@
    <class>DataComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/datacombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoSelectDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>duqf-widgets/autoselectdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

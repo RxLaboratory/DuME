@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="speedBox">
+    <widget class="AutoSelectDoubleSpinBox" name="speedBox">
      <property name="prefix">
       <string/>
      </property>
@@ -63,6 +63,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>duqf-widgets/autoselectdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

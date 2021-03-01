@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>359</width>
-    <height>135</height>
+    <height>152</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,8 +45,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Primaries &amp;
-White point</string>
+      <string>Primaries &amp; White point</string>
      </property>
     </widget>
    </item>
@@ -119,14 +118,14 @@ White point</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>BigComboBox</class>
-   <extends>QComboBox</extends>
-   <header>UI/bigcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>DataComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/datacombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BigComboBox</class>
+   <extends>QComboBox</extends>
+   <header>UI/bigcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

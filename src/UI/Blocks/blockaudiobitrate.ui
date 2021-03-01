@@ -30,7 +30,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="QSpinBox" name="audioBitRateEdit">
+    <widget class="AutoSelectSpinBox" name="audioBitRateEdit">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -78,6 +78,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
