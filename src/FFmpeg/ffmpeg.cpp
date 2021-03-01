@@ -312,7 +312,7 @@ FFBaseObject *FFmpeg::defaultObject()
 bool FFmpeg::setBinary(QString path, bool initialize)
 {
     QSettings settings;
-    if ( path == binary() ) return false;
+
     if ( AbstractRendererInfo::setBinary(path) )
     {
         settings.setValue("ffmpeg/path", path );
@@ -336,15 +336,17 @@ void FFmpeg::init()
     //First, look for a dume static build in the app folder
     QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/dume-ffmpeg";
     //IF not found, try with a standard name
-    if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
+    if (!QFileInfo::exists(defaultFFmpegPath)) defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
     //IF not found, try with a system command
-    if (!QFileInfo(defaultFFmpegPath).exists()) defaultFFmpegPath = "";
+    if (!QFileInfo::exists(defaultFFmpegPath)) defaultFFmpegPath = "ffmpeg";
 #endif
 #ifdef Q_OS_WIN
     QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
 #endif
 #ifdef Q_OS_MAC
     QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";
+    //IF not found, try with a system command
+    if (!QFileInfo::exists(defaultFFmpegPath)) defaultFFmpegPath = "ffmpeg";
 #endif
 
     QString path = settings.value("ffmpeg/path",defaultFFmpegPath).toString();

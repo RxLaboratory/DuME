@@ -8,7 +8,8 @@ test blender luts against the original ones
 
 ## au prochain build
 
-- Linux include ociobakelut in static version ?
+- ajouter infos dans le about sur : ocio, luts blender
+
 - linux rename duffmpeg-static to dume-ffmpeg
 
 - add opencolorio-tools dependency >= 1.0
