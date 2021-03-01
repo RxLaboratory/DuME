@@ -18,6 +18,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Improved color management process and added the ability to set the color working space or to disable color management.
 - Added an option to apply LUT before or after color management (on input or output color space).
 - Included Blender LUTs to convert from Linear to Filmic.
+- A lot of small UI Tweaks to improve the user experience.
 - Continuing code refactor to improve maintenance and stability.
 
 ### Fixes

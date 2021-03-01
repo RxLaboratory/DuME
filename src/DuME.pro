@@ -49,6 +49,9 @@ SOURCES += \
     duqf-utils/utils.cpp \
     duqf-widgets/aboutdialog.cpp \
     duqf-widgets/appearancesettingswidget.cpp \
+    duqf-widgets/autoselectdoublespinbox.cpp \
+    duqf-widgets/autoselectlineedit.cpp \
+    duqf-widgets/autoselectspinbox.cpp \
     duqf-widgets/duqfdoubleslider.cpp \
     duqf-widgets/duqfslider.cpp \
     duqf-widgets/settingswidget.cpp \
@@ -137,6 +140,9 @@ HEADERS += \
     duqf-utils/utils.h \
     duqf-widgets/aboutdialog.h \
     duqf-widgets/appearancesettingswidget.h \
+    duqf-widgets/autoselectdoublespinbox.h \
+    duqf-widgets/autoselectlineedit.h \
+    duqf-widgets/autoselectspinbox.h \
     duqf-widgets/duqfslider.h \
     duqf-widgets/duqfdoubleslider.h \
     duqf-widgets/settingswidget.h \

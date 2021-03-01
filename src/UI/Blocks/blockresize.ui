@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QSpinBox" name="videoWidthButton">
+    <widget class="AutoSelectSpinBox" name="videoWidthButton">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -57,7 +57,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QSpinBox" name="videoHeightButton">
+    <widget class="AutoSelectSpinBox" name="videoHeightButton">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -190,6 +190,11 @@
    <class>DataComboBox</class>
    <extends>QComboBox</extends>
    <header>UI/datacombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoSelectSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>duqf-widgets/autoselectspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

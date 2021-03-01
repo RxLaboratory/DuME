@@ -236,7 +236,7 @@ QTextEdit, QLineEdit, QPlainTextEdit {
     padding: @padding-small;
     border-radius: @padding-small;
     selection-color: @color-light-grey;
-    selection-background-color: @color-dark-blue;
+    selection-background-color: @color-dark-purple;
 }
 
 QTextEdit:hover, QLineEdit:hover, QPlainTextEdit:hover, QTextEdit:focus, QLineEdit:focus, QPlainTextEdit:focus {
@@ -256,6 +256,8 @@ QSpinBox, QDoubleSpinBox {
     border:none;
     padding: @padding-small;
     border-radius: @padding-small;
+    selection-color: @color-light-grey;
+    selection-background-color: @color-dark-purple;
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {
