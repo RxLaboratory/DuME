@@ -24,24 +24,29 @@ bool OcioLutBakerInfo::setBinary(QString path)
         bool found = false;
         if (runCommand( "", 1000))
             found = _output.startsWith("ociobakelut");
+
         if (!found)
+        {
 #ifdef Q_OS_LINUX
-        //First, look for a dume static build in the app folder
-        path = QCoreApplication::applicationDirPath() + "/dume-ociobakelut";
-        //IF not found, try with a standard name
-        if (!QFileInfo(path).exists()) path = QCoreApplication::applicationDirPath() + "/ociobakelut";
-        //IF not found, try with a system command
-        if (!QFileInfo(path).exists()) path = "ociobakelut";
+            //First, look for a dume static build in the app folder
+            path = QCoreApplication::applicationDirPath() + "/dume-ociobakelut";
+            //IF not found, try with a standard name
+            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            //IF not found, try with a system command
+            if (!QFileInfo::exists(path)) path = "ociobakelut";
 #endif
 #ifdef Q_OS_WIN
-        path = QCoreApplication::applicationDirPath() + "/ociobakelut.exe";
+            path = QCoreApplication::applicationDirPath() + "/ociobakelut.exe";
+            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ext/sociobakelut.exe";
 #endif
 #ifdef Q_OS_MAC
-        path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            if (!QFileInfo::exists(path)) path = "ociobakelut";
 #endif
-        //check again
-        if (runCommand( "", 1000))
-            if (!_output.startsWith("ociobakelut")) return false;
+            //check again
+            if (runCommand( "", 1000))
+                if (!_output.startsWith("ociobakelut")) return false;
+        }
     }
     if (AbstractRendererInfo::setBinary(path))
     {
