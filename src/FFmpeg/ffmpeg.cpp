@@ -26,7 +26,6 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorTRCs << trc;
 
     trc = new FFColorItem("iec61966_2_1", "sRGB / YCCIEC / 61966-2-1", "iec61966-2-1", FFColorItem::ZScale);
-    trc->setInputZScaleName("");
     trc->setOutputCSScaleName("iec61966-2-1");
     trc->setInputCSScaleName("iec61966-2-1");
     trc->setOutputGScaleName("1/2.2");
@@ -97,11 +96,9 @@ FFmpeg::FFmpeg(QString path,QObject *parent) : AbstractRendererInfo(parent)
     _colorTRCs << trc;
 
     trc = new FFColorItem("smpte2084","SMPTE ST 2084 10/12/14/16 bit", "smpte2084", FFColorItem::ZScale);
-    trc->setInputZScaleName("");
     _colorTRCs << trc;
 
     trc = new FFColorItem("18","Hybrid log-gamma / ARIB STD-B67", "arib-std-b67", FFColorItem::ZScale);
-    trc->setInputZScaleName("");
     _colorTRCs << trc;
 
     trc = new FFColorItem("dcip3", "DCI P3 (Gamma 2.6)", "1/2.6", FFColorItem::Gamma);
