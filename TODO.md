@@ -2,14 +2,16 @@
 
 check default path on win & mac
 
-add a console / Debug info
+add a console / Debug info ?
+
+test blender luts against the original ones
 
 ## au prochain build
 
-- Linux include ociobakelut in static version
+- Linux include ociobakelut in static version ?
 - linux rename duffmpeg-static to dume-ffmpeg
 
-- add opencolorio-tools dependency >= 1.0 for non static package
+- add opencolorio-tools dependency >= 1.0
 
 - mac include ociobakelut
 
