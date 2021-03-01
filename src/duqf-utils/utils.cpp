@@ -283,7 +283,7 @@ qint64 FileUtils::getDirSize(QDir d)
     qint64 size = 0;
     //calculate total size of current directories' files
     QDir::Filters fileFilters = QDir::Files|QDir::System|QDir::Hidden|QDir::Dirs|QDir::NoDotAndDotDot;
-    for(QFileInfo fi : d.entryInfoList(fileFilters)) {
+    foreach(QFileInfo fi, d.entryInfoList(fileFilters)) {
         if (fi.isFile()) size+= fi.size();
         else size += getDirSize( QDir(fi.absoluteFilePath()) );
     }
