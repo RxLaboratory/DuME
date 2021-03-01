@@ -337,7 +337,10 @@ void ProcessUtils::runIndependantProcess(QString binary, QStringList arguments)
 
 void ProcessUtils::runProcess(QProcess *p, QString binary, QStringList arguments)
 {
+    // To fix potential issues (especially on Mac OS and aerender) it's better to set the working dir to be the same as the binary
+    QString workingDir = QFileInfo(binary).absolutePath();
     p->setProgram(binary);
+    p->setWorkingDirectory(workingDir);
     p->setArguments(arguments);
 
     QString args = "";
