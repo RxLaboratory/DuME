@@ -136,7 +136,12 @@ public:
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
         }
+#ifdef Q_OS_WIN
+        //There are strange issues with setting the font size on Win (at least with Qt 5.9.9)
+        qApp->setFont(QFont(family));
+#else
         qApp->setFont(QFont(family,size));
+#endif
     }
 
     static void setToolButtonStyle(int styleIndex)

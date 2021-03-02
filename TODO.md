@@ -8,8 +8,6 @@ add a console / Debug info ?
 
 ## au prochain build
 
-- fix progress issues
-
 - check reset settings pour voir si les chemins (win, linuw ok) sont bien trouvés
 
 - mac include ociobakelut
