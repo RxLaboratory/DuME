@@ -321,7 +321,6 @@ bool FFmpeg::setBinary(QString path, bool initialize)
         qDebug() << "New FFmpeg path correctly set: " + path;
         return true;
     }
-
     return false;
 }
 
@@ -341,7 +340,8 @@ void FFmpeg::init()
     if (!QFileInfo::exists(defaultFFmpegPath)) defaultFFmpegPath = "ffmpeg";
 #endif
 #ifdef Q_OS_WIN
-    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
+    QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ext/ffmpeg.exe";
+    if (!QFileInfo::exists(defaultFFmpegPath)) defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg.exe";
 #endif
 #ifdef Q_OS_MAC
     QString defaultFFmpegPath = QCoreApplication::applicationDirPath() + "/ffmpeg";

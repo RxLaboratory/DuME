@@ -42,7 +42,7 @@ bool OcioLutBakerInfo::setBinary(QString path)
 #endif
 #ifdef Q_OS_WIN
             path = QCoreApplication::applicationDirPath() + "/ociobakelut.exe";
-            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ext/sociobakelut.exe";
+            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ext/ociobakelut.exe";
 #endif
 #ifdef Q_OS_MAC
             path = QCoreApplication::applicationDirPath() + "/ociobakelut";
