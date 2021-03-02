@@ -1,3 +1,5 @@
+if ffmpeg/ocio not found, reset path in settings, and search again
+
 ## ociobakelut
 
 check default path on win & mac
@@ -6,14 +8,11 @@ add a console / Debug info ?
 
 ## au prochain build
 
-- check reset settings pour voir si les chemins sont bien trouvés
+- fix progress issues
 
-- test packages on ubuntu 18.04
+- check reset settings pour voir si les chemins (win, linuw ok) sont bien trouvés
 
 - mac include ociobakelut
-
-- windows include ociobakelut
-    - DONE using vcpkg
 
 - build doc
 

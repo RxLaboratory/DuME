@@ -114,14 +114,14 @@ void AbstractRenderer::processStdError()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     QString log = process->readAllStandardError();
-    processOutput( log  , true);
+    processOutput( log );
 }
 
 void AbstractRenderer::processStdOutput()
 {
     QProcess* process = qobject_cast<QProcess*>(sender());
     QString log = process->readAllStandardOutput();
-    processOutput( log , true);
+    processOutput( log );
 }
 
 void AbstractRenderer::processStarted()
@@ -134,7 +134,7 @@ void AbstractRenderer::processStarted()
 
 void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    processOutput("", true);
+    processOutput("\n", true);
     // Get the process
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process);
@@ -163,7 +163,7 @@ void AbstractRenderer::processFinished(int exitCode, QProcess::ExitStatus exitSt
 
 void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
 {
-    processOutput("", true);
+    processOutput("\n", true);
     QProcess* process = qobject_cast<QProcess*>(sender());
     int id = _renderProcesses.indexOf(process) + 1;
 
@@ -238,20 +238,41 @@ void AbstractRenderer::killRenderProcesses()
     setStatus( MediaUtils::Stopped );
 }
 
+void AbstractRenderer::processOutputLine()
+{
+    _output = _output.trimmed();
+    qDebug() << _output;
+    if (_output != "") readyRead(_output);
+    _output = "";
+}
+
 void AbstractRenderer::processOutput(QString output, bool ignoreTimer)
 {
-    if (_timer.hasExpired(100) || ignoreTimer)
+    _outputBuffer += output;
+    if (!_timer.hasExpired(100) && !ignoreTimer) return;
+
+    QStringList outputs = _outputBuffer.split(QRegularExpression("[\\n\\r]"));
+
+    if (outputs.count() > 1)
     {
-        _output += output;
-        readyRead(_output);
-        emit console( _output );
-        _output = "";
-        _timer.restart();
+        for (int i = 0 ; i < outputs.count() -2 ; i++)
+        {
+            if (i == 0) _output += outputs.at(i);
+            else _output = outputs.at(i);
+            processOutputLine();
+        }
+        // last one
+        if (_outputBuffer.endsWith("\n") || _outputBuffer.endsWith("\r")) _outputBuffer = outputs.last() + "\n";
     }
-    else
+
+    _output += _outputBuffer;
+
+    if (_output.endsWith("\n") || _output.endsWith("\r"))
     {
-        _output += output;
+        processOutputLine();
     }
+
+    _outputBuffer = "";
 }
 
 bool AbstractRenderer::launchJob()
@@ -404,8 +425,8 @@ void AbstractRenderer::setCurrentFrame(int currentFrame, double size, double bit
 
 void AbstractRenderer::readyRead(QString output)
 {
-    emit console( output );
-    emit progress();
+    //emit console( output );
+    //emit progress();
 }
 
 void AbstractRenderer::launchProcess( QStringList arguments )

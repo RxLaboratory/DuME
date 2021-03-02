@@ -28,6 +28,8 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Fixed the broken audio codec selection
 - Fixed the audio transcode checkbox not working after checking audio copy.
 - Fixed the render presets sometimes incorrectly installed when launching the render from inside After Effects with the script.
+- False-positive error detection during transcoding (probably) fixed.
+- Better stability for the progress bar when rendering After Effects projects.
 
 ## 0.2.0
 

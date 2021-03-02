@@ -1194,6 +1194,8 @@ QString FFmpegRenderer::generateFilter(QString filterName, QString arg)
 
 void FFmpegRenderer::readyRead(QString output)
 {
+    emit console(output);
+
     QRegularExpression reProgress = RegExUtils::getRegEx("ffmpeg progress");
     QRegularExpressionMatch match = reProgress.match(output);
 
@@ -1214,10 +1216,13 @@ void FFmpegRenderer::readyRead(QString output)
         //frame
         setCurrentFrame( frame.toInt(), sizeKB * 1024, bitrateKB * 1000, speed.toDouble() );
 
+        setStatus(MediaUtils::FFmpegEncoding);
+
         emit progress();
     }
+
     //detect errors
-    else if (!output.trimmed().startsWith("frame") && output.trimmed() != "")
+    else if (!output.trimmed().startsWith("frame") && output.trimmed().count() > 10)
     {
         //If we're rendering, all stuff which is not a progress is an error
         if (status() == MediaUtils::Encoding)

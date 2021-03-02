@@ -200,6 +200,10 @@ private:
     MediaUtils::RenderStatus _status;
     // The output
     QString _output;
+    // Output buffer
+    QString _outputBuffer;
+    // Process an outputLine
+    void processOutputLine();
 
     // Process the outputs
     void processOutput(QString output, bool ignoreTimer = false);

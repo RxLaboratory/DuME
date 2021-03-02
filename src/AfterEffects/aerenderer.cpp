@@ -137,8 +137,10 @@ void AERenderer::setUseTemplates(bool setTemplates)
 
 void AERenderer::readyRead(QString output)
 {
+    if (output.trimmed() == "") return;
+
     emit console(output);
-    
+
     QRegularExpression reProgress("PROGRESS:\\s*[\\d:]+\\s*\\((\\d+)\\)");
     QRegularExpressionMatch match = reProgress.match(output);
     if (match.hasMatch())
