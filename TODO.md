@@ -8,14 +8,14 @@ add a console / Debug info ?
 
 - check reset settings pour voir si les chemins sont bien trouvés
 
-- linux rename duffmpeg-static to dume-ffmpeg
-- linux always include dume-ffmpeg (to have needed libs / zscale)
-- linux add opencolorio-tools dependency >= 1.0 (or include ociobakelut)
+- test packages on ubuntu 18.04
 
 - mac include ociobakelut
 
 - windows include ociobakelut
     - DONE using vcpkg
+
+- build doc
 
 ## Refactor
 

@@ -12,6 +12,7 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - Added [*The Green Guide to transcoding*](green.md) to the documentation.
 - Added support for conversion to/from the ACEScg color space.
 - Partial [*OCIO*](https://opencolorio.org/) support through LUTs and the `ociobakelut` tool.
+- Included Blender Filmic LUTs.
 
 ### Improvements
 
