@@ -7,6 +7,7 @@
 #include "duqf-widgets/toolbarspacer.h"
 #include "duqf-widgets/settingswidget.h"
 #include "duqf-widgets/aboutdialog.h"
+#include "duqf-widgets/appearancesettingswidget.h"
 
 
 #include <QProcess>
