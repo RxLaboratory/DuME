@@ -2,15 +2,17 @@ if ffmpeg/ocio not found, reset path in settings, and search again
 
 ## ociobakelut
 
-check default path on win & mac
+check default path on win & linux
 
 add a console / Debug info ?
 
 ## au prochain build
 
-- check reset settings pour voir si les chemins (win, linuw ok) sont bien trouvés
+- check reset settings pour voir si les chemins (win, linux, mac) sont bien trouvés
 
-- mac include ociobakelut
+- mac include ociobakelut DONE (homebrew)
+
+- Check UI mac & win (font size)
 
 - build doc
 

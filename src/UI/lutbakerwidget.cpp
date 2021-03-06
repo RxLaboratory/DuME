@@ -17,6 +17,10 @@ LutBakerWidget::LutBakerWidget(QWidget *parent) :
 
     ocioConfigEdit->setText( _settings.value("ociobakelut/configPath", "").toString() );
 
+#ifdef Q_OS_MAC
+    ocioNotFoundLabel->setText("OCIO's ociobakelut tool not found. Please set its path in the settings. You can install it with Homebrew: brew install opencolorio");
+#endif
+
     connect( outputFormatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(outputFormatChanged(int)));
     connect( ocioBrowseButton, SIGNAL(clicked()), this, SLOT(ocioBrowse()));
     connect( bakeButton, SIGNAL(clicked()), this, SLOT(bake()));

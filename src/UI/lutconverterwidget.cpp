@@ -15,6 +15,10 @@ LutConverterWidget::LutConverterWidget(QWidget *parent) :
     outputFormatBox->setItemData(5, "truelight.cub");
     outputFormatBox->setItemData(6, "icc.icc");
 
+#ifdef Q_OS_MAC
+    ocioNotFoundLabel->setText("OCIO's ociobakelut tool not found. Please set its path in the settings. You can install it with Homebrew: brew install opencolorio");
+#endif
+
     connect( outputFormatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(outputFormatChanged(int)));
     connect( lutBrowseButton, SIGNAL(clicked()), this, SLOT(inputBrowse()));
     connect( convertButton, SIGNAL(clicked()), this, SLOT(convert()));
