@@ -255,7 +255,7 @@ void AbstractRenderer::processOutput(QString output, bool ignoreTimer)
 
     if (outputs.count() > 1)
     {
-        for (int i = 0 ; i < outputs.count() -2 ; i++)
+        for (int i = 0 ; i < outputs.count() -1 ; i++)
         {
             if (i == 0) _output += outputs.at(i);
             else _output = outputs.at(i);
