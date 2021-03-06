@@ -116,7 +116,7 @@ public:
         return css;
     }
 
-    static void setFont(QString family = "Ubuntu", int size=10)
+    static void setFont(QString family = "Ubuntu", int size=0)
     {
         if (family == "Ubuntu")
         {
@@ -136,6 +136,13 @@ public:
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
             QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
         }
+#ifdef Q_OS_MAC
+        if (size == 0) size = 12;
+#endif
+#ifdef Q_OS_LINUX
+        if (size ==0) size = 10;
+#endif
+
 #ifdef Q_OS_WIN
         //There are strange issues with setting the font size on Win (at least with Qt 5.9.9)
         qApp->setFont(QFont(family));
