@@ -5,6 +5,9 @@ OcioSettingsWidget::OcioSettingsWidget(QWidget *parent) :
 {
     setupUi(this);
 
+    //needed for macos
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     connect(ociobakelutBrowseButton, &QToolButton::clicked, this, &OcioSettingsWidget::ociobakelutBrowseButton_clicked);
     connect(ociobakelutEdit, &QLineEdit::editingFinished, this, &OcioSettingsWidget::ociobakelutEdit_editingFinished);
     connect(OcioLutBakerInfo::instance(), &AbstractRendererInfo::binaryChanged, this, &OcioSettingsWidget::ociobakelut_binaryChanged);

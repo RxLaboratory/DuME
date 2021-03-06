@@ -7,6 +7,9 @@ AppearanceSettingsWidget::AppearanceSettingsWidget(QWidget *parent) :
 
     _freezeUI = true;
 
+    //needed for macos
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     // List available styles
     styleComboBox->addItem("Default",":/styles/default");
     styleComboBox->addItems(QStyleFactory::keys());

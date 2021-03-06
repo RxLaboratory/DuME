@@ -5,6 +5,7 @@ CacheSettingsWidget::CacheSettingsWidget(QWidget *parent) :
 {
     setupUi(this);
 
+
     _freezeUI = true;
 
     //Temp path

@@ -7,6 +7,9 @@ FFmpegSettingsWidget::FFmpegSettingsWidget(QWidget *parent) :
 
     _freezeUI = true;
 
+    //needed for macos
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     ffmpegPathEdit->setText( QDir::toNativeSeparators( FFmpeg::instance()->binary() ) );
     userPresetsPathEdit->setText(_settings.value("presets/path","").toString());
 

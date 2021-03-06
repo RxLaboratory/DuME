@@ -5,6 +5,9 @@ AESettingsWidget::AESettingsWidget(QWidget *parent) :
 {
     setupUi(this);
 
+    //needed for macos
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     _ae = AfterEffects::instance();
 
     updateAe();

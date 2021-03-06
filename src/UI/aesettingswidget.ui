@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>799</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="25,50,25">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -30,6 +30,19 @@
     <number>3</number>
    </property>
    <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QWidget" name="aeWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -37,7 +50,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
+     <layout class="QFormLayout" name="formLayout">
       <property name="horizontalSpacing">
        <number>3</number>
       </property>
@@ -151,14 +164,14 @@ when launched from Ae</string>
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer">
+    <spacer name="horizontalSpacer_2">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width>
-       <height>203</height>
+       <width>40</width>
+       <height>20</height>
       </size>
      </property>
     </spacer>

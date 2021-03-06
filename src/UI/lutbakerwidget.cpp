@@ -5,6 +5,10 @@ LutBakerWidget::LutBakerWidget(QWidget *parent) :
 {
     setupUi(this);
 
+    //needed for macos
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    formLayout_2->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     iccOptionsWidget->setVisible(false);
 
     outputFormatBox->setItemData(0, "flame.3dl");
