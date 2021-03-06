@@ -143,7 +143,7 @@
         //launch process
         DuMEProcess = new DuProcess( settings.data.dumePath );
         var args = ["--comp", compName, "--framerate", framerate,  dumeProjectFile.fsName, "--output", outputFile.fsName, "--preset", presetsButton.text ];
-        if (!DuAEF.debug) args.push("--hide-console");
+        if (!DuAEF.debug && DuAEF.win) args.push("--hide-console");
         if (settings.data.autoStart)
         {
             args.push("--autostart");
