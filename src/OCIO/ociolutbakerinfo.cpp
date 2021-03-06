@@ -14,51 +14,54 @@ OcioLutBakerInfo::OcioLutBakerInfo(QObject *parent) :
     setBinary();
 }
 
+bool OcioLutBakerInfo::checkBinaryPath(QString path)
+{
+    if ( AbstractRendererInfo::setBinary(path) )
+    {
+        qDebug() << runCommand( "", 1000);
+        qDebug() << "========";
+        qDebug() << _output;
+        if ( _output.startsWith("ociobakelut") ) return true;
+    }
+    return false;
+}
+
 bool OcioLutBakerInfo::setBinary(QString path)
 {
     QSettings settings;
-    if (path == "")
-    {
-        path = settings.value("ociobakelut/path", "ociobakelut").toString();
+    if (path == "") path = settings.value("ociobakelut/path", "ociobakelut").toString();
 
-        //check
-        bool found = false;
-        if ( AbstractRendererInfo::setBinary(path) )
-        {
-            if (runCommand( "", 1000))
-                found = _output.startsWith("ociobakelut");
-        }
+    bool found = checkBinaryPath(path);
 
-
-        if (!found)
-        {
 #ifdef Q_OS_LINUX
             //First, look for a dume static build in the app folder
-            path = QCoreApplication::applicationDirPath() + "/dume-ociobakelut";
+            if ( !found ) path = QCoreApplication::applicationDirPath() + "/dume-ociobakelut";
+            found = checkBinaryPath(path);
             //IF not found, try with a standard name
-            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            if ( !found ) path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            found = checkBinaryPath(path);
             //IF not found, try with a system command
-            if (!QFileInfo::exists(path)) path = "ociobakelut";
+            if ( !found ) path = "ociobakelut";
+            found = checkBinaryPath(path);
 #endif
 #ifdef Q_OS_WIN
-            path = QCoreApplication::applicationDirPath() + "/ociobakelut.exe";
-            if (!QFileInfo::exists(path)) path = QCoreApplication::applicationDirPath() + "/ext/ociobakelut.exe";
+            if ( !found ) path = QCoreApplication::applicationDirPath() + "/ociobakelut.exe";
+            found = checkBinaryPath(path);
+            if ( !found ) path = QCoreApplication::applicationDirPath() + "/ext/ociobakelut.exe";
+            found = checkBinaryPath(path);
 #endif
 #ifdef Q_OS_MAC
-            path = QCoreApplication::applicationDirPath() + "/ociobakelut";
-            if (!QFileInfo::exists(path)) path = "ociobakelut";
+            if ( !found ) path = QCoreApplication::applicationDirPath() + "/ociobakelut";
+            found = checkBinaryPath(path);
+            // Try with homebrew
+            if ( !found ) path = "/opt/homebrew/Cellar/opencolorio/2.0.0/bin/ociobakelut";
+            found = checkBinaryPath(path);
+            if ( !found ) path = "/usr/local/Cellar/opencolorio/2.0.0/bin/ociobakelut";
+            found = checkBinaryPath(path);
 #endif
-        }
-    }
 
-    if ( AbstractRendererInfo::setBinary(path) )
+    if ( found )
     {
-        runCommand( "", 1000);
-        if (_output.length() < 10)
-        {
-            _valid = false;
-            return false;
-        }
         //save
         settings.setValue("ociobakelut/path", path);
         emit binaryChanged( path );

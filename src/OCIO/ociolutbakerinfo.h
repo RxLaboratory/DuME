@@ -29,6 +29,8 @@ private:
      * @brief Singleton
      */
     OcioLutBakerInfo(QObject *parent = nullptr);
+
+    bool checkBinaryPath(QString path);
 };
 
 #endif // OCIOLUTBAKERINFO_H
