@@ -25,3 +25,5 @@ There are no audio filter applied yet.
 
 !!! hint
     The *user defined filters* are those added as custom FFmpeg parameters using the `-vf`, `-va`, `-filter:v` or `-filter:a` options.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

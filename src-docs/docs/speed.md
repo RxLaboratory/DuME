@@ -53,3 +53,5 @@ As with the *framerate* setting, you can combine this with the **motion interpol
 
 !!! hint
     Of course you can combine the three settings together to both change the speed and the framerate of the video, using interpolation to keep things as smooth as possible.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

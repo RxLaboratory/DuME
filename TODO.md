@@ -1,11 +1,5 @@
 if ffmpeg/ocio not found, reset path in settings, and search again
 
-## au prochain build
-
-- doc: add ociobakelut instruction for macos
-
-- build doc
-
 ## Refactor
 
 - Remove the "silent" param from setters in MediaInfo, VideoInfo and AudioInfo; use QSignalBlocker instead

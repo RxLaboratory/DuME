@@ -8,9 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Rendering - DuME Documentation<br />v0.2.0</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
+  <title>Rendering - DuME Documentation<br />v0.3.0</title>
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -38,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.2.0</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.3.0</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -65,11 +63,22 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="mac.html">Mac OS X</a>
+    <a class="" href="mac.html">Mac OS</a>
                 </li>
                 <li class="">
                     
     <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">The Green Guide to transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="green.html">Eco-Friendly transcoding</a>
                 </li>
     </ul>
 	    </li>
@@ -132,7 +141,7 @@
         
             <li><a class="toctree-l4" href="#from-after-effects-using-the-script">From After Effects, using the script</a></li>
         
-            <li><a class="toctree-l4" href="#add-a-composition-to-dume">Add a composition to DuME</a></li>
+            <li><a class="toctree-l4" href="#add-a-composition-directly-to-dume">Add a composition directly to DuME</a></li>
         
             <li><a class="toctree-l4" href="#add-sound-to-an-after-effects-composition">Add sound to an After Effects composition</a></li>
         
@@ -140,6 +149,25 @@
     
 
     </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Tools</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="ocio-mac.html">LUT Tools and Mac OS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-baker.html">OCIO LUT baker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-converter.html">LUT converter</a>
                 </li>
     </ul>
 	    </li>
@@ -188,6 +216,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="credits.html">Credits</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
                 </li>
                 <li class="">
@@ -207,7 +239,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation<br />v0.2.0</a>
+        <a href="index.html">DuME Documentation<br />v0.3.0</a>
       </nav>
 
       
@@ -239,20 +271,27 @@
 <div class="toc">
 <ul>
 <li><a href="#after-effects-rendering">After Effects Rendering</a><ul>
-<li><a href="#from-after-effects-using-the-script">From After Effects, using the script</a></li>
-<li><a href="#add-a-composition-to-dume">Add a composition to DuME</a></li>
+<li><a href="#from-after-effects-using-the-script">From After Effects, using the script</a><ul>
+<li><a href="#install">Install</a></li>
+<li><a href="#use">Use</a></li>
+</ul>
+</li>
+<li><a href="#add-a-composition-directly-to-dume">Add a composition directly to DuME</a></li>
 <li><a href="#add-sound-to-an-after-effects-composition">Add sound to an After Effects composition</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <h2 id="from-after-effects-using-the-script">From After Effects, using the script<a class="headerlink" href="#from-after-effects-using-the-script" title="Permanent link">&para;</a></h2>
+<h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h3>
+<p>Before you can use the script, you need to set the path to <em>DuME</em>. Go to the script settings by clicking on the <img alt="icon" src="img/icons/settings_r.svg" style="width:18px" /> button at the bottom right, then set the path to <em>DuME</em>.</p>
+<h3 id="use">Use<a class="headerlink" href="#use" title="Permanent link">&para;</a></h3>
 <p><img alt="" src="img/captures/aePanel.png" /></p>
 <p>The <em>Send Comp. to DuME</em> button will launch DuME and add the active composition to it.</p>
-<p>Click on the <img alt="icon" src="img/icons/options_r.svg" /> options button to adjust a few settings.</p>
+<p>Click on the <img alt="icon" src="img/icons/options_r.svg" style="width:18px" /> options button to adjust a few settings.</p>
 <p><img alt="" src="img/captures/aeLaunchOptionsPopup.png" /></p>
 <p>All the options you change there will be kept even if you restart <em>After Effects</em>. The list of presets is pulled from <em>DuME</em> when the script is opened, use the update button at the right if you&rsquo;ve made changes to the list of presets in <em>DuMe</em> after you have opened the script.</p>
-<h2 id="add-a-composition-to-dume">Add a composition to DuME<a class="headerlink" href="#add-a-composition-to-dume" title="Permanent link">&para;</a></h2>
+<h2 id="add-a-composition-directly-to-dume">Add a composition directly to DuME<a class="headerlink" href="#add-a-composition-directly-to-dume" title="Permanent link">&para;</a></h2>
 <p>Drop or open an <em>After Effects</em> project on the input side of <em>DuME</em>.</p>
 <p><img alt="" src="img/captures/ae_input_options.png" /></p>
 <div class="admonition warning">
@@ -270,8 +309,13 @@
 </div>
 <p>You can also use <em>DuME</em> to render the whole queue, but in this case <em>DuME</em> cannot automatically transcode the result to other formats.</p>
 <p>You have the option to use several threads at once when rendering <em>After Effects</em> projects, but be careful as this may not work correctly if the number of threads is too high, especially with projects needing a lot of memory.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not disable <a href="colors.html">color management</a> when rendering an <em>After Effects</em> composition, as <em>After Effects</em> compositions are rendered in a <em>linear RGB</em> color space and not in the output color space.</p>
+</div>
 <h2 id="add-sound-to-an-after-effects-composition">Add sound to an After Effects composition<a class="headerlink" href="#add-sound-to-an-after-effects-composition" title="Permanent link">&para;</a></h2>
 <p>You can add another input to add sound to an After Effects composition. See <a href="mapping.html"><em>Adding / Changing streams</em></a></p>
+<p><img alt="META" src="authors:Nicolas &quot;Duduf&quot; Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07" /></p>
               
             </div>
           </div>
@@ -279,7 +323,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api.html" class="btn btn-neutral float-right" title="Introduction">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="ocio-mac.html" class="btn btn-neutral float-right" title="LUT Tools and Mac OS">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="filter.html" class="btn btn-neutral" title="Filters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -313,13 +357,14 @@
         <span><a href="filter.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="api.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="ocio-mac.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
+      <script src="meta.js" defer></script>
       <script src="search/main.js" defer></script>
 
 </body>

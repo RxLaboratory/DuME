@@ -30,3 +30,7 @@ Restart After Effects when it's done, and DuME will be available in the *Windows
 You can [get the source code on Github](https://github.com/Rainbox-dev/DuME), and easily build DuME using Qt and the Qt Creator.
 
 You'll also need to [download and install FFmpeg](https://ffmpeg.org/download.html#build-windows).
+
+To use LUT tools, you will also need [OpenColorIO](http://opencolorio.org) tools. The easiest way to get them on windows is to use [vcpkg](https://github.com/Microsoft/vcpkg) and install them with `vcpkg install opencolorio-tools`.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

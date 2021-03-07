@@ -18,7 +18,7 @@ Apart from these parameters, the way these colors can be stored can vary accordi
 
 *DuME* associates a conversion Matrix with the color spaces to convert between the *YUV* and *RGB* spaces.
 
-Finally, when working in the *YUV* space, a fourth settings sets if the range is ***full*** or ***limited***. In an 8 bit full range, values for each channel range from `0` to `255` whereas in the limited range, values are constrained to the `16-235` range.
+Finally, when working in the *YUV* space, a fourth setting sets the range to ***full*** or ***limited***. In an 8-bit full range, values for each channel range from `0` to `255` whereas in the limited range, values are constrained to the `16-235` range.
 
 ### Color profile (presets) definitions
 
@@ -111,3 +111,5 @@ For any specific parameter, if you don't know what to choose, leave it on *Auto*
 
 !!! Note
     The available parameters change a bit depending on the need for conversion. *DuME* does not support conversion to all formats (espacially the older ones).
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

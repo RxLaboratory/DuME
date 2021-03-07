@@ -9,16 +9,10 @@
 
 ## Debian and Ubuntu
 
-If you're using Debian or Ubuntu, in most cases you can just download and install the *.deb* package the usual way. There are two different packages:
-
-- ***dume*** is the default choice which installs *DuME* and gets the dependencies (*FFmpeg* and *Qt-5*) from the Debian/Ubuntu repository, as usual. This should work well on all recent systems.
-
-On older LTS systems (like *Ubuntu Bionic Beaver* (18.04)), the version of FFmpeg may be inferior than v4.0 needed by *DuME*. In this case you can get and install the *dume-static* build.
-
-- ***dume-static*** includes a static build of FFmpeg v4.3, and should work with all and older versions of *Debian*/*Ubuntu*, but in this case ffmpeg will not be updated if there are new updates available until DuME updates are available too.
+If you're using Debian or Ubuntu, in most cases you can just download and install the *.deb* package the usual way.
 
 !!! note
-    DuME depends on the package qt5-default in version 5.9.5 or more recent. If it's not available in your package manager, use the AppImage instead.  
+    DuME depends on the package qt5-default in version 5.9.9 or more recent. If it's not available in your package manager, use the AppImage instead.  
     For *Ubuntu*, these libraries are available since *Bionic Beaver* (18.04).
 
 ## AppImage for all distributions
@@ -39,3 +33,8 @@ You can [get the source code on Github](https://github.com/Rainbox-dev/DuME), an
 
 You'll also need to [download and install FFmpeg](https://ffmpeg.org/download.html#build-linux). Most of the time, it should be available in your distribution package manager. For example, in Debian or Ubuntu:  
 `sudo apt-get install ffmpeg`
+
+To use LUT tools, you will also need [OpenColorIO](http://opencolorio.org) tools. Most of the time, they should be available in your distribution package manager. For example, in Debian or Ubuntu:  
+`sudo apt install opencolorio-tools`
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

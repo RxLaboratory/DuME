@@ -8,9 +8,7 @@
   <meta name="description" content="The DuME comprehensive documentation">
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Home - DuME Documentation<br />v0.2.0</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
+  <title>Home - DuME Documentation<br />v0.3.0</title>
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -38,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.2.0</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.3.0</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -83,11 +81,22 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="mac.html">Mac OS X</a>
+    <a class="" href="mac.html">Mac OS</a>
                 </li>
                 <li class="">
                     
     <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">The Green Guide to transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="green.html">Eco-Friendly transcoding</a>
                 </li>
     </ul>
 	    </li>
@@ -148,6 +157,25 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">Tools</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="ocio-mac.html">LUT Tools and Mac OS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-baker.html">OCIO LUT baker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-converter.html">LUT converter</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">Control and automation</span>
     <ul class="subnav">
                 <li class="">
@@ -190,6 +218,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="credits.html">Credits</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
                 </li>
                 <li class="">
@@ -209,7 +241,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation<br />v0.2.0</a>
+        <a href="index.html">DuME Documentation<br />v0.3.0</a>
       </nav>
 
       
@@ -234,10 +266,22 @@
             <div class="section">
               
                 <h1 id="dume-introduction">DuME Introduction<a class="headerlink" href="#dume-introduction" title="Permanent link">&para;</a></h1>
-<p><strong><em>DuME</em> is a Free and Open Source Media Encoder</strong>.<br />
-It is fast, versatile, and easy-to-use.<br />
-It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very fast and versatile command-line media encoder.<br />
-<em>DuME</em> is also able to render and transcode <em>Adobe After Effects</em> projects and to render <a href="http://blender.org"><em>Blender</em></a> scenes.</p>
+<p><strong><em>DuME</em> is a Free and Open Source Media Encoder</strong>.</p>
+<p>It is still in an early development version, but can already be used in a professionnal pipeline.</p>
+<ul>
+<li>It is <strong>fast, versatile, and very easy-to-use</strong>.</li>
+<li>A system of simple <strong>presets</strong> makes it very quick to use. It comes with carefully hand-crafted presets suited for professionnal use.</li>
+<li>Transcoding mostly uses <a href="https://ffmpeg.org/"><strong><em>FFmpeg</em></strong></a>, a very fast and versatile command-line media encoder.</li>
+<li>It supports a <strong>huge variety of both input and output formats</strong>.</li>
+<li><strong>Color management</strong> is carefully handled, and it has a partial <a href="http://opencolorio.org"><em>OpenColorIO</em></a> support through LUTs and LUT tools. This <em>OCIO</em> support will be completed and improved over time.</li>
+<li>It will handle <strong>openEXR files</strong>, their AOVs, and compressions, using <a href="https://github.com/OpenImageIO/oiio"><em>OpenImageIO</em></a>. This is still in development.</li>
+<li>It renders and transcodes <strong><em>Adobe After Effects</em></strong> compositions.</li>
+<li>It will render and transcode <a href="http://blender.org"><strong><em>Blender</em></strong></a> scenes. This is still in development.</li>
+<li>It will have a <strong>render/transcode queue</strong> to plan and queue all your rendering/transcoding jobs. This is still in development.</li>
+<li>It is packed with <strong>a lot of useful features</strong> (<strong>speed</strong> and <strong>framerate</strong> interpolation, applying <strong>LUTs</strong>, <strong>mixing</strong> streams, <strong>resizing</strong>/<strong>cropping</strong>&hellip;), all crafted for best quality and performance, with a lot of options but carefully chosen default values.</li>
+<li>It comes with a <strong>Command-Line interface</strong> too, to make it easier to include in your existing pipeline.</li>
+<li>It will include a <strong>server API</strong> through a background daemon, to make it easier to use with an existing pipeline and/or as a renderfarm. This is still in development.</li>
+</ul>
 <div class="toc">
 <ul>
 <li><a href="#dume-introduction">DuME Introduction</a><ul>
@@ -265,6 +309,7 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <li><a href="linux.html">Linux</a></li>
 </ul>
 </li>
+<li><a href="green.html">The Green Guide to transcoding</a></li>
 <li>Transcoding<ul>
 <li><a href="presets.html">Manage Presets</a></li>
 <li><a href="h264-5.html">MP4 / h.264 / h.265</a></li>
@@ -279,6 +324,11 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 </li>
 <li>After Effects rendering<ul>
 <li><a href="after-effects-rendering.html">Rendering</a></li>
+</ul>
+</li>
+<li>Tools<ul>
+<li><a href="lut-baker.html">OCIO LUT baker</a></li>
+<li><a href="lut-converter.html">LUT converter</a></li>
 </ul>
 </li>
 <li>Control and automation<ul>
@@ -302,15 +352,17 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <h3 id="available-features">Available Features<a class="headerlink" href="#available-features" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Transcode any audio or video file, <a href="https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features">from any format supported by <em>FFmpeg</em></a> to any other format supported by <em>FFmpeg</em>.</li>
-<li>Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF&hellip; - <em>evolving list</em>.</li>
+<li>Easy presets for: mp4 (h.264/h.265), wav, PNG, EXR, Quicktime HAP, Apple Prores&hellip; - <em>evolving list</em>.</li>
 <li>Transcode to and from <a href="sequences.html">Image Sequences</a> (PNG, EXR&hellip;).</li>
 <li><a href="mapping.html">Mix Media files</a> (e.g. add sound to an image sequence).</li>
 <li>Easily render <em>After Effects</em> projects and transcode to any format supported by <em>FFmpeg</em>.</li>
+<li>Color managed transcoding.</li>
+<li>Create/convert/apply LUTs.</li>
 <li>Render/Transcode queue, <em>work in progress, possible with command/batch files thanks to <a href="cli-options.html">the command line interface</a></em>.</li>
 </ul>
 <h3 id="planned-features">Planned Features<a class="headerlink" href="#planned-features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Simple media player (using ffplay).  <ul>
+<li>Simple media player.  <ul>
 <li>Preview of the input.</li>
 <li>Preview of the output.</li>
 </ul>
@@ -320,16 +372,17 @@ It is mainly based on <a href="https://ffmpeg.org/"><em>FFmpeg</em></a>, a very 
 <li>Add subtitles tracks.</li>
 <li>Burn subtitles in picture.</li>
 <li>Burn Metadata in picture (Timecode&hellip;).</li>
+<li>Server API.</li>
+<li>Better openEXR support.</li>
+<li>Full OCIO support.</li>
 </ul>
 <h2 id="about-dume">About DuME<a class="headerlink" href="#about-dume" title="Permanent link">&para;</a></h2>
 <p>If you like this free software, please <a href="http://patreon.com/duduf">support the developer on Patreon</a> to help the continuation of the development of free tools.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
 <h3 id="software">Software<a class="headerlink" href="#software" title="Permanent link">&para;</a></h3>
-<p><strong><em>DuME</em> Copyright (c) 2017-2020 Nicolas Dufresne and Contributors</strong>  </p>
+<p><strong><em>DuME</em> Copyright (c) 2019-2021 Nicolas Dufresne and Contributors</strong>  </p>
 <p><em>DuME</em> is licensed under the <a href="gnu-gpl.html">GNU General Public License v3</a>.</p>
-<p>It also uses <em>FFmpeg</em> and <em>Qt</em>.</p>
-<p><strong><em>FFmpeg</em> Copyright (c) the FFmpeg developers</strong><br />
-<strong><em>Qt</em> Copyright (c) The Qt Company</strong></p>
+<p>Read the <a href="credits.html">credits</a> for information about the developpers and included third-party tools and code.</p>
 <p>This program is free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</p>
 <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>
 <p>You should have received a copy of the <em>GNU General Public License</em> along with <em>DuME</em>.  If not, see http://www.gnu.org/licenses/.</p>
@@ -340,6 +393,7 @@ Permission is granted to copy, distribute and/or modify this document under the 
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled &ldquo;<a href="doc-license.html">Documentation License</a>&rdquo;.</p>
 <p><img alt="GNU" src="img/logos/gnu.png" /> <img alt="GFDL" src="img/logos/gfdl-logo.png" /> </p>
+<p><img alt="META" src="authors:Nicolas &quot;Duduf&quot; Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07" /></p>
               
             </div>
           </div>
@@ -384,6 +438,7 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
+      <script src="meta.js" defer></script>
       <script src="search/main.js" defer></script>
 
 </body>
@@ -391,5 +446,5 @@ A copy of the license is included in the section entitled &ldquo;<a href="doc-li
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2021-02-10 19:12:35
+Build Date UTC : 2021-03-07 13:42:44
 -->

@@ -17,16 +17,18 @@ Just select the *Apply LUT* item in the video options, then select the LUT you n
 
 ![](/img/captures/blocks/lut.png)
 
-Some LUTs are provided with DuME, and you can load your own.
+Some LUTs are provided with *DuME*, and you can load your own.
 
 By default, the LUT is applied after all other filters, except color management conversions, which means it is applied on *input* color space. You can choose to apply it after color conversions, on the *output* color space.
 
 !!! hint
     Using a LUT to transform colors of an image depends both on the input format and colors and the output color space. It is NOT the best way to [convert color spaces](colors.md)...
 
-When using custom LUTs, you can set the input and output [colorspace](colors.md) so that DuME can automatically handle needed [conversions of the media colorspaces](colors.md) to correctly apply the LUT on the right color data.
+When using custom LUTs, you can set the input and output [colorspace](colors.md) so that *DuME* can automatically handle needed [conversions of the media colorspace](colors.md) to correctly apply the LUT on the right color data.
 
 Don't forget to set the type to 1D if the LUT only applies to luma/gamma and not the gammut (saturation), to avoid un-necessary [color conversions](colors.md).
 
 !!! note
     When using built-in LUTs, there's no need to set these parameters as they're automatically handled by *DuLME*. They are also deactivated if [*color management*](colors.md) is deactivated.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

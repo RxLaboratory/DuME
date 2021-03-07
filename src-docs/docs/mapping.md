@@ -18,8 +18,10 @@ If you need to select specific streams from the input medias to be used in the o
 
 ![](img/captures/mapping.png)
 
-- Add streams using the options button ![icon](img/icons/cog.svg).
+- Add streams using the options button ![icon](img/icons/cog.svg){: style="width:18px"}.
 - Then, you can select an input media and the stream to use from it.
 
 !!! important
     As soon as you've added some streams using the mapping options, they will be the **only** streams used in the output file, all other streams will be ignored. That means you have to manually select all the streams you want to use in the output file.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

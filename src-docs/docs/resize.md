@@ -13,3 +13,5 @@ When resizing with *DuME*, you can use three different modes:
 - ***Stretch***: the aspect ratio is *not* kept, and the video is stretched to the output size. Note that in this case, the pixel aspect ratio is set to square (1:1).
 
 Especially when upscaling, you may want to set a specific scaling algorithm, to adjust the performance/quality ratio. The result depends on the type of image in the input, you may want to try different algotrithms.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

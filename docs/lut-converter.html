@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Speed and framerate - DuME Documentation<br />v0.3.0</title>
+  <title>LUT converter - DuME Documentation<br />v0.3.0</title>
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Speed and framerate";
-    var mkdocs_page_input_path = "speed.md";
-    var mkdocs_page_url = "/speed.html";
+    var mkdocs_page_name = "LUT converter";
+    var mkdocs_page_input_path = "lut-converter.md";
+    var mkdocs_page_url = "/lut-converter.html";
   </script>
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
@@ -111,25 +111,9 @@
                     
     <a class="" href="lut.html">Applying a LUT</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="speed.html">Speed and framerate</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#adjust-speed-change-framerate">Adjust speed / Change framerate</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#change-framerate-without-changing-duration">Change framerate without changing duration.</a></li>
-        
-            <li><a class="toctree-l4" href="#change-framerate-without-interpolation-changing-the-duration">Change framerate without interpolation (changing the duration).</a></li>
-        
-            <li><a class="toctree-l4" href="#change-speedduration-without-changing-the-framerate">Change speed/duration without changing the framerate.</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="speed.html">Speed and framerate</a>
                 </li>
                 <li class="">
                     
@@ -165,9 +149,15 @@
                     
     <a class="" href="lut-baker.html">OCIO LUT baker</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="lut-converter.html">LUT converter</a>
+    <a class="current" href="lut-converter.html">LUT converter</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#convert-luts">Convert LUTs</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -251,14 +241,14 @@
     
       
         
-          <li>Transcoding &raquo;</li>
+          <li>Tools &raquo;</li>
         
       
     
-    <li>Speed and framerate</li>
+    <li>LUT converter</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/speed.md"> Edit on Dume-Docs</a>
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/lut-converter.md"> Edit on Dume-Docs</a>
       
     </li>
   </ul>
@@ -267,46 +257,23 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="adjust-speed-change-framerate">Adjust speed / Change framerate<a class="headerlink" href="#adjust-speed-change-framerate" title="Permanent link">&para;</a></h1>
-<p><em>DuME</em> is able to both adjust the speed of a video, and change its framerate.</p>
-<p>These two adjustments can be made with a motion interpolation algorithm to interpolate missing frames.</p>
-<div class="toc">
+                <h1 id="convert-luts">Convert LUTs<a class="headerlink" href="#convert-luts" title="Permanent link">&para;</a></h1>
+<p><img alt="" src="img/captures/lut-converter.png" /></p>
+<p>If you have to convert LUTs, <em>DuME</em> is able to handle a lot of different formats thanks to <em>OCIO</em>.</p>
+<p><em>DuME</em> can convert LUTs <a href="https://opencolorio.readthedocs.io/en/latest/guides/using_ocio/using_ocio.html#supported-lut-formats">from all formats supported by OCIO</a>, and to these formats:</p>
 <ul>
-<li><a href="#adjust-speed-change-framerate">Adjust speed / Change framerate</a><ul>
-<li><a href="#change-framerate-without-changing-duration">Change framerate without changing duration.</a></li>
-<li><a href="#change-framerate-without-interpolation-changing-the-duration">Change framerate without interpolation (changing the duration).</a></li>
-<li><a href="#change-speedduration-without-changing-the-framerate">Change speed/duration without changing the framerate.</a></li>
+<li><strong>Discreet / After Effects / Autodesk (*.3dl)</strong>*</li>
+<li><strong>Cinespace (*.csp)</strong>*</li>
+<li>Discreet legacy 1D-LUT / Houdini (*.lut)</li>
+<li>Iridas (*.itx)</li>
+<li>Truelight (*.cub)</li>
+<li>ICC profile (*.icc)</li>
 </ul>
-</li>
-</ul>
-</div>
-<h2 id="change-framerate-without-changing-duration">Change framerate without changing duration.<a class="headerlink" href="#change-framerate-without-changing-duration" title="Permanent link">&para;</a></h2>
-<p>Simply changing the framerate without changing the duration of the media is easy: just add the <strong><em>framerate</em></strong> setting to the output.</p>
-<p><img alt="" src="img/captures/blocks/framerate.png" /></p>
-<p>Select the desired framerate. The options contains preset for the most common framerates.</p>
-<p>By default:</p>
-<ul>
-<li>If the new framerate is <strong>lower</strong> than the input framerate, <em>DuME</em> will <strong>drop frames</strong> to match the new rate.</li>
-<li>If the new framerate is <strong>higher</strong> than the input framerate, <em>DuME</em> will <strong>duplicate frames</strong> to match the new rate.</li>
-</ul>
-<p>Using the <strong><em>motion interpolation</em></strong> setting, you can change this behaviour and precisely control the interpolation between different framerates, by either <strong>duplicating frames</strong>, <strong>blending them</strong>, or <strong>computing new frames based on the motion</strong>.</p>
-<p><img alt="" src="img/captures/blocks/motion_interpolation.png" /></p>
-<p>The most important parameter is the first one, to select the interpolation mode.</p>
-<p><em>Estimation</em> and <em>Algorithm</em> can be used to tweak the <em>Motion Compensated</em> modes, and adjust the balance between quality and performance.</p>
-<p>If the video is made of a single scene/shot, uncheck scene/shot detection. Otherwise, this parameter tells <em>DuME</em> to ignore interpolation if a scene change is detected.</p>
-<h2 id="change-framerate-without-interpolation-changing-the-duration">Change framerate without interpolation (changing the duration).<a class="headerlink" href="#change-framerate-without-interpolation-changing-the-duration" title="Permanent link">&para;</a></h2>
-<p>If you&rsquo;d like to <strong>completely ignore interpolation</strong>, in order to <strong>not change the frame count</strong> when changing the framerate (and thus change the duration), you can combine both the <strong><em>framerate</em></strong> and the <strong><em>speed</em></strong> settings.</p>
-<p><img alt="" src="img/captures/blocks/speed-framerate.png" /></p>
-<p>In this case, the value to use in the speed settings is the result of the simple calculation: <code>output framerate / input framerate</code>.</p>
-<p>For example, to convert a 24fps video to a 30fps video without interpolation, set the output framerate to <em>30fps</em>, and the speed to <em>1.25x</em> (30/24).</p>
-<h2 id="change-speedduration-without-changing-the-framerate">Change speed/duration without changing the framerate.<a class="headerlink" href="#change-speedduration-without-changing-the-framerate" title="Permanent link">&para;</a></h2>
-<p>Use the <strong><em>speed</em></strong> setting to change the duration of a video without changing the framerate.</p>
-<p><img alt="" src="img/captures/blocks/speed.png" /></p>
-<p>As with the <em>framerate</em> setting, you can combine this with the <strong>motion interpolation</strong> setting to adjust how frames are interpolated.</p>
-<p><img alt="" src="img/captures/blocks/motion_interpolation.png" /></p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Of course you can combine the three settings together to both change the speed and the framerate of the video, using interpolation to keep things as smooth as possible.</p>
+<p><em>*These formats can then be applied to your medias using</em> DuME.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><em>DuME</em> needs the <em>OpenColorIO</em> tools to work with LUTs.<br />
+On <em>Mac OS</em>, they&rsquo;re not automatically installed with <em>DuME</em> (yet). <a href="ocio-mac.html">Read this</a> for more information.</p>
 </div>
 <p><img alt="META" src="authors:Nicolas &quot;Duduf&quot; Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07" /></p>
               
@@ -316,10 +283,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="resize.html" class="btn btn-neutral float-right" title="Resizing">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="api.html" class="btn btn-neutral float-right" title="Introduction">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="lut.html" class="btn btn-neutral" title="Applying a LUT"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="lut-baker.html" class="btn btn-neutral" title="OCIO LUT baker"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -347,10 +314,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="lut.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="lut-baker.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="resize.html" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="api.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

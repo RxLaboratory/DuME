@@ -189,3 +189,5 @@ The final media file can be as small as possible and it's not a problem to use i
 - ***Prores*** and ***DnxHD/HR***. Do you really want to send files that big over the internet?
 
 - ***Image sequences***. Decoding performance is much better with standard video files.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

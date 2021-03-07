@@ -2,102 +2,127 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>http://rainboxlab.org/index.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/windows.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/mac.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/linux.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/green.html</loc>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/presets.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/h264-5.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/sequences.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/mapping.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/colors.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/lut.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/speed.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/resize.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/filter.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/after-effects-rendering.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/ocio-mac.html</loc>
+     <lastmod>2021-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/lut-baker.html</loc>
+     <lastmod>2021-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/lut-converter.html</loc>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/api.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/cli-options.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/server-api.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/gnu-gpl.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/doc-license.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://rainboxlab.org/changelog.html</loc>
-     <lastmod>2021-02-10</lastmod>
+     <lastmod>2021-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://rainboxlab.org/credits.html</loc>
+     <lastmod>2021-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>

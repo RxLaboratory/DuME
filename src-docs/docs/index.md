@@ -1,9 +1,21 @@
 # DuME Introduction
 
-**_DuME_ is a Free and Open Source Media Encoder**.  
-It is fast, versatile, and easy-to-use.  
-It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile command-line media encoder.  
-*DuME* is also able to render and transcode *Adobe After Effects* projects and to render [*Blender*](http://blender.org) scenes.
+**_DuME_ is a Free and Open Source Media Encoder**.
+
+It is still in an early development version, but can already be used in a professionnal pipeline.
+
+- It is **fast, versatile, and very easy-to-use**.
+- A system of simple **presets** makes it very quick to use. It comes with carefully hand-crafted presets suited for professionnal use.
+- Transcoding mostly uses [***FFmpeg***](https://ffmpeg.org/), a very fast and versatile command-line media encoder.
+- It supports a **huge variety of both input and output formats**.
+- **Color management** is carefully handled, and it has a partial [*OpenColorIO*](http://opencolorio.org) support through LUTs and LUT tools. This *OCIO* support will be completed and improved over time.
+- It will handle **openEXR files**, their AOVs, and compressions, using [*OpenImageIO*](https://github.com/OpenImageIO/oiio). This is still in development.
+- It renders and transcodes ***Adobe After Effects*** compositions.
+- It will render and transcode [***Blender***](http://blender.org) scenes. This is still in development.
+- It will have a **render/transcode queue** to plan and queue all your rendering/transcoding jobs. This is still in development.
+- It is packed with **a lot of useful features** (**speed** and **framerate** interpolation, applying **LUTs**, **mixing** streams, **resizing**/**cropping**...), all crafted for best quality and performance, with a lot of options but carefully chosen default values.
+- It comes with a **Command-Line interface** too, to make it easier to include in your existing pipeline.
+- It will include a **server API** through a background daemon, to make it easier to use with an existing pipeline and/or as a renderfarm. This is still in development.
 
 [TOC]
 
@@ -26,6 +38,9 @@ It is mainly based on [*FFmpeg*](https://ffmpeg.org/), a very fast and versatile
     - [Filters](filter.md)
 - After Effects rendering
     - [Rendering](after-effects-rendering.md)
+- Tools
+    - [OCIO LUT baker](lut-baker.md)
+    - [LUT converter](lut-converter.md)
 - Control and automation
     - [Introduction](api.md)
     - [Command line options](cli-options.md)
@@ -48,15 +63,17 @@ To achieve this goal, the development of the application follows these guideline
 ### Available Features
 
 - Transcode any audio or video file, [from any format supported by *FFmpeg*](https://ffmpeg.org/general.html#Supported-File-Formats_002c-Codecs-or-Features) to any other format supported by *FFmpeg*.
-- Easy presets for: mp4, wav, PNG, EXR, Quicktime HAP, GIF... - *evolving list*.
+- Easy presets for: mp4 (h.264/h.265), wav, PNG, EXR, Quicktime HAP, Apple Prores... - *evolving list*.
 - Transcode to and from [Image Sequences](sequences.md) (PNG, EXR...).
 - [Mix Media files](mapping.md) (e.g. add sound to an image sequence).
 - Easily render *After Effects* projects and transcode to any format supported by *FFmpeg*.
+- Color managed transcoding.
+- Create/convert/apply LUTs.
 - Render/Transcode queue, *work in progress, possible with command/batch files thanks to [the command line interface](cli-options.md)*.
 
 ### Planned Features
 
-- Simple media player (using ffplay).  
+- Simple media player.  
     - Preview of the input.
     - Preview of the output.
 - Render *Blender* scenes.
@@ -64,6 +81,9 @@ To achieve this goal, the development of the application follows these guideline
 - Add subtitles tracks.
 - Burn subtitles in picture.
 - Burn Metadata in picture (Timecode...).
+- Server API.
+- Better openEXR support.
+- Full OCIO support.
 
 ## About DuME
 
@@ -73,14 +93,11 @@ If you like this free software, please [support the developer on Patreon](http:/
 
 ### Software
 
-***DuME* Copyright (c) 2017-2020 Nicolas Dufresne and Contributors**  
+***DuME* Copyright (c) 2019-2021 Nicolas Dufresne and Contributors**  
 
 *DuME* is licensed under the [GNU General Public License v3](gnu-gpl.md).
 
-It also uses *FFmpeg* and *Qt*.
-
-***FFmpeg* Copyright (c) the FFmpeg developers**  
-***Qt* Copyright (c) The Qt Company**
+Read the [credits](credits.md) for information about the developpers and included third-party tools and code.
 
 This program is free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
@@ -98,3 +115,5 @@ with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled "[Documentation License](doc-license.md)".
 
 ![GNU](img/logos/gnu.png) ![GFDL](img/logos/gfdl-logo.png) 
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

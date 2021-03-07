@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Nicolas Dufresne and contributors">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>Eco-Friendly transcoding - DuME Documentation<br />v0.3.0</title>
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="style.css" rel="stylesheet">
+  <link href="video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Eco-Friendly transcoding";
+    var mkdocs_page_input_path = "green.md";
+    var mkdocs_page_url = "/green.html";
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.3.0</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="index.html">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Installation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="windows.html">Windows</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mac.html">Mac OS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">The Green Guide to transcoding</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="green.html">Eco-Friendly transcoding</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#the-green-guide-to-transccoding">The Green Guide to transccoding</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#what-we-need-to-take-care-of">What we need to take care of</a></li>
+        
+            <li><a class="toctree-l4" href="#intermediary-formats">Intermediary formats</a></li>
+        
+            <li><a class="toctree-l4" href="#last-step-editcolor-grading">Last step: edit/color grading</a></li>
+        
+            <li><a class="toctree-l4" href="#final-delivery">Final delivery</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="presets.html">Manage presets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="h264-5.html">MP4 / h.264 AVC / h.265 HEVC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="sequences.html">Image sequences</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="mapping.html">Adding / Changing streams</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="colors.html">Color management</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut.html">Applying a LUT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="speed.html">Speed and framerate</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="resize.html">Resizing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="filter.html">Filters</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">After Effects Rendering</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="after-effects-rendering.html">Rendering</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Tools</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="ocio-mac.html">LUT Tools and Mac OS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-baker.html">OCIO LUT baker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-converter.html">LUT converter</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Control and automation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="api.html">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="cli-options.html">Command line options</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="server-api.html">Server API</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">License</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="gnu-gpl.html">GNU GPLv3</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="doc-license.html">Documentation license</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">About</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="changelog.html">Changelog</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="credits.html">Credits</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="https://rainboxlab.org/about/donate/">Donate</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">DuME Documentation<br />v0.3.0</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>The Green Guide to transcoding &raquo;</li>
+        
+      
+    
+    <li>Eco-Friendly transcoding</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuME/tree/master/src-docs/docs/green.md"> Edit on Dume-Docs</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="the-green-guide-to-transccoding">The Green Guide to transccoding<a class="headerlink" href="#the-green-guide-to-transccoding" title="Permanent link">&para;</a></h1>
+<p>When it comes to digital goods, we tend to forget too easily that they have an ecological impact, as well as any <em>physical</em> good. Because we don&rsquo;t really see that the bigger our digital files are, the bigger the storing devices have to be, that these devices need power to run, that the internet consumes a lot of electricity to connect us, and that all of this is made of materials which have a very big negative impact during the extractions. And these are just examples, one could write a near infinite list of what the digital world consumes and burns.</p>
+<p>Here is a guide to help all of use keep in mind we can try to reduce our ecological impact, especially when working with media files and <em>DuME</em>. In future versions, <em>DuME</em> will help you improve your transcoding process and motion pictures production workflow to reduce your ecological impact.</p>
+<div class="toc">
+<ul>
+<li><a href="#the-green-guide-to-transccoding">The Green Guide to transccoding</a><ul>
+<li><a href="#what-we-need-to-take-care-of">What we need to take care of</a></li>
+<li><a href="#intermediary-formats">Intermediary formats</a><ul>
+<li><a href="#internet-and-streaming">Internet and streaming</a></li>
+<li><a href="#television-or-hdr-screens">Television or HDR screens</a></li>
+<li><a href="#cinema">Cinema</a></li>
+<li><a href="#recommended-formats">Recommended formats</a></li>
+<li><a href="#formats-to-avoid">Formats to avoid</a></li>
+</ul>
+</li>
+<li><a href="#last-step-editcolor-grading">Last step: edit/color grading</a><ul>
+<li><a href="#internet-and-streaming_1">Internet and streaming</a></li>
+<li><a href="#television-or-hdr-screens_1">Television or HDR screens</a></li>
+<li><a href="#cinema_1">Cinema</a></li>
+<li><a href="#recommended-formats_1">Recommended formats</a></li>
+<li><a href="#formats-to-avoid_1">Formats to avoid</a></li>
+</ul>
+</li>
+<li><a href="#final-delivery">Final delivery</a><ul>
+<li><a href="#internet-and-streaming_2">Internet and streaming</a></li>
+<li><a href="#television-or-hdr-screens_2">Television or HDR screens</a></li>
+<li><a href="#cinema_2">Cinema</a></li>
+<li><a href="#recommended-formats_2">Recommended formats</a></li>
+<li><a href="#formats-to-avoid_2">Formats to avoid</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="what-we-need-to-take-care-of">What we need to take care of<a class="headerlink" href="#what-we-need-to-take-care-of" title="Permanent link">&para;</a></h2>
+<p>Here is a short list of what we can work on to reduce our impact on the environment with our media files.</p>
+<ul>
+<li>File size.</li>
+</ul>
+<p>One media file may be small. We could even consider that all our media files are not so big after all, compared to all the data stored in the world. But let&rsquo;s not forget video is the biggest part of the traffic on the internet, and even a very small decrease in the average video file size could save a lot both in storage and bandwidth.</p>
+<ul>
+<li>Decoding performance</li>
+</ul>
+<p>A media file is meant to be played. And most of the time, the goal is for it to be played by as many people as possible. If the format is easier to decode, in terms of performance and bandwidth, that means less energy consumption to play it, and could save a lot of energy worldwide.</p>
+<ul>
+<li>Encoding performance</li>
+</ul>
+<p>This is much less important compared to the two previous points, as it happens just a few times in the lifetime of a media file, but it consumes much more power than decoding, so whenever possible, it would be good to reduce encoding times and consumption. One of the easiest way is to be able to re-render only part of the video when making changes.</p>
+<ul>
+<li>What the file will be used for</li>
+</ul>
+<p>The needs for editing a media file, streaming it or screening it are different. When choosing the best format and adjusting decoding performance, we have to take the target and use into account.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Of course, the following recommendations are just guidelines. You may need to improve quality depending on your specific needs durint the production; the goal of this document is to show you which parameter you could tweak to try to reduce your impact on the environment.</p>
+</div>
+<h2 id="intermediary-formats">Intermediary formats<a class="headerlink" href="#intermediary-formats" title="Permanent link">&para;</a></h2>
+<p>Intermediary Media files, which will be used during the production process between each step and software, need to keep a good quality and as much data as possible, so it will not be easy to reduce the file size a lot. That being said, we have to ask ourselves if we <em>really</em> need that lossless encoding or if a small theoretical loss could be acceptable, considering that even at some significant compression levels the human eye may still be incapable of seeing any difference. Of course the real question is if you&rsquo;ll still have enough data to edit the image afterwards, so that depends on your pipeline and what you need to do in the next step, but keep in mind you may not really need that full quality 32bpc lossless huge file.</p>
+<h3 id="internet-and-streaming">Internet and streaming<a class="headerlink" href="#internet-and-streaming" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    Do you really need a lossless format, or can you afford a theoretical loss of data, considering you won&rsquo;t see the difference?</li>
+<li><strong>YUV 422</strong><br />
+    Reducing the size of chroma channels can save a lot of space without impacting the decoding performance. If you don&rsquo;t need chroma keying, why not use a 422 format as soon as possible in the production, considering the video will be in 420 in the end?</li>
+<li><strong>8 bits</strong><br />
+    Do you really need more than 8 bits per channel in intermediary format? Of course, your working space may need more accuracy, but won&rsquo;t the file used for transfering data have enough precision with 8 bits?</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="television-or-hdr-screens">Television or HDR screens<a class="headerlink" href="#television-or-hdr-screens" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    Do you really need a lossless format, or can you afford a theoretical loss of data, considering you won&rsquo;t see the difference?</li>
+<li><strong>YUV 422</strong><br />
+    Reducing the size of chroma channels can save a lot of space without impacting the decoding performance. If you don&rsquo;t need chroma keying, why not use a 422 format as soon as possible in the production, considering the video will be in 420 in the end?</li>
+<li><strong>10 bits</strong><br />
+    Television standards are made for bigger and often better screens, sometimes capable of HDR colors. You may need to keep 10- or 12-bit channels, but keeping this parameter as low as possible is better.</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="cinema">Cinema<a class="headerlink" href="#cinema" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    Do you really need a lossless format, or can you afford a theoretical loss of data, considering you won&rsquo;t see the difference?</li>
+<li><strong>RGB or YUV 444</strong><br />
+    Your media is meant to be screened on huge screens, it is not recommended to reduce the size of chroma channels.</li>
+<li><strong>16 bits</strong><br />
+    The final export has to be delivered with at least 16 bits of data per channel, and the final DCP file uses 12 bits of data. Very often people use 32-bit intermediary files, but do you real need this insane amount of colors?</li>
+<li><strong>HD / 2K</strong> or 4K?<br />
+    Don&rsquo;t you agree that most of the people in cinemas won&rsquo;t see any difference between 2K and 4K? Do you even notice the difference? Does your theater even screen 4K films, have they changed their expensive projectors when 4K was made available? Is this slight difference really worth it compared to the environmental impact of files 4 times bigger? Is entertainment really that important?</li>
+</ul>
+<h3 id="recommended-formats">Recommended formats<a class="headerlink" href="#recommended-formats" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><em>h.265 Intra-frame mp4, 8-bit YUV 422</em></strong> will achieve all of the above points, and the resulting file size can be quite small, while being very easy to decode. It can use a lossless compression if you need, and you could also use all chroma data with a <em>444</em> encoding if you need. You can also increase to 10- or 12-bit channels. The only caveat is that it is not a frame sequence, so you won&rsquo;t be able to easily re-render only part of the video. Use only for short videos. If your software can&rsquo;t encode or decode <em>h.265</em>, try with intra-frame <em>h.264 (AVC-Intra)</em>.</p>
+</li>
+<li>
+<p><strong><em>OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression</em></strong> can achieve very small files. The <em>Luma/Chroma</em> option is equivalent to a <em>422</em> chroma sub-sampling and also saves space without perceptible loss. If you need chroma key in the next step you could just omit the option. <em>DWAA</em> compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.</p>
+</li>
+</ul>
+<h3 id="formats-to-avoid">Formats to avoid<a class="headerlink" href="#formats-to-avoid" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><em>Prores</em></strong> and <strong><em>DnxHD/HR</em></strong>, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with smaller intra-frame <em>h.265</em> or <em>openEXR</em> files.</p>
+</li>
+<li>
+<p><strong><em>PNG</em></strong> is nice, but <em>openEXR</em> is better. With the right compression settings, <em>openEXR</em> files can be smaller or at least the same size, and at least <em>Adobe After Effects</em> is much more performant for encoding and decoding <em>openEXR</em>. <em>OpenEXR</em> can be both lossy or lossless.</p>
+</li>
+<li>
+<p><strong><em>Not Intra-frame formats</em></strong> such as standard <em>h.264</em> for example, as this introduces a non-negligeable computing overhead while scrolling in the video file when working.</p>
+</li>
+</ul>
+<h2 id="last-step-editcolor-grading">Last step: edit/color grading<a class="headerlink" href="#last-step-editcolor-grading" title="Permanent link">&para;</a></h2>
+<p>When reaching the last step, which should be edit and maybe color grading, you won&rsquo;t need as much data as previous steps, and can use formats closer to the final delivery, but you still need a good decoding performance when scrolling in your timeline.</p>
+<h3 id="internet-and-streaming_1">Internet and streaming<a class="headerlink" href="#internet-and-streaming_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    You won&rsquo;t be making big changes on the video anymore, and color grading can afford a slight loss of data without any perceptible change for the human eye.</li>
+<li><strong>YUV 420</strong><br />
+    Reducing the size of chroma channels can save a lot of space without impacting the decoding performance. The final delivery will surely be a <em>420</em> file, you can already work with this when editing the video.</li>
+<li><strong>8 bits</strong><br />
+    You won&rsquo;t be making big changes on the video anymore, you don&rsquo;t need more data than what will be delivered in the end. Only if you have a lot of color grading to do it may be useful to keep 10 bits.</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="television-or-hdr-screens_1">Television or HDR screens<a class="headerlink" href="#television-or-hdr-screens_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    You won&rsquo;t be making big changes on the video anymore, and color grading can afford a slight loss of data without any perceptible change for the human eye.</li>
+<li><strong>YUV 420</strong><br />
+    Reducing the size of chroma channels can save a lot of space without impacting the decoding performance. The final delivery may be a <em>420</em> file, you can already work with this when editing the video.</li>
+<li><strong>10 bits</strong><br />
+    Television standards are made for bigger and often better screens, sometimes capable of HDR colors. You may need to keep 10- or 12-bit channels, but keeping this parameter as low as possible is better.</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="cinema_1">Cinema<a class="headerlink" href="#cinema_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Intra-Frame</strong><br />
+    Decoding has to be very efficient as when working on the file you have to be able to jump at any point in time. It is better to use either an file sequence, or a video using an intra-frame encoding.</li>
+<li><strong>Lossy</strong><br />
+    Do you really need a lossless format, or can you afford a theoretical loss of data, considering you won&rsquo;t see the difference?</li>
+<li><strong>RGB or YUV 444</strong><br />
+    Your media is meant to be screened on huge screens, it is not recommended to reduce the size of chroma channels.</li>
+<li><strong>12 bits</strong><br />
+    The final DCP file uses 12 bits of data. Very often people use 16- or 32-bit intermediary files, but do you real need this insane amount of colors?</li>
+<li><strong>HD / 2K</strong> or 4K?<br />
+    Don&rsquo;t you agree that most of the people in cinemas won&rsquo;t see any difference between 2K and 4K? Do you even notice the difference? Does your theater even screen 4K films, have they changed their expensive projectors when 4K was made available? Is this slight difference really worth it compared to the environmental impact of files 4 times bigger? Is entertainment really that important?</li>
+</ul>
+<h3 id="recommended-formats_1">Recommended formats<a class="headerlink" href="#recommended-formats_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><em>h.265 Intra-frame mp4, 8-bit YUV 420</em></strong> will achieve all of the above points, and the resulting file size can be quite small, while being very easy to decode. Its lossy compression is very efficient, and you could also use more chroma data with a <em>422</em> or <em>444</em> encoding if you need. You can also increase to 10- or 12-bit channels. The only caveat is that it is not a frame sequence, so you won&rsquo;t be able to easily re-render only part of the video. Use only for short videos. If your software can&rsquo;t encode or decode <em>h.265</em>, try with intra-frame <em>h.264 (AVC-Intra)</em>.</p>
+</li>
+<li>
+<p><strong><em>OpenEXR sequence, 16-bit RGB, Luma/Chroma, DWAA Compression</em></strong> can achieve very small files. The <em>Luma/Chroma</em> option is equivalent to a <em>422</em> chroma sub-sampling and also saves space without perceptible loss. <em>DWAA</em> compression is an efficient lossless or lossy compression, and even when lossy the loss can still be imperceptible.</p>
+</li>
+</ul>
+<h3 id="formats-to-avoid_1">Formats to avoid<a class="headerlink" href="#formats-to-avoid_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><em>Prores</em></strong> and <strong><em>DnxHD/HR</em></strong>, although very common, are not that great. They are lossy intra-frame formats, but resulting file sizes are huge. You can have better quality and the same decoding performance with smaller intra-frame <em>h.265</em> or <em>openEXR</em> files.</p>
+</li>
+<li>
+<p><strong><em>PNG</em></strong> is nice, but <em>openEXR</em> is better. With the right compression settings, <em>openEXR</em> files can be smaller or at least the same size, and at least <em>Adobe After Effects</em> is much more performant for encoding and decoding <em>openEXR</em>. <em>OpenEXR</em> can be both lossy or lossless.</p>
+</li>
+<li>
+<p><strong><em>Not Intra-frame formats</em></strong> such as standard <em>h.264</em> for example, as this introduces a non-negligeable computing overhead while scrolling in the video file when working.</p>
+</li>
+</ul>
+<h2 id="final-delivery">Final delivery<a class="headerlink" href="#final-delivery" title="Permanent link">&para;</a></h2>
+<p>The final media file can be as small as possible and it&rsquo;s not a problem to use imperceptible lossy compression. You don&rsquo;t need it anymore to be performant when scrolling in time, as most of the time it will just be played at its intended speed, so <strong>you don&rsquo;t need the format to be Intra-frame anymore</strong> (i.e. <em>Prores</em> and <em>DnxHD/HR</em> are not meant to be used as a final delivery). </p>
+<h3 id="internet-and-streaming_2">Internet and streaming<a class="headerlink" href="#internet-and-streaming_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Lossy</strong><br />
+    You won&rsquo;t be making big changes on the video anymore, and color grading can afford a slight loss of data without any perceptible change for the human eye.</li>
+<li><strong>YUV 420</strong><br />
+    It is very standard to use <em>420</em> chroma reduction in final files, and most of time nobody sees any difference.</li>
+<li><strong>8 bits</strong><br />
+    That&rsquo;s just what screens connected to the internet can show, no less, no more.</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="television-or-hdr-screens_2">Television or HDR screens<a class="headerlink" href="#television-or-hdr-screens_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Lossy</strong><br />
+    You won&rsquo;t be making big changes on the video anymore, and color grading can afford a slight loss of data without any perceptible change for the human eye.</li>
+<li><strong>YUV 420</strong><br />
+    It is very standard to use <em>420</em> chroma reduction in final files, and most of time nobody sees any difference. Some TV Chanels may ask for <em>422</em> files.</li>
+<li><strong>10 bits</strong><br />
+    Television standards are made for bigger and often better screens, sometimes capable of HDR colors. You may need to keep 10-bit channels, but keeping only 8 bits would be better.</li>
+<li><strong>HD / 2K</strong><br />
+    Will there be so many people watching this video on a huge screen, and close enough to it to see the difference if the video is in 4K and contains <strong>4 times</strong> more data? Is it really worth it?</li>
+</ul>
+<h3 id="cinema_2">Cinema<a class="headerlink" href="#cinema_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Lossless</strong><br />
+    The DCI standard and final DCP files are lossless. Theoratically, we could still use lossy (but with an invisible loss) formats.</li>
+<li><strong>RGB or YUV 444</strong><br />
+    Your media is meant to be screened on huge screens, it is not recommended to reduce the size of chroma channels.</li>
+<li><strong>12 bits</strong><br />
+    The final DCP file uses 12 bits of data. Very often people use 16- or 32-bit intermediary files, but do you real need this insane amount of colors?</li>
+<li><strong>HD / 2K</strong> or 4K?<br />
+    Don&rsquo;t you agree that most of the people in cinemas won&rsquo;t see any difference between 2K and 4K? Do you even notice the difference? Does your theater even screen 4K films, have they changed their expensive projectors when 4K was made available? Is this slight difference really worth it compared to the environmental impact of files 4 times bigger? Is entertainment really that important?</li>
+</ul>
+<h3 id="recommended-formats_2">Recommended formats<a class="headerlink" href="#recommended-formats_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><em>h.265 standard mp4, 8-bit YUV 420</em></strong> is small and very efficient. As it may not be supported everywhere yet, you could also use the less efficient h.264 instead. OGG Video (.ogv) is great too. All of them are capable of 10- or 12-bit HDR too. Note that some codecs have presets or settings to improve decoding performance and to adjust compatibility with older hardware; these settings usually reduce power consumption when playing the file.</li>
+</ul>
+<h3 id="formats-to-avoid_2">Formats to avoid<a class="headerlink" href="#formats-to-avoid_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><em>Prores</em></strong> and <strong><em>DnxHD/HR</em></strong>. Do you really want to send files that big over the internet?</p>
+</li>
+<li>
+<p><strong><em>Image sequences</em></strong>. Decoding performance is much better with standard video files.</p>
+</li>
+</ul>
+<p><img alt="META" src="authors:Nicolas &quot;Duduf&quot; Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="presets.html" class="btn btn-neutral float-right" title="Manage presets">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="linux.html" class="btn btn-neutral" title="Linux"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019-2021 Rainbox Laboratory and Nicolas Dufresne</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="linux.html" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="presets.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="video.js" defer></script>
+      <script src="meta.js" defer></script>
+      <script src="search/main.js" defer></script>
+
+</body>
+</html>

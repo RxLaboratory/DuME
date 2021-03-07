@@ -31,6 +31,14 @@ This is the list of what has changed since the first public version of *DuFFmpeg
 - False-positive error detection during transcoding (probably) fixed.
 - Better stability for the progress bar when rendering After Effects projects.
 
+### Known issues
+
+These issues could not be fixed before the release and will be fixed in future updates.
+
+- The progress bar will not work correctly when rendering After Effects compositions if After Effects is not installed in English ([#230](https://github.com/Rainbox-dev/DuME/issues/230)).
+- When rendering a composition using the After Effects script on Mac OS, and the composition name contains special characters, After Effects will freeze ([#231](https://github.com/Rainbox-dev/DuME/issues/231)).
+- The window can not be resized on Mac OS ([#232](https://github.com/Rainbox-dev/DuME/issues/231)).
+
 ## 0.2.0
 
 ### New Features
@@ -99,7 +107,7 @@ Private testing release
 
 ### New Features
 
-- Now comes with [a script for *After Effects*](after-effects-install.md).
+- Now comes with [a script for *After Effects*](after-effects-rendering.md).
 - Added more [command line options](cli-options.md).
 - Added some options to tweak [h264](h264-5.md) encoding (including the ability to output CBR streams).
 

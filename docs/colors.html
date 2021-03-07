@@ -8,9 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Color management - DuME Documentation<br />v0.2.0</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
+  <title>Color management - DuME Documentation<br />v0.3.0</title>
   <link rel="stylesheet" href="css/theme.css" type="text/css" />
   <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -38,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.2.0</a>
+        <a href="index.html" class="icon icon-home"> DuME Documentation<br />v0.3.0</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -65,11 +63,22 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="mac.html">Mac OS X</a>
+    <a class="" href="mac.html">Mac OS</a>
                 </li>
                 <li class="">
                     
     <a class="" href="linux.html">Linux</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">The Green Guide to transcoding</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="green.html">Eco-Friendly transcoding</a>
                 </li>
     </ul>
 	    </li>
@@ -148,6 +157,25 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">Tools</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="ocio-mac.html">LUT Tools and Mac OS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-baker.html">OCIO LUT baker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="lut-converter.html">LUT converter</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">Control and automation</span>
     <ul class="subnav">
                 <li class="">
@@ -190,6 +218,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="credits.html">Credits</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="https://rainboxlab.org/about/contact/">Contact</a>
                 </li>
                 <li class="">
@@ -209,7 +241,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">DuME Documentation<br />v0.2.0</a>
+        <a href="index.html">DuME Documentation<br />v0.3.0</a>
       </nav>
 
       
@@ -244,6 +276,7 @@
 <li><a href="#manage-and-convert-color-spaces">Manage and convert color spaces</a><ul>
 <li><a href="#color-spaces-in-dume">Color spaces in DuME</a><ul>
 <li><a href="#color-profile-presets-definitions">Color profile (presets) definitions</a></li>
+<li><a href="#setting-the-color-management">Setting the color management</a></li>
 </ul>
 </li>
 <li><a href="#automatic-color-conversion-by-dume">Automatic color conversion by DuME</a></li>
@@ -263,7 +296,7 @@
 <p>In <em>DuME</em>, the primaries and the white point are set together with the same parameter, which means the color profiles used by <em>DuME</em> have only two parameters: <strong><em>Primaries</em></strong> and <strong><em>Transfer curve</em></strong>.</p>
 <p>Apart from these parameters, the way these colors can be stored can vary according to the <strong><em>pixel format</em></strong>, which, in videos, is usually either <strong><em>RGB</em></strong> or <strong><em>YUV</em></strong>. The first describes the color as Red, Green and Blue components, and the latter as a Luma component, and two Chroma components.</p>
 <p><em>DuME</em> associates a conversion Matrix with the color spaces to convert between the <em>YUV</em> and <em>RGB</em> spaces.</p>
-<p>Finally, when working in the <em>YUV</em> space, a fourth settings sets if the range is <strong><em>full</em></strong> or <strong><em>limited</em></strong>. In an 8 bit full range, values for each channel range from <code>0</code> to <code>255</code> whereas in the limited range, values are constrained to the <code>16-235</code> range.</p>
+<p>Finally, when working in the <em>YUV</em> space, a fourth setting sets the range to <strong><em>full</em></strong> or <strong><em>limited</em></strong>. In an 8-bit full range, values for each channel range from <code>0</code> to <code>255</code> whereas in the limited range, values are constrained to the <code>16-235</code> range.</p>
 <h3 id="color-profile-presets-definitions">Color profile (presets) definitions<a class="headerlink" href="#color-profile-presets-definitions" title="Permanent link">&para;</a></h3>
 <p>This is the list of color profiles (i.e. presets) in <em>DuME</em> and their default parameters</p>
 <table>
@@ -327,6 +360,13 @@
 <td>Full</td>
 </tr>
 <tr>
+<td>ACEScg</td>
+<td>ACEScg</td>
+<td>Linear</td>
+<td>RGB</td>
+<td>Full</td>
+</tr>
+<tr>
 <td>PAL / SECAM</td>
 <td>PAL &amp; SECAM / BT.470 BG / BT.601</td>
 <td>PAL &amp; SECAM / BT.470 M</td>
@@ -340,12 +380,35 @@
 <td>NTSC</td>
 <td>Limited</td>
 </tr>
+<tr>
+<td>QT gamma 1.96</td>
+<td>BT.709 / RGB / IEC 61966-2-4</td>
+<td>QT gamma 1.96</td>
+<td>BT.709</td>
+<td>Limited</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This list may be adjusted in future versions.<br />
 If you feel these default values could be improved, or other ones added, please <a href="https://github.com/Rainbox-dev/DuME/issues/new/choose">post your suggestions</a> here.</p>
+</div>
+<h3 id="setting-the-color-management">Setting the color management<a class="headerlink" href="#setting-the-color-management" title="Permanent link">&para;</a></h3>
+<p><img alt="" src="img/captures/blocks-header.png" /></p>
+<p>You can change the color space <em>DuME</em> works in. The default is to keep the color profile from the input media, but you may need to change this if:</p>
+<ul>
+<li>You&rsquo;re using specific <a href="lut.html">LUTs</a>, options, or a lot of filters, which need specific or wider color profiles.</li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>You don&rsquo;t necessarily need to change the working color space when applying a LUT, as <em>DuME</em> is able to change the color space before and after applying the LUT to use it in its intended color space.</p>
+</div>
+<p>If you know you don&rsquo;t need any color conversions and color management, you can turn off <em>DuME</em> color management by setting the working color space to <em>None</em>. This will make encoding a bit faster and may make things simpler as <em>DuME</em> will just copy color data without altering anything. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When transcoding from image sequences (<em>sRGB</em>) to videos (mostly <em>BT.709</em> or <em>BT.2020 YUV</em>), turning off color management will result in a gamma shift.</p>
+<p>When rendering <em>After Effects</em> compositions, you&rsquo;ll also need to enable color management, as <em>After Effects</em> compositions are rendered in a <em>linear RGB</em> color space and not in the output color space.</p>
 </div>
 <h2 id="automatic-color-conversion-by-dume">Automatic color conversion by <em>DuME</em><a class="headerlink" href="#automatic-color-conversion-by-dume" title="Permanent link">&para;</a></h2>
 <p>When all color parameters are left to their default values, here is what <em>DuME</em> does:</p>
@@ -382,6 +445,11 @@ If you feel these default values could be improved, or other ones added, please 
 <p>You can quickly set all values to a specific color space by selecting a preset in the options.</p>
 <p><img alt="" src="img/captures/blocks/color_presets.png" /></p>
 <p>For any specific parameter, if you don&rsquo;t know what to choose, leave it on <em>Auto</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The available parameters change a bit depending on the need for conversion. <em>DuME</em> does not support conversion to all formats (espacially the older ones).</p>
+</div>
+<p><img alt="META" src="authors:Nicolas &quot;Duduf&quot; Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07" /></p>
               
             </div>
           </div>
@@ -430,6 +498,7 @@ If you feel these default values could be improved, or other ones added, please 
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="video.js" defer></script>
+      <script src="meta.js" defer></script>
       <script src="search/main.js" defer></script>
 
 </body>

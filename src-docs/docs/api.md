@@ -1,6 +1,6 @@
 # Controlling DuME
 
-DuME is a stand-alone application, but it can easily be controlled from other applications and scripts (like [the *DuME* script for *After Effects*](after-effects-install.md)).
+DuME is a stand-alone application, but it can easily be controlled from other applications and scripts (like [the *DuME* script for *After Effects*](after-effects-rendering.md)).
 
 There are two ways to control *DuME* from outside:
 
@@ -13,3 +13,5 @@ There are two ways to control *DuME* from outside:
     If you need deep control over the transcoding from another application, or if you'd like a headless version of *DuME*, it would be easier to use *FFmpeg* (and the *After Effects'* `aerender` command) by yourself, as *DuME* does not do a lot more than correctly handling these third-party command-line tools.
 
     In the future, we hope to provide more control over *DuME*, so it could be used in a completely automated workflow and provide renderfarm-like features. Some other important features (like the render queue) have to be implemented first.
+
+![META](authors:Nicolas "Duduf" Dufresne;license:GNU-FDL;copyright:2019-2021;updated:2021/03/07)

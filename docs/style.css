@@ -1,60 +1,105 @@
 a {
-    color: #ec1818;
+    color: #a526c4;
 }
 a:hover {
     color: #710132;
 }
+
+.wy-nav-content-wrap {
+    background:none;
+ }
+
 .wy-side-nav-search {
     background-color: #710132;
 }
+
 .wy-nav-side {
+    background-color: #333333;
+    box-shadow: 1px 4px 7px #131313;
+}
+
+.wy-body-for-nav {
     background-color: #434343;
 }
-.wy-body-for-nav {
-    background-color: #E3E3E3;
-}
+
 .wy-nav-content {
-    background-color: #E3E3E3;
+    background-color: #e3e3e3;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 1px 4px 7px #131313;
 }
+
 .wy-side-nav-search input[type="text"] {
     border-color: #710132;
 }
+
 .wy-menu-vertical li a {
-    color: #e3e3e3;
-    margin-left:20px;
+    color: #a526c4;
 }
+
+.wy-menu-vertical li ul li {
+    padding-left: 10px;
+}
+
+.wy-menu-vertical li ul li ul li a {
+    color: #939393 !important;
+}
+
+.wy-menu-vertical li.toctree-l3.current > a {
+    background-color: #e3e3e3;
+}
+
+.wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a {
+    background-color: #e3e3e3;
+}
+
 .wy-menu-vertical span {
-    color: #ec1818;
+    color: #a526c4;
 }
 
-h2, h3, h4 {
-    margin-top: 15px;
+.codehilite {
+    background-color: #b3b3b3;
+    padding:10px;
+    overflow-inline: auto;
+    margin-bottom: 25px;
+    margin-top:-15px;
 }
 
-h3 {
-    margin-left: 20px;
+.codehilite .c1 {
+    color: #278d4b;
+    font-weight:800;
 }
 
-h4 {
-    margin-left: 40px;
+.codehilite .s2 {
+    color: #527bbd;
 }
 
-table tr:nth-child(odd) {
-    background-color:#c8c8c8;
+.codehilite .kd {
+    color: #8c267c;
+    font-weight:800;
 }
 
-table tr:nth-child(even) {
-    background-color:#d8d8d8;
+.codehilite .k {
+    color: #8c267c;
+    font-weight:600;
 }
 
-thead tr {
-    background-color:#737373 !important;
-    color:#e3e3e3;
+.codehilite .o, .codehilite .p {
+    color: #8d5e98;
+    font-weight:800;
 }
 
+.post-meta::before {
+    content: "About this page";
+    margin-left:10px;
+    font-style: italic;
+}
 
-img[alt=icon] {
-    width: 24px;
+.post-meta {
+    font-size: 0.8em;
+    background-color: #f1f1f1;
+    border-radius: 10px;
 }
