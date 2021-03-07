@@ -4,12 +4,9 @@
         outline: none;
 }
 
-MainWindow, QDialog {
-    background-color: @color-dark-grey;
-}
-
-QWidget {
-    /*font-weight:400;*/
+MainWindow, QDialog, QWidget {
+    font-familiy = @font-family;
+    font-size: @font-size-medium;
     background-color: @color-dark-grey;
 }
 

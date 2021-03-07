@@ -9,9 +9,11 @@
 #include <QTime>
 #include <QDir>
 #include <QProcess>
+#include <QApplication>
 
 namespace FileUtils
 {
+    QString applicationTempPath();
     void setReadWrite(QFile *file);
     void setReadWrite(QString path);
     void move(QString from, QString to);

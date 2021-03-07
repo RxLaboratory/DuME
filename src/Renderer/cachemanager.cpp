@@ -29,7 +29,7 @@ CacheManager *CacheManager::instance()
 void CacheManager::init()
 {
     QSettings settings;
-    QString defaultCachePath = QDir::tempPath() + "/" + qApp->applicationName() + "/";
+    QString defaultCachePath = FileUtils::applicationTempPath();
     defaultCachePath = QDir::toNativeSeparators(defaultCachePath);
 
     QString currentCachePath = settings.value("cachePath", defaultCachePath).toString();

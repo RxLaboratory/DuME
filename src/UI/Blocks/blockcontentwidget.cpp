@@ -30,7 +30,7 @@ BlockContentWidget::BlockContentWidget(MediaInfo *mediaInfo, QWidget *parent) : 
     _freezeUI = false;
 }
 
-void BlockContentWidget::activate(bool act)
+void BlockContentWidget::activate(bool /*act*/)
 {
 
 }

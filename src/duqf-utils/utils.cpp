@@ -353,3 +353,8 @@ void ProcessUtils::runProcess(QProcess *p, QString binary, QStringList arguments
 
     p->start(QIODevice::ReadWrite);
 }
+
+QString FileUtils::applicationTempPath()
+{
+    return QDir::tempPath() + "/" + qApp->applicationName() + "/";
+}

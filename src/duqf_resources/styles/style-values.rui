@@ -20,6 +20,10 @@
 @color-yellow = #ecd718
 @color-light-red = #f96969
 
+@font-size-small = 9px
+@font-size-medium = 12px
+@font-size-large = 15px;
+
 @margin = 3px
 @padding-small = 5px
 @padding-medium = 7px

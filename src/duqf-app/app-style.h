@@ -2,6 +2,7 @@
 #define APPSTYLE_H
 
 #include "app-version.h"
+#include "duqf-utils/utils.h"
 
 #include <QString>
 #include <QStringList>
@@ -14,6 +15,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QtDebug>
+
 
 class DuUI
 {
@@ -116,39 +118,28 @@ public:
         return css;
     }
 
-    static void setFont(QString family = "Ubuntu", int size=0)
+    static void setFont(QString family = "Ubuntu")
     {
         if (family == "Ubuntu")
         {
-            //add fonts
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-B");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-BI");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-C");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-L");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-LI");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-M");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-MI");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-R");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-RI");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Th");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-B");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-BI");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
+            //extract fonts
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-B.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-BI.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-C.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-L.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-LI.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-M.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-MI.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-R.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-RI.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Th.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-B.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-BI.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R.ttf");
+            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI.ttf");
         }
-#ifdef Q_OS_MAC
-        if (size == 0) size = 12;
-#endif
-#ifdef Q_OS_LINUX
-        if (size ==0) size = 10;
-#endif
 
-#ifdef Q_OS_WIN
-        //There are strange issues with setting the font size on Win (at least with Qt 5.9.9)
         qApp->setFont(QFont(family));
-#else
-        qApp->setFont(QFont(family,size));
-#endif
     }
 
     static void setToolButtonStyle(int styleIndex)

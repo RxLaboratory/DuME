@@ -182,8 +182,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
     log("Init - Setting stylesheet", LogUtils::Debug);
-    // Set style
-    duqf_setStyle();
 
     //parse arguments if ffmpeg is valid
     autoQuit = false;
@@ -305,6 +303,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect(actionGo, &QAction::triggered, this, &MainWindow::go);
     connect(launchQueueButton, &QToolButton::clicked, this, &MainWindow::go);
     connect( goButton, &QToolButton::clicked, this, &MainWindow::go );
+
+    // Set style
+    duqf_setStyle();
 
     log("Ready!");
 }
@@ -431,6 +432,8 @@ void MainWindow::duqf_initUi()
 void MainWindow::duqf_setStyle()
 {
     // ======== STYLE ========
+    // Font first so it's available in the css
+    DuUI::setFont(settings.value("appearance/font", "Ubuntu").toString());
 
     //Re-set StyleSheet
     QString cssFile = settings.value("appearance/cssFile", ":/styles/default").toString();
@@ -444,8 +447,7 @@ void MainWindow::duqf_setStyle()
         DuUI::updateCSS("");
         qApp->setStyle(QStyleFactory::create(style));
     }
-    //and font
-    DuUI::setFont(settings.value("appearance/font", "Ubuntu").toString());
+
     //and tool buttons
     int styleIndex = settings.value("appearance/toolButtonStyle", 2).toInt();
     DuUI::setToolButtonStyle(styleIndex);

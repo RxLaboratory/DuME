@@ -33,19 +33,19 @@
         <file alias="default-values">duqf_resources/styles/style-values.rui</file>
     </qresource>
     <qresource prefix="/fonts">
-        <file alias="Ubuntu-B">duqf_resources/fonts/Ubuntu-B.ttf</file>
-        <file alias="Ubuntu-BI">duqf_resources/fonts/Ubuntu-BI.ttf</file>
-        <file alias="Ubuntu-C">duqf_resources/fonts/Ubuntu-C.ttf</file>
-        <file alias="Ubuntu-L">duqf_resources/fonts/Ubuntu-L.ttf</file>
-        <file alias="Ubuntu-LI">duqf_resources/fonts/Ubuntu-LI.ttf</file>
-        <file alias="Ubuntu-M">duqf_resources/fonts/Ubuntu-M.ttf</file>
-        <file alias="Ubuntu-MI">duqf_resources/fonts/Ubuntu-MI.ttf</file>
-        <file alias="UbuntuMono-B">duqf_resources/fonts/UbuntuMono-B.ttf</file>
-        <file alias="UbuntuMono-BI">duqf_resources/fonts/UbuntuMono-BI.ttf</file>
-        <file alias="UbuntuMono-R">duqf_resources/fonts/UbuntuMono-R.ttf</file>
-        <file alias="UbuntuMono-RI">duqf_resources/fonts/UbuntuMono-RI.ttf</file>
-        <file alias="Ubuntu-R">duqf_resources/fonts/Ubuntu-R.ttf</file>
-        <file alias="Ubuntu-RI">duqf_resources/fonts/Ubuntu-RI.ttf</file>
-        <file alias="Ubuntu-Th">duqf_resources/fonts/Ubuntu-Th.ttf</file>
+        <file alias="Ubuntu-B.ttf">duqf_resources/fonts/Ubuntu-B.ttf</file>
+        <file alias="Ubuntu-BI.ttf">duqf_resources/fonts/Ubuntu-BI.ttf</file>
+        <file alias="Ubuntu-C.ttf">duqf_resources/fonts/Ubuntu-C.ttf</file>
+        <file alias="Ubuntu-L.ttf">duqf_resources/fonts/Ubuntu-L.ttf</file>
+        <file alias="Ubuntu-LI.ttf">duqf_resources/fonts/Ubuntu-LI.ttf</file>
+        <file alias="Ubuntu-M.ttf">duqf_resources/fonts/Ubuntu-M.ttf</file>
+        <file alias="Ubuntu-MI.ttf">duqf_resources/fonts/Ubuntu-MI.ttf</file>
+        <file alias="UbuntuMono-B.ttf">duqf_resources/fonts/UbuntuMono-B.ttf</file>
+        <file alias="UbuntuMono-BI.ttf">duqf_resources/fonts/UbuntuMono-BI.ttf</file>
+        <file alias="UbuntuMono-R.ttf">duqf_resources/fonts/UbuntuMono-R.ttf</file>
+        <file alias="UbuntuMono-RI.ttf">duqf_resources/fonts/UbuntuMono-RI.ttf</file>
+        <file alias="Ubuntu-R.ttf">duqf_resources/fonts/Ubuntu-R.ttf</file>
+        <file alias="Ubuntu-RI.ttf">duqf_resources/fonts/Ubuntu-RI.ttf</file>
+        <file alias="Ubuntu-Th.ttf">duqf_resources/fonts/Ubuntu-Th.ttf</file>
     </qresource>
 </RCC>

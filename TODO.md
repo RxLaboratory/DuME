@@ -2,12 +2,6 @@ if ffmpeg/ocio not found, reset path in settings, and search again
 
 ## au prochain build
 
-- check default ocio path on win & linux
-
-- check reset settings pour voir si les chemins (win, linux) sont bien trouvés
-
-- Check UI win (font size)
-
 - doc: add ociobakelut instruction for macos
 
 - build doc
