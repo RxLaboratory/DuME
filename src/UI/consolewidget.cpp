@@ -1,5 +1,4 @@
 #include "consolewidget.h"
-#include "ui_consolewidget.h"
 
 ConsoleWidget::ConsoleWidget(QWidget *parent) :
     QWidget(parent)

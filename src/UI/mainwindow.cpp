@@ -307,10 +307,6 @@ void MainWindow::duqf_initUi()
 
     // remove right click on toolbar
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
-    // set frameless
-#ifndef Q_OS_MAC
-    this->setWindowFlags(Qt::FramelessWindowHint);
-#endif
     //drag window
     duqf_toolBarClicked = false;
     mainToolBar->installEventFilter(this);
@@ -319,23 +315,6 @@ void MainWindow::duqf_initUi()
     mainToolBar->addWidget(new ToolBarSpacer());
     title = new QLabel(STR_FILEDESCRIPTION);
     mainToolBar->addWidget(title);
-    //minimize
-#ifndef Q_OS_MAC
-    QToolButton *minimizeButton = new QToolButton();
-    minimizeButton->setIcon(QIcon(":/icons/minimize"));
-    minimizeButton->setObjectName("windowButton");
-    mainToolBar->addWidget(minimizeButton);
-#endif
-    //maximize
-    duqf_maximizeButton = new QToolButton(this);
-    duqf_maximizeButton->setIcon(QIcon(":/icons/maximize"));
-    duqf_maximizeButton->setObjectName("windowButton");
-    mainToolBar->addWidget(duqf_maximizeButton);
-    //quit
-    QToolButton *quitButton = new QToolButton(this);
-    quitButton->setIcon(QIcon(":/icons/quit"));
-    quitButton->setObjectName("windowButton");
-    mainToolBar->addWidget(quitButton);
 
     // ===== STATUSBAR ======
 
@@ -405,12 +384,6 @@ void MainWindow::duqf_initUi()
     settingsWidget->addPage(asw, "Appearance", QIcon(":/icons/color"));
 
     // ====== CONNECTIONS ======
-    connect(duqf_maximizeButton,SIGNAL(clicked()),this,SLOT(duqf_maximize()));
-#ifndef Q_OS_MAC
-    connect(minimizeButton,SIGNAL(clicked()),this,SLOT(showMinimized()));
-#endif
-    connect(quitButton,SIGNAL(clicked()),this,SLOT(close()));
-
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(duqf_settingsButton, SIGNAL(clicked(bool)), this, SLOT(duqf_settings(bool)));
     connect(settingsWidget, SIGNAL(closeRequested()), this, SLOT(duqf_closeSettings()));
@@ -439,25 +412,6 @@ void MainWindow::duqf_setStyle()
     //and tool buttons
     int styleIndex = settings.value("appearance/toolButtonStyle", 2).toInt();
     DuUI::setToolButtonStyle(styleIndex);
-}
-
-void MainWindow::duqf_maximize(bool max)
-{
-    if (!max)
-    {
-        duqf_maximizeButton->setIcon(QIcon(":/icons/maximize"));
-        this->showNormal();
-    }
-    else
-    {
-        duqf_maximizeButton->setIcon(QIcon(":/icons/unmaximize"));
-        this->showMaximized();
-    }
-}
-
-void MainWindow::duqf_maximize()
-{
-    duqf_maximize(!this->isMaximized());
 }
 
 void MainWindow::duqf_bugReport()
@@ -815,7 +769,8 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
   #ifndef Q_OS_MAC
     else if (event->type() == QEvent::MouseButtonDblClick)
     {
-        duqf_maximize();
+        if (this->isMaximized()) this->showNormal();
+        else this->showMaximized();
         event->accept();
         return true;
     }

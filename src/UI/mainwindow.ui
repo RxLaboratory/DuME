@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>DuMedia Encoder</string>
+   <string>DuME</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">

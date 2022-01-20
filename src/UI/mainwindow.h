@@ -46,8 +46,6 @@ public:
     void onffmpegCommandsButton_clicked();
 
 private slots:
-    void duqf_maximize(bool max);
-    void duqf_maximize();
     void duqf_bugReport();
     void duqf_forum();
     void duqf_chat();

@@ -68,9 +68,6 @@ void buildUI(QStringList args, DuSplashScreen *s)
 {
     s->newMessage("Building UI");
     MainWindow *w = new MainWindow( args );
-#ifndef Q_OS_LINUX
-    FrameLessWindow f(w);
-#endif
     w->show();
 
     //hide splash when finished
