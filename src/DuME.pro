@@ -48,6 +48,7 @@ SOURCES += \
     UI/Blocks/blockworkingspace.cpp \
     UI/aesettingswidget.cpp \
     UI/cachesettingswidget.cpp \
+    UI/consolewidget.cpp \
     UI/ffmpegparamwidget.cpp \
     UI/ffmpegsettingswidget.cpp \
     UI/lutbakerwidget.cpp \
@@ -64,6 +65,7 @@ SOURCES += \
     duqf-widgets/autoselectdoublespinbox.cpp \
     duqf-widgets/autoselectlineedit.cpp \
     duqf-widgets/autoselectspinbox.cpp \
+    duqf-widgets/duqfdocktitle.cpp \
     duqf-widgets/duqfdoubleslider.cpp \
     duqf-widgets/duqfslider.cpp \
     duqf-widgets/settingswidget.cpp \
@@ -140,6 +142,7 @@ HEADERS += \
     UI/Blocks/blockworkingspace.h \
     UI/aesettingswidget.h \
     UI/cachesettingswidget.h \
+    UI/consolewidget.h \
     UI/ffmpegparamwidget.h \
     UI/ffmpegsettingswidget.h \
     UI/lutbakerwidget.h \
@@ -157,6 +160,7 @@ HEADERS += \
     duqf-widgets/autoselectdoublespinbox.h \
     duqf-widgets/autoselectlineedit.h \
     duqf-widgets/autoselectspinbox.h \
+    duqf-widgets/duqfdocktitle.h \
     duqf-widgets/duqfslider.h \
     duqf-widgets/duqfdoubleslider.h \
     duqf-widgets/settingswidget.h \

@@ -8,7 +8,7 @@
 #include "duqf-widgets/settingswidget.h"
 #include "duqf-widgets/aboutdialog.h"
 #include "duqf-widgets/appearancesettingswidget.h"
-
+#include "duqf-widgets/duqfdocktitle.h"
 
 #include <QProcess>
 #include <QFileDialog>
@@ -34,6 +34,7 @@
 #include "UI/cachesettingswidget.h"
 #include "UI/ociosettingswidget.h"
 #include "UI/queuewidget.h"
+#include "UI/consolewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -56,14 +57,8 @@ private slots:
     void duqf_about();
 
     // FFMPEG
-    void ffmpegLog(QString l, DuQFLog::LogType lt = DuQFLog::Information);
-    void ffmpegConsole( QString c);
     void ffmpegValid(bool valid);
     void ffmpegStatus(MediaUtils::RenderStatus status);
-
-    // AE
-    void aeLog(QString l, DuQFLog::LogType lt = DuQFLog::Information);
-    void aeConsole( QString c);
 
     // Queue
     void progress();
@@ -82,12 +77,6 @@ private slots:
     // Tools
     void closeTools();
 
-    // UI EVENTS
-    void on_ffmpegCommandsEdit_returnPressed();
-    void on_ffmpegCommandsButton_clicked();
-    void on_aeCommandsEdit_returnPressed();
-    void on_aeCommandsButton_clicked();
-
     // ACTIONS
     void on_actionStop_triggered();
     void on_actionGoQuit_triggered();
@@ -96,7 +85,6 @@ private slots:
     void on_rQueueSplitter_splitterMoved(int pos, int index);
     void on_actionConsole_triggered(bool checked);
     void on_actionTools_triggered(bool checked);
-    void on_consoleSplitter_splitterMoved(int pos, int index);
 
     // GENERAL
     void quit(bool force = false);
@@ -136,6 +124,7 @@ private:
     // ====== UI ========
 
     QToolButton *_cacheButton;
+    QToolButton *ui_consoleButton;
     QueueWidget *queueWidget;
     /**
      * @brief reInitCurrentProgress Initializes the current progress bar and infos
@@ -157,6 +146,9 @@ private:
     AESettingsWidget *aeSettingsWidget;
     CacheSettingsWidget *cacheSettingsWidget;
     OcioSettingsWidget *ocioSettingsWidget;
+
+    // Docks
+    QDockWidget *ui_consoleDock;
 
     // ===== RENDERQUEUE =====
     /**

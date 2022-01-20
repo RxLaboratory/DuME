@@ -14,7 +14,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     //populate toolbar
     mainToolBar->addAction(actionShowQueue);
-    mainToolBar->addAction(actionConsole);
     mainToolBar->addAction(actionTools);
     QMenu *goMenu = new QMenu();
     goMenu->addAction( actionGo );
@@ -34,6 +33,13 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 #endif
 
     //custom status bar buttons
+    ui_consoleButton = new QToolButton(this);
+    ui_consoleButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    ui_consoleButton->setText("");
+    ui_consoleButton->setIcon(QIcon(":/icons/console"));
+    ui_consoleButton->setCheckable(true);
+    mainStatusBar->addPermanentWidget(ui_consoleButton);
+
     _cacheButton = new QToolButton(this);
     _cacheButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
     mainStatusBar->addPermanentWidget(_cacheButton,1);
@@ -56,14 +62,8 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     // Load Renderers info (to be passed to other widgets)
     log("Init - Connecting to FFmpeg", DuQFLog::Debug);
     //FFmpeg
-    connect( FFmpeg::instance(), SIGNAL( newLog(QString, DuQFLog::LogType) ),this,SLOT( ffmpegLog(QString, DuQFLog::LogType)) );
-    connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
-    //After Effects
-    log("Init - Connecting to After Effects", DuQFLog::Debug);
-    connect( AfterEffects::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, DuQFLog::LogType )) );
-    connect( AfterEffects::instance(), SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
@@ -130,8 +130,20 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     log("Init - Setting default UI items", DuQFLog::Debug);
 
+    // Docks
+    ConsoleWidget *consoleWidget = new ConsoleWidget(this);
+    ui_consoleDock = new QDockWidget("Console", this);
+    ui_consoleDock->setObjectName("consoleDock");
+    DuQFDockTitle *ui_consoleTitle = new DuQFDockTitle("Console", this);
+    ui_consoleTitle->setObjectName("dockTitle");
+    ui_consoleTitle->setIcon(":/icons/console");
+    ui_consoleDock->setTitleBarWidget(ui_consoleTitle);
+    ui_consoleDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    ui_consoleDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    ui_consoleDock->setWidget( consoleWidget );
+    this->addDockWidget(Qt::RightDockWidgetArea, ui_consoleDock);
+
     //init UI
-    consoleTabs->setCurrentIndex(0);
     mainStack->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
@@ -139,24 +151,18 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     log("Init - Setting window geometry", DuQFLog::Debug);
 
     //restore geometry
-    settings.beginGroup("mainwindow");
-    //size
-    resize(settings.value("size", QSize(1280, 850)).toSize());
-    //position
-    //move(settings.value("pos", QPoint(200, 200)).toPoint());
-    //maximized
-#ifndef Q_OS_MAC
-    duqf_maximize( settings.value("maximized",false).toBool() );
-#endif
+    // Restore UI state
+    settings.beginGroup("ui");
+    if (settings.value("maximized", false).toBool() )
+        this->showMaximized();
+    this->restoreState( settings.value("windowState").toByteArray() );
     settings.endGroup();
+
+    ui_consoleButton->setChecked(ui_consoleDock->isVisible());
 
     bool showQueue = settings.value("rQueueVisible", false).toBool();
     actionShowQueue->setChecked(showQueue);
     on_actionShowQueue_triggered(showQueue);
-
-    bool showConsole = settings.value("consoleVisible", false).toBool();
-    actionConsole->setChecked(showConsole);
-    on_actionConsole_triggered(showConsole);
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
@@ -170,11 +176,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect(renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
     connect(renderQueue, SIGNAL( newLog( QString, DuQFLog::LogType )), this, SLOT( log( QString, DuQFLog::LogType )) );
     connect(renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
-
-    connect(FFmpegRenderer::instance(), &AbstractRenderer::console, this, &MainWindow::ffmpegConsole );
-    connect(FFmpegRenderer::instance(), &AbstractRenderer::newLog, this, &MainWindow::ffmpegLog );
-    connect(AERenderer::instance(), &AbstractRenderer::console, this, &MainWindow::aeConsole );
-    connect(AERenderer::instance(), &AbstractRenderer::newLog, this, &MainWindow::aeLog );
 
     // final connections
 
@@ -303,6 +304,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect(actionGo, &QAction::triggered, this, &MainWindow::go);
     connect(launchQueueButton, &QToolButton::clicked, this, &MainWindow::go);
     connect( goButton, &QToolButton::clicked, this, &MainWindow::go );
+
+    connect(ui_consoleDock,SIGNAL(visibilityChanged(bool)), ui_consoleButton, SLOT(setChecked(bool)));
+    connect(ui_consoleButton,SIGNAL(clicked(bool)), ui_consoleDock, SLOT(setVisible(bool)));
 
     // Set style
     duqf_setStyle();
@@ -527,27 +531,11 @@ void MainWindow::duqf_about()
     duqf_aboutDialog->show();
 }
 
-void MainWindow::ffmpegLog(QString l, DuQFLog::LogType lt)
-{
-    log( "FFmpeg | " + l, lt);
-}
-
-void MainWindow::ffmpegConsole(QString c)
-{
-    //add date
-    QTime currentTime = QTime::currentTime();
-
-    //log
-    consoleEdit->setText(consoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + c );
-    consoleEdit->verticalScrollBar()->setSliderPosition(consoleEdit->verticalScrollBar()->maximum());
-}
-
 void MainWindow::ffmpegValid(bool valid)
 {
     if ( valid )
     {
         queuePage->setGraphicsEffect( nullptr );
-        helpEdit->setText(FFmpeg::instance()->longHelp());
         queuePage->setEnabled(true);
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
@@ -580,30 +568,6 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
     {
        ffmpegValid( FFmpeg::instance()->isValid() );
     }
-}
-
-void MainWindow::aeLog(QString l, DuQFLog::LogType lt)
-{
-    AfterEffectsVersion *aev = AfterEffects::instance()->currentVersion();
-    if (aev)
-    {
-        l = "After Effects " + AfterEffects::instance()->currentVersion()->name() + " | " + l;
-    }
-    else
-    {
-        l = "After Effects | " + l;
-    }
-    log(l, lt);
-}
-
-void MainWindow::aeConsole(QString c)
-{
-    //add date
-    QTime currentTime = QTime::currentTime();
-
-    //log
-    aeConsoleEdit->setText(aeConsoleEdit->toPlainText() + "\n" + currentTime.toString("[hh:mm:ss.zzz]: ") + c );
-    aeConsoleEdit->verticalScrollBar()->setSliderPosition(aeConsoleEdit->verticalScrollBar()->maximum());
 }
 
 void MainWindow::progress()
@@ -779,59 +743,9 @@ void MainWindow::openCacheDir()
 
 void MainWindow::log(QString log, DuQFLog::LogType type)
 {
-    //type
-    QString typeString = "";
-    if ( type == DuQFLog::Debug )
-    {
-        qDebug().noquote() << log;
-    }
-    else if ( type == DuQFLog::Information )
-    {
-        qInfo().noquote() << log;
-    }
-    else if (type == DuQFLog::Warning)
-    {
-        qWarning().noquote() << log;
-        typeString = "/!\\ Warning: ";
-    }
-    else if (type == DuQFLog::Critical)
-    {
-        qCritical().noquote() << log;
-        typeString = " --- !!! Critical: ";
-    }
-    else if (type == DuQFLog::Fatal)
-    {
-        qFatal("%s", qUtf8Printable(log));
-        typeString = " === Fatal === ";
-    }
-
-    //log
-#ifndef QT_DEBUG
-    if ( type != DuQFLog::Debug )
-    {
-#endif
-        //status bar
-        mainStatusBar->showMessage(log);
-
-        //add date
-        QTime currentTime = QTime::currentTime();
-        debugEdit->setTextColor(QColor(109,109,109));
-        debugEdit->setFontWeight(300);
-        debugEdit->append(currentTime.toString("[hh:mm:ss.zzz]: "));
-        debugEdit->moveCursor(QTextCursor::End);
-        if (type == DuQFLog::Information) debugEdit->setTextColor(QColor(227,227,227));
-        else if (type == DuQFLog::Warning) debugEdit->setTextColor(QColor(236,215,24));
-        else if (type == DuQFLog::Critical) debugEdit->setTextColor(QColor(249,105,105));
-        debugEdit->setFontWeight(800);
-        debugEdit->setFontItalic(true);
-        debugEdit->insertPlainText(typeString);
-        debugEdit->setFontWeight(400);
-        debugEdit->setFontItalic(false);
-        debugEdit->insertPlainText(log);
-        //debugEdit->verticalScrollBar()->setSliderPosition(debugEdit->verticalScrollBar()->maximum());
-#ifndef QT_DEBUG
-    }
-#endif
+    Q_UNUSED(type)
+    //status bar
+    mainStatusBar->showMessage(log);
 }
 
 void MainWindow::closeTools()
@@ -839,30 +753,6 @@ void MainWindow::closeTools()
     mainStack->setCurrentIndex(0);
     actionTools->setChecked(false);
     on_actionTools_triggered(false);
-}
-
-void MainWindow::on_ffmpegCommandsEdit_returnPressed()
-{
-    on_ffmpegCommandsButton_clicked();
-}
-
-void MainWindow::on_ffmpegCommandsButton_clicked()
-{
-    QString commands = ffmpegCommandsEdit->text();
-    if (commands == "") commands = "-h";
-    FFmpeg::instance()->runCommand(commands);
-}
-
-void MainWindow::on_aeCommandsEdit_returnPressed()
-{
-    on_aeCommandsButton_clicked();
-}
-
-void MainWindow::on_aeCommandsButton_clicked()
-{
-    QString commands = aeCommandsEdit->text();
-    if (commands == "") commands = "-h";
-    AfterEffects::instance()->runCommand(commands);
 }
 
 void MainWindow::go()
@@ -904,12 +794,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug() << "Saving geometry and settings...";
 
     //save ui geometry
-    settings.beginGroup("mainwindow");
-    settings.setValue("size", size());
-    settings.setValue("pos", pos());
-    settings.setValue("maximized",this->isMaximized());
+    // Let's save the ui state
+    settings.beginGroup("ui");
+    settings.setValue("maximized", this->isMaximized());
+    settings.setValue("windowState", this->saveState());
     settings.endGroup();
-    settings.sync();
 
     qDebug() << "Purging disk cache...";
 
@@ -919,7 +808,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     //remove app fonts
     QFontDatabase::removeAllApplicationFonts();
 
-    event->accept();
+    QMainWindow::closeEvent(event);
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
@@ -1081,24 +970,8 @@ void MainWindow::on_rQueueSplitter_splitterMoved(int /*pos*/, int /*index*/)
 
 void MainWindow::on_actionConsole_triggered(bool checked)
 {
-    if (checked)
-    {
-        QList<int>sizes;
-        settings.beginGroup("consolesplitter");
-        sizes << settings.value("consoleSize",25).toInt();
-        sizes << settings.value("queueSize",75).toInt();
-        settings.endGroup();
-        if (sizes[0] < 100) sizes[0] = 100;
-        consoleSplitter->setSizes(sizes);
-    }
-    else
-    {
-        QList<int>sizes;
-        sizes << 0;
-        sizes << 100;
-        consoleSplitter->setSizes(sizes);
-    }
-    settings.setValue("consoleVisible", checked);
+    // TODO
+    // show dock
 }
 
 void MainWindow::on_actionTools_triggered(bool checked)
@@ -1113,20 +986,4 @@ void MainWindow::on_actionTools_triggered(bool checked)
         mainStack->setCurrentIndex(0);
         actionShowQueue->setChecked( settings.value("rQueueVisible", false).toBool() );
     }
-}
-
-void MainWindow::on_consoleSplitter_splitterMoved(int /*pos*/, int /*index*/)
-{
-    QList<int> sizes = consoleSplitter->sizes();
-    if (sizes[0] > 100)
-    {
-        settings.beginGroup("consolesplitter");
-        settings.setValue("consoleSize", sizes[0]);
-        settings.setValue("queueSize", sizes[1]);
-        settings.endGroup();
-    }
-
-    bool showConsole = sizes[0] != 0;
-    actionConsole->setChecked(showConsole);
-    settings.setValue("consoleVisible", showConsole);
 }
