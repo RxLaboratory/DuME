@@ -3,3 +3,4 @@ ffmpeg/ffmpeg.exe
 *.user.*
 *.user
 .DS_Store
+build-*
