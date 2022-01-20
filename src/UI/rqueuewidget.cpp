@@ -4,32 +4,25 @@ RQueueWidget::RQueueWidget(QWidget *parent) :
     QWidget(parent)
 {
     setupUi();
+    connectEvents();
 
     // Add a few items
-    /*queueListItem = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
+    queueListItem = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", ui_rQueueList);
     // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
 #ifdef QT_DEBUG
-    new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    rQueueList->setCurrentRow(0);
-    new QListWidgetItem(QIcon(":/icons/ok"), "Job #4", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/error"), "Job #5", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/rendering"), "Job #6", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    connect(rQueueList, &QListWidget::currentRowChanged, rQueueStack, &QStackedWidget::setCurrentIndex);
+    new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", ui_rQueueList);
+    new QListWidgetItem(QIcon(":/icons/video"), "Job #3", ui_rQueueList);
+    new QListWidgetItem(QIcon(":/icons/ok"), "Job #4", ui_rQueueList);
+    new QListWidgetItem(QIcon(":/icons/error"), "Job #5", ui_rQueueList);
+    new QListWidgetItem(QIcon(":/icons/rendering"), "Job #6", ui_rQueueList);
     //TODO : drag and drop on the queuewidget; drop on the list adds a new queuewidget
 #else // DISABLE QUEUE FOR NOW IN PUBLIC RELEASE
-    actionLaunchJob->setEnabled(false);
-    addJobButton->setEnabled(false);
-    removeJobButton->setEnabled(false);
-    launchJobButton->setEnabled(false);
-    new QListWidgetItem("Render queue in development\nAvailable soon!", rQueueList);
-    rQueueList->setCurrentRow(0);
-    rQueueList->setEnabled(false);
+    ui_addJobButton->setEnabled(false);
+    ui_removeJobButton->setEnabled(false);
+    ui_launchJobButton->setEnabled(false);
+    new QListWidgetItem("Render queue in development\nAvailable soon!", ui_rQueueList);
+    ui_rQueueList->setCurrentRow(0);
+    ui_rQueueList->setEnabled(false);
 #endif//*/
 }
 
@@ -76,4 +69,24 @@ void RQueueWidget::setupUi()
     ui_rQueueList->setSortingEnabled(true);
 
     verticalLayout->addWidget(ui_rQueueList);
+}
+
+void RQueueWidget::connectEvents()
+{
+    // TODO connect job to its item
+    //connect(queueWidget->job(), &QueueItem::statusChanged, this, &MainWindow::queueItemStatusChanged);
+    // TODO connect list row to Job UI
+    //connect(ui_rQueueList, &QListWidget::currentRowChanged, rQueueStack, &QStackedWidget::setCurrentIndex);
+
+}
+
+void RQueueWidget::queueItemStatusChanged(MediaUtils::RenderStatus status)
+{
+    QString itemText = queueListItem->text().split("\n")[0];
+    if (MediaUtils::isBusy(status)) queueListItem->setIcon(QIcon(":/icons/rendering"));
+    else if (status == MediaUtils::Finished || status == MediaUtils::Stopped) queueListItem->setIcon(QIcon(":/icons/ok"));
+    else if (status == MediaUtils::Error) queueListItem->setIcon(QIcon(":/icons/error"));
+    else queueListItem->setIcon(QIcon(":/icons/audio-video"));
+    itemText += "\n{ " + MediaUtils::RenderStatusToHumanString(status) + " }";
+    queueListItem->setText(itemText);
 }

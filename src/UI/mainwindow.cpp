@@ -94,7 +94,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
-    connect(queueWidget->job(), &QueueItem::statusChanged, this, &MainWindow::queueItemStatusChanged);
 
     // Cache monitoring
     _cacheButton->setMinimumWidth(100);
@@ -704,18 +703,6 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
         }
     }
 }
-
-void MainWindow::queueItemStatusChanged(MediaUtils::RenderStatus status)
-{
-    QString itemText = queueListItem->text().split("\n")[0];
-    if (MediaUtils::isBusy(status)) queueListItem->setIcon(QIcon(":/icons/rendering"));
-    else if (status == MediaUtils::Finished || status == MediaUtils::Stopped) queueListItem->setIcon(QIcon(":/icons/ok"));
-    else if (status == MediaUtils::Error) queueListItem->setIcon(QIcon(":/icons/error"));
-    else queueListItem->setIcon(QIcon(":/icons/audio-video"));
-    itemText += "\n{ " + MediaUtils::RenderStatusToHumanString(status) + " }";
-    queueListItem->setText(itemText);
-}
-
 void MainWindow::cacheSizeChanged(qint64 size)
 {
     _cacheButton->setText( "Cache: " + MediaUtils::sizeString(size));

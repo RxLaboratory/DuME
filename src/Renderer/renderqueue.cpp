@@ -170,6 +170,7 @@ void RenderQueue::encode()
 
 void RenderQueue::encode(QueueItem *item)
 {
+    qDebug() << "============test";
     clearQueue();
     _encodingQueue << item;
     encode();
