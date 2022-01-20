@@ -10,10 +10,18 @@
 #include <QFileInfo>
 #include <QFontDatabase>
 #include <QRegularExpression>
+#include <QTimer>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QStringBuilder>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QSettings>
 
 #include "app-version.h"
 #include "app-style.h"
 #include "../duqf-utils/utils.h"
+#include "../duqf-utils/duqflogger.h"
 
 #ifdef Q_OS_WIN
 #include "windows.h"
@@ -51,6 +59,7 @@ public:
 
 class DuSplashScreen : public QSplashScreen
 {
+    Q_OBJECT
 public:
     DuSplashScreen(const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = Qt::WindowFlags()) : QSplashScreen(pixmap, f)
     {
@@ -58,21 +67,20 @@ public:
         _progressBar = new QProgressBar(this);
         _progressBar->setMinimumWidth( pixmap.width() );
         _progressBar->setMaximumWidth( pixmap.width() );
-        _progressBar->move( 0, pixmap.height() - 30);
+        _progressBar->move( 0, pixmap.height() - 25);
         _progressBar->setAlignment(Qt::AlignVCenter);
         //add a label for the version
         _versionLabel = new QLabel("v" + QString(STR_VERSION), this);
         _versionLabel->setMinimumWidth( pixmap.width() );
         _versionLabel->setMaximumWidth( pixmap.width() );
-        _versionLabel->move( 0, pixmap.height() - 45);
+        _versionLabel->move( 0, pixmap.height() - 40);
     }
 
 public slots:
-
-    void newMessage(QString message, LogUtils::LogType lt = LogUtils::Information)
+    void newMessage(QString message, DuQFLog::LogType lt = DuQFLog::Information)
     {
         if (!this->isVisible()) return;
-        if (lt == LogUtils::Debug) return;
+        if (lt == DuQFLog::Debug) return;
         _progressBar->setFormat( "%p% - " + message );
 #ifdef QT_DEBUG
     qDebug().noquote() << message;
@@ -99,114 +107,42 @@ private:
 
 class DuApplication : public QApplication
 {
+    Q_OBJECT
 public:
-    DuApplication(int &argc, char *argv[]) : QApplication(argc, argv)
-    {
-#ifndef QT_DEBUG
-        // handles messages from the app and redirects them to stdout (info) or stderr (debug, warning, critical, fatal)
-        qInstallMessageHandler(MessageHandler::messageOutput);
-#endif
-        qDebug() << "Initializing application";
+    explicit DuApplication(int &argc, char *argv[]);
 
-        //set style
-        DuUI::updateCSS(":/styles/default");
+    DuSplashScreen *splashScreen() const;
 
-        //create splash screen
-        QPixmap pixmap(SPLASH_IMAGE);
-        _splashScreen = new DuSplashScreen( pixmap );
+    void showSplashScreen();
 
-        //set app icon
-        qApp->setWindowIcon(QIcon(APP_ICON));
+    void setIdleTimeOut(int to);
 
-        // settings
-        QCoreApplication::setOrganizationName(STR_COMPANYNAME);
-        QCoreApplication::setOrganizationDomain(STR_COMPANYDOMAIN);
-        QCoreApplication::setApplicationName(STR_PRODUCTNAME);
-        QCoreApplication::setApplicationVersion(STR_VERSION);
-    }
+    // Process the CLI arguments
+    bool processArgs(QStringList examples = QStringList(), QStringList helpStrings = QStringList());
 
-    DuSplashScreen *splashScreen() const
-    {
-        return _splashScreen;
-    }
+    const QJsonObject &updateInfo() const;
 
-    void showSplashScreen()
-    {
-        qDebug() << "Displaying splash screen";
-        _splashScreen->show();
-    }
+public slots:
+    // Check for updates
+    void checkUpdate();
+
+signals:
+    void idle();
+    void newUpdateInfo(QJsonObject);
+
+protected:
+    virtual bool notify(QObject *receiver, QEvent *ev);
+
+private slots:
+    void idleTimeOut();
+    void gotUpdateInfo(QNetworkReply *rep);
 
 private:
     DuSplashScreen *_splashScreen;
+    QTimer *_idleTimer;
+    int _idleTimeout;
+    QStringList _args;
+    QJsonObject _updateInfo;
 };
-
-// Process the CLI arguments
-bool duqf_processArgs(int argc, char *argv[], QStringList examples = QStringList(), QStringList helpStrings = QStringList())
-{
-    bool nobanner = false;
-    bool help = false;
-
-    // No console without args on windows
-#ifdef Q_OS_WIN
-    bool hideConsole = argc == 1;
-#endif
-
-    for (int i = 1; i < argc; i++)
-    {
-        QString arg = argv[i];
-        if ( arg.toLower() == "--no-banner" ) nobanner = true;
-        if (arg.toLower() == "-h" || arg.toLower() == "--help" ) help = true;
-#ifdef Q_OS_WIN
-        if (arg.toLower() == "--hide-console") hideConsole = true;
-#endif
-    }
-
-    if (!nobanner)
-    {
-        qInfo().noquote() << STR_PRODUCTNAME;
-        qInfo().noquote() << "version " + QString(STR_VERSION);
-        qInfo().noquote() << STR_LEGALCOPYRIGHT;
-        qInfo() << "";
-        qInfo() << "This program comes with ABSOLUTELY NO WARRANTY;";
-        qInfo() << "This is free software, and you are welcome to redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
-        qInfo() << "";
-
-#ifdef QT_DEBUG
-        qInfo() << "Note: this is a development build and should not be used in production.";
-        qInfo() << "";
-#endif
-    }
-
-    if (help)
-    {
-        qInfo().noquote() << STR_PRODUCTDESCRIPTION;
-        foreach(QString example, examples)
-        {
-            qInfo().noquote() << example;
-        }
-        qInfo() << "General";
-        qInfo() << "    -h / --help       Print basic options without launching the application";
-        qInfo().noquote() << "    See the documentation at " + QString(URL_DOC) + " for detailed descriptions of the options";
-        qInfo() << "    --no-banner       Hides the banner with product information and legal notice";
-        foreach(QString h, helpStrings)
-        {
-            qInfo().noquote() << h;
-        }
-#ifdef Q_OS_WIN
-        qInfo() << "    --hide-console    Hides the console when starting the application using command line arguments";
-#endif
-    }
-
-#ifdef Q_OS_WIN
-#ifndef QT_DEBUG
-    if (hideConsole)
-    {
-        ShowWindow(GetConsoleWindow(), SW_HIDE);
-    }
-#endif
-#endif
-
-    return help;
-}
 
 #endif // APPUTILS_H

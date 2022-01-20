@@ -21,6 +21,15 @@ namespace FileUtils
     void remove(QString path);
     qint64 getDirSize(QDir d);
     void openInExplorer(QString path);
+
+    /**
+     * @brief moveToTrash Moves a file to the trash, works on Linux, Mac OS, Windows.
+     * If Qt < 5.15 uses a custom implementation
+     * If Qt > 5.15 uses QFile::moveToTrash(QString &fileName)
+     * @param fileName
+     * @return
+     */
+    bool moveToTrash(const QString &fileName);
 };
 
 namespace MediaUtils
@@ -137,19 +146,26 @@ namespace MediaUtils
     qint64 convertToBytes( qint64 value, SizeUnit from );
 };
 
-namespace LogUtils
+namespace NetworkUtils
 {
     Q_NAMESPACE
 
-    /**
-     * @brief The LogType enum Log level for printing the debug log
-     */
-    enum LogType { Debug, Information, Warning, Critical, Fatal };
-    Q_ENUM_NS(LogType)
+    enum NetworkStatus { Connecting, Online, Offline };
+    Q_ENUM_NS(NetworkStatus)
+
 };
 
 namespace RegExUtils {
-    QRegularExpression getRegEx( QString name );
+    QRegularExpression getRegularExpression(QString name , QString replace = "", QString by = "");
+    /**
+     * @brief getRegExp Don't use this, always prefer getRegularExpression!
+     * getRegExp is meant only to be used with QRegExpValidator which doesn't accept QRegularExpression
+     * @param name
+     * @param replace
+     * @param by
+     * @return
+     */
+    QRegExp getRegExp(QString name , QString replace = "", QString by = "");
 };
 
 namespace Interpolations {

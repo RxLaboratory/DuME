@@ -11,6 +11,7 @@
 #include <QVersionNumber>
 
 #include "duqf-utils/utils.h"
+#include "duqf-utils/duqflogger.h"
 #include "duqf-app/app-version.h"
 
 class AfterEffectsVersion : public QObject
@@ -52,7 +53,7 @@ public:
     void restoreOriginalTemplates();
 
 signals:
-    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
+    void newLog( QString, DuQFLog::LogType lt = DuQFLog::Information );
 
 
 private slots:

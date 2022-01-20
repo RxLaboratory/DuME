@@ -56,13 +56,13 @@ private slots:
     void duqf_about();
 
     // FFMPEG
-    void ffmpegLog(QString l, LogUtils::LogType lt = LogUtils::Information);
+    void ffmpegLog(QString l, DuQFLog::LogType lt = DuQFLog::Information);
     void ffmpegConsole( QString c);
     void ffmpegValid(bool valid);
     void ffmpegStatus(MediaUtils::RenderStatus status);
 
     // AE
-    void aeLog(QString l, LogUtils::LogType lt = LogUtils::Information);
+    void aeLog(QString l, DuQFLog::LogType lt = DuQFLog::Information);
     void aeConsole( QString c);
 
     // Queue
@@ -77,7 +77,7 @@ private slots:
     void openCacheDir();
 
     // LOGS
-    void log(QString log,LogUtils::LogType type = LogUtils::Information);
+    void log(QString log,DuQFLog::LogType type = DuQFLog::Information);
 
     // Tools
     void closeTools();

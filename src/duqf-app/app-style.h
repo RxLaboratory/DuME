@@ -2,7 +2,6 @@
 #define APPSTYLE_H
 
 #include "app-version.h"
-#include "duqf-utils/utils.h"
 
 #include <QString>
 #include <QStringList>
@@ -14,34 +13,13 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QToolButton>
-#include <QtDebug>
-
 
 class DuUI
 {
 public:
-    DuUI()
-    {
+    static DuUI *instance();
 
-    }
-    static void updateCSS(QString cssFileName)
-    {
-        qApp->setStyleSheet("");
-        QStringList cssFiles(cssFileName);
-        //check if there's a dume file to include
-        QFileInfo cssFileInfo(cssFileName);
-        QString includeName = cssFileInfo.completeBaseName() + "-" + QString(STR_INTERNALNAME).toLower();
-        QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
-        QFile includeFile(includePath);
-        includePath = cssFileInfo.path() + "/" + includeName;
-        if (!includeFile.exists()) includeFile.setFileName(includePath);
-        if (includeFile.exists())
-        {
-            cssFiles << includePath;
-        }
-        QString css = DuUI::loadCSS(cssFiles);
-        qApp->setStyleSheet(css);
-    }
+    static void updateCSS(QString cssFileName);
 
     /**
      * @brief loadCSS Loads a CSS File
@@ -50,10 +28,7 @@ public:
      * @param cssFileName The file name (with complete path) of the CSS
      * @return the CSS string
      */
-    static QString loadCSS(QString cssFileName = ":/styles/default")
-    {
-        return loadCSS(QStringList(cssFileName));
-    }
+    static QString loadCSS(QString cssFileName = ":/styles/default");
 
     /**
      * @brief loadCSS Loads multiple CSS Files
@@ -62,118 +37,30 @@ public:
      * @param cssFileNames The file names (with complete path) of the CSS
      * @return the CSS string
      */
-    static QString loadCSS(QStringList cssFileNames, QString styleValues = "")
-    {
-        QString css = "";
+    static QString loadCSS(QStringList cssFileNames, QString styleValues = "");
 
-        //Build a single CSS with the files
-        foreach(QString file,cssFileNames)
-        {
-            QFile cssFile(file);
-            if (cssFile.exists())
-            {
-                if (cssFile.open(QFile::ReadOnly))
-                {
-                    css += QString(cssFile.readAll());
-                    cssFile.close();
-                }
-            }
-        }
+    static void setFont(QString family = "Ubuntu", int size=10, int weight=400);
 
-        //replace variables
-        //find values
-        QFileInfo cssInfo(cssFileNames[0]);
-        if (styleValues =="")
-        {
-            styleValues = cssInfo.path() + "/" + cssInfo.completeBaseName() + "-values";
-        }
-        QFile valuesFile(styleValues);
-        if (valuesFile.exists())
-        {
-            if (valuesFile.open(QFile::ReadOnly))
-            {
-                css += "\n";
-                //read lines
-                while(!valuesFile.atEnd())
-                {
-                    QString line = valuesFile.readLine();
+    static void setToolButtonStyle(int styleIndex);
 
-                    //get value and name
-                    QRegularExpression re("(@\\S+) *= *(\\S+)");
-                    QRegularExpressionMatch match = re.match(line);
-                    if (match.hasMatch())
-                    {
-                        QString name = match.captured(1);
-                        QString value = match.captured(2);
-                        css.replace(name,value);
-                    }
-                }
-            }
-        }
+    static void setToolButtonStyle(Qt::ToolButtonStyle style);
 
-    #ifdef QT_DEBUG
-        qDebug() << "DuUI: CSS Ready";
-    #endif
+    static QColor getColor(QString colorName);
 
-        return css;
-    }
+    static int getSize(QString type, QString name = "");
 
-    static void setFont(QString family = "Ubuntu")
-    {
-        if (family == "Ubuntu")
-        {
-            //extract fonts
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-B.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-BI.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-C.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-L.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-LI.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-M.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-MI.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-R.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-RI.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Th.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-B.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-BI.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R.ttf");
-            QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI.ttf");
-        }
+    void addCssValue(QStringList value);
+    QList<QStringList> cssValues();
+    void clearCssValues();
 
-        qApp->setFont(QFont(family));
-    }
+protected:
+    static DuUI *_instance;
 
-    static void setToolButtonStyle(int styleIndex)
-    {
-        Qt::ToolButtonStyle toolStyle = Qt::ToolButtonTextUnderIcon;
-        if (styleIndex == 0) toolStyle = Qt::ToolButtonIconOnly;
-        else if (styleIndex == 1) toolStyle = Qt::ToolButtonTextOnly;
-        else if (styleIndex == 2) toolStyle = Qt::ToolButtonTextUnderIcon;
-        else if (styleIndex == 3) toolStyle = Qt::ToolButtonTextBesideIcon;
-        DuUI::setToolButtonStyle(toolStyle);
-    }
-
-    static void setToolButtonStyle(Qt::ToolButtonStyle style)
-    {
-        foreach( QWidget *w, qApp->allWidgets())
-        {
-            if(QMainWindow *mw = qobject_cast<QMainWindow*>(w))
-            {
-                mw->setToolButtonStyle(style);
-            }
-            else if (QToolBar *tb = qobject_cast<QToolBar*>(w))
-            {
-                tb->setToolButtonStyle(style);
-            }
-            else if (QToolButton *tb = qobject_cast<QToolButton*>(w))
-            {
-                if (tb->objectName() == "windowButton") continue;
-                if (tb->text() == "") continue;
-                if (tb->icon().isNull()) continue;
-                tb->setToolButtonStyle(style);
-            }
-        }
-    }
+private:
+    DuUI() {};
+    QList<QStringList> _cssValues;
 };
+
 
 //seen at https://stackoverflow.com/questions/5752408/qt-resize-borderless-widget/37507341#37507341
 //posted by https://stackoverflow.com/users/5446734/iman4k

@@ -216,3 +216,187 @@ void FrameLessWindow::calculateCursorPosition(const QPoint &pos, const QRect &fr
         _edge = None;
     }
 }
+
+DuUI *DuUI::_instance = nullptr;
+
+DuUI *DuUI::instance() {
+    if (!_instance) _instance = new DuUI();
+    return _instance;
+}
+
+void DuUI::updateCSS(QString cssFileName)
+{
+    qApp->setStyleSheet("");
+    QStringList cssFiles(cssFileName);
+    //check if there's a dume file to include
+    QFileInfo cssFileInfo(cssFileName);
+    QString includeName = cssFileInfo.completeBaseName() + "-" + QString(STR_INTERNALNAME).toLower();
+    QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
+    QFile includeFile(includePath);
+    includePath = cssFileInfo.path() + "/" + includeName;
+    if (!includeFile.exists()) includeFile.setFileName(includePath);
+    if (includeFile.exists())
+    {
+        cssFiles << includePath;
+    }
+    QString css = DuUI::loadCSS(cssFiles);
+    qApp->setStyleSheet(css);
+}
+
+QString DuUI::loadCSS(QString cssFileName)
+{
+    return loadCSS(QStringList(cssFileName));
+}
+
+QString DuUI::loadCSS(QStringList cssFileNames, QString styleValues)
+{
+    QString css = "";
+
+    //Build a single CSS with the files
+    foreach(QString file,cssFileNames)
+    {
+        QFile cssFile(file);
+        if (cssFile.exists())
+        {
+            if (cssFile.open(QFile::ReadOnly))
+            {
+                css += QString(cssFile.readAll());
+                cssFile.close();
+            }
+        }
+    }
+
+    //replace variables
+    //find values
+    QFileInfo cssInfo(cssFileNames[0]);
+    if (styleValues =="")
+    {
+        styleValues = cssInfo.path() + "/" + cssInfo.completeBaseName() + "-values";
+    }
+    QFile valuesFile(styleValues);
+    if (valuesFile.exists())
+    {
+        if (valuesFile.open(QFile::ReadOnly))
+        {
+            DuUI::instance()->clearCssValues();
+            css += "\n";
+            //read lines
+            while(!valuesFile.atEnd())
+            {
+                QString line = valuesFile.readLine();
+
+                //get value and name
+                QRegularExpression re("(@(\\w+)(?:-(\\w+(?:-\\w+)*))?) *= *(\\S+)");
+                QRegularExpressionMatch match = re.match(line);
+                if (match.hasMatch())
+                {
+                    QString type = match.captured(2);
+                    QString typeName = match.captured(3);
+                    QString name = match.captured(1);
+                    QString value = match.captured(4);
+                    css.replace(name,value);
+                    QStringList cssValue;
+                    cssValue << type << typeName << value;
+                    DuUI::instance()->addCssValue(cssValue);
+                }
+            }
+        }
+    }
+
+#ifdef QT_DEBUG
+    qDebug() << "DuUI: CSS Ready";
+#endif
+
+    return css;
+}
+
+void DuUI::setFont(QString family, int size, int weight)
+{
+    Q_UNUSED(size);
+    Q_UNUSED(weight);
+    if (family == "Ubuntu")
+    {
+        //add fonts
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-B");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-BI");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-C");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-L");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-LI");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-M");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-MI");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-R");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-RI");
+        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Th");
+        QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-B");
+        QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-BI");
+        QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-R");
+        QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-RI");
+    }
+
+    qApp->setFont(QFont(family),"QWidget");
+}
+
+void DuUI::setToolButtonStyle(int styleIndex)
+{
+    Qt::ToolButtonStyle toolStyle = Qt::ToolButtonTextUnderIcon;
+    if (styleIndex == 0) toolStyle = Qt::ToolButtonIconOnly;
+    else if (styleIndex == 1) toolStyle = Qt::ToolButtonTextOnly;
+    else if (styleIndex == 2) toolStyle = Qt::ToolButtonTextUnderIcon;
+    else if (styleIndex == 3) toolStyle = Qt::ToolButtonTextBesideIcon;
+    DuUI::setToolButtonStyle(toolStyle);
+}
+
+void DuUI::setToolButtonStyle(Qt::ToolButtonStyle style)
+{
+    foreach( QWidget *w, qApp->allWidgets())
+    {
+        if(QMainWindow *mw = qobject_cast<QMainWindow*>(w))
+        {
+            mw->setToolButtonStyle(style);
+        }
+        else if (QToolBar *tb = qobject_cast<QToolBar*>(w))
+        {
+            tb->setToolButtonStyle(style);
+        }
+        else if (QToolButton *tb = qobject_cast<QToolButton*>(w))
+        {
+            if (tb->objectName() == "windowButton") continue;
+            if (tb->objectName() == "menuButton") continue;
+            if (tb->text() == "") continue;
+            if (tb->icon().isNull()) continue;
+            tb->setToolButtonStyle(style);
+        }
+    }
+}
+
+QColor DuUI::getColor(QString colorName)
+{
+    foreach(QStringList cssValue, DuUI::instance()->cssValues())
+    {
+        if (cssValue[0] == "color" && cssValue[1] == colorName) return QColor(cssValue[2]);
+    }
+    return QColor();
+}
+
+int DuUI::getSize(QString type, QString name)
+{
+    foreach(QStringList cssValue, DuUI::instance()->cssValues())
+    {
+        if (cssValue[0] == type && cssValue[1] == name) return cssValue[2].replace("px", "").toInt();
+    }
+    return 0;
+}
+
+void DuUI::addCssValue(QStringList value) {
+    _cssValues << value;
+}
+
+QList<QStringList> DuUI::cssValues()
+{
+    return _cssValues;
+}
+
+void DuUI::clearCssValues()
+{
+    _cssValues.clear();
+}

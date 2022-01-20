@@ -13,6 +13,7 @@
 
 #include "Renderer/queueitem.h"
 #include "duqf-utils/utils.h"
+#include "duqf-utils/duqflogger.h"
 
 /**
  * @brief The AbstractRenderer class is the base class for all renderers: ffmpeg, after effects, blender...
@@ -129,7 +130,7 @@ signals:
     /**
      * @brief newLog Emitted when some debug infos are available
      */
-    void newLog(QString, LogUtils::LogType lt = LogUtils::Information);
+    void newLog(QString, DuQFLog::LogType lt = DuQFLog::Information);
     /**
      * @brief statusChanged Emitted when the current status changed.
      */

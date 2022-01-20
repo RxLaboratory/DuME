@@ -33,7 +33,7 @@ signals:
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */
-    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
+    void newLog( QString, DuQFLog::LogType lt = DuQFLog::Information );
 
 public slots:
     void presetsPathChanged();
@@ -45,7 +45,7 @@ private slots:
     void on_outputTab_tabBarClicked(int index);
     void on_inputTab_tabCloseRequested(int index);
     void on_inputTab_tabBarClicked(int index);
-    void log(QString log, LogUtils::LogType lt = LogUtils::Information );
+    void log(QString log, DuQFLog::LogType lt = DuQFLog::Information );
 
     void on_splitter_splitterMoved();
 

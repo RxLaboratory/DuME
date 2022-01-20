@@ -193,7 +193,7 @@ void AbstractRenderer::processErrorOccurred(QProcess::ProcessError e)
         error = "An unknown process (" + QString::number( id ) + ") error occured.";
     }
 
-    emit newLog( error, LogUtils::Warning );
+    emit newLog( error, DuQFLog::Warning );
 
     // Check if all processes have stopped
     QList<int> finishedProcesses;

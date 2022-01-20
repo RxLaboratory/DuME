@@ -374,7 +374,7 @@ void OutputWidget::setOutputPath(QString outputPath)
 
     _mediaInfo->setFileName( outputPath );
 
-    emit newLog( "Output path set to: \"" + outputPath + "\"", LogUtils::Debug );
+    emit newLog( "Output path set to: \"" + outputPath + "\"", DuQFLog::Debug );
 }
 
 void OutputWidget::setOutputPreset(QString preset)

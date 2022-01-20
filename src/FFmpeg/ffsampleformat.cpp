@@ -11,7 +11,7 @@ FFSampleFormat::FFSampleFormat(QString name, int depth, QObject *parent):
 {
     _depth = depth;
     //let's parse the name to get a pretty name
-    QRegularExpression re = RegExUtils::getRegEx("ffmpeg sample format");
+    QRegularExpression re = RegExUtils::getRegularExpression("ffmpeg sample format");
     QRegularExpressionMatch match = re.match(name);
     _prettyName = name;
     if (match.hasMatch())

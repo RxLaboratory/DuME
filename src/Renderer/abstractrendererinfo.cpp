@@ -42,7 +42,7 @@ bool AbstractRendererInfo::setBinary(QString binary)
     }
     else
     {
-        emit newLog("Renderer executable binary not found.", LogUtils::Warning );
+        emit newLog("Renderer executable binary not found.", DuQFLog::Warning );
         emit valid(false);
         _valid = false;
         return false;
@@ -74,7 +74,7 @@ bool AbstractRendererInfo::runCommand(QStringList commands, int timeout, QIODevi
     return _process->waitForFinished(timeout);
 }
 
-void AbstractRendererInfo::log(QString l, LogUtils::LogType lt)
+void AbstractRendererInfo::log(QString l, DuQFLog::LogType lt)
 {
     emit newLog( l, lt );
 }
@@ -119,8 +119,8 @@ void AbstractRendererInfo::errorOccurred(QProcess::ProcessError e)
         error = "An unknown process error occured.";
     }
 
-    if (_ignoreErrors) emit newLog( error, LogUtils::Warning );
-    else emit newLog( error, LogUtils::Critical );
+    if (_ignoreErrors) emit newLog( error, DuQFLog::Warning );
+    else emit newLog( error, DuQFLog::Critical );
     _lastErrorMessage = error;
     _status = MediaUtils::Error;
 
@@ -138,7 +138,7 @@ QString AbstractRendererInfo::lastErrorMessage() const
 
 void AbstractRendererInfo::readyRead(QString output)
 {
-    emit newLog( output, LogUtils::Debug );
+    emit newLog( output, DuQFLog::Debug );
     emit console( output );
     _output += output;
 }

@@ -108,5 +108,7 @@
 #include <QVariant>
 #include <QtGlobal>
 #include <QErrorMessage>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include <cmath>

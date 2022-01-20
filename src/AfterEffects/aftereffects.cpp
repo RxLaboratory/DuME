@@ -98,7 +98,7 @@ bool AfterEffects::setBinary(QString name)
         }
         else
         {
-            emit newLog( "Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString(), LogUtils::Warning );
+            emit newLog( "Invalid After Effects custom renderer at: " + settings.value("aerender/path","").toString(), DuQFLog::Warning );
             //revert to use latest
             name = "Latest";
         }
@@ -141,7 +141,7 @@ bool AfterEffects::setBinary(QString name)
         }
     }
 
-    emit newLog( "After Effects not found on this system. After Effects rendering disabled.", LogUtils::Warning );
+    emit newLog( "After Effects not found on this system. After Effects rendering disabled.", DuQFLog::Warning );
     return false;
 
 #endif

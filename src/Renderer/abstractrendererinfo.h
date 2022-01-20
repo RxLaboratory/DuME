@@ -6,7 +6,7 @@
 #include <QRegularExpression>
 #include <QCoreApplication>
 
-#include "duqf-utils/utils.h"
+#include "duqf-utils/duqflogger.h"
 
 class AbstractRendererInfo : public QObject
 {
@@ -20,7 +20,7 @@ public:
 
     bool isValid() const;
 signals:
-    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
+    void newLog( QString, DuQFLog::LogType lt = DuQFLog::Information );
     void console( QString );
     void binaryChanged( QString binary );
     void valid(bool);
@@ -40,7 +40,7 @@ public slots:
     bool runCommand(QStringList commands, int timeout = 0, QIODevice::OpenModeFlag of = QIODevice::ReadOnly, bool ignoreErrors = false);
 
 protected slots:
-    void log( QString l, LogUtils::LogType lt = LogUtils::Information );
+    void log(QString l, DuQFLog::LogType lt = DuQFLog::Information );
     //Binary signals
     void stdError();
     void stdOutput();

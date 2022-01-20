@@ -82,14 +82,14 @@ void MediaInfo::update(QFileInfo mediaFile, bool silent)
     QStringList infos = ffmpegOutput.split("\n");
 
     //regexes to get infos
-    QRegularExpression reInput = RegExUtils::getRegEx("ffmpeg input");
-    QRegularExpression reVideoStream = RegExUtils::getRegEx("ffmpeg video stream");
-    QRegularExpression reAudioStream = RegExUtils::getRegEx("ffmpeg audio stream");
-    QRegularExpression reDuration = RegExUtils::getRegEx("ffmpeg duration");
-    QRegularExpression reResolution = RegExUtils::getRegEx("ffmpeg resolution");
-    QRegularExpression reFPS = RegExUtils::getRegEx("ffmpeg fps");
-    QRegularExpression reBitrate = RegExUtils::getRegEx("ffmpeg bitrate");
-    QRegularExpression reAspect = RegExUtils::getRegEx("ffmpeg aspect");
+    QRegularExpression reInput = RegExUtils::getRegularExpression("ffmpeg input");
+    QRegularExpression reVideoStream = RegExUtils::getRegularExpression("ffmpeg video stream");
+    QRegularExpression reAudioStream = RegExUtils::getRegularExpression("ffmpeg audio stream");
+    QRegularExpression reDuration = RegExUtils::getRegularExpression("ffmpeg duration");
+    QRegularExpression reResolution = RegExUtils::getRegularExpression("ffmpeg resolution");
+    QRegularExpression reFPS = RegExUtils::getRegularExpression("ffmpeg fps");
+    QRegularExpression reBitrate = RegExUtils::getRegularExpression("ffmpeg bitrate");
+    QRegularExpression reAspect = RegExUtils::getRegularExpression("ffmpeg aspect");
 
     bool input = false;
     foreach(QString info,infos)

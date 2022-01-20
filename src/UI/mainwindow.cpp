@@ -47,27 +47,27 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     log("Initialization");
 
     // === SETTINGS ===
-    log("Init - Loading settings", LogUtils::Debug);
+    log("Init - Loading settings", DuQFLog::Debug);
 
     //create user presets folder if it does not exist yet
     QDir home = QDir::home();
     home.mkdir("DuME Presets");
 
     // Load Renderers info (to be passed to other widgets)
-    log("Init - Connecting to FFmpeg", LogUtils::Debug);
+    log("Init - Connecting to FFmpeg", DuQFLog::Debug);
     //FFmpeg
-    connect( FFmpeg::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, LogUtils::LogType)) );
+    connect( FFmpeg::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, DuQFLog::LogType)) );
     connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
     //After Effects
-    log("Init - Connecting to After Effects", LogUtils::Debug);
-    connect( AfterEffects::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, LogUtils::LogType )) );
+    log("Init - Connecting to After Effects", DuQFLog::Debug);
+    connect( AfterEffects::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ), this, SLOT( aeLog(QString, DuQFLog::LogType )) );
     connect( AfterEffects::instance(), SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     // === UI SETUP ===
 
-    log("Init - Adding settings widget", LogUtils::Debug);
+    log("Init - Adding settings widget", DuQFLog::Debug);
 
     //settings widget
     ffmpegSettingsWidget = new FFmpegSettingsWidget();
@@ -89,7 +89,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     toolsWidget->addPage(new LutBakerWidget(this), "OCIO LUT Baker", QIcon(":/icons/lut-baker"));
     toolsWidget->addPage(new LutConverterWidget(this), "LUT Converter", QIcon(":/icons/lut-settings"));
 
-    log("Init - Adding queue widget", LogUtils::Debug);
+    log("Init - Adding queue widget", DuQFLog::Debug);
 
     //queue widget
     queueWidget = new QueueWidget(this);
@@ -99,9 +99,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
 #ifdef QT_DEBUG
-    QListWidgetItem *i2 = new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
+    new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
     rQueueStack->addWidget(new QueueWidget(this));
-    QListWidgetItem *i3 = new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
+    new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
     rQueueStack->addWidget(new QueueWidget(this));
     rQueueList->setCurrentRow(0);
     new QListWidgetItem(QIcon(":/icons/ok"), "Job #4", rQueueList);
@@ -128,7 +128,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     connect(CacheManager::instance(), &CacheManager::cacheSizeChanged, this, &MainWindow::cacheSizeChanged);
     CacheManager::instance()->scan();
 
-    log("Init - Setting default UI items", LogUtils::Debug);
+    log("Init - Setting default UI items", DuQFLog::Debug);
 
     //init UI
     consoleTabs->setCurrentIndex(0);
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     statusLabel = new QLabel("Ready");
     mainStatusBar->addWidget(statusLabel);
 
-    log("Init - Setting window geometry", LogUtils::Debug);
+    log("Init - Setting window geometry", DuQFLog::Debug);
 
     //restore geometry
     settings.beginGroup("mainwindow");
@@ -168,7 +168,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     renderQueue = RenderQueue::instance();
     connect(renderQueue, SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT(renderQueueStatusChanged(MediaUtils::RenderStatus)) );
-    connect(renderQueue, SIGNAL( newLog( QString, LogUtils::LogType )), this, SLOT( log( QString, LogUtils::LogType )) );
+    connect(renderQueue, SIGNAL( newLog( QString, DuQFLog::LogType )), this, SLOT( log( QString, DuQFLog::LogType )) );
     connect(renderQueue, SIGNAL( progress( )), this, SLOT( progress( )) );
 
     connect(FFmpegRenderer::instance(), &AbstractRenderer::console, this, &MainWindow::ffmpegConsole );
@@ -181,7 +181,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //settings
     connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
-    log("Init - Setting stylesheet", LogUtils::Debug);
+    log("Init - Setting stylesheet", DuQFLog::Debug);
 
     //parse arguments if ffmpeg is valid
     autoQuit = false;
@@ -265,7 +265,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 #endif
                     else if (arg != "--no-banner" && arg != "--hide-console")
                     {
-                        log("Unknown argument: " + arg + ". All other arguments will be ignored", LogUtils::Warning);
+                        log("Unknown argument: " + arg + ". All other arguments will be ignored", DuQFLog::Warning);
                         break;
                     }
                     i++;
@@ -527,7 +527,7 @@ void MainWindow::duqf_about()
     duqf_aboutDialog->show();
 }
 
-void MainWindow::ffmpegLog(QString l, LogUtils::LogType lt)
+void MainWindow::ffmpegLog(QString l, DuQFLog::LogType lt)
 {
     log( "FFmpeg | " + l, lt);
 }
@@ -558,7 +558,7 @@ void MainWindow::ffmpegValid(bool valid)
     else
     {
         queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
-        log("FFmpeg error", LogUtils::Critical );
+        log("FFmpeg error", DuQFLog::Critical );
         log( FFmpeg::instance()->lastErrorMessage() );
         queuePage->setEnabled(false);
         setAcceptDrops( false );
@@ -582,7 +582,7 @@ void MainWindow::ffmpegStatus(MediaUtils::RenderStatus status)
     }
 }
 
-void MainWindow::aeLog(QString l, LogUtils::LogType lt)
+void MainWindow::aeLog(QString l, DuQFLog::LogType lt)
 {
     AfterEffectsVersion *aev = AfterEffects::instance()->currentVersion();
     if (aev)
@@ -777,29 +777,29 @@ void MainWindow::openCacheDir()
     FileUtils::openInExplorer(CacheManager::instance()->getRootCacheDir().absolutePath());
 }
 
-void MainWindow::log(QString log, LogUtils::LogType type)
+void MainWindow::log(QString log, DuQFLog::LogType type)
 {
     //type
     QString typeString = "";
-    if ( type == LogUtils::Debug )
+    if ( type == DuQFLog::Debug )
     {
         qDebug().noquote() << log;
     }
-    else if ( type == LogUtils::Information )
+    else if ( type == DuQFLog::Information )
     {
         qInfo().noquote() << log;
     }
-    else if (type == LogUtils::Warning)
+    else if (type == DuQFLog::Warning)
     {
         qWarning().noquote() << log;
         typeString = "/!\\ Warning: ";
     }
-    else if (type == LogUtils::Critical)
+    else if (type == DuQFLog::Critical)
     {
         qCritical().noquote() << log;
         typeString = " --- !!! Critical: ";
     }
-    else if (type == LogUtils::Fatal)
+    else if (type == DuQFLog::Fatal)
     {
         qFatal("%s", qUtf8Printable(log));
         typeString = " === Fatal === ";
@@ -807,7 +807,7 @@ void MainWindow::log(QString log, LogUtils::LogType type)
 
     //log
 #ifndef QT_DEBUG
-    if ( type != LogUtils::Debug )
+    if ( type != DuQFLog::Debug )
     {
 #endif
         //status bar
@@ -819,9 +819,9 @@ void MainWindow::log(QString log, LogUtils::LogType type)
         debugEdit->setFontWeight(300);
         debugEdit->append(currentTime.toString("[hh:mm:ss.zzz]: "));
         debugEdit->moveCursor(QTextCursor::End);
-        if (type == LogUtils::Information) debugEdit->setTextColor(QColor(227,227,227));
-        else if (type == LogUtils::Warning) debugEdit->setTextColor(QColor(236,215,24));
-        else if (type == LogUtils::Critical) debugEdit->setTextColor(QColor(249,105,105));
+        if (type == DuQFLog::Information) debugEdit->setTextColor(QColor(227,227,227));
+        else if (type == DuQFLog::Warning) debugEdit->setTextColor(QColor(236,215,24));
+        else if (type == DuQFLog::Critical) debugEdit->setTextColor(QColor(249,105,105));
         debugEdit->setFontWeight(800);
         debugEdit->setFontItalic(true);
         debugEdit->insertPlainText(typeString);

@@ -5,11 +5,15 @@
 #-------------------------------------------------
 
 QT       += core gui \
+            network \
             svg
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DuME
 TEMPLATE = app
+
+CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -50,6 +54,9 @@ SOURCES += \
     UI/lutconverterwidget.cpp \
     UI/ociosettingswidget.cpp \
     duqf-app/app-style.cpp \
+    duqf-app/app-utils.cpp \
+    duqf-utils/duqflogger.cpp \
+    duqf-utils/guiutils.cpp \
     duqf-utils/language-utils.cpp \
     duqf-utils/utils.cpp \
     duqf-widgets/aboutdialog.cpp \
@@ -141,6 +148,8 @@ HEADERS += \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
     duqf-app/app-version.h \
+    duqf-utils/duqflogger.h \
+    duqf-utils/guiutils.h \
     duqf-utils/language-utils.h \
     duqf-utils/utils.h \
     duqf-widgets/aboutdialog.h \
@@ -258,8 +267,10 @@ FORMS += \
 
 RESOURCES += resources.qrc duqf_resources.qrc
 
-ICON = resources/icons/appIcon.icns
-
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 
 # OS Specific configurations
 win* {
@@ -275,12 +286,12 @@ win* {
     # Need to check the version of c++ used with distros providing Qt > 5.12
     equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 13):QMAKE_CXXFLAGS += "-fno-sized-deallocation"
     # Ignore annoying errors on older versions of Qt
-    QMAKE_CXXFLAGS += -Wdeprecated
+    QMAKE_CXXFLAGS += -Wdeprecated \
+        -Wdeprecated-copy
 } else:macx {
-    # Just in case...
+    ICON = resources/icons/appIcon.icns
+    CONFIG += sdk_no_version_check
 }
-
-
 
 # OpenImageIO
 

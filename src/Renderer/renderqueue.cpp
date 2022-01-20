@@ -72,7 +72,7 @@ void RenderQueue::ffmpegStatusChanged( MediaUtils::RenderStatus status )
     }
     else if ( status == MediaUtils::Error )
     {
-        emit newLog("An unexpected FFmpeg error has occured.", LogUtils::Critical );
+        emit newLog("An unexpected FFmpeg error has occured.", DuQFLog::Critical );
         postRenderCleanUp( MediaUtils::Error );
     }
 }
@@ -343,7 +343,7 @@ void RenderQueue::aeStatusChanged( MediaUtils::RenderStatus status )
     }
     else if ( status == MediaUtils::Error )
     {
-        emit newLog("An unexpected After Effects error has occured.", LogUtils::Critical);
+        emit newLog("An unexpected After Effects error has occured.", DuQFLog::Critical);
         postRenderCleanUp( MediaUtils::Error );
     }
 }

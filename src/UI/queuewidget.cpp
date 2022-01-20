@@ -167,7 +167,7 @@ void QueueWidget::on_inputTab_tabBarClicked(int index)
     addInput();
 }
 
-void QueueWidget::log(QString log, LogUtils::LogType lt )
+void QueueWidget::log(QString log, DuQFLog::LogType lt )
 {
     emit newLog(log, lt);
 }
@@ -211,7 +211,7 @@ void QueueWidget::addOutput()
     _outputMedias->addMedia(ow->mediaInfo());
 
     //connect console
-    connect(ow,SIGNAL(newLog(QString,LogUtils::LogType)),this,SLOT(log(QString,LogUtils::LogType)));
+    connect(ow,SIGNAL(newLog(QString,DuQFLog::LogType)),this,SLOT(log(QString,DuQFLog::LogType)));
     //set tab index
     outputTab->setCurrentIndex(outputTab->count()-2);
     qDebug() << "Output widget added";

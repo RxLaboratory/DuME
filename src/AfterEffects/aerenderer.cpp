@@ -46,7 +46,7 @@ bool AERenderer::launchJob()
 
 void AERenderer::renderAep(MediaInfo *aep, bool audio)
 {
-    emit newLog( "Launching After Effects Job...", LogUtils::Debug);
+    emit newLog( "Launching After Effects Job...", DuQFLog::Debug);
     setStatus( MediaUtils::Launching );
     QStringList arguments("-project");
     QStringList audioArguments;

@@ -1196,7 +1196,7 @@ void FFmpegRenderer::readyRead(QString output)
 {
     emit console(output);
 
-    QRegularExpression reProgress = RegExUtils::getRegEx("ffmpeg progress");
+    QRegularExpression reProgress = RegExUtils::getRegularExpression("ffmpeg progress");
     QRegularExpressionMatch match = reProgress.match(output);
 
     //if progress, update UI
@@ -1228,7 +1228,7 @@ void FFmpegRenderer::readyRead(QString output)
         if (status() == MediaUtils::Encoding)
         {
             setStatus(MediaUtils::Error);
-            emit newLog(output, LogUtils::Critical);
+            emit newLog(output, DuQFLog::Critical);
         }
     }
 }

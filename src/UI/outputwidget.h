@@ -53,7 +53,7 @@ signals:
     /**
      * @brief console general messages to be displayed in the UI by MainWindow
      */
-    void newLog( QString, LogUtils::LogType lt = LogUtils::Information );
+    void newLog( QString, DuQFLog::LogType lt = DuQFLog::Information );
 
 public slots:
     void ffmpeg_init();
