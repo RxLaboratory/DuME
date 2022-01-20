@@ -104,11 +104,11 @@ void ConsoleWidget::connectEvents()
     connect(AERenderer::instance(), &AbstractRenderer::console, this, &ConsoleWidget::aeConsole );
     connect(AERenderer::instance(), &AbstractRenderer::newLog, this, &ConsoleWidget::aeLog );
 
-    connect( FFmpeg::instance(), SIGNAL( newLog(QString, DuQFLog::LogType) ),this,SLOT( ffmpegLog(QString, DuQFLog::LogType)) );
+    connect( FFmpeg::instance(), SIGNAL( newLog(QString,DuQFLog::LogType) ),this,SLOT( ffmpegLog(QString,DuQFLog::LogType)) );
     connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect(FFmpeg::instance(), SIGNAL(valid(bool)), this, SLOT(ffmpegValid(bool)));
 
-    connect( AfterEffects::instance(), SIGNAL( newLog(QString, DuQFLog::LogType) ), this, SLOT( aeLog(QString, DuQFLog::LogType )) );
+    connect( AfterEffects::instance(), SIGNAL( newLog(QString,DuQFLog::LogType) ), this, SLOT( aeLog(QString,DuQFLog::LogType )) );
     connect( AfterEffects::instance(), SIGNAL( console(QString)), this, SLOT( aeConsole(QString)) );
 
     connect(ui_ffmpegCommandsButton, SIGNAL(clicked()), this, SLOT(runFFmpegCommand()));

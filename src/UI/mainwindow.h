@@ -35,6 +35,7 @@
 #include "UI/ociosettingswidget.h"
 #include "UI/queuewidget.h"
 #include "UI/consolewidget.h"
+#include "UI/rqueuewidget.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -55,6 +56,11 @@ private slots:
     void duqf_closeSettings();
     void duqf_reinitSettings();
     void duqf_about();
+
+    /**
+     * @brief go Launches the transcoding process
+     */
+    void go();
 
     // FFMPEG
     void ffmpegValid(bool valid);
@@ -81,9 +87,6 @@ private slots:
     void on_actionStop_triggered();
     void on_actionGoQuit_triggered();
     void on_actionAbout_FFmpeg_triggered();
-    void on_actionShowQueue_triggered(bool checked);
-    void on_rQueueSplitter_splitterMoved(int pos, int index);
-    void on_actionConsole_triggered(bool checked);
     void on_actionTools_triggered(bool checked);
 
     // GENERAL
@@ -116,11 +119,6 @@ private:
     QLabel *title;
     QMenu *helpMenu;
 
-    /**
-     * @brief go Launches the transcoding process
-     */
-    void go();
-
     // ====== UI ========
 
     QToolButton *_cacheButton;
@@ -149,6 +147,7 @@ private:
 
     // Docks
     QDockWidget *ui_consoleDock;
+    QDockWidget *ui_rQueueDock;
 
     // ===== RENDERQUEUE =====
     /**

@@ -94,33 +94,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     //queue widget
     queueWidget = new QueueWidget(this);
     queueLayout->addWidget(queueWidget);
-    queueListItem = new QListWidgetItem(QIcon(":/icons/audio-video"), "Job #1", rQueueList);
     connect(queueWidget->job(), &QueueItem::statusChanged, this, &MainWindow::queueItemStatusChanged);
-
-    // RQUEUE DEMO MODE / DEV TESTS! NOT FOR PUBLIC USE YET
-#ifdef QT_DEBUG
-    new QListWidgetItem(QIcon(":/icons/audio"), "Job #2", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/video"), "Job #3", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    rQueueList->setCurrentRow(0);
-    new QListWidgetItem(QIcon(":/icons/ok"), "Job #4", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/error"), "Job #5", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    new QListWidgetItem(QIcon(":/icons/rendering"), "Job #6", rQueueList);
-    rQueueStack->addWidget(new QueueWidget(this));
-    connect(rQueueList, &QListWidget::currentRowChanged, rQueueStack, &QStackedWidget::setCurrentIndex);
-    //TODO : drag and drop on the queuewidget; drop on the list adds a new queuewidget
-#else // DISABLE QUEUE FOR NOW IN PUBLIC RELEASE
-    actionLaunchJob->setEnabled(false);
-    addJobButton->setEnabled(false);
-    removeJobButton->setEnabled(false);
-    launchJobButton->setEnabled(false);
-    new QListWidgetItem("Render queue in development\nAvailable soon!", rQueueList);
-    rQueueList->setCurrentRow(0);
-    rQueueList->setEnabled(false);
-#endif
 
     // Cache monitoring
     _cacheButton->setMinimumWidth(100);
@@ -143,6 +117,18 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_consoleDock->setWidget( consoleWidget );
     this->addDockWidget(Qt::RightDockWidgetArea, ui_consoleDock);
 
+    RQueueWidget *rQueueWidget = new RQueueWidget(this);
+    ui_rQueueDock = new QDockWidget("Queue", this);
+    ui_rQueueDock->setObjectName("queueDock");
+    DuQFDockTitle *ui_rQueueTitle = new DuQFDockTitle("Queue", this);
+    ui_rQueueTitle->setObjectName("dockTitle");
+    ui_rQueueTitle->setIcon(":/icons/show-rqueue");
+    ui_rQueueDock->setTitleBarWidget(ui_rQueueTitle);
+    ui_rQueueDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    ui_rQueueDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    ui_rQueueDock->setWidget( rQueueWidget );
+    this->addDockWidget(Qt::LeftDockWidgetArea, ui_rQueueDock);
+
     //init UI
     mainStack->setCurrentIndex(0);
     statusLabel = new QLabel("Ready");
@@ -159,10 +145,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     settings.endGroup();
 
     ui_consoleButton->setChecked(ui_consoleDock->isVisible());
-
-    bool showQueue = settings.value("rQueueVisible", false).toBool();
-    actionShowQueue->setChecked(showQueue);
-    on_actionShowQueue_triggered(showQueue);
+    actionShowQueue->setChecked(ui_rQueueDock->isVisible());
 
     // === FFMPEG ===
     log("Init - FFmpeg (run test)");
@@ -302,11 +285,13 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     // Connect buttons
     connect(actionGo, &QAction::triggered, this, &MainWindow::go);
-    connect(launchQueueButton, &QToolButton::clicked, this, &MainWindow::go);
+    connect(rQueueWidget, SIGNAL(launchQueue()), this, SLOT(go()));
     connect( goButton, &QToolButton::clicked, this, &MainWindow::go );
 
     connect(ui_consoleDock,SIGNAL(visibilityChanged(bool)), ui_consoleButton, SLOT(setChecked(bool)));
     connect(ui_consoleButton,SIGNAL(clicked(bool)), ui_consoleDock, SLOT(setVisible(bool)));
+    connect(ui_rQueueDock,SIGNAL(visibilityChanged(bool)), actionShowQueue, SLOT(setChecked(bool)));
+    connect(actionShowQueue,SIGNAL(triggered(bool)), ui_rQueueDock, SLOT(setVisible(bool)));
 
     // Set style
     duqf_setStyle();
@@ -929,49 +914,6 @@ void MainWindow::quit(bool force)
 void MainWindow::on_actionAbout_FFmpeg_triggered()
 {
     QDesktopServices::openUrl ( QUrl( "https://ffmpeg.org/" ) );
-}
-
-void MainWindow::on_actionShowQueue_triggered(bool checked)
-{
-    if (checked)
-    {
-        QList<int>sizes;
-        settings.beginGroup("queueSplitter");
-        sizes << settings.value("rQueueSize",15).toInt();
-        sizes << settings.value("rQueueJobSize",85).toInt();
-        settings.endGroup();
-        rQueueSplitter->setSizes(sizes);
-    }
-    else
-    {
-        QList<int>sizes;
-        sizes << 0;
-        sizes << 100;
-        rQueueSplitter->setSizes(sizes);
-    }
-    settings.setValue("rQueueVisible", checked);
-}
-
-void MainWindow::on_rQueueSplitter_splitterMoved(int /*pos*/, int /*index*/)
-{
-    QList<int> sizes = rQueueSplitter->sizes();
-    if (sizes[0] > 100)
-    {
-        settings.beginGroup("queueSplitter");
-        settings.setValue("rQueueSize", sizes[0]);
-        settings.setValue("rQueueJobSize", sizes[1]);
-        settings.endGroup();
-    }
-
-    bool showRQueue = sizes[0] != 0;
-    actionShowQueue->setChecked(showRQueue);
-    settings.setValue("rQueueVisible", showRQueue);
-}
-
-void MainWindow::on_actionConsole_triggered(bool checked)
-{
-    // TODO
-    // show dock
 }
 
 void MainWindow::on_actionTools_triggered(bool checked)

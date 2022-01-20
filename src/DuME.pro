@@ -54,6 +54,7 @@ SOURCES += \
     UI/lutbakerwidget.cpp \
     UI/lutconverterwidget.cpp \
     UI/ociosettingswidget.cpp \
+    UI/rqueuewidget.cpp \
     duqf-app/app-style.cpp \
     duqf-app/app-utils.cpp \
     duqf-utils/duqflogger.cpp \
@@ -148,6 +149,7 @@ HEADERS += \
     UI/lutbakerwidget.h \
     UI/lutconverterwidget.h \
     UI/ociosettingswidget.h \
+    UI/rqueuewidget.h \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
     duqf-app/app-version.h \
