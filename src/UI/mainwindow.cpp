@@ -56,7 +56,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     // Load Renderers info (to be passed to other widgets)
     log("Init - Connecting to FFmpeg", DuQFLog::Debug);
     //FFmpeg
-    connect( FFmpeg::instance(), SIGNAL( newLog(QString, LogUtils::LogType) ),this,SLOT( ffmpegLog(QString, DuQFLog::LogType)) );
+    connect( FFmpeg::instance(), SIGNAL( newLog(QString, DuQFLog::LogType) ),this,SLOT( ffmpegLog(QString, DuQFLog::LogType)) );
     connect( FFmpeg::instance(), SIGNAL( console(QString)), this, SLOT( ffmpegConsole(QString)) );
     connect( FFmpeg::instance(), SIGNAL( valid(bool) ), this, SLOT( ffmpegValid(bool)) );
     connect( FFmpeg::instance(), SIGNAL( statusChanged(MediaUtils::RenderStatus)), this, SLOT ( ffmpegStatus(MediaUtils::RenderStatus)) );
