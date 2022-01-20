@@ -2,20 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="32"
    height="32"
    viewBox="0 0 8.4666666 8.4666666"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="quit_sl.svg">
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="quit.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <style
@@ -343,17 +343,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9999995"
-     inkscape:cx="2.4596749"
-     inkscape:cy="13.540911"
+     inkscape:cx="2.5000002"
+     inkscape:cy="13.562501"
      inkscape:document-units="mm"
      inkscape:current-layer="svg8"
      showgrid="false"
      units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="1043"
-     inkscape:window-x="0"
-     inkscape:window-y="120"
-     inkscape:window-maximized="1">
+     inkscape:window-width="1282"
+     inkscape:window-height="1081"
+     inkscape:window-x="2926"
+     inkscape:window-y="113"
+     inkscape:window-maximized="0"
+     inkscape:pagecheckerboard="0">
     <sodipodi:guide
        position="8.4666666,0"
        orientation="-32,0"
@@ -378,7 +379,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -437,7 +438,7 @@
 	.st1{fill:#9999FF;}
 </style>
   <path
-     style="opacity:1;fill:#f96969;fill-opacity:1;stroke:none;stroke-width:2.65322828;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+     style="opacity:1;fill:#ac1010;fill-opacity:1;stroke:none;stroke-width:2.65322828;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
      d="M 2.9609375 0 C 1.3681875 0 0.0859375 1.28225 0.0859375 2.875 L 0.0859375 29.125 C 0.0859375 30.71775 1.3681875 32 2.9609375 32 L 29.210938 32 C 30.803686 32 32.085938 30.71775 32.085938 29.125 L 32.085938 2.875 C 32.085938 1.28225 30.803686 -8.8817842e-16 29.210938 0 L 2.9609375 0 z M 7.09375 5.0390625 L 25.078125 5.0390625 C 26.169344 5.0390625 27.048828 5.916593 27.048828 7.0078125 L 27.048828 24.992188 C 27.048828 26.083406 26.169344 26.960938 25.078125 26.960938 L 7.09375 26.960938 C 6.0025309 26.960938 5.125 26.083406 5.125 24.992188 L 5.125 7.0078125 C 5.125 5.916593 6.0025309 5.0390625 7.09375 5.0390625 z M 11.556641 8.1757812 C 11.370575 8.1757824 11.184739 8.2469018 11.042969 8.3886719 L 8.6503906 10.78125 C 8.3668542 11.06478 8.3668542 11.52701 8.6503906 11.810547 L 12.613281 15.736328 L 8.6503906 19.666016 C 8.3668542 19.949545 8.3668542 20.409827 8.6503906 20.693359 L 11.042969 23.083984 C 11.326498 23.367513 11.786776 23.367513 12.070312 23.083984 L 16 19.123047 L 19.925781 23.083984 C 20.209307 23.367513 20.671542 23.367513 20.955078 23.083984 L 23.347656 20.693359 C 23.631185 20.409829 23.631185 19.949544 23.347656 19.666016 L 19.382812 15.736328 L 23.347656 11.810547 C 23.631185 11.527017 23.631185 11.064786 23.347656 10.78125 L 20.955078 8.3886719 C 20.671548 8.1051355 20.209318 8.1051355 19.925781 8.3886719 L 16 12.353516 L 12.070312 8.3886719 C 11.928549 8.2469056 11.742707 8.1757812 11.556641 8.1757812 z "
      transform="scale(0.26458333)"
      id="rect1427" />

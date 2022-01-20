@@ -15,7 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="info_sl.svg">
+   sodipodi:docname="show_sd.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -25,25 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627417"
-     inkscape:cx="3.1975047"
-     inkscape:cy="18.989902"
+     inkscape:zoom="11.313708"
+     inkscape:cx="-10.53898"
+     inkscape:cy="13.357964"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="3388"
-     inkscape:window-height="1403"
-     inkscape:window-x="52"
-     inkscape:window-y="293"
-     inkscape:window-maximized="1"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-nodes="true"
-     inkscape:bbox-paths="true"
-     inkscape:snap-bbox-edge-midpoints="true"
-     inkscape:snap-bbox-midpoints="true"
-     inkscape:snap-page="true"
-     inkscape:snap-nodes="false">
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="120"
+     inkscape:window-maximized="1">
     <sodipodi:guide
        position="8.4666666,0"
        orientation="-32,0"
@@ -78,9 +71,10 @@
      id="layer1"
      transform="translate(0,-288.53334)">
     <path
-       id="path819"
-       d="m 2.9378163,295.54857 h 0.3307289 v -2.38882 H 2.9378163 c -0.1826616,0 -0.330729,-0.14806 -0.330729,-0.33072 v -0.78997 c 0,-0.18266 0.1480674,-0.33072 0.330729,-0.33072 h 1.8520822 c 0.1826616,0 0.3307291,0.14806 0.3307291,0.33072 v 3.50951 h 0.330729 c 0.1826615,0 0.3307289,0.14808 0.3307289,0.33073 v 0.78998 c 0,0.18266 -0.1480674,0.33073 -0.3307289,0.33073 H 2.9378163 c -0.1826616,0 -0.330729,-0.14807 -0.330729,-0.33073 v -0.78998 c 0,-0.18265 0.1480674,-0.33073 0.330729,-0.33073 z m 1.2567701,-7.01523 c -0.6575718,0 -1.1906244,0.53305 -1.1906244,1.19063 0,0.65756 0.5330526,1.19062 1.1906244,1.19062 0.6575719,0 1.1906244,-0.53306 1.1906244,-1.19062 0,-0.65758 -0.533069,-1.19063 -1.1906244,-1.19063 z"
-       inkscape:connector-curvature="0"
-       style="fill:#e3e3e3;fill-opacity:1;stroke-width:0.01653644" />
+       style="stroke-width:0.05553709;fill:#10688e;fill-opacity:1"
+       d="m 16.001953,5.1367188 c -6.8271756,0 -12.7926235,3.9793738 -15.80273425,9.8535152 -0.25766003,0.50967 -0.25766003,1.111425 0,1.621094 3.01177685,5.876372 8.97555865,9.851563 15.80273425,9.851563 6.827175,0 12.79067,-3.979374 15.800781,-9.853516 0.257658,-0.509669 0.257658,-1.111424 0,-1.621094 C 28.790958,9.1119474 22.829128,5.1367188 16.001953,5.1367188 Z m -0.257812,2.6523437 c 4.181767,-0.1048907 8.253891,3.1130375 8.253906,8.0117185 0.0022,4.417701 -3.578384,7.998248 -7.996094,7.996094 -7.1253606,0 -10.6940222,-8.614536 -5.65625,-13.652344 1.574304,-1.5743029 3.497634,-2.3077909 5.398438,-2.3554685 z m 0.296875,2.6992185 a 5.3125002,5.3125002 0 0 0 -5.3125,5.3125 5.3125002,5.3125002 0 0 0 5.3125,5.3125 5.3125002,5.3125002 0 0 0 5.3125,-5.3125 5.3125002,5.3125002 0 0 0 -5.3125,-5.3125 z"
+       transform="matrix(0.26458333,0,0,0.26458333,0,288.53334)"
+       id="path904"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

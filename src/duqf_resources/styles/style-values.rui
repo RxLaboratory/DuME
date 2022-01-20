@@ -3,7 +3,7 @@
 @color-obsidian = #151515
 @color-abyss-grey = #1c1c1c
 @color-very-dark-grey = #222222
-@color-darker-grey = #252525
+@color-darker-grey = #292929
 @color-dark-grey = #333333
 @color-less-dark-grey = #434343
 @color-medium-grey = #6d6d6d
@@ -20,17 +20,19 @@
 @color-yellow = #ecd718
 @color-light-red = #f96969
 
-@font-size-small = 9px
-@font-size-medium = 12px
-@font-size-large = 15px;
-
 @margin = 3px
 @padding-small = 5px
 @padding-medium = 7px
 @padding-large = 10px
 @padding-extra-large = 15px
 
-@big-button-size = 30px
+@font-size-very-small= 8px
+@font-size-small= 10px
+@font-size-medium = 12px
+@font-weight-light = 300
+@font-weight-medium = 400
+
+@big-button-size = 27px
 @small-button-size = 12px
 @very-small-button-size = 8px
 

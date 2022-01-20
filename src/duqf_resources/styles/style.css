@@ -4,10 +4,25 @@
         outline: none;
 }
 
-MainWindow, QDialog, QWidget {
-    font-familiy = @font-family;
+MainWindow, QDialog {
+    background-color: @color-dark-grey;
+}
+
+QWidget {
+    font-weight: @font-weight-medium;
     font-size: @font-size-medium;
     background-color: @color-dark-grey;
+}
+
+QToolTip {
+    border: none;
+    background-color: @light-grey;
+    color: @color-very-dark-grey;
+    /*border-radius: 3px; -> Does not work with tool tips (they're actually QLabel)*/
+    opacity: 210;
+    padding: @padding-small;
+    font-weight: @font-weight-light;
+    font-size: @font-size-medium;
 }
 
 /* LABELS */
@@ -27,7 +42,7 @@ QPushButton {
     background-color: @color-less-dark-grey;
     border-radius: @padding-small;
     padding: @padding-small;
-    border:none;
+    border: none;
     color: @color-light-grey;
 }
 
@@ -192,15 +207,15 @@ QComboBox::item:checked{
     color: @color-light-grey;
 }
 
-QComboBox::drop-down {
+QComboBox::drop-down, QDateTimeEdit::drop-down {
     border:none;
 }
 
-QComboBox::indicator {
+QComboBox::indicator, QDateTimeEdit::indicator {
     image:none;
 }
 
-QComboBox::down-arrow {
+QComboBox::down-arrow, QDateTimeEdit::down-arrow {
       image: url(:/icons/select);
       width: 10px;
       height: 10px;
@@ -211,7 +226,7 @@ QComboBox QAbstractItemView {
     background-color: @color-less-dark-grey;
     selection-color: @color-light-grey;
     selection-background-color: @color-very-dark-grey;
-    padding-left: @padding-large;
+    padding-left: @padding-small;
     border:none;
 }
 
@@ -220,7 +235,7 @@ QComboBox:disabled {
     color: @color-medium-grey;
 }
 
-QComboBox::down-arrow:disabled {
+QComboBox::down-arrow:disabled, QDateTimeEdit::down-arrow:disabled {
       image: none;
 }
 
@@ -233,7 +248,7 @@ QTextEdit, QLineEdit, QPlainTextEdit {
     padding: @padding-small;
     border-radius: @padding-small;
     selection-color: @color-light-grey;
-    selection-background-color: @color-dark-purple;
+    selection-background-color: @color-dark-blue;
 }
 
 QTextEdit:hover, QLineEdit:hover, QPlainTextEdit:hover, QTextEdit:focus, QLineEdit:focus, QPlainTextEdit:focus {
@@ -247,21 +262,19 @@ QTextEdit:disabled, QLineEdit:disabled, QPlainTextEdit:disabled {
 
 /* SPIN Boxes */
 
-QSpinBox, QDoubleSpinBox {
+QSpinBox, QDoubleSpinBox, QDateTimeEdit {
     background-color: @color-very-dark-grey;
     color: @color-less-light-grey;
     border:none;
     padding: @padding-small;
     border-radius: @padding-small;
-    selection-color: @color-light-grey;
-    selection-background-color: @color-dark-purple;
 }
 
-QSpinBox:hover, QDoubleSpinBox:hover {
+QSpinBox:hover, QDoubleSpinBox:hover, QDateTimeEdit:hover {
     color: @color-light-grey;
 }
 
-QSpinBox::up-button, QDoubleSpinBox::up-button {
+QSpinBox::up-button, QDoubleSpinBox::up-button, QDateTimeEdit:up-button {
     border:none;
     background-color:@color-very-dark-grey;
     border-radius: @margin;
@@ -273,7 +286,7 @@ QSpinBox::up-button, QDoubleSpinBox::up-button {
     margin-right: 1px;
 }
 
-QSpinBox::down-button, QDoubleSpinBox::down-button {
+QSpinBox::down-button, QDoubleSpinBox::down-button, QDateTimeEdit:down-button {
     border:none;
     background-color:@color-very-dark-grey;
     border-radius: @margin;
@@ -289,7 +302,7 @@ QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QSpinBox::down-butto
     background-color: @color-medium-grey;
 }
 
-QSpinBox:disabled, QDoubleSpinBox:disabled {
+QSpinBox:disabled, QDoubleSpinBox:disabled, QDateTimeEdit:disabled {
     background-color: @color-dark-grey;
     color: @color-medium-grey;
 }
@@ -346,7 +359,7 @@ QScrollBar::handle:disabled {
 /* VERTICAL */
 
 QScrollBar:vertical {
-        width: @small-button-size;
+        width: @very-small-button-size;
 }
 
 QScrollBar::handle:vertical {
@@ -356,7 +369,7 @@ QScrollBar::handle:vertical {
 /* HORIZONTAL */
 
 QScrollBar:horizontal {
-        height: @small-button-size;
+        height: @very-small-button-size;
 }
 
 QScrollBar::handle:horizontal {
@@ -421,7 +434,6 @@ QProgressBar::chunk:disabled {
 DuQFSlider, DuQFDoubleSlider {
     color: @color-light-grey;
     border-radius: @padding-small;
-    height: @big-button-size;
 }
 
 DuQFSlider::chunk, DuQFDoubleSlider::chunk {
@@ -434,12 +446,10 @@ DuQFSlider::chunk:hover, DuQFDoubleSlider::chunk:hover {
 
 /* SPLITTERS */
 
-QSplitter {
-    background-color: @color-very-dark-grey
-}
-
 QSplitter::handle {
     image: none;
+    min-width: @padding-large;
+    min-height: @padding-large;
 }
 
 /* TABS */
@@ -484,29 +494,36 @@ QTabBar::close-button:hover {
 
 /* LISTS */
 
-QListWidget {
+QListView {
     background-color: @color-very-dark-grey;
+    padding-top: @padding-large;
     border: none;
 }
 
-QListWidget::item {
+QListView::item {
     color: @color-less-light-grey;
-    padding: @padding-large;
+    padding-left: @padding-extra-large;
+    padding-right: @padding-extra-large;
+    min-height: 40px;
     border-left: @padding-large;
 }
 
-QListWidget::item:hover {
+QListView::item:hover {
     background-color: @color-darker-grey;
  }
 
-QListWidget::item:selected {
+QListView::item:selected {
     color: @color-light-grey;
-    background-color: @color-dark-grey;
+    background-color: @color-darker-grey;
+ }
+
+QListView::item QWidget:hover {
+    color: @color-light-grey;
  }
 
 /* TABLES */
 
-QTreeWidget, QTableWidget {
+QTableView {
     background-color: @color-very-dark-grey;
     alternate-background-color: @color-darker-grey;
     color: @color-less-light-grey;
@@ -514,8 +531,13 @@ QTreeWidget, QTableWidget {
     selection-background-color: @color-less-dark-grey;
 }
 
-QTreeWidget::item:hover, QTableWidget::item:hover {
+QTableView::item:hover {
     background-color: @color-dark-grey;
+}
+
+QTableView::item:selected {
+    background-color: none;
+    border: none;
 }
 
 QHeaderView {
@@ -536,6 +558,31 @@ QHeaderView::section:vertical {
         border-bottom: @margin solid @color-very-dark-grey;
 }
 
+QTableView QTableCornerButton::section {
+    background-color: @color-very-dark-grey;
+    border: none;
+}
+
+/* TREES */
+
+QTreeWidget {
+    background-color: @color-very-dark-grey;
+    alternate-background-color: @color-darker-grey;
+    color: @color-less-light-grey;
+    selection-color: @color-light-grey;
+    selection-background-color: @color-less-dark-grey;
+    border: none;
+}
+
+QTreeWidget::item:hover {
+    background-color: @color-dark-grey;
+}
+
+QTreeWidget::item:selected {
+    background-color: @color-abyss-grey;
+    border: none;
+}
+
 /* MENUS */
 
 QMenu {
@@ -547,6 +594,7 @@ QMenu {
 QMenu::item {
     color: @color-light-grey;
     padding-left: 23px;
+    padding-right: 23px;
     padding-top: @padding-small;
     padding-bottom: @padding-small;
 }
@@ -564,27 +612,64 @@ QMenu::separator {
   margin-bottom: @padding-small;
 }
 
-/* TITLE BAR */
+/* GROUPBOXES */
 
-TitleBar, #titleWidget {
-    background-color: @color-less-dark-grey;
+QGroupBox {
+    border-radius: @padding-small;
+    padding: @padding-large;
+    padding-top: @padding-extra-large;
+    background-color: @color-darker-grey;
 }
 
-/* TOOLBAR */
+QGroupBox::title {
+    color: @color-light-grey;
+    padding: @padding-medium;
+}
+
+QGroupBox QWidget {
+    background-color: @color-transparent;
+}
+
+QGroupBox QLineEdit {
+    background-color: @color-very-dark-grey;
+}
+
+
+/* TOOLBARS */
 
 QToolBar {
-        background: @color-medium-grey;
-        border: none;
-        padding: @margin;
+    background-color: @color-less-dark-grey;
+    border: none;
+    padding: @margin;
 }
 
-#windowButton {
-    width: @small-button-size;
-    height: @small-button-size;
+QToolBar::handle:top, QToolBar::handle:bottom {
+    image: url(:/icons/vgrip);
+    padding-left: @margin;
+    padding-right: @margin;
 }
 
-QToolBar QToolButton {
+QToolBar::handle:left, QToolBar::handle:right {
+    image: url(:/icons/hgrip);
+    padding-top: @margin;
+    padding-bottom: @margin;
+}
+
+QToolBar QWidget {
+    background-color: rgba(0,0,0,0);
+}
+
+QToolBar:top QWidget, QToolBar:bottom QWidget {
     margin-right: @margin;
+}
+
+QToolBar:left QWidget, QToolBar:right QWidget {
+    margin-bottom: @margin;
+}
+
+
+QToolBar QLineEdit, QToolBar QComboBox, QToolBar QAbstractSpinBox {
+    background-color: @color-dark-grey;
 }
 
 QToolBar QToolButton:hover {
@@ -596,16 +681,60 @@ QToolBar QToolButton:pressed {
 }
 
 QToolBar QToolButton:disabled {
-    background: @color-medium-grey;
+    background-color: @color-medium-grey;
     color: @color-less-light-grey;
 }
 
-QToolBar QLabel {
+QToolBar QToolButton:checked  {
+    background-color: @color-dark-grey;
+}
+
+QToolBar QComboBox:hover {
+    background-color: @color-very-dark-grey;
+}
+
+QToolBar DuQFSlider, QToolBar DuQFDoubleSlider {
+    color: @color-light-grey;
+    border-radius: @padding-small;
+    height: @small-button-size;
+    background-color:@color-very-dark-grey;
+}
+
+QToolBar DuQFSlider::chunk, QToolBar DuQFDoubleSlider::chunk {
+    border-radius: @padding-small;
+    background-color:@color-dark-grey;
+}
+
+QToolBar DuQFSlider::chunk:hover, QToolBar DuQFDoubleSlider::chunk:hover {
+    background-color: @color-medium-grey;
+}
+
+QToolBar #menuButton {
+    background-color: @color-dark-grey;
+    max-height: @padding-extra-large;
+}
+
+QToolBar #menuButton:hover {
+    background-color: @color-very-dark-grey;
+}
+
+/* MAIN TOOLBAR */
+
+#mainToolBar {
+        background: @color-medium-grey;
+}
+
+#mainToolBar QWidget {
+    margin-right: @margin;
+}
+
+#mainToolBar QLabel {
     color: @color-light-grey;
 }
 
-QToolBar QToolButton:checked {
-    background-color: @color-dark-grey;
+#windowButton {
+    width: @small-button-size;
+    height: @small-button-size;
 }
 
 /* STATUSBAR */
@@ -623,6 +752,10 @@ QStatusBar::item {
 QStatusBar QWidget {
     background: none;
     color: @color-less-light-grey;
+}
+
+QStatusBar QProgressBar {
+    background-color: @color-abyss-grey;
 }
 
 QStatusBar QLabel {
@@ -663,6 +796,52 @@ QSplashScreen QProgressBar {
 QSplashScreen QLabel {
     background: transparent;
     color: @color-dark-grey;
+}
+
+/* GRAPHICS VIEW */
+
+QGraphicsView {
+    selection-background-color: rgba(129, 9, 173, 127);
+}
+
+/* DOCKS */
+
+QDockWidget QWidget {
+    background-color: @color-darker-grey;
+}
+
+QDockWidget QTextEdit,
+QDockWidget QLineEdit,
+QDockWidget QPlainTextEdit,
+QDockWidget QListWidget,
+QDockWidget QSpinBox,
+QDockWidget QDoubleSpinBox,
+QDockWidget QAbstractItemView
+{
+    background-color: @color-very-dark-grey;
+}
+
+QDockWidget QComboBox,
+QDockWidget QComboBox::item,
+QDockWidget QComboBox QAbstractItemView
+{
+    background-color: @color-less-dark-grey;
+}
+
+DuQFDockTitle QFrame {
+    background-color: @color-less-dark-grey;
+}
+
+DuQFDockTitle QToolButton {
+    background-color: @color-less-dark-grey;
+}
+
+DuQFDockTitle QToolButton:checked {
+    background-color: @very-dark-grey;
+}
+
+DuQFDockTitle #windowButton {
+    max-width: @padding-large;
 }
 
 /* DUQF CUSTOM WIDGETS */
