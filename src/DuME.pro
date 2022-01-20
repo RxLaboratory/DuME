@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui \
+            svg
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DuME
@@ -24,6 +25,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # For speeding up launch time when working, you can comment this line out.
 # Be sure to set it back when you're finished, before committing your changes.
 DEFINES += INIT_AE INIT_FFMPEG
+
+# Try to speed up build with precompiled headers
+PRECOMPILED_HEADER = pch/pch.h
+CONFIG += precompile_header
 
 SOURCES += \
     FFmpeg/ffcoloritem.cpp \

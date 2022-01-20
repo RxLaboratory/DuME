@@ -8,7 +8,6 @@
 
 class FFColorProfile : public FFBaseObject
 {
-    Q_OBJECT
 public:
     FFColorProfile(QString name, QString prettyName, FFColorItem *primaries, FFColorItem *trc, FFColorItem *space, FFColorItem *range, QObject *parent = nullptr);
     FFColorItem *primaries() const;

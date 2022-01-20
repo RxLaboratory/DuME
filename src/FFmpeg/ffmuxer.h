@@ -53,9 +53,6 @@ public:
     static FFMuxer *getDefault(QObject *parent = nullptr);
 
     QString defaultColorProfile() const;
-signals:
-
-public slots:
 
 private:
     FFCodec *_defaultVideoCodec;

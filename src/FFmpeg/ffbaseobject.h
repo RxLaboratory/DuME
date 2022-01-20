@@ -8,7 +8,6 @@
 
 class FFBaseObject : public QObject
 {
-    Q_OBJECT
 public:
     FFBaseObject(QString name, QObject *parent = nullptr);
     FFBaseObject(QString name, QString prettyName, QObject *parent = nullptr);

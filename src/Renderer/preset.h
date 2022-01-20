@@ -6,8 +6,6 @@
 
 class Preset : public QObject
 {
-     Q_OBJECT
-
 public:
     Preset(QObject *parent = nullptr);
     Preset(QFileInfo file, QObject *parent = nullptr);
@@ -22,8 +20,6 @@ public:
 
     QString name() const;
     QFileInfo file() const;
-
-signals:
 
 private:
     QString _name;

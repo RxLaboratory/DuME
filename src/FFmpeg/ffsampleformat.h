@@ -10,7 +10,6 @@
 
 class FFSampleFormat : public FFBaseObject
 {
-    Q_OBJECT
 public:
     FFSampleFormat(QString name, QString prettyName, int depth, QObject *parent = nullptr);
     FFSampleFormat(QString name, int depth, QObject *parent = nullptr);
