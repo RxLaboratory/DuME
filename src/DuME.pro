@@ -57,6 +57,15 @@ SOURCES += \
     UI/rqueuewidget.cpp \
     duqf-app/app-style.cpp \
     duqf-app/app-utils.cpp \
+    duqf-nodeview/duqfconnection.cpp \
+    duqf-nodeview/duqfconnectionmanager.cpp \
+    duqf-nodeview/duqfconnector.cpp \
+    duqf-nodeview/duqfgrid.cpp \
+    duqf-nodeview/duqfnode.cpp \
+    duqf-nodeview/duqfnodescene.cpp \
+    duqf-nodeview/duqfnodeview.cpp \
+    duqf-nodeview/duqfnodewidget.cpp \
+    duqf-nodeview/duqfslot.cpp \
     duqf-utils/duqflogger.cpp \
     duqf-utils/guiutils.cpp \
     duqf-utils/language-utils.cpp \
@@ -69,6 +78,8 @@ SOURCES += \
     duqf-widgets/duqfdocktitle.cpp \
     duqf-widgets/duqfdoubleslider.cpp \
     duqf-widgets/duqfslider.cpp \
+    duqf-widgets/duqftitlebar.cpp \
+    duqf-widgets/duqftoolbarspacer.cpp \
     duqf-widgets/settingswidget.cpp \
     duqf-widgets/duqfspinbox.cpp \
     duqf-widgets/duqfdoublespinbox.cpp \
@@ -153,6 +164,15 @@ HEADERS += \
     duqf-app/app-style.h \
     duqf-app/app-utils.h \
     duqf-app/app-version.h \
+    duqf-nodeview/duqfconnection.h \
+    duqf-nodeview/duqfconnectionmanager.h \
+    duqf-nodeview/duqfconnector.h \
+    duqf-nodeview/duqfgrid.h \
+    duqf-nodeview/duqfnode.h \
+    duqf-nodeview/duqfnodescene.h \
+    duqf-nodeview/duqfnodeview.h \
+    duqf-nodeview/duqfnodewidget.h \
+    duqf-nodeview/duqfslot.h \
     duqf-utils/duqflogger.h \
     duqf-utils/guiutils.h \
     duqf-utils/language-utils.h \
@@ -165,6 +185,8 @@ HEADERS += \
     duqf-widgets/duqfdocktitle.h \
     duqf-widgets/duqfslider.h \
     duqf-widgets/duqfdoubleslider.h \
+    duqf-widgets/duqftitlebar.h \
+    duqf-widgets/duqftoolbarspacer.h \
     duqf-widgets/settingswidget.h \
     duqf-widgets/duqfdoublespinbox.h \
     duqf-widgets/duqfspinbox.h \

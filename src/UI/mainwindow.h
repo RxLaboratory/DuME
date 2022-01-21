@@ -9,6 +9,7 @@
 #include "duqf-widgets/aboutdialog.h"
 #include "duqf-widgets/appearancesettingswidget.h"
 #include "duqf-widgets/duqfdocktitle.h"
+#include "duqf-nodeview/duqfnodewidget.h"
 
 #include <QProcess>
 #include <QFileDialog>
@@ -43,7 +44,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     explicit MainWindow(QStringList args, QWidget *parent = nullptr);
-    void onffmpegCommandsButton_clicked();
+
+    void setPropertiesDockWidget(QWidget *w, QString title = "Properties", QString icon = ":/icons/property");
 
 private slots:
     void duqf_bugReport();
@@ -140,6 +142,8 @@ private:
     // Docks
     QDockWidget *ui_consoleDock;
     QDockWidget *ui_rQueueDock;
+    QDockWidget *ui_propertiesDockWidget;
+    DuQFDockTitle *ui_propertiesTitle;
 
     // ===== RENDERQUEUE =====
     /**

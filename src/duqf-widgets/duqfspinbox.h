@@ -4,6 +4,7 @@
 #include <QStackedWidget>
 #include <QHBoxLayout>
 #include <QSpinBox>
+#include <QtDebug>
 
 #include "duqf-widgets/duqfslider.h"
 
@@ -20,13 +21,8 @@ public:
     void setPrefix(const QString &prefix);
 
     int minimum() const;
-    void setMinimum(int min);
-
     int maximum() const;
-    void setMaximum(int max);
-
     int value() const;
-    void setValue(int value);
 
     bool valueVisible() const;
     void showValue(bool showValue);
@@ -35,12 +31,19 @@ public:
 
     QSpinBox *spinBox() const;
 
+public slots:
+    void setValue(int value);
+    void setMaximum(int max);
+    void setMinimum(int min);
+
 signals:
+    void valueChanging(int value);
     void valueChanged(int value);
 
 private slots:
     void spinBox_editingFinished();
     void spinBox_valueChanged(int arg1);
+    void slider_valueChanging(int arg1);
     void slider_valueChanged(int arg1);
 private:
     void setupUi();

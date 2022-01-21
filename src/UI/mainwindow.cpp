@@ -91,10 +91,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     log("Init - Adding queue widget", DuQFLog::Debug);
 
-    //queue widget
-    queueWidget = new QueueWidget(this);
-    queueLayout->addWidget(queueWidget);
-
     // Cache monitoring
     _cacheButton->setMinimumWidth(100);
     connect(_cacheButton, &QToolButton::clicked, this, &MainWindow::openCacheDir);
@@ -104,6 +100,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     log("Init - Setting default UI items", DuQFLog::Debug);
 
     // Docks
+    // Console Dock
     ConsoleWidget *consoleWidget = new ConsoleWidget(this);
     ui_consoleDock = new QDockWidget("Console", this);
     ui_consoleDock->setObjectName("consoleDock");
@@ -115,7 +112,9 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_consoleDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     ui_consoleDock->setWidget( consoleWidget );
     this->addDockWidget(Qt::RightDockWidgetArea, ui_consoleDock);
+    consoleWidget->hide();
 
+    // Render Queue Dock
     RQueueWidget *rQueueWidget = new RQueueWidget(this);
     ui_rQueueDock = new QDockWidget("Queue", this);
     ui_rQueueDock->setObjectName("queueDock");
@@ -127,6 +126,19 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_rQueueDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     ui_rQueueDock->setWidget( rQueueWidget );
     this->addDockWidget(Qt::LeftDockWidgetArea, ui_rQueueDock);
+    rQueueWidget->hide();
+
+    // Properties Dock
+    ui_propertiesDockWidget = new QDockWidget("Properties");
+    ui_propertiesDockWidget->setObjectName("propertiesDock");
+    ui_propertiesTitle = new DuQFDockTitle("Properties", this);
+    ui_propertiesTitle->setObjectName("dockTitle");
+    ui_propertiesTitle->setIcon(":/icons/asset");
+    ui_propertiesDockWidget->setTitleBarWidget(ui_propertiesTitle);
+    ui_propertiesDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    ui_propertiesDockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    this->addDockWidget(Qt::RightDockWidgetArea, ui_propertiesDockWidget);
+    ui_propertiesDockWidget->hide();
 
     //init UI
     mainStack->setCurrentIndex(0);
@@ -134,6 +146,10 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     mainStatusBar->addWidget(statusLabel);
 
     log("Init - Setting window geometry", DuQFLog::Debug);
+
+    // TEMP Load a fake editor
+    DuQFNodeWidget *nodeWidget = new DuQFNodeWidget(this);
+    mainLayout->addWidget(nodeWidget);
 
     //restore geometry
     // Restore UI state
@@ -162,7 +178,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     // final connections
 
     //settings
-    connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
+    //connect(ffmpegSettingsWidget,SIGNAL(presetsPathChanged()),queueWidget,SLOT(presetsPathChanged()));
 
     log("Init - Setting stylesheet", DuQFLog::Debug);
 
@@ -172,7 +188,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     if (FFmpeg::instance()->isValid())
     {
         int argc = args.count();
-        if (argc == 1) queueWidget->addInputFile("");
+        /*if (argc == 1) queueWidget->addInputFile("");
         else
         {
             log("Reading arguments.");
@@ -279,7 +295,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
             //autostart
             if (autoStart) go();
-        }
+        }*/
     }
 
     // Connect buttons
@@ -296,6 +312,14 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     duqf_setStyle();
 
     log("Ready!");
+}
+
+void MainWindow::setPropertiesDockWidget(QWidget *w, QString title, QString icon)
+{
+    ui_propertiesDockWidget->setWidget( w );
+    ui_propertiesTitle->setTitle(title);
+    ui_propertiesTitle->setIcon(icon);
+    ui_propertiesDockWidget->show();
 }
 
 void MainWindow::duqf_initUi()
@@ -473,8 +497,8 @@ void MainWindow::ffmpegValid(bool valid)
 {
     if ( valid )
     {
-        queuePage->setGraphicsEffect( nullptr );
-        queuePage->setEnabled(true);
+        //queuePage->setGraphicsEffect( nullptr );
+        //queuePage->setEnabled(true);
         setAcceptDrops( true );
         actionStatus->setText( "Ready");
         actionGo->setEnabled( true );
@@ -483,10 +507,10 @@ void MainWindow::ffmpegValid(bool valid)
     }
     else
     {
-        queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
+        //queuePage->setGraphicsEffect( new QGraphicsBlurEffect() );
         log("FFmpeg error", DuQFLog::Critical );
         log( FFmpeg::instance()->lastErrorMessage() );
-        queuePage->setEnabled(false);
+        //queuePage->setEnabled(false);
         setAcceptDrops( false );
         actionStatus->setText( "FFmpeg not found or not working properly. Set its path in the settings.");
         actionGo->setEnabled( false );
@@ -627,7 +651,7 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
 
     if( MediaUtils::isBusy( status ) )
     {
-        queuePage->setEnabled( false );
+        //queuePage->setEnabled( false );
         actionGo->setEnabled(false);
         actionGoQuit->setEnabled(false);
         goButton->setEnabled(false);
@@ -637,7 +661,7 @@ void MainWindow::renderQueueStatusChanged(MediaUtils::RenderStatus status)
     }
     else
     {
-        queuePage->setEnabled( true );
+        //queuePage->setEnabled( true );
 
         reInitCurrentProgress();
         currentEncodingNameLabel->setText("");
@@ -685,7 +709,7 @@ void MainWindow::go()
 {
     //Launch!
     log("=== Beginning encoding ===");
-    renderQueue->encode( queueWidget->job() );
+    //renderQueue->encode( queueWidget->job() );
 }
 
 void MainWindow::on_actionGoQuit_triggered()

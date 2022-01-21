@@ -245,8 +245,8 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="rqueueWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+      <widget class="QWidget" name="mainWidget">
+       <layout class="QVBoxLayout" name="mainLayout">
         <property name="spacing">
          <number>0</number>
         </property>
@@ -262,29 +262,6 @@
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="QStackedWidget" name="rQueueStack">
-          <widget class="QWidget" name="queuePage">
-           <layout class="QVBoxLayout" name="queueLayout">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-           </layout>
-          </widget>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="settingsPage">
@@ -333,7 +310,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/settings</normaloff>:/icons/settings</iconset>
    </property>
    <property name="text">
@@ -389,7 +366,7 @@
   </action>
   <action name="actionChat">
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/chat</normaloff>:/icons/chat</iconset>
    </property>
    <property name="text">
@@ -401,7 +378,7 @@
   </action>
   <action name="actionForum">
    <property name="icon">
-    <iconset resource="../duqf_resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/forum</normaloff>:/icons/forum</iconset>
    </property>
    <property name="text">
@@ -494,7 +471,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../duqf_resources.qrc"/>
   <include location="../resources.qrc"/>
  </resources>
  <connections/>
