@@ -13,6 +13,7 @@
 
 class DuQFNodeWidget : public QWidget
 {
+    Q_OBJECT
 public:
     explicit DuQFNodeWidget(QWidget *parent = nullptr);
 
@@ -20,14 +21,35 @@ protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
+private slots:
+    void setSnapEnabled(bool enabled);
+    void setGridSize(int size);
+
 private:
     void setupUi();
+    void connectEvents();
 
     DuQFTitleBar *ui_titleBar;
 
     DuQFNodeScene *m_nodeScene;
     DuQFNodeView *ui_nodeView;
 
+    QAction *ui_actionReinitView;
+    QAction *ui_actionViewAll;
+    QAction *ui_actionSelectAll;
+    QAction *ui_actionSelectChildren;
+    QAction *ui_actionSelectParents;
+    QAction *ui_actionLayoutAll;
+    QAction *ui_actionLayoutSelected;
+    QAction *ui_actionDeleteNode;
+    QAction *ui_actionDeleteSelection;
+    QAction *ui_actionDeleteConnections;
+
+    QToolButton *ui_viewAllButton;
+    QToolButton *ui_viewSelectedButton;
+    QToolButton *ui_snapButton;
+    DuQFSpinBox *ui_zoomBox;
+    DuQFSpinBox *ui_gridSizeBox;
 };
 
 #endif // JOBEDITORWIDGET_H

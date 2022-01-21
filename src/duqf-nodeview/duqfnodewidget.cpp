@@ -4,6 +4,7 @@ DuQFNodeWidget::DuQFNodeWidget(QWidget *parent)
     : QWidget{parent}
 {
     setupUi();
+    connectEvents();
 }
 
 void DuQFNodeWidget::showEvent(QShowEvent *event)
@@ -26,6 +27,30 @@ void DuQFNodeWidget::hideEvent(QHideEvent *event)
     QWidget::hideEvent(event);
 }
 
+void DuQFNodeWidget::setSnapEnabled(bool enabled)
+{
+    QSignalBlocker b(ui_snapButton);
+
+    ui_snapButton->setChecked(enabled);
+
+    ui_nodeView->grid()->setSnapEnabled(enabled);
+
+    QSettings settings;
+    settings.setValue("nodeView/snapToGrid", enabled);
+}
+
+void DuQFNodeWidget::setGridSize(int size)
+{
+    QSignalBlocker b(ui_gridSizeBox);
+
+    ui_gridSizeBox->setValue(size);
+    ui_nodeView->grid()->setSize(size);
+    ui_nodeView->update();
+
+    QSettings settings;
+    settings.setValue("nodeView/gridSize", size);
+}
+
 void DuQFNodeWidget::setupUi()
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -46,18 +71,19 @@ void DuQFNodeWidget::setupUi()
     ui_titleBar->showReinitButton(false);
     mw->addToolBar(Qt::TopToolBarArea,ui_titleBar);
     ui_titleBar->setFloatable(false);
+    ui_titleBar->showCloseButton(false);
     ui_titleBar->hide();
 
     // View menu
     QMenu *viewMenu = new QMenu(this);
 
-    QAction *actionReinitView = new QAction("Center view", this);
-    actionReinitView->setShortcut(QKeySequence("Home"));
-    viewMenu->addAction(actionReinitView);
+    ui_actionReinitView = new QAction("Center view", this);
+    ui_actionReinitView->setShortcut(QKeySequence("Home"));
+    viewMenu->addAction(ui_actionReinitView);
 
-    QAction *actionViewAll = new QAction("Center selection", this);
-    actionViewAll->setShortcut(QKeySequence("F"));
-    viewMenu->addAction(actionViewAll);
+    ui_actionViewAll = new QAction("Center selection", this);
+    ui_actionViewAll->setShortcut(QKeySequence("F"));
+    viewMenu->addAction(ui_actionViewAll);
 
     QToolButton *viewButton = new QToolButton(this);
     viewButton->setText("View");
@@ -73,17 +99,17 @@ void DuQFNodeWidget::setupUi()
     // Select menu
     QMenu *selectMenu = new QMenu(this);
 
-    QAction *actionSelectAll = new QAction("Select all nodes", this);
-    actionSelectAll->setShortcut(QKeySequence("A"));
-    selectMenu->addAction(actionSelectAll);
+    ui_actionSelectAll = new QAction("Select all nodes", this);
+    ui_actionSelectAll->setShortcut(QKeySequence("A"));
+    selectMenu->addAction(ui_actionSelectAll);
 
-    QAction *actionSelectChildren = new QAction("Select children nodes", this);
-    actionSelectChildren->setShortcut(QKeySequence("Ctrl+A"));
-    selectMenu->addAction(actionSelectChildren);
+    ui_actionSelectChildren = new QAction("Select children nodes", this);
+    ui_actionSelectChildren->setShortcut(QKeySequence("Ctrl+A"));
+    selectMenu->addAction(ui_actionSelectChildren);
 
-    QAction *actionSelectParents = new QAction("Select parent nodes", this);
-    actionSelectParents->setShortcut(QKeySequence("Alt+A"));
-    selectMenu->addAction(actionSelectParents);
+    ui_actionSelectParents = new QAction("Select parent nodes", this);
+    ui_actionSelectParents->setShortcut(QKeySequence("Alt+A"));
+    selectMenu->addAction(ui_actionSelectParents);
 
     QToolButton *selectButton = new QToolButton(this);
     selectButton->setText("Select");
@@ -99,13 +125,13 @@ void DuQFNodeWidget::setupUi()
     // Layout menu
     QMenu *layMenu = new QMenu(this);
 
-    QAction *actionLayoutAll = new QAction("Layout all nodes", this);
-    actionLayoutAll->setShortcut(QKeySequence("Shift+L"));
-    layMenu->addAction(actionLayoutAll);
+    ui_actionLayoutAll = new QAction("Layout all nodes", this);
+    ui_actionLayoutAll->setShortcut(QKeySequence("Shift+L"));
+    layMenu->addAction(ui_actionLayoutAll);
 
-    QAction *actionLayoutSelected = new QAction("Layout selected nodes", this);
-    actionLayoutSelected->setShortcut(QKeySequence("Alt+L"));
-    layMenu->addAction(actionLayoutSelected);
+    ui_actionLayoutSelected = new QAction("Layout selected nodes", this);
+    ui_actionLayoutSelected->setShortcut(QKeySequence("Alt+L"));
+    layMenu->addAction(ui_actionLayoutSelected);
 
     QToolButton *layButton = new QToolButton(this);
     layButton->setText("Layout");
@@ -121,13 +147,13 @@ void DuQFNodeWidget::setupUi()
     // Node menu
     QMenu *ui_nodeMenu = new QMenu(this);
 
-    QAction *actionDeleteNode = new QAction("Remove selected nodes", this);
-    actionDeleteNode->setShortcut(QKeySequence("Shift+X"));
-    ui_nodeMenu->addAction(actionDeleteNode);
+    ui_actionDeleteNode = new QAction("Remove selected nodes", this);
+    ui_actionDeleteNode->setShortcut(QKeySequence("Shift+X"));
+    ui_nodeMenu->addAction(ui_actionDeleteNode);
 
-    QAction *actionDeleteSelection = new QAction("Delete selection", this);
-    actionDeleteSelection->setShortcut(QKeySequence("Delete"));
-    ui_nodeMenu->addAction(actionDeleteSelection);
+    ui_actionDeleteSelection = new QAction("Delete selection", this);
+    ui_actionDeleteSelection->setShortcut(QKeySequence("Delete"));
+    ui_nodeMenu->addAction(ui_actionDeleteSelection);
 
     QToolButton *nodeButton = new QToolButton(this);
     nodeButton->setText("Node");
@@ -143,9 +169,9 @@ void DuQFNodeWidget::setupUi()
     // Connections menu
     QMenu *coMenu = new QMenu(this);
 
-    QAction *actionDeleteConnections = new QAction("Remove selected connections", this);
-    actionDeleteConnections->setShortcut(QKeySequence("Alt+X"));
-    coMenu->addAction(actionDeleteConnections);
+    ui_actionDeleteConnections = new QAction("Remove selected connections", this);
+    ui_actionDeleteConnections->setShortcut(QKeySequence("Alt+X"));
+    coMenu->addAction(ui_actionDeleteConnections);
 
     QToolButton *coButton = new QToolButton(this);
     coButton->setText("Pipe");
@@ -160,23 +186,23 @@ void DuQFNodeWidget::setupUi()
 
     // Right buttons
 
-    QToolButton *viewAllButton = new QToolButton(this);
-    viewAllButton->setIcon(QIcon(":/icons/frame"));
-    ui_titleBar->insertRight(viewAllButton);
-    QToolButton *viewSelectedButton = new QToolButton(this);
-    viewSelectedButton->setIcon(QIcon(":/icons/frame-nodes"));
-    ui_titleBar->insertRight(viewSelectedButton);
+    ui_viewAllButton = new QToolButton(this);
+    ui_viewAllButton->setIcon(QIcon(":/icons/frame"));
+    ui_titleBar->insertRight(ui_viewAllButton);
+    ui_viewSelectedButton = new QToolButton(this);
+    ui_viewSelectedButton->setIcon(QIcon(":/icons/frame-nodes"));
+    ui_titleBar->insertRight(ui_viewSelectedButton);
 
-    DuQFSpinBox *zoomBox = new DuQFSpinBox(this);
-    zoomBox->setMinimum(25);
-    zoomBox->setMaximum(400);
-    zoomBox->setSuffix("%");
-    zoomBox->setPrefix("Zoom: ");
-    zoomBox->setMaximumWidth(100);
-    zoomBox->setValue(100);
-    ui_titleBar->insertRight(zoomBox);
+    ui_zoomBox = new DuQFSpinBox(this);
+    ui_zoomBox->setMinimum(25);
+    ui_zoomBox->setMaximum(400);
+    ui_zoomBox->setSuffix("%");
+    ui_zoomBox->setPrefix("Zoom: ");
+    ui_zoomBox->setMaximumWidth(100);
+    ui_zoomBox->setValue(100);
+    ui_titleBar->insertRight(ui_zoomBox);
 
-    DuQFSpinBox *ui_gridSizeBox = new DuQFSpinBox(this);
+    ui_gridSizeBox = new DuQFSpinBox(this);
     ui_gridSizeBox->setMinimum(10);
     ui_gridSizeBox->setMaximum(100);
     ui_gridSizeBox->setMaximumWidth(100);
@@ -184,8 +210,29 @@ void DuQFNodeWidget::setupUi()
     ui_gridSizeBox->setPrefix("Grid size: ");
     ui_titleBar->insertRight(ui_gridSizeBox);
 
-    QToolButton *ui_snapButton = new QToolButton();
+    ui_snapButton = new QToolButton();
     ui_snapButton->setCheckable(true);
     ui_snapButton->setIcon(QIcon(":/icons/snap"));
     ui_titleBar->insertRight(ui_snapButton);
+}
+
+void DuQFNodeWidget::connectEvents()
+{
+    connect(ui_viewAllButton, SIGNAL(clicked()), ui_nodeView, SLOT(reinitTransform()));
+    connect(ui_actionReinitView, SIGNAL(triggered()), ui_nodeView, SLOT(reinitTransform()));
+    connect(ui_viewSelectedButton, SIGNAL(clicked()), ui_nodeView, SLOT(frameSelected()));
+    connect(ui_actionViewAll, SIGNAL(triggered()), ui_nodeView, SLOT(frameSelected()));
+    connect(ui_zoomBox, SIGNAL(valueChanged(int)), ui_nodeView, SLOT(setZoom(int)));
+    connect(ui_nodeView, SIGNAL(zoomed(int)), ui_zoomBox, SLOT(setValue(int)));
+    connect(ui_actionDeleteNode, SIGNAL(triggered()), m_nodeScene, SLOT(removeSelectedNodes()));
+    connect(ui_actionDeleteConnections, SIGNAL(triggered()), m_nodeScene, SLOT(removeSelectedConnections()));
+    connect(ui_actionDeleteSelection, SIGNAL(triggered()), m_nodeScene, SLOT(removeSelection()));
+    connect(ui_snapButton, SIGNAL(clicked(bool)), this, SLOT(setSnapEnabled(bool)));
+    connect(ui_gridSizeBox, SIGNAL(valueChanged(int)), this, SLOT(setGridSize(int)));
+    connect(ui_actionLayoutAll, SIGNAL(triggered()), m_nodeScene, SLOT(autoLayoutAll()));
+    connect(ui_actionLayoutAll, SIGNAL(triggered()), ui_nodeView, SLOT(frameSelected()));
+    connect(ui_actionLayoutSelected, SIGNAL(triggered()), m_nodeScene, SLOT(autoLayoutSelectedNodes()));
+    connect(ui_actionSelectAll, SIGNAL(triggered()), m_nodeScene, SLOT(selectAllNodes()));
+    connect(ui_actionSelectChildren, SIGNAL(triggered()), m_nodeScene, SLOT(selectChildNodes()));
+    connect(ui_actionSelectParents, SIGNAL(triggered()), m_nodeScene, SLOT(selectParentNodes()));
 }

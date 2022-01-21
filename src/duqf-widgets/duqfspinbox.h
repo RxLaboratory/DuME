@@ -1,5 +1,5 @@
-#ifndef QSLIDERSPINBOX_H
-#define QSLIDERSPINBOX_H
+#ifndef DUQFSPINBOX_H
+#define DUQFSPINBOX_H
 
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -61,4 +61,4 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 };
 
-#endif // QSLIDERSPINBOX_H
+#endif // DUQFSPINBOX_H
