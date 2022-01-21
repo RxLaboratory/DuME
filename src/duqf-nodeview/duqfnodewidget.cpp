@@ -61,7 +61,7 @@ void DuQFNodeWidget::setupUi()
 
     QToolButton *viewButton = new QToolButton(this);
     viewButton->setText("View");
-    viewButton->setIcon(QIcon(":/icons/view"));
+    viewButton->setIcon(QIcon(":/icons/show"));
     viewButton->setIconSize(QSize(16,16));
     viewButton->setObjectName("menuButton");
     viewButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -87,7 +87,7 @@ void DuQFNodeWidget::setupUi()
 
     QToolButton *selectButton = new QToolButton(this);
     selectButton->setText("Select");
-    selectButton->setIcon(QIcon(":/icons/select-menu"));
+    selectButton->setIcon(QIcon(":/icons/select"));
     selectButton->setIconSize(QSize(16,16));
     selectButton->setObjectName("menuButton");
     selectButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -109,7 +109,7 @@ void DuQFNodeWidget::setupUi()
 
     QToolButton *layButton = new QToolButton(this);
     layButton->setText("Layout");
-    layButton->setIcon(QIcon(":/icons/steps-menu"));
+    layButton->setIcon(QIcon(":/icons/nodes"));
     layButton->setIconSize(QSize(16,16));
     layButton->setObjectName("menuButton");
     layButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -131,7 +131,7 @@ void DuQFNodeWidget::setupUi()
 
     QToolButton *nodeButton = new QToolButton(this);
     nodeButton->setText("Node");
-    nodeButton->setIcon(QIcon(":/icons/step"));
+    nodeButton->setIcon(QIcon(":/icons/node"));
     nodeButton->setIconSize(QSize(16,16));
     nodeButton->setObjectName("menuButton");
     nodeButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -149,7 +149,7 @@ void DuQFNodeWidget::setupUi()
 
     QToolButton *coButton = new QToolButton(this);
     coButton->setText("Pipe");
-    coButton->setIcon(QIcon(":/icons/connection"));
+    coButton->setIcon(QIcon(":/icons/node-connection"));
     coButton->setIconSize(QSize(16,16));
     coButton->setObjectName("menuButton");
     coButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -161,10 +161,10 @@ void DuQFNodeWidget::setupUi()
     // Right buttons
 
     QToolButton *viewAllButton = new QToolButton(this);
-    viewAllButton->setIcon(QIcon(":/icons/view-all"));
+    viewAllButton->setIcon(QIcon(":/icons/frame"));
     ui_titleBar->insertRight(viewAllButton);
     QToolButton *viewSelectedButton = new QToolButton(this);
-    viewSelectedButton->setIcon(QIcon(":/icons/view-selected"));
+    viewSelectedButton->setIcon(QIcon(":/icons/frame-nodes"));
     ui_titleBar->insertRight(viewSelectedButton);
 
     DuQFSpinBox *zoomBox = new DuQFSpinBox(this);

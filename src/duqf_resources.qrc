@@ -43,6 +43,13 @@
         <file alias="folder">duqf_resources/icons/folder.svg</file>
         <file alias="shortcut">duqf_resources/icons/shortcut.svg</file>
         <file alias="console">duqf_resources/icons/bash-terminal_sl.svg</file>
+        <file alias="show">duqf_resources/icons/show_sl.svg</file>
+        <file alias="nodes">duqf_resources/icons/nodes.svg</file>
+        <file alias="node">duqf_resources/icons/node.svg</file>
+        <file alias="node-connection">duqf_resources/icons/node-connection.svg</file>
+        <file alias="frame">duqf_resources/icons/frame-all.svg</file>
+        <file alias="frame-nodes">duqf_resources/icons/frame-nodes.svg</file>
+        <file alias="snap">duqf_resources/icons/snap.svg</file>
     </qresource>
     <qresource prefix="/images"/>
     <qresource prefix="/styles">
