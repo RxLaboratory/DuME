@@ -101,7 +101,6 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
 
     // Docks
     // Console Dock
-    ConsoleWidget *consoleWidget = new ConsoleWidget(this);
     ui_consoleDock = new QDockWidget("Console", this);
     ui_consoleDock->setObjectName("consoleDock");
     DuQFDockTitle *ui_consoleTitle = new DuQFDockTitle("Console", this);
@@ -110,12 +109,11 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_consoleDock->setTitleBarWidget(ui_consoleTitle);
     ui_consoleDock->setAllowedAreas(Qt::AllDockWidgetAreas);
     ui_consoleDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-    ui_consoleDock->setWidget( consoleWidget );
+    ui_consoleDock->setWidget( new ConsoleWidget(ui_consoleDock) );
     this->addDockWidget(Qt::RightDockWidgetArea, ui_consoleDock);
-    consoleWidget->hide();
+    ui_consoleDock->hide();
 
     // Render Queue Dock
-    RQueueWidget *rQueueWidget = new RQueueWidget(this);
     ui_rQueueDock = new QDockWidget("Queue", this);
     ui_rQueueDock->setObjectName("queueDock");
     DuQFDockTitle *ui_rQueueTitle = new DuQFDockTitle("Queue", this);
@@ -124,9 +122,10 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_rQueueDock->setTitleBarWidget(ui_rQueueTitle);
     ui_rQueueDock->setAllowedAreas(Qt::AllDockWidgetAreas);
     ui_rQueueDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    RQueueWidget *rQueueWidget = new RQueueWidget(ui_rQueueDock);
     ui_rQueueDock->setWidget( rQueueWidget );
     this->addDockWidget(Qt::LeftDockWidgetArea, ui_rQueueDock);
-    rQueueWidget->hide();
+    ui_rQueueDock->hide();
 
     // Properties Dock
     ui_propertiesDockWidget = new QDockWidget("Properties");
@@ -138,6 +137,7 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     ui_propertiesDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     ui_propertiesDockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     this->addDockWidget(Qt::RightDockWidgetArea, ui_propertiesDockWidget);
+    ui_propertiesDockWidget->setWidget(new QWidget(this));
     ui_propertiesDockWidget->hide();
 
     //init UI
