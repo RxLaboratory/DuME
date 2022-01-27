@@ -111,6 +111,7 @@ private:
     QToolButton *duqf_maximizeButton;
     QToolButton *duqf_settingsButton;
     AboutDialog *duqf_aboutDialog;
+    bool duqf_dontSaveSettings = false;
     QSettings settings;
     SettingsWidget *settingsWidget;
     QLabel *title;

@@ -483,7 +483,8 @@ void MainWindow::duqf_reinitSettings()
     {
         settings.clear();
         settings.sync();
-        this->close();
+        duqf_dontSaveSettings = true;
+        quit();
         QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
     }
 }
@@ -741,14 +742,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     renderQueue->stop(6000);
 
-    qDebug() << "Saving geometry and settings...";
+    if (!duqf_dontSaveSettings)
+    {
+        qDebug() << "Saving geometry and settings...";
 
-    //save ui geometry
-    // Let's save the ui state
-    settings.beginGroup("ui");
-    settings.setValue("maximized", this->isMaximized());
-    settings.setValue("windowState", this->saveState());
-    settings.endGroup();
+        //save ui geometry
+        // Let's save the ui state
+        settings.beginGroup("ui");
+        settings.setValue("maximized", this->isMaximized());
+        settings.setValue("windowState", this->saveState());
+        settings.endGroup();
+    }
 
     qDebug() << "Purging disk cache...";
 
@@ -874,7 +878,7 @@ void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
 
 void MainWindow::quit(bool force)
 {
-    if (force || !MediaUtils::isBusy( renderQueue->status() )) close();
+    if (force || !MediaUtils::isBusy( renderQueue->status() )) qApp->quit();
 }
 
 void MainWindow::on_actionAbout_FFmpeg_triggered()
