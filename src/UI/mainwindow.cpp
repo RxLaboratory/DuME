@@ -329,8 +329,9 @@ void MainWindow::duqf_initUi()
 
     // ===== TOOLBAR ======
 
+    mainToolBar->setWindowTitle(QString(STR_FILEDESCRIPTION) + " main toolbar");
     // remove right click on toolbar
-    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    //mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     //drag window
     duqf_toolBarClicked = false;
     mainToolBar->installEventFilter(this);

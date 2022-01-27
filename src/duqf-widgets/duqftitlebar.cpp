@@ -13,6 +13,8 @@ DuQFTitleBar::DuQFTitleBar(QString title, bool mini, QWidget *parent) :
     closeButton->setToolTip("Close " + title);
     closeButton->setStatusTip("Close " + title);
 
+    this->setWindowTitle(title + " toolbar");
+
     reinitButton->setObjectName("windowButton");
     closeButton->setObjectName("windowButton");
 
