@@ -4,8 +4,11 @@
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
+#include <QStaticText>
 
 #include "duqf-app/app-style.h"
+
+class DuQFNode;
 
 class DuQFSlot : public QGraphicsObject
 {
@@ -20,7 +23,7 @@ public:
     enum { Type = UserType + 2 };
     int type() const override { return Type; }
 
-    DuQFSlot(SlotType type = All, bool singleConnection = false, QColor color = QColor(), QGraphicsItem *parent = nullptr);
+    DuQFSlot(DuQFNode *node, SlotType type = All, bool singleConnection = false, QColor color = QColor(), QGraphicsItem *parent = nullptr);
 
     QRectF boundingRect() const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
@@ -32,6 +35,13 @@ public:
 
     SlotType slotType() const;
     void setSlotType(const SlotType &slotType);
+
+    // UI Settings
+    static int height;
+
+    void setTitle(const QString &newTitle);
+
+    DuQFNode *node() const;
 
 public slots:
     void remove();
@@ -55,15 +65,18 @@ private:
     // Attributes
     SlotType m_slotType;
     bool m_singleConnection;
+    QString m_title;
 
     // Appearance
-    QSizeF m_size;
     QColor m_color;
     QRectF m_boundingRect;
 
     // Interactions
     bool m_hover = false;
     bool m_connecting = false;
+
+    // Node
+    DuQFNode *m_node = nullptr;
 };
 
 #endif // DUQFSLOT_H

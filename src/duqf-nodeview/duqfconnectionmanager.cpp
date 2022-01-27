@@ -14,11 +14,14 @@ void DuQFConnectionManager::addConnection(DuQFConnection *connection)
 
 DuQFConnection * DuQFConnectionManager::addConnection(DuQFSlot *output, DuQFSlot *input)
 {
+    // If one slot is missing
+    if (!input || !output) return nullptr;
+
     // If input and output are the same
     if (input == output) return nullptr;
 
-    // If one slot is missing
-    if (!input || !output) return nullptr;
+    // If self connection
+    if (output->node() == input->node()) return nullptr;
 
     // Won't connect two inputs or two outputs together
     if (input->slotType() && input->slotType() == output->slotType()) return nullptr;

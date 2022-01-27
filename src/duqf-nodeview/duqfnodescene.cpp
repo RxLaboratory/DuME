@@ -6,6 +6,8 @@ DuQFNodeScene::DuQFNodeScene(DuQFGrid &grid, QObject *parent):
 {
     m_connectionManager = new DuQFConnectionManager(this);
     setSceneRect(-m_initialSize, -m_initialSize, m_initialSize * 2, m_initialSize * 2);
+
+    connect(m_connectionManager, SIGNAL(newConnection(DuQFConnection*)), this, SLOT(connectNodes(DuQFConnection*)));
 }
 
 void DuQFNodeScene::adjustSceneRect()
@@ -263,12 +265,21 @@ void DuQFNodeScene::selectParentNodes()
     }
 }
 
-DuQFConnection * DuQFNodeScene::connectNodes(DuQFNode *o, DuQFNode *i)
+DuQFConnection * DuQFNodeScene::connectNodes(DuQFSlot *o, DuQFSlot *i)
 {
-    DuQFConnection *co = m_connectionManager->addConnection(o->defaultOutputSlot(), i->defaultInputSlot());
+    if (!o) return nullptr;
+    if (!i) return nullptr;
+
+    DuQFConnection *co = m_connectionManager->addConnection(o, i);
     //add the graphic item connector
     if (co) this->addItem( co->connector() );
+
     return co;
+}
+
+void DuQFNodeScene::connectNodes(DuQFConnection *newConnection)
+{
+    this->addItem( newConnection->connector() );
 }
 
 void DuQFNodeScene::moveConnection(QPointF to)

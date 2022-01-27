@@ -110,5 +110,6 @@
 #include <QErrorMessage>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QStaticText>
 
 #include <cmath>

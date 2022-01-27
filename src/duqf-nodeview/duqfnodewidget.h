@@ -15,24 +15,26 @@ class DuQFNodeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DuQFNodeWidget(QWidget *parent = nullptr);
+    explicit DuQFNodeWidget(QString title = "Node view", QWidget *parent = nullptr);
 
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
+
+    DuQFNodeScene *m_nodeScene;
+    DuQFNodeView *ui_nodeView;
+
+    QMenu *ui_addMenu;
 
 private slots:
     void setSnapEnabled(bool enabled);
     void setGridSize(int size);
 
 private:
-    void setupUi();
+    void setupUi(QString title);
     void connectEvents();
 
     DuQFTitleBar *ui_titleBar;
-
-    DuQFNodeScene *m_nodeScene;
-    DuQFNodeView *ui_nodeView;
 
     QAction *ui_actionReinitView;
     QAction *ui_actionViewAll;

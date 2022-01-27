@@ -3,53 +3,19 @@
 DuQFNode::DuQFNode(QString title, QGraphicsItem *parent):
     QGraphicsObject(parent)
 {
-    setAcceptHoverEvents(true);
-    m_grid = nullptr;
+    setupUi(title);
+    addInput();
+    addOutput();
+}
 
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect();
-    shadow->setBlurRadius(10.0);
-    shadow->setColor(DuUI::getColor("obsidian"));
-    shadow->setOffset(5.0,5.0);
-    setGraphicsEffect(shadow);
+DuQFNode::DuQFNode(int numInputs, int numOutputs, QString title, QGraphicsItem *parent):
+    QGraphicsObject(parent)
+{
+    setupUi(title);
 
-    m_cornerRadius = DuUI::getSize( "padding", "small" );
-
-    setFlags(ItemIsMovable | ItemIsSelectable | ItemIsFocusable | ItemSendsGeometryChanges);
-    setSelected(false);
-
-    // Connectors
-
-    m_defaultInputSlot = new DuQFSlot( DuQFSlot::Input, false, DuUI::getColor("light-blue") );
-    m_defaultInputSlot->setParentItem(this);
-    m_defaultOutputSlot = new DuQFSlot( DuQFSlot::Output, false, DuUI::getColor("light-green") );
-    m_defaultOutputSlot->setParentItem(this);
-
-    // Title
-
-    m_titleItem = new QGraphicsTextItem(title);
-    QFont f = qApp->font();
-    f.setPixelSize( DuUI::getSize("font", "size-small") );
-    f.setWeight(QFont::Bold);
-    m_titleItem->setFont(f);
-    m_titleItem->setDefaultTextColor(DuUI::getColor("light-grey"));
-    m_titleItem->setParentItem(this);
-    m_padding = DuUI::getSize("padding", "small");
-    //m_titleItem->setPos(m_padding, m_padding);
-
-    // Icon
-
-    m_iconItem = new QGraphicsSvgItem(this);
-
-    setTitle(title);
-
-    connect(m_defaultInputSlot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
-    connect(m_defaultInputSlot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
-    connect(m_defaultInputSlot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
-    connect(m_defaultOutputSlot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
-    connect(m_defaultOutputSlot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
-    connect(m_defaultOutputSlot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
-
-    this->setObjectName( "DuQFNode" );
+    // Add slots
+    for (int i = 0; i < numInputs; i++) addInput();
+    for (int i = 0; i < numOutputs; i++) addOutput();
 }
 
 QRectF DuQFNode::boundingRect() const
@@ -67,6 +33,11 @@ QRectF DuQFNode::boundingRect() const
 
     //set correct height
     rect.setHeight( m_titleItem->boundingRect().height() );
+
+    // Add slots
+    int numSlots = std::max(m_inputSlots.count(), m_outputSlots.count());
+
+    rect.setHeight(rect.height() + numSlots*(m_padding + DuQFSlot::height));
 
     //set margins
     rect.adjust(-m_padding-7, -m_padding-3, m_padding+7, m_padding+3);
@@ -117,14 +88,78 @@ QVariant DuQFNode::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsItem::itemChange(change, value);
 }
 
-DuQFSlot *DuQFNode::defaultOutputSlot() const
+void DuQFNode::setupUi(QString title)
 {
-    return m_defaultOutputSlot;
+    setAcceptHoverEvents(true);
+    m_grid = nullptr;
+
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect();
+    shadow->setBlurRadius(10.0);
+    shadow->setColor(DuUI::getColor("obsidian"));
+    shadow->setOffset(5.0,5.0);
+    setGraphicsEffect(shadow);
+
+    m_cornerRadius = DuUI::getSize( "padding", "small" );
+
+    setFlags(ItemIsMovable | ItemIsSelectable | ItemIsFocusable | ItemSendsGeometryChanges);
+    setSelected(false);
+
+    // Title
+
+    m_titleItem = new QGraphicsTextItem(title);
+    QFont f = qApp->font();
+    f.setPixelSize( DuUI::getSize("font", "size-small") );
+    f.setWeight(QFont::Bold);
+    m_titleItem->setFont(f);
+    m_titleItem->setDefaultTextColor(DuUI::getColor("light-grey"));
+    m_titleItem->setParentItem(this);
+    m_padding = DuUI::getSize("padding", "small");
+    //m_titleItem->setPos(m_padding, m_padding);
+
+    // Icon
+
+    m_iconItem = new QGraphicsSvgItem(this);
+
+    setTitle(title);
+
+    this->setObjectName( "DuQFNode" );
 }
 
-DuQFSlot *DuQFNode::defaultInputSlot() const
+void DuQFNode::updateSlotsPos()
 {
-    return m_defaultInputSlot;
+    QRectF rect = m_titleItem->boundingRect().adjusted(-m_padding-7, -m_padding-3, m_padding+7, m_padding+3);
+
+    // Update slots position
+    qreal right = rect.right()-2;
+    if (m_iconItem->boundingRect().width() != 0)
+        right += m_iconItem->boundingRect().right() * m_iconItem->scale() + m_padding;
+    qreal left = rect.left()+2;
+    qreal top = rect.bottom() + m_padding;
+
+    for (int i = 0; i < m_inputSlots.count(); i++)
+    {
+        DuQFSlot *slot = m_inputSlots.at(i);
+        slot->setPos(left, top);
+        top += DuQFSlot::height + m_padding;
+    }
+
+    top = rect.bottom() + m_padding;
+    for (int i = 0; i < m_outputSlots.count(); i++)
+    {
+        DuQFSlot *slot = m_outputSlots.at(i);
+        slot->setPos(right, top);
+        top += DuQFSlot::height + m_padding;
+    }
+}
+
+const QList<DuQFSlot *> &DuQFNode::outputSlots() const
+{
+    return m_outputSlots;
+}
+
+const QList<DuQFSlot *> &DuQFNode::inputSlots() const
+{
+    return m_inputSlots;
 }
 
 QList<DuQFNode *> DuQFNode::parentNodes() const
@@ -190,12 +225,7 @@ QString DuQFNode::title() const
 void DuQFNode::setTitle(const QString &title)
 {
     m_titleItem->setPlainText(title);
-    QRectF rect = m_titleItem->boundingRect().adjusted(-m_padding-7, -m_padding-3, m_padding+7, m_padding+3);
-    qreal right = rect.right()-2;
-    if (m_iconItem->boundingRect().width() != 0)
-        right += m_iconItem->boundingRect().right() * m_iconItem->scale() + m_padding;
-    m_defaultOutputSlot->setPos(right , rect.center().y());
-    m_defaultInputSlot->setPos(rect.left()+2, rect.center().y());
+    updateSlotsPos();
 }
 
 void DuQFNode::setTitleColor(const QColor &color)
@@ -231,7 +261,44 @@ void DuQFNode::setIcon(QString icon)
     }
 
     m_titleItem->setPos(width + m_padding, 0);
-    m_defaultOutputSlot->setPos(width + m_padding + m_titleItem->boundingRect().right() + 10, m_titleItem->boundingRect().center().y());
+
+    updateSlotsPos();
+}
+
+void DuQFNode::addInput(QString inputName, QColor color)
+{
+    if (!color.isValid()) color =  DuUI::getColor("light-blue");
+
+    // Create Slot
+    DuQFSlot *slot = new DuQFSlot( this, DuQFSlot::Input, false, color );
+    slot->setTitle(inputName);
+    slot->setParentItem(this);
+    m_inputSlots.append(slot);
+
+    updateSlotsPos();
+
+    // Connect
+    connect(slot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
+    connect(slot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
+    connect(slot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
+}
+
+void DuQFNode::addOutput(QString outputName, QColor color)
+{
+    if (!color.isValid()) color =  DuUI::getColor("light-green");
+
+    // Create Slot
+    DuQFSlot *slot = new DuQFSlot( this, DuQFSlot::Output, false, color );
+    slot->setTitle(outputName);
+    slot->setParentItem(this);
+    m_outputSlots.append(slot);
+
+    updateSlotsPos();
+
+    // Connect
+    connect(slot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
+    connect(slot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
+    connect(slot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
 }
 
 void DuQFNode::remove()
@@ -243,8 +310,9 @@ void DuQFNode::remove()
     m_removing = true;
     this->prepareGeometryChange();
 
-    m_defaultInputSlot->remove();
-    m_defaultOutputSlot->remove();
+    while (!m_inputSlots.isEmpty())  m_inputSlots.takeLast()->remove();
+    while (!m_outputSlots.isEmpty()) m_outputSlots.takeLast()->remove();
+
     emit removed(this);
     qDebug() << "> DuQFNode removed";
 

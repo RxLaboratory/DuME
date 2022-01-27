@@ -46,11 +46,27 @@ SOURCES += \
     UI/Blocks/blocktimerange.cpp \
     UI/Blocks/blockvideospeed.cpp \
     UI/Blocks/blockworkingspace.cpp \
+    UI/JobEditor/cropnode.cpp \
+    UI/JobEditor/deinterlacenode.cpp \
+    UI/JobEditor/downmix5dot1tomononode.cpp \
+    UI/JobEditor/downmix5dot1tostereonode.cpp \
+    UI/JobEditor/downmixstereotomononode.cpp \
+    UI/JobEditor/dumenode.cpp \
+    UI/JobEditor/inputnode.cpp \
+    UI/JobEditor/mix5dot1node.cpp \
+    UI/JobEditor/mixstereonode.cpp \
+    UI/JobEditor/motioninterpolationnode.cpp \
+    UI/JobEditor/outputnode.cpp \
+    UI/JobEditor/separate5dot1node.cpp \
+    UI/JobEditor/separatestereonode.cpp \
+    UI/JobEditor/unpremultiplynode.cpp \
+    UI/JobEditor/videospeednode.cpp \
     UI/aesettingswidget.cpp \
     UI/cachesettingswidget.cpp \
     UI/consolewidget.cpp \
     UI/ffmpegparamwidget.cpp \
     UI/ffmpegsettingswidget.cpp \
+    UI/JobEditor/jobeditor.cpp \
     UI/lutbakerwidget.cpp \
     UI/lutconverterwidget.cpp \
     UI/ociosettingswidget.cpp \
@@ -152,11 +168,27 @@ HEADERS += \
     UI/Blocks/blocktimerange.h \
     UI/Blocks/blockvideospeed.h \
     UI/Blocks/blockworkingspace.h \
+    UI/JobEditor/cropnode.h \
+    UI/JobEditor/deinterlacenode.h \
+    UI/JobEditor/downmix5dot1tomononode.h \
+    UI/JobEditor/downmix5dot1tostereonode.h \
+    UI/JobEditor/downmixstereotomononode.h \
+    UI/JobEditor/dumenode.h \
+    UI/JobEditor/inputnode.h \
+    UI/JobEditor/mix5dot1node.h \
+    UI/JobEditor/mixstereonode.h \
+    UI/JobEditor/motioninterpolationnode.h \
+    UI/JobEditor/outputnode.h \
+    UI/JobEditor/separate5dot1node.h \
+    UI/JobEditor/separatestereonode.h \
+    UI/JobEditor/unpremultiplynode.h \
+    UI/JobEditor/videospeednode.h \
     UI/aesettingswidget.h \
     UI/cachesettingswidget.h \
     UI/consolewidget.h \
     UI/ffmpegparamwidget.h \
     UI/ffmpegsettingswidget.h \
+    UI/JobEditor/jobeditor.h \
     UI/lutbakerwidget.h \
     UI/lutconverterwidget.h \
     UI/ociosettingswidget.h \

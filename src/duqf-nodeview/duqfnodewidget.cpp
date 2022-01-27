@@ -1,9 +1,9 @@
 #include "duqfnodewidget.h"
 
-DuQFNodeWidget::DuQFNodeWidget(QWidget *parent)
+DuQFNodeWidget::DuQFNodeWidget(QString title, QWidget *parent)
     : QWidget{parent}
 {
-    setupUi();
+    setupUi(title);
     connectEvents();
 }
 
@@ -51,7 +51,7 @@ void DuQFNodeWidget::setGridSize(int size)
     settings.setValue("nodeView/gridSize", size);
 }
 
-void DuQFNodeWidget::setupUi()
+void DuQFNodeWidget::setupUi(QString title)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
@@ -66,7 +66,7 @@ void DuQFNodeWidget::setupUi()
     QMainWindow *mw = GuiUtils::appMainWindow();
     mw->addToolBarBreak(Qt::TopToolBarArea);
 
-    ui_titleBar = new DuQFTitleBar("Job Editor",false, mw);
+    ui_titleBar = new DuQFTitleBar(title,false, mw);
     ui_titleBar->setObjectName("jobNodesToolBar");
     ui_titleBar->showReinitButton(false);
     mw->addToolBar(Qt::TopToolBarArea,ui_titleBar);
@@ -147,6 +147,11 @@ void DuQFNodeWidget::setupUi()
     // Node menu
     QMenu *ui_nodeMenu = new QMenu(this);
 
+    ui_addMenu = new QMenu("Add",this);
+
+    ui_nodeMenu->addMenu(ui_addMenu);
+    ui_nodeMenu->addSeparator();
+
     ui_actionDeleteNode = new QAction("Remove selected nodes", this);
     ui_actionDeleteNode->setShortcut(QKeySequence("Shift+X"));
     ui_nodeMenu->addAction(ui_actionDeleteNode);
@@ -174,7 +179,7 @@ void DuQFNodeWidget::setupUi()
     coMenu->addAction(ui_actionDeleteConnections);
 
     QToolButton *coButton = new QToolButton(this);
-    coButton->setText("Pipe");
+    coButton->setText("Connection");
     coButton->setIcon(QIcon(":/icons/node-connection"));
     coButton->setIconSize(QSize(16,16));
     coButton->setObjectName("menuButton");

@@ -148,8 +148,8 @@ MainWindow::MainWindow(QStringList args, QWidget *parent) :
     log("Init - Setting window geometry", DuQFLog::Debug);
 
     // TEMP Load a fake editor
-    DuQFNodeWidget *nodeWidget = new DuQFNodeWidget(this);
-    mainLayout->addWidget(nodeWidget);
+    JobEditor *jobEditor = new JobEditor(this);
+    mainLayout->addWidget(jobEditor);
 
     //restore geometry
     // Restore UI state

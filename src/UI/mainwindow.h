@@ -9,7 +9,6 @@
 #include "duqf-widgets/aboutdialog.h"
 #include "duqf-widgets/appearancesettingswidget.h"
 #include "duqf-widgets/duqfdocktitle.h"
-#include "duqf-nodeview/duqfnodewidget.h"
 
 #include <QProcess>
 #include <QFileDialog>
@@ -37,6 +36,7 @@
 #include "UI/queuewidget.h"
 #include "UI/consolewidget.h"
 #include "UI/rqueuewidget.h"
+#include "UI/JobEditor/jobeditor.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
