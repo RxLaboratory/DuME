@@ -50,6 +50,7 @@
         <file alias="frame">duqf_resources/icons/frame-all.svg</file>
         <file alias="frame-nodes">duqf_resources/icons/frame-nodes.svg</file>
         <file alias="snap">duqf_resources/icons/snap.svg</file>
+        <file alias="browse-folder">duqf_resources/icons/browse-folder.svg</file>
     </qresource>
     <qresource prefix="/images"/>
     <qresource prefix="/styles">

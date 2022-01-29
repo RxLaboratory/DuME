@@ -67,7 +67,7 @@ void BlockBaseWidget::on_foldButton_clicked(bool checked)
 {
     _content->setVisible(checked);
     if (checked)
-        foldButton->setIcon(QIcon(":/icons/maximize"));
+        foldButton->setIcon(QIcon(":/icons/down"));
     else
-        foldButton->setIcon(QIcon(":/icons/minimize"));
+        foldButton->setIcon(QIcon(":/icons/right"));
 }

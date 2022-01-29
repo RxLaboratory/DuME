@@ -25,8 +25,11 @@ public:
     JobEditor(QWidget *parent = nullptr);
 
 private slots:
-    void addInputNode();
-    void addOutputNode();
+    InputNode *addInputNode();
+    InputNode *addInputNode(QString file);
+    void inputNodeRemoved(DuQFNode *node);
+    OutputNode *addOutputNode();
+    void outputNodeRemoved(DuQFNode *node);
 
     void addSeparate5Dot1Node();
     void addSeparateStereoNode();
@@ -41,6 +44,8 @@ private slots:
     void addMotionInterpolationNode();
     void addCropNode();
     void addVideoSpeedNode();
+
+    void fileDropped(QDropEvent *event);
 
 private:
     void setupUi();
@@ -62,6 +67,9 @@ private:
     QAction *ui_addMotionInterpolationNode;
     QAction *ui_addCropNode;
     QAction *ui_addVideoSpeedNode;
+
+    QList<InputNode*> m_inputNodes;
+    QList<OutputNode*> m_outputNodes;
 };
 
 #endif // JOBEDITOR_H

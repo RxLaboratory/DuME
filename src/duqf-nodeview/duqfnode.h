@@ -32,10 +32,15 @@ public:
     void setTitleColor(const QColor &color);
     QString titleToolTip() const;
     void setTitleToolTip(const QString &toolTip);
+    QString icon() const;
     void setIcon(QString icon);
 
-    void addInput(QString inputName = "Input", QColor color = QColor());
-    void addOutput(QString outputName = "Output", QColor color = QColor());
+    DuQFSlot *addInput(QString inputName = "Input", QColor color = QColor(), QString userType = "");
+    void removeInput(int i);
+    void clearInputs();
+    DuQFSlot *addOutput(QString outputName = "Output", QColor color = QColor(), QString userType = "");
+    void removeOutput(int i);
+    void clearOutputs();
 
     void setGrid(DuQFGrid *grid);
     DuQFGrid *grid() const;
@@ -55,7 +60,6 @@ public:
     DuQFSlot *defaultOutputSlot() const;
 
     const QList<DuQFSlot *> &inputSlots() const;
-
     const QList<DuQFSlot *> &outputSlots() const;
 
 public slots:
@@ -69,8 +73,15 @@ signals:
     void moved(QPointF);
 
 protected:
-    //void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
+    void setEditWidget(QWidget *newEditWidget);
+    void showEdit();
+
+    // Slots
+    QList<DuQFSlot*> m_inputSlots;
+    QList<DuQFSlot*> m_outputSlots;
 
 private:
     void setupUi(QString title);
@@ -78,6 +89,10 @@ private:
     DuQFGrid *m_grid;
 
     bool m_removing = false;
+
+    QString m_title;
+    QString m_icon;
+
     // Appearance
     int m_cornerRadius = 5;
     int m_padding = 5;
@@ -89,13 +104,11 @@ private:
     QGraphicsTextItem *m_titleItem;
     QGraphicsSvgItem *m_iconItem;
 
-    // Slots
-    QList<DuQFSlot*> m_inputSlots;
-    QList<DuQFSlot*> m_outputSlots;
-
     // Connected nodes
     QList<DuQFNode*> m_childrenNodes;
     QList<DuQFNode*> m_parentNodes;
+
+    QFrame *ui_editWidget = nullptr;
 };
 
 #endif // DUQFNODE_H

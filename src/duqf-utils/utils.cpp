@@ -14,11 +14,39 @@ void FileUtils::setReadWrite(QString path)
     }
 }
 
-void FileUtils::move(QString from, QString to)
+bool FileUtils::move(QString from, QString to, bool moveToTrashIfExists)
 {
-    QFile origin(from);
-    origin.rename(to);
-    setReadWrite(&origin);
+    QFileInfo destinationInfo(to);
+    if (destinationInfo.exists())
+    {
+        if(moveToTrashIfExists)
+            FileUtils::moveToTrash(to);
+        else return false;
+    }
+
+    QFileInfo info(from);
+    if (!info.exists())
+    {
+        qWarning() << "Can't move file, it doesn't exist.";
+        return false;
+    }
+    if (info.isDir())
+    {
+        QDir dir;
+        return !dir.rename( from, to );
+    }
+    else
+    {
+        QFile origin(from);
+        if( origin.rename(to) )
+        {
+            setReadWrite(&origin);
+            return true;
+        }
+        return false;
+    }
+    return false;
+
 }
 
 void FileUtils::copy(QString from, QString to)
@@ -303,17 +331,28 @@ qint64 FileUtils::getDirSize(QDir d)
     return size;
 }
 
-void FileUtils::openInExplorer(QString path)
+void FileUtils::openInExplorer(QString path, bool askForCreation)
 {
     const QFileInfo fileInfo(path);
+
+    if(!fileInfo.exists() && askForCreation)
+    {
+        QMessageBox::StandardButton rep = QMessageBox::question(nullptr,
+                                                                "The folder does not exist",
+                                                                "This folder:\n\n" + path + "\n\ndoes not exist yet.\nDo you want to create it now?",
+                                                                QMessageBox::Yes | QMessageBox::No,
+                                                                QMessageBox::Yes);
+        if (rep == QMessageBox::Yes) QDir(path).mkpath(".");
+        else return;
+    }
+    else if (!fileInfo.exists()) return;
 
 #ifdef Q_OS_WIN
     QString param("");
     if (!fileInfo.isDir())
         param = "/select,";
     param += QDir::toNativeSeparators(fileInfo.canonicalFilePath());
-    QString command = "explorer.exe " + param;
-    QProcess::startDetached(command);
+    QProcess::startDetached("explorer.exe", QStringList(param));
 #endif
 #ifdef Q_OS_MAC
     QStringList scriptArgs;
@@ -329,7 +368,7 @@ void FileUtils::openInExplorer(QString path)
 #ifdef Q_OS_LINUX
     QString p = fileInfo.canonicalFilePath();
     if (fileInfo.isFile()) p = fileInfo.dir().canonicalPath();
-    QProcess::execute("xdg-open \"" + p + "\"");
+    QProcess::execute("xdg-open", QStringList(p));
 #endif
 }
 

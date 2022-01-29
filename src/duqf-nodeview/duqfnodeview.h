@@ -20,6 +20,7 @@ public:
     Q_ENUM(Transformation)
 
     DuQFNodeView(QWidget *parent = nullptr);
+    void setDropOK(bool ok = true);
     DuQFGrid *grid() const;
     void zoom(double amount);
     qreal currentZoom();
@@ -34,6 +35,10 @@ public slots:
 signals:
     void zoomed(qreal zoom);
     void zoomed(int zoomPercent);
+    void dragEnter(QDragEnterEvent *event);
+    void dragMove(QDragMoveEvent *event);
+    void dragLeave(QDragLeaveEvent *event);
+    void drop(QDropEvent *event);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -44,6 +49,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     bool event(QEvent *event) override;
     bool gestureEvent(QGestureEvent *event);
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
 
 private:
     void drawBackground(QPainter * painter, const QRectF & rect) override;
@@ -56,6 +65,7 @@ private:
 
     // settings
     double m_zoomSensitivity = 0.2;
+    bool m_acceptDrops = false;
 
     // interaction
     bool m_ctrlKeyPressed = false;

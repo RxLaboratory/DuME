@@ -46,6 +46,7 @@ SOURCES += \
     UI/Blocks/blocktimerange.cpp \
     UI/Blocks/blockvideospeed.cpp \
     UI/Blocks/blockworkingspace.cpp \
+    UI/Blocks/inputblock.cpp \
     UI/JobEditor/cropnode.cpp \
     UI/JobEditor/deinterlacenode.cpp \
     UI/JobEditor/downmix5dot1tomononode.cpp \
@@ -93,6 +94,7 @@ SOURCES += \
     duqf-widgets/autoselectspinbox.cpp \
     duqf-widgets/duqfdocktitle.cpp \
     duqf-widgets/duqfdoubleslider.cpp \
+    duqf-widgets/duqffolderselectorwidget.cpp \
     duqf-widgets/duqfslider.cpp \
     duqf-widgets/duqftitlebar.cpp \
     duqf-widgets/duqftoolbarspacer.cpp \
@@ -168,6 +170,7 @@ HEADERS += \
     UI/Blocks/blocktimerange.h \
     UI/Blocks/blockvideospeed.h \
     UI/Blocks/blockworkingspace.h \
+    UI/Blocks/inputblock.h \
     UI/JobEditor/cropnode.h \
     UI/JobEditor/deinterlacenode.h \
     UI/JobEditor/downmix5dot1tomononode.h \
@@ -215,6 +218,7 @@ HEADERS += \
     duqf-widgets/autoselectlineedit.h \
     duqf-widgets/autoselectspinbox.h \
     duqf-widgets/duqfdocktitle.h \
+    duqf-widgets/duqffolderselectorwidget.h \
     duqf-widgets/duqfslider.h \
     duqf-widgets/duqfdoubleslider.h \
     duqf-widgets/duqftitlebar.h \

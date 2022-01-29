@@ -6,52 +6,52 @@ DuMENode::DuMENode(QString title, QGraphicsItem *parent):
 
 }
 
-void DuMENode::addVideoInput(QString name)
+DuQFSlot *DuMENode::addVideoInput(QString name)
 {
-    addInput(name, QColor(131,211,246));
+    return addInput(name, QColor(131,211,246), "video");
 }
 
-void DuMENode::addVideoOutput(QString name)
+DuQFSlot *DuMENode::addVideoOutput(QString name)
 {
-    addOutput(name, QColor(131,211,246));
+    return addOutput(name, QColor(131,211,246), "video");
 }
 
-void DuMENode::add5Dot1Input(QString name)
+DuQFSlot *DuMENode::add5Dot1Input(QString name)
 {
-    addInput(name, QColor(213,136,241));
+    return addInput(name, QColor(213,136,241), "5.1");
 }
 
-void DuMENode::add5Dot1Output(QString name)
+DuQFSlot *DuMENode::add5Dot1Output(QString name)
 {
-    addOutput(name, QColor(213,136,241));
+    return addOutput(name, QColor(213,136,241), "5.1");
 }
 
-void DuMENode::addStereoInput(QString name)
+DuQFSlot *DuMENode::addStereoInput(QString name)
 {
-    addInput(name, QColor(241,136,186));
+    return addInput(name, QColor(241,136,186), "stereo");
 }
 
-void DuMENode::addStereoOutput(QString name)
+DuQFSlot *DuMENode::addStereoOutput(QString name)
 {
-    addOutput(name, QColor(241,136,186));
+    return addOutput(name, QColor(241,136,186), "stereo");
 }
 
-void DuMENode::addMonoInput(QString name)
+DuQFSlot *DuMENode::addMonoInput(QString name)
 {
-    addInput(name, QColor(249,105,105));
+    return addInput(name, QColor(249,105,105), "mono");
 }
 
-void DuMENode::addMonoOutput(QString name)
+DuQFSlot *DuMENode::addMonoOutput(QString name)
 {
-    addOutput(name, QColor(249,105,105));
+    return addOutput(name, QColor(249,105,105), "mono");
 }
 
-void DuMENode::addSubtitleInput(QString name)
+DuQFSlot *DuMENode::addSubtitleInput(QString name)
 {
-    addInput(name, QColor(216,255,140));
+    return addInput(name, QColor(216,255,140), "subtitle");
 }
 
-void DuMENode::addSubtitleOutput(QString name)
+DuQFSlot *DuMENode::addSubtitleOutput(QString name)
 {
-    addOutput(name, QColor(216,255,140));
+    return addOutput(name, QColor(216,255,140), "subtitle");
 }

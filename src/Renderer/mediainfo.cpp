@@ -1386,7 +1386,9 @@ void MediaInfo::setAep(bool isAep, bool silent )
 {
     _isAep = isAep;
     addVideoStream(new VideoInfo(this));
-    addAudioStream(new AudioInfo(this));
+    AudioInfo *s = new AudioInfo(this);
+    s->setChannels("stereo");
+    addAudioStream(s);
     if(!silent) emit changed();
 }
 

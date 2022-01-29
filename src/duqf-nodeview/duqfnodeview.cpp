@@ -25,6 +25,13 @@ DuQFNodeView::DuQFNodeView(QWidget *parent): QGraphicsView(parent)
     setScene(m_scene);
 
     connect(m_grid, SIGNAL(gridSizeChanged()), this, SLOT(update()));
+
+    this->setAcceptDrops(true);
+}
+
+void DuQFNodeView::setDropOK(bool ok)
+{
+    m_acceptDrops = ok;
 }
 
 DuQFGrid *DuQFNodeView::grid() const
@@ -224,6 +231,41 @@ bool DuQFNodeView::event(QEvent *event)
 
     return QGraphicsView::event(event);
 }
+
+void DuQFNodeView::dropEvent(QDropEvent *event)
+{
+    if (m_acceptDrops) {
+        setCursor(Qt::ArrowCursor);
+        event->acceptProposedAction();
+        emit drop(event);
+    }
+}
+
+void DuQFNodeView::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (m_acceptDrops) {
+        event->acceptProposedAction();
+        setCursor(Qt::DragMoveCursor);
+        emit dragEnter(event);
+    }
+}
+
+void DuQFNodeView::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (m_acceptDrops) {
+        event->acceptProposedAction();
+        emit dragMove(event);
+    }
+}
+
+void DuQFNodeView::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    if (m_acceptDrops) {
+        event->accept();
+        emit dragLeave(event);
+    }
+}
+
 
 bool DuQFNodeView::gestureEvent(QGestureEvent *event)
 {

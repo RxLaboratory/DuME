@@ -125,6 +125,16 @@ void DuQFSlot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     update();
 }
 
+const QString &DuQFSlot::userType() const
+{
+    return m_userType;
+}
+
+void DuQFSlot::setUserType(const QString &newUserType)
+{
+    m_userType = newUserType;
+}
+
 DuQFNode *DuQFSlot::node() const
 {
     return m_node;

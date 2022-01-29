@@ -1,5 +1,7 @@
 #include "duqfnode.h"
 
+#include "UI/mainwindow.h"
+
 DuQFNode::DuQFNode(QString title, QGraphicsItem *parent):
     QGraphicsObject(parent)
 {
@@ -219,11 +221,12 @@ void DuQFNode::setGrid(DuQFGrid *grid)
 
 QString DuQFNode::title() const
 {
-    return m_titleItem->toPlainText();
+    return m_title;
 }
 
 void DuQFNode::setTitle(const QString &title)
 {
+    m_title = title;
     m_titleItem->setPlainText(title);
     updateSlotsPos();
 }
@@ -243,8 +246,15 @@ void DuQFNode::setTitleToolTip(const QString &toolTip)
     m_titleItem->setToolTip(toolTip);
 }
 
+QString DuQFNode::icon() const
+{
+    return m_icon;
+}
+
 void DuQFNode::setIcon(QString icon)
 {
+    m_icon = icon;
+
     qreal size = m_titleItem->boundingRect().height();
 
     m_iconItem->deleteLater();
@@ -265,7 +275,7 @@ void DuQFNode::setIcon(QString icon)
     updateSlotsPos();
 }
 
-void DuQFNode::addInput(QString inputName, QColor color)
+DuQFSlot *DuQFNode::addInput(QString inputName, QColor color, QString userType)
 {
     if (!color.isValid()) color =  DuUI::getColor("light-blue");
 
@@ -273,6 +283,7 @@ void DuQFNode::addInput(QString inputName, QColor color)
     DuQFSlot *slot = new DuQFSlot( this, DuQFSlot::Input, false, color );
     slot->setTitle(inputName);
     slot->setParentItem(this);
+    slot->setUserType(userType);
     m_inputSlots.append(slot);
 
     updateSlotsPos();
@@ -281,9 +292,23 @@ void DuQFNode::addInput(QString inputName, QColor color)
     connect(slot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
     connect(slot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
     connect(slot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
+
+    return slot;
 }
 
-void DuQFNode::addOutput(QString outputName, QColor color)
+void DuQFNode::removeInput(int i)
+{
+    if (i < 0 || i >= m_inputSlots.count()) return;
+    DuQFSlot *slot = m_inputSlots.takeAt(i);
+    slot->remove();
+}
+
+void DuQFNode::clearInputs()
+{
+    while(!m_inputSlots.isEmpty()) removeInput(0);
+}
+
+DuQFSlot *DuQFNode::addOutput(QString outputName, QColor color, QString userType)
 {
     if (!color.isValid()) color =  DuUI::getColor("light-green");
 
@@ -291,6 +316,7 @@ void DuQFNode::addOutput(QString outputName, QColor color)
     DuQFSlot *slot = new DuQFSlot( this, DuQFSlot::Output, false, color );
     slot->setTitle(outputName);
     slot->setParentItem(this);
+    slot->setUserType(userType);
     m_outputSlots.append(slot);
 
     updateSlotsPos();
@@ -299,6 +325,20 @@ void DuQFNode::addOutput(QString outputName, QColor color)
     connect(slot, &DuQFSlot::connectionInitiated, this, &DuQFNode::connectionInitiated);
     connect(slot, &DuQFSlot::connectionMoved, this, &DuQFNode::connectionMoved);
     connect(slot, &DuQFSlot::connectionFinished, this, &DuQFNode::connectionFinished);
+
+    return slot;
+}
+
+void DuQFNode::removeOutput(int i)
+{
+    if (i < 0 || i >= m_outputSlots.count()) return;
+    DuQFSlot *slot = m_outputSlots.takeAt(i);
+    slot->remove();
+}
+
+void DuQFNode::clearOutputs()
+{
+    while(!m_outputSlots.isEmpty()) removeOutput(0);
 }
 
 void DuQFNode::remove()
@@ -313,10 +353,37 @@ void DuQFNode::remove()
     while (!m_inputSlots.isEmpty())  m_inputSlots.takeLast()->remove();
     while (!m_outputSlots.isEmpty()) m_outputSlots.takeLast()->remove();
 
+    ui_editWidget->deleteLater();
+
     emit removed(this);
     qDebug() << "> DuQFNode removed";
 
     // There seems to be an issue with deleting QGraphicsObject from itself
     // The containing scene will handle that using the removed signal
     //this->deleteLater();
+}
+
+void DuQFNode::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    showEdit();
+    QGraphicsObject::mousePressEvent(event);
+}
+
+void DuQFNode::setEditWidget(QWidget *newEditWidget)
+{
+    ui_editWidget = new QFrame();
+    QVBoxLayout *l = new QVBoxLayout(ui_editWidget);
+    l->setContentsMargins(3,3,3,3);
+    l->addWidget(newEditWidget);
+}
+
+void DuQFNode::showEdit()
+{
+    if (!ui_editWidget) return;
+
+    MainWindow *mw = (MainWindow*)GuiUtils::appMainWindow();
+    QString title = this->title();
+    if (title == "") title = "Properties";
+
+    mw->setPropertiesDockWidget( ui_editWidget, m_title, m_icon);
 }

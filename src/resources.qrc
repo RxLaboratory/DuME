@@ -51,10 +51,7 @@
         <file alias="forum">resources/icons/forum_sl.svg</file>
         <file alias="settings">resources/icons/go-to-settings_sl.svg</file>
         <file alias="help">resources/icons/help_sl.svg</file>
-        <file alias="maximize">resources/icons/maximize_sl.svg</file>
-        <file alias="minimize">resources/icons/minimize_sl.svg</file>
         <file alias="quit">resources/icons/quit_sl.svg</file>
-        <file alias="unmaximize">resources/icons/unmaximize_sl.svg</file>
         <file alias="export">resources/icons/export-file_bl.svg</file>
         <file alias="import">resources/icons/import-file_bl.svg</file>
         <file alias="bash_l">resources/icons/bash-terminal_l.svg</file>
@@ -102,10 +99,10 @@
         <file alias="ocio-bake-lut">resources/icons/bake-ocio-lut-3d-look_sl.svg</file>
         <file alias="lut-baker">resources/icons/ocio-lut-baker.svg</file>
         <file alias="lut-settings">resources/icons/lut-settings.svg</file>
+        <file alias="down">resources/icons/move-down_sl.svg</file>
+        <file alias="right">resources/icons/move-right_sl.svg</file>
     </qresource>
-    <qresource prefix="/styles">
-        <file alias="default-dume">resources/styles/style-dume.css</file>
-    </qresource>
+    <qresource prefix="/styles"/>
     <qresource prefix="/presets">
         <file alias="MOV - ProRes - HQ">resources/presets/MOV - ProRes - HQ.meprst</file>
         <file alias="MOV - ProRes - LT">resources/presets/MOV - ProRes - LT.meprst</file>

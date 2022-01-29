@@ -5,22 +5,60 @@ JobEditor::JobEditor(QWidget *parent):
 {
     setupUi();
     connectEvents();
-
-    // Add default nodes
-    addInputNode();
-    addOutputNode();
 }
 
-void JobEditor::addInputNode()
+InputNode *JobEditor::addInputNode()
 {
     InputNode *node = new InputNode();
     m_nodeScene->addNode(node);
+    m_inputNodes.append(node);
+    // remove from list if removed
+    connect(node, SIGNAL(removed(DuQFNode*)), this, SLOT(inputNodeRemoved(DuQFNode*)));
+    return node;
 }
 
-void JobEditor::addOutputNode()
+InputNode *JobEditor::addInputNode(QString file)
+{
+    InputNode *node = new InputNode(file);
+    m_nodeScene->addNode(node);
+    m_inputNodes.append(node);
+    // remove from list if removed
+    connect(node, SIGNAL(removed(DuQFNode*)), this, SLOT(inputNodeRemoved(DuQFNode*)));
+    return node;
+}
+
+void JobEditor::inputNodeRemoved(DuQFNode *node)
+{
+    for (int i = 0; i < m_inputNodes.count(); i++)
+    {
+        if (m_inputNodes.at(i) == node)
+        {
+            m_inputNodes.removeAt(i);
+            break;
+        }
+    }
+}
+
+OutputNode *JobEditor::addOutputNode()
 {
     OutputNode *node = new OutputNode();
     m_nodeScene->addNode(node);
+    m_outputNodes.append(node);
+    // remove from list if removed
+    connect(node, SIGNAL(removed(DuQFNode*)), this, SLOT(outputNodeRemoved(DuQFNode*)));
+    return node;
+}
+
+void JobEditor::outputNodeRemoved(DuQFNode *node)
+{
+    for (int i = 0; i < m_outputNodes.count(); i++)
+    {
+        if (m_outputNodes.at(i) == node)
+        {
+            m_outputNodes.removeAt(i);
+            break;
+        }
+    }
 }
 
 void JobEditor::addSeparate5Dot1Node()
@@ -95,6 +133,54 @@ void JobEditor::addVideoSpeedNode()
     m_nodeScene->addNode(node);
 }
 
+void JobEditor::fileDropped(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    QString file;
+
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+        if (urlList.count() == 1)
+        {
+            file = urlList[0].toLocalFile();
+        }
+
+    }
+    else if (mimeData->hasText())
+    {
+        file = mimeData->text();
+    }
+
+    if (QFileInfo::exists(file))
+    {
+        InputNode *node = addInputNode(file);
+        QPointF dropPos = ui_nodeView->mapToScene(event->pos());
+        node->setPos( dropPos );
+        // Add an output node if there's not already one
+        if (m_outputNodes.isEmpty())
+        {
+            OutputNode *oNode = addOutputNode();
+            oNode->setPos( node->pos() + QPointF(node->boundingRect().width() + 50, 0));
+
+            // Connect nodes
+            QList<DuQFSlot*> outputSlots = node->outputSlots();
+            for (int i = 0; i < outputSlots.count(); i++)
+            {
+                DuQFSlot *inputSlot;
+                DuQFSlot *outputSlot = outputSlots.at(i);
+                if (outputSlot->userType() == "video") inputSlot = oNode->addVideoInput();
+                else if (outputSlot->userType() == "5.1") inputSlot = oNode->add5Dot1Input();
+                else if (outputSlot->userType() == "stereo") inputSlot = oNode->addStereoInput();
+                else if (outputSlot->userType() == "mono") inputSlot = oNode->addMonoInput();
+                else inputSlot = oNode->addSubtitleInput();
+                m_nodeScene->connectNodes(outputSlot, inputSlot);
+            }
+        }
+    }
+}
+
 void JobEditor::setupUi()
 {
     // Add create actions
@@ -148,6 +234,7 @@ void JobEditor::setupUi()
 
     ui_addMenu->addMenu(audioChannelMenu);
 
+    ui_nodeView->setDropOK(true);
 }
 
 void JobEditor::connectEvents()
@@ -167,4 +254,6 @@ void JobEditor::connectEvents()
     connect(ui_addMotionInterpolationNode, SIGNAL(triggered(bool)), this, SLOT(addMotionInterpolationNode()));
     connect(ui_addCropNode, SIGNAL(triggered(bool)), this, SLOT(addCropNode()));
     connect(ui_addVideoSpeedNode, SIGNAL(triggered(bool)), this, SLOT(addVideoSpeedNode()));
+
+    connect(ui_nodeView, SIGNAL(drop(QDropEvent*)), this, SLOT(fileDropped(QDropEvent*)));
 }

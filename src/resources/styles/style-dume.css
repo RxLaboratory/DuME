@@ -1,7 +1,0 @@
-#consoleSplitter::handle:vertical {
-    image: url(:/icons/bash);
-}
-
-#consoleSplitter::handle:vertical:hover {
-    image: url(:/icons/bash_l);
-}

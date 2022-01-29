@@ -8,20 +8,20 @@ class DuMENode : public DuQFNode
 public:
     DuMENode(QString title, QGraphicsItem *parent = nullptr);
 
-    void addVideoInput(QString name="Video");
-    void addVideoOutput(QString name="Video");
+    DuQFSlot *addVideoInput(QString name="Video");
+    DuQFSlot *addVideoOutput(QString name="Video");
 
-    void add5Dot1Input(QString name="5.1");
-    void add5Dot1Output(QString name="5.1");
+    DuQFSlot *add5Dot1Input(QString name="5.1");
+    DuQFSlot *add5Dot1Output(QString name="5.1");
 
-    void addStereoInput(QString name="Stereo");
-    void addStereoOutput(QString name="Stereo");
+    DuQFSlot *addStereoInput(QString name="Stereo");
+    DuQFSlot *addStereoOutput(QString name="Stereo");
 
-    void addMonoInput(QString name="Mono");
-    void addMonoOutput(QString name="Mono");
+    DuQFSlot *addMonoInput(QString name="Mono");
+    DuQFSlot *addMonoOutput(QString name="Mono");
 
-    void addSubtitleInput(QString name="Subtitles");
-    void addSubtitleOutput(QString name="Subtitles");
+    DuQFSlot *addSubtitleInput(QString name="Subtitles");
+    DuQFSlot *addSubtitleOutput(QString name="Subtitles");
 };
 
 #endif // DUMENODE_H

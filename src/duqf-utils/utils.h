@@ -16,11 +16,11 @@ namespace FileUtils
     QString applicationTempPath();
     void setReadWrite(QFile *file);
     void setReadWrite(QString path);
-    void move(QString from, QString to);
+    bool move(QString from, QString to, bool moveToTrashIfExists = false);
     void copy(QString from, QString to);
     void remove(QString path);
     qint64 getDirSize(QDir d);
-    void openInExplorer(QString path);
+    void openInExplorer(QString path, bool askForCreation = false);
 
     /**
      * @brief moveToTrash Moves a file to the trash, works on Linux, Mac OS, Windows.

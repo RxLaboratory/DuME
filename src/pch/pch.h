@@ -111,5 +111,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QStaticText>
+#include <QTextBrowser>
 
 #include <cmath>

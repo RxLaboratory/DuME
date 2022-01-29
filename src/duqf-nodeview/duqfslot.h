@@ -43,6 +43,9 @@ public:
 
     DuQFNode *node() const;
 
+    const QString &userType() const;
+    void setUserType(const QString &newUserType);
+
 public slots:
     void remove();
 
@@ -66,6 +69,7 @@ private:
     SlotType m_slotType;
     bool m_singleConnection;
     QString m_title;
+    QString m_userType;
 
     // Appearance
     QColor m_color;
