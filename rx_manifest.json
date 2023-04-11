@@ -1,0 +1,27 @@
+{
+    "title": "DuME",
+    "hosts": [
+        {
+            "name": "aftereffects",
+            "title": "After Effects"
+        },
+        {
+            "name": "native",
+            "title": "DuME Application"
+        }
+    ],
+    "os": [
+        {
+            "name": "mac",
+            "title": "macOS"
+        },
+        {
+            "name": "win",
+            "title": "Windows"
+        },
+        {
+            "name": "linux",
+            "title": "Linux"
+        }
+    ]
+}
