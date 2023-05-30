@@ -23,5 +23,6 @@
             "name": "linux",
             "title": "Linux"
         }
-    ]
+    ],
+    "userGuide": "http://dume.rxlab.guide"
 }
