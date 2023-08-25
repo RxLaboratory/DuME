@@ -24,5 +24,6 @@
             "title": "Linux"
         }
     ],
-    "userGuide": "http://dume.rxlab.guide"
+    "userGuide": "http://dume.rxlab.guide",
+    "description": "Rendering and transcoding medias on Windows, Mac OS, Linux."
 }
